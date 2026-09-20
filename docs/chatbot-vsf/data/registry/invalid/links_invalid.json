@@ -1,0 +1,61 @@
+[
+  {
+    "case": "link_http_not_https",
+    "expected_errors": [
+      "INV15_URL"
+    ],
+    "link": {
+      "key": "BAD-L1",
+      "url": "http://it.vsf-demo.example/x",
+      "label": "x",
+      "status": "APPROVED",
+      "requires_security_review": false,
+      "security_review": null,
+      "verified_by": "hr1@vsf-demo.example",
+      "verified_at": "2026-06-01",
+      "effective_from": null,
+      "effective_to": null
+    }
+  },
+  {
+    "case": "approved_without_verifier",
+    "expected_errors": [
+      "INV15_VERIFIED"
+    ],
+    "link": {
+      "key": "BAD-L2",
+      "url": "https://it.vsf-demo.example/x",
+      "label": "x",
+      "status": "APPROVED",
+      "requires_security_review": false,
+      "security_review": null,
+      "verified_by": null,
+      "verified_at": null,
+      "effective_from": null,
+      "effective_to": null
+    }
+  },
+  {
+    "case": "approved_security_not_passed",
+    "expected_errors": [
+      "INV15_SECURITY"
+    ],
+    "link": {
+      "key": "BAD-L3",
+      "url": "https://it.vsf-demo.example/x",
+      "label": "x",
+      "status": "APPROVED",
+      "requires_security_review": true,
+      "security_review": {
+        "reviewer_team": "VINSOC",
+        "result": "PENDING",
+        "reference": null,
+        "reviewed_at": null
+      },
+      "verified_by": "hr1@vsf-demo.example",
+      "verified_at": "2026-06-01",
+      "effective_from": null,
+      "effective_to": null
+    }
+  }
+]

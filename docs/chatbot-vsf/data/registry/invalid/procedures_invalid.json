@@ -1,0 +1,310 @@
+[
+  {
+    "case": "ticket_required_without_form",
+    "expected_errors": [
+      "INV18"
+    ],
+    "procedures": [
+      {
+        "version_no": 1,
+        "status": "ACTIVE",
+        "effective_from": "2026-07-01",
+        "effective_to": null,
+        "title": "Fixture lỗi",
+        "category": "thiet-bi-tai-khoan",
+        "trigger_text": "fixture",
+        "conditions": [],
+        "responsible_team": "IT",
+        "ticket_required": true,
+        "form_code": null,
+        "next_step": null,
+        "source_docs": [],
+        "sample_questions": [],
+        "aliases": [],
+        "steps": [
+          {
+            "order": 1,
+            "text": "bước 1",
+            "link_keys": [],
+            "contact_keys": []
+          }
+        ],
+        "code": "BAD-1"
+      }
+    ]
+  },
+  {
+    "case": "form_code_not_active",
+    "expected_errors": [
+      "REF_FORM"
+    ],
+    "procedures": [
+      {
+        "version_no": 1,
+        "status": "ACTIVE",
+        "effective_from": "2026-07-01",
+        "effective_to": null,
+        "title": "Fixture lỗi",
+        "category": "thiet-bi-tai-khoan",
+        "trigger_text": "fixture",
+        "conditions": [],
+        "responsible_team": "IT",
+        "ticket_required": true,
+        "form_code": "IT-NOPE-99",
+        "next_step": null,
+        "source_docs": [],
+        "sample_questions": [],
+        "aliases": [],
+        "steps": [
+          {
+            "order": 1,
+            "text": "bước 1",
+            "link_keys": [],
+            "contact_keys": []
+          }
+        ],
+        "code": "BAD-2"
+      }
+    ]
+  },
+  {
+    "case": "step_links_pending_link",
+    "expected_errors": [
+      "INV15"
+    ],
+    "procedures": [
+      {
+        "version_no": 1,
+        "status": "ACTIVE",
+        "effective_from": "2026-07-01",
+        "effective_to": null,
+        "title": "Fixture lỗi",
+        "category": "thiet-bi-tai-khoan",
+        "trigger_text": "fixture",
+        "conditions": [],
+        "responsible_team": "IT",
+        "ticket_required": false,
+        "form_code": null,
+        "next_step": null,
+        "source_docs": [],
+        "sample_questions": [],
+        "aliases": [],
+        "steps": [
+          {
+            "order": 1,
+            "text": "x",
+            "link_keys": [
+              "L-UBUNTU-INSTALLER-DRAFT"
+            ],
+            "contact_keys": []
+          }
+        ],
+        "code": "BAD-3"
+      }
+    ]
+  },
+  {
+    "case": "step_links_revoked_link",
+    "expected_errors": [
+      "INV15"
+    ],
+    "procedures": [
+      {
+        "version_no": 1,
+        "status": "ACTIVE",
+        "effective_from": "2026-07-01",
+        "effective_to": null,
+        "title": "Fixture lỗi",
+        "category": "thiet-bi-tai-khoan",
+        "trigger_text": "fixture",
+        "conditions": [],
+        "responsible_team": "IT",
+        "ticket_required": false,
+        "form_code": null,
+        "next_step": null,
+        "source_docs": [],
+        "sample_questions": [],
+        "aliases": [],
+        "steps": [
+          {
+            "order": 1,
+            "text": "x",
+            "link_keys": [
+              "L-VPN-LEGACY"
+            ],
+            "contact_keys": []
+          }
+        ],
+        "code": "BAD-4"
+      }
+    ]
+  },
+  {
+    "case": "step_links_expired_link",
+    "expected_errors": [
+      "INV15"
+    ],
+    "procedures": [
+      {
+        "version_no": 1,
+        "status": "ACTIVE",
+        "effective_from": "2026-07-01",
+        "effective_to": null,
+        "title": "Fixture lỗi",
+        "category": "thiet-bi-tai-khoan",
+        "trigger_text": "fixture",
+        "conditions": [],
+        "responsible_team": "IT",
+        "ticket_required": false,
+        "form_code": null,
+        "next_step": null,
+        "source_docs": [],
+        "sample_questions": [],
+        "aliases": [],
+        "steps": [
+          {
+            "order": 1,
+            "text": "x",
+            "link_keys": [
+              "L-OLD-PORTAL"
+            ],
+            "contact_keys": []
+          }
+        ],
+        "code": "BAD-5"
+      }
+    ]
+  },
+  {
+    "case": "unknown_link_key",
+    "expected_errors": [
+      "REF_LINK"
+    ],
+    "procedures": [
+      {
+        "version_no": 1,
+        "status": "ACTIVE",
+        "effective_from": "2026-07-01",
+        "effective_to": null,
+        "title": "Fixture lỗi",
+        "category": "thiet-bi-tai-khoan",
+        "trigger_text": "fixture",
+        "conditions": [],
+        "responsible_team": "IT",
+        "ticket_required": false,
+        "form_code": null,
+        "next_step": null,
+        "source_docs": [],
+        "sample_questions": [],
+        "aliases": [],
+        "steps": [
+          {
+            "order": 1,
+            "text": "x",
+            "link_keys": [
+              "L-KHONG-TON-TAI"
+            ],
+            "contact_keys": []
+          }
+        ],
+        "code": "BAD-6"
+      }
+    ]
+  },
+  {
+    "case": "archived_contact",
+    "expected_errors": [
+      "REF_CONTACT"
+    ],
+    "procedures": [
+      {
+        "version_no": 1,
+        "status": "ACTIVE",
+        "effective_from": "2026-07-01",
+        "effective_to": null,
+        "title": "Fixture lỗi",
+        "category": "thiet-bi-tai-khoan",
+        "trigger_text": "fixture",
+        "conditions": [],
+        "responsible_team": "IT",
+        "ticket_required": false,
+        "form_code": null,
+        "next_step": null,
+        "source_docs": [],
+        "sample_questions": [],
+        "aliases": [],
+        "steps": [
+          {
+            "order": 1,
+            "text": "x",
+            "link_keys": [],
+            "contact_keys": [
+              "old-fax"
+            ]
+          }
+        ],
+        "code": "BAD-7"
+      }
+    ]
+  },
+  {
+    "case": "overlapping_active_versions",
+    "expected_errors": [
+      "INV17"
+    ],
+    "procedures": [
+      {
+        "version_no": 1,
+        "status": "ACTIVE",
+        "effective_from": "2026-01-01",
+        "effective_to": null,
+        "title": "Fixture lỗi",
+        "category": "thiet-bi-tai-khoan",
+        "trigger_text": "fixture",
+        "conditions": [],
+        "responsible_team": "IT",
+        "ticket_required": false,
+        "form_code": null,
+        "next_step": null,
+        "source_docs": [],
+        "sample_questions": [],
+        "aliases": [],
+        "steps": [
+          {
+            "order": 1,
+            "text": "bước 1",
+            "link_keys": [],
+            "contact_keys": []
+          }
+        ],
+        "code": "BAD-8"
+      },
+      {
+        "version_no": 2,
+        "status": "ACTIVE",
+        "effective_from": "2026-06-01",
+        "effective_to": null,
+        "title": "Fixture lỗi",
+        "category": "thiet-bi-tai-khoan",
+        "trigger_text": "fixture",
+        "conditions": [],
+        "responsible_team": "IT",
+        "ticket_required": false,
+        "form_code": null,
+        "next_step": null,
+        "source_docs": [],
+        "sample_questions": [],
+        "aliases": [],
+        "steps": [
+          {
+            "order": 1,
+            "text": "bước 1",
+            "link_keys": [],
+            "contact_keys": []
+          }
+        ],
+        "code": "BAD-8"
+      }
+    ]
+  }
+]

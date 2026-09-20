@@ -1,0 +1,74 @@
+[
+  {
+    "key": "hr-email",
+    "team": "HR_ONBOARDING",
+    "kind": "EMAIL",
+    "label": "Email HR Onboarding",
+    "value": "hr-onboarding@vsf-demo.example",
+    "status": "ACTIVE"
+  },
+  {
+    "key": "hr-portal",
+    "team": "HR_ONBOARDING",
+    "kind": "PORTAL",
+    "label": "HR Portal",
+    "value": "https://hr.vsf-demo.example",
+    "status": "ACTIVE"
+  },
+  {
+    "key": "it-email",
+    "team": "IT",
+    "kind": "EMAIL",
+    "label": "Email IT Helpdesk",
+    "value": "it-helpdesk@vsf-demo.example",
+    "status": "ACTIVE"
+  },
+  {
+    "key": "it-portal",
+    "team": "IT",
+    "kind": "PORTAL",
+    "label": "Cổng IT",
+    "value": "https://it.vsf-demo.example/requests",
+    "status": "ACTIVE"
+  },
+  {
+    "key": "soc-oncall",
+    "team": "VINSOC",
+    "kind": "EMAIL",
+    "label": "Trực SOC (sự cố bảo mật)",
+    "value": "soc-oncall@vsf-demo.example",
+    "status": "ACTIVE"
+  },
+  {
+    "key": "fac-email",
+    "team": "FACILITIES",
+    "kind": "EMAIL",
+    "label": "Email Facilities",
+    "value": "facilities@vsf-demo.example",
+    "status": "ACTIVE"
+  },
+  {
+    "key": "fac-portal",
+    "team": "FACILITIES",
+    "kind": "PORTAL",
+    "label": "Cổng Facilities",
+    "value": "https://facilities.vsf-demo.example/requests",
+    "status": "ACTIVE"
+  },
+  {
+    "key": "reception-desk",
+    "team": "FACILITIES",
+    "kind": "IN_PERSON",
+    "label": "Quầy tiếp nhận",
+    "value": "Hà Nội: tầng 1 tòa TechnoPark. TP. Hồ Chí Minh: tầng trệt Vincom Center Đồng Khởi",
+    "status": "ACTIVE"
+  },
+  {
+    "key": "old-fax",
+    "team": "HR_ONBOARDING",
+    "kind": "EMAIL",
+    "label": "Email HR cũ (đã ngừng)",
+    "value": "hr-old@vsf-demo.example",
+    "status": "ARCHIVED"
+  }
+]

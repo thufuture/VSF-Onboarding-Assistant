@@ -1,0 +1,75 @@
+[
+  {
+    "email": "admin@vsf-demo.example",
+    "display_name": "Admin Demo",
+    "role": "ADMIN",
+    "teams": [],
+    "password_dev_only": "ChangeMe!123"
+  },
+  {
+    "email": "hr1@vsf-demo.example",
+    "display_name": "HR Demo 1",
+    "role": "HR",
+    "teams": [
+      "HR_ONBOARDING"
+    ],
+    "password_dev_only": "ChangeMe!123"
+  },
+  {
+    "email": "hr2@vsf-demo.example",
+    "display_name": "HR Demo 2",
+    "role": "HR",
+    "teams": [
+      "HR_ONBOARDING"
+    ],
+    "password_dev_only": "ChangeMe!123"
+  },
+  {
+    "email": "it.staff@vsf-demo.example",
+    "display_name": "IT Staff Demo",
+    "role": "USER",
+    "teams": [
+      "IT"
+    ],
+    "password_dev_only": "ChangeMe!123"
+  },
+  {
+    "email": "soc.staff@vsf-demo.example",
+    "display_name": "SOC Staff Demo",
+    "role": "USER",
+    "teams": [
+      "VINSOC"
+    ],
+    "password_dev_only": "ChangeMe!123"
+  },
+  {
+    "email": "fac.staff@vsf-demo.example",
+    "display_name": "Facilities Staff Demo",
+    "role": "USER",
+    "teams": [
+      "FACILITIES"
+    ],
+    "password_dev_only": "ChangeMe!123"
+  },
+  {
+    "email": "newhire1@vsf-demo.example",
+    "display_name": "Nhân sự mới 1",
+    "role": "USER",
+    "teams": [],
+    "password_dev_only": "ChangeMe!123"
+  },
+  {
+    "email": "newhire2@vsf-demo.example",
+    "display_name": "Nhân sự mới 2",
+    "role": "USER",
+    "teams": [],
+    "password_dev_only": "ChangeMe!123"
+  },
+  {
+    "email": "newhire3@vsf-demo.example",
+    "display_name": "Nhân sự mới 3",
+    "role": "USER",
+    "teams": [],
+    "password_dev_only": "ChangeMe!123"
+  }
+]

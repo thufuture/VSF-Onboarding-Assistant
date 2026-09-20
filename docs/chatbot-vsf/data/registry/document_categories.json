@@ -1,0 +1,62 @@
+[
+  {
+    "slug": "quy-dinh-chung",
+    "name": "Quy định chung",
+    "description": "Nội quy lao động, giờ làm việc, trang phục, làm việc từ xa, quy định văn phòng"
+  },
+  {
+    "slug": "nghi-phep",
+    "name": "Nghỉ phép và nghỉ lễ",
+    "description": "Số ngày phép năm, cách đăng ký nghỉ phép, chuyển phép, nghỉ lễ"
+  },
+  {
+    "slug": "thu-viec",
+    "name": "Thử việc",
+    "description": "Thời gian thử việc, lương thử việc, đánh giá thử việc, quyền lợi khi thử việc"
+  },
+  {
+    "slug": "phuc-loi-bao-hiem",
+    "name": "Phúc lợi và bảo hiểm",
+    "description": "Bảo hiểm, phụ cấp, thưởng, khám sức khỏe, ưu đãi hệ sinh thái"
+  },
+  {
+    "slug": "bao-mat-thong-tin",
+    "name": "An toàn và bảo mật thông tin",
+    "description": "Mật khẩu, xác thực nhiều yếu tố, phân loại dữ liệu, báo cáo sự cố bảo mật"
+  },
+  {
+    "slug": "van-hoa",
+    "name": "Văn hóa và giá trị",
+    "description": "Giá trị cốt lõi, văn hóa công ty, quy tắc ứng xử"
+  },
+  {
+    "slug": "onboarding-ngay-dau",
+    "name": "Onboarding và ngày đầu",
+    "description": "Ngày đầu đi làm, giấy tờ, lịch tuần đầu, thẻ từ, thẻ xe, hỏi đáp onboarding"
+  },
+  {
+    "slug": "thiet-bi-tai-khoan",
+    "name": "Thiết bị, tài khoản và phần mềm",
+    "description": "Cấp phát máy, hệ điều hành, tài khoản, VPN, cài phần mềm, cấp quyền"
+  },
+  {
+    "slug": "phan-cong-mentor-cho-ngoi",
+    "name": "Mentor, buddy và chỗ ngồi",
+    "description": "Cách biết mentor và buddy, nhận và đổi chỗ ngồi"
+  },
+  {
+    "slug": "ho-tro-it",
+    "name": "Hỗ trợ IT và đầu mối",
+    "description": "Danh bạ đầu mối theo đội, kênh hỗ trợ, ứng dụng nội bộ"
+  },
+  {
+    "slug": "gioi-thieu-cong-ty",
+    "name": "Giới thiệu công ty",
+    "description": "Sứ mệnh, cơ cấu, văn phòng, quy mô"
+  },
+  {
+    "slug": "phap-luat-lao-dong",
+    "name": "Pháp luật lao động",
+    "description": "Bộ luật Lao động, bảo hiểm xã hội, công đoàn, bảo vệ dữ liệu cá nhân"
+  }
+]

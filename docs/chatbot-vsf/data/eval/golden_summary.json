@@ -1,0 +1,39 @@
+{
+  "total_items": 242,
+  "by_split": {
+    "dev": 165,
+    "test": 77
+  },
+  "by_category": {
+    "answer": 46,
+    "guide": 15,
+    "ask": 10,
+    "ticket": 8,
+    "no_basis": 10,
+    "out_of_scope": 8,
+    "personal": 7,
+    "injection": 6,
+    "abbreviation": 6,
+    "followup": 5,
+    "answer_long": 121
+  },
+  "by_first_turn_response_type": {
+    "ANSWER": 179,
+    "GUIDE_PROCESS": 25,
+    "ASK_CLARIFICATION": 8,
+    "-": 1,
+    "NO_BASIS": 17,
+    "OUT_OF_SCOPE": 12
+  },
+  "by_expected_response_type_all_turns": {
+    "ANSWER": 191,
+    "GUIDE_PROCESS": 27,
+    "ASK_CLARIFICATION": 9,
+    "NO_BASIS": 18,
+    "OFFER_TICKET": 8,
+    "OUT_OF_SCOPE": 12
+  },
+  "multi_turn_items": 18,
+  "default_as_of": "2026-09-20",
+  "note": "Tập test được đóng băng: không dùng để chỉnh prompt/ngưỡng; chỉ chạy khi báo cáo kết quả."
+}

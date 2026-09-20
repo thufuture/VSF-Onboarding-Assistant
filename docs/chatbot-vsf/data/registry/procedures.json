@@ -1,0 +1,568 @@
+[
+  {
+    "version_no": 1,
+    "status": "ACTIVE",
+    "effective_from": "2026-07-01",
+    "effective_to": null,
+    "code": "PR-DEVICE-CONFIG",
+    "title": "Cấu hình hoặc cài lại thiết bị",
+    "category": "thiet-bi-tai-khoan",
+    "trigger_text": "Nhân sự cần cấu hình lại máy, cài hoặc cài lại hệ điều hành (ví dụ Ubuntu) cho máy công ty.",
+    "conditions": [
+      {
+        "slot": "department",
+        "op": "present"
+      }
+    ],
+    "responsible_team": "IT",
+    "ticket_required": true,
+    "form_code": "IT-DEV-01",
+    "steps": [
+      {
+        "order": 1,
+        "text": "Không tự cài hoặc cài lại hệ điều hành; IT cấu hình máy theo đơn vị.",
+        "link_keys": [],
+        "contact_keys": []
+      },
+      {
+        "order": 2,
+        "text": "Mở form yêu cầu cấu hình thiết bị IT-DEV-01 tại cổng IT.",
+        "link_keys": [
+          "L-IT-PORTAL"
+        ],
+        "contact_keys": []
+      },
+      {
+        "order": 3,
+        "text": "Điền mã nhân viên, đơn vị, mã thiết bị, hệ điều hành cần cấu hình và mô tả nhu cầu.",
+        "link_keys": [],
+        "contact_keys": []
+      },
+      {
+        "order": 4,
+        "text": "Gửi yêu cầu vào hàng đợi IT; IT xử lý trong 2 ngày làm việc.",
+        "link_keys": [],
+        "contact_keys": [
+          "it-email"
+        ]
+      },
+      {
+        "order": 5,
+        "text": "Chỉ dùng tệp hoặc liên kết cài đặt trong Danh mục phần mềm được duyệt.",
+        "link_keys": [
+          "L-SOFTWARE-CATALOG"
+        ],
+        "contact_keys": []
+      }
+    ],
+    "next_step": "Chờ IT hướng dẫn qua kênh đã xác minh; không dùng liên kết cài đặt nhận qua chat hoặc email.",
+    "source_docs": [
+      "P06",
+      "P07"
+    ],
+    "sample_questions": [
+      "Vậy cài Ubuntu sao?",
+      "Tôi muốn cài lại hệ điều hành cho máy",
+      "Xin cấu hình lại máy"
+    ],
+    "aliases": [
+      "cài OS",
+      "cài máy",
+      "cấu hình máy"
+    ]
+  },
+  {
+    "version_no": 1,
+    "status": "ACTIVE",
+    "effective_from": "2026-07-01",
+    "effective_to": null,
+    "code": "PR-SOFTWARE-REQUEST",
+    "title": "Yêu cầu cài phần mềm và kiểm tra VinSOC",
+    "category": "thiet-bi-tai-khoan",
+    "trigger_text": "Nhân sự cần cài phần mềm ngoài danh mục chuẩn.",
+    "conditions": [],
+    "responsible_team": "IT",
+    "ticket_required": true,
+    "form_code": "IT-SW-01",
+    "steps": [
+      {
+        "order": 1,
+        "text": "Tạo yêu cầu bằng form IT-SW-01 trên cổng IT, nêu tên phần mềm và lý do công việc.",
+        "link_keys": [
+          "L-IT-PORTAL"
+        ],
+        "contact_keys": []
+      },
+      {
+        "order": 2,
+        "text": "IT chuyển yêu cầu tới VinSOC; VinSOC quét liên kết và tệp cài đặt trong 3 ngày làm việc.",
+        "link_keys": [],
+        "contact_keys": [
+          "it-email"
+        ]
+      },
+      {
+        "order": 3,
+        "text": "Sau khi được duyệt, chỉ tải phần mềm từ Danh mục phần mềm được duyệt.",
+        "link_keys": [
+          "L-SOFTWARE-CATALOG"
+        ],
+        "contact_keys": []
+      },
+      {
+        "order": 4,
+        "text": "Không mở liên kết cài đặt nhận qua chat hoặc email.",
+        "link_keys": [],
+        "contact_keys": []
+      }
+    ],
+    "next_step": "Chờ VinSOC công bố kết quả trong Danh mục phần mềm được duyệt.",
+    "source_docs": [
+      "P07"
+    ],
+    "sample_questions": [
+      "Tôi cần cài phần mềm Docker",
+      "Xin cài phần mềm mới",
+      "Cho tôi link tải phần mềm"
+    ],
+    "aliases": [
+      "cài app",
+      "cài phần mềm"
+    ]
+  },
+  {
+    "version_no": 1,
+    "status": "ACTIVE",
+    "effective_from": "2026-07-01",
+    "effective_to": null,
+    "code": "PR-FIND-SEAT",
+    "title": "Tìm chỗ ngồi ban đầu",
+    "category": "phan-cong-mentor-cho-ngoi",
+    "trigger_text": "Nhân sự mới hỏi chỗ ngồi hoặc vị trí ngồi của mình.",
+    "conditions": [],
+    "responsible_team": "HR_ONBOARDING",
+    "ticket_required": false,
+    "form_code": null,
+    "steps": [
+      {
+        "order": 1,
+        "text": "Kiểm tra Thư tiếp nhận do đầu mối bộ phận gửi trước ngày đầu tiên; vị trí ngồi được ghi trong thư.",
+        "link_keys": [],
+        "contact_keys": []
+      },
+      {
+        "order": 2,
+        "text": "Nếu chưa có thông tin, liên hệ đầu mối HR Onboarding.",
+        "link_keys": [],
+        "contact_keys": [
+          "hr-email"
+        ]
+      },
+      {
+        "order": 3,
+        "text": "Khi đến nơi, báo họ tên và bộ phận tại Quầy tiếp nhận để được dẫn tới vị trí.",
+        "link_keys": [],
+        "contact_keys": [
+          "reception-desk"
+        ]
+      }
+    ],
+    "next_step": "Nếu vẫn chưa có thông tin sau khi liên hệ HR Onboarding, hỏi lại đầu mối bộ phận.",
+    "source_docs": [
+      "P04",
+      "P01"
+    ],
+    "sample_questions": [
+      "Mai tôi ngồi chỗ nào?",
+      "Chỗ ngồi của tôi ở đâu",
+      "Tôi ngồi bàn nào"
+    ],
+    "aliases": [
+      "vị trí ngồi",
+      "bàn làm việc"
+    ]
+  },
+  {
+    "version_no": 1,
+    "status": "ACTIVE",
+    "effective_from": "2026-07-01",
+    "effective_to": null,
+    "code": "PR-SEAT-CHANGE",
+    "title": "Đổi chỗ ngồi",
+    "category": "phan-cong-mentor-cho-ngoi",
+    "trigger_text": "Nhân sự muốn đổi chỗ ngồi sau khi đã có chỗ.",
+    "conditions": [],
+    "responsible_team": "FACILITIES",
+    "ticket_required": true,
+    "form_code": "FAC-01",
+    "steps": [
+      {
+        "order": 1,
+        "text": "Mở form yêu cầu đổi chỗ ngồi FAC-01 trên cổng Facilities.",
+        "link_keys": [
+          "L-FAC-PORTAL"
+        ],
+        "contact_keys": []
+      },
+      {
+        "order": 2,
+        "text": "Yêu cầu vào hàng đợi Facilities và được xử lý trong 3 ngày làm việc.",
+        "link_keys": [],
+        "contact_keys": [
+          "fac-email"
+        ]
+      }
+    ],
+    "next_step": "Chờ Facilities xác nhận vị trí mới.",
+    "source_docs": [
+      "P04"
+    ],
+    "sample_questions": [
+      "Muốn đổi chỗ ngồi thì sao?",
+      "Xin chuyển chỗ ngồi"
+    ],
+    "aliases": [
+      "chuyển chỗ"
+    ]
+  },
+  {
+    "version_no": 1,
+    "status": "ACTIVE",
+    "effective_from": "2026-07-01",
+    "effective_to": null,
+    "code": "PR-FIND-MENTOR",
+    "title": "Biết Mentor và Buddy của mình",
+    "category": "phan-cong-mentor-cho-ngoi",
+    "trigger_text": "Nhân sự mới hỏi Mentor hoặc Buddy của mình là ai.",
+    "conditions": [],
+    "responsible_team": "HR_ONBOARDING",
+    "ticket_required": false,
+    "form_code": null,
+    "steps": [
+      {
+        "order": 1,
+        "text": "Kiểm tra Thư giới thiệu đội; danh sách Mentor và Buddy được gửi chậm nhất 2 ngày làm việc trước ngày đầu tiên.",
+        "link_keys": [],
+        "contact_keys": []
+      },
+      {
+        "order": 2,
+        "text": "Nếu chưa nhận được thư, liên hệ đầu mối HR Onboarding để được xác nhận.",
+        "link_keys": [],
+        "contact_keys": [
+          "hr-email"
+        ]
+      },
+      {
+        "order": 3,
+        "text": "Không nhờ quản lý trực tiếp làm Mentor hoặc Buddy; quản lý chỉ xác nhận thông tin phân công.",
+        "link_keys": [],
+        "contact_keys": []
+      }
+    ],
+    "next_step": "Nếu chưa được phân công, HR Onboarding sẽ xác nhận với đầu mối bộ phận.",
+    "source_docs": [
+      "P03"
+    ],
+    "sample_questions": [
+      "Mentor của tôi là ai?",
+      "Buddy của tôi là ai",
+      "Ai là người hướng dẫn tôi"
+    ],
+    "aliases": [
+      "người hướng dẫn",
+      "cố vấn"
+    ]
+  },
+  {
+    "version_no": 1,
+    "status": "ACTIVE",
+    "effective_from": "2026-07-01",
+    "effective_to": null,
+    "code": "PR-ACCOUNT-ACTIVATION",
+    "title": "Kích hoạt tài khoản lần đầu",
+    "category": "thiet-bi-tai-khoan",
+    "trigger_text": "Nhân sự mới kích hoạt tài khoản email và MFA.",
+    "conditions": [],
+    "responsible_team": "IT",
+    "ticket_required": false,
+    "form_code": null,
+    "steps": [
+      {
+        "order": 1,
+        "text": "Dùng điện thoại truy cập email đăng ký để nhận thư kích hoạt.",
+        "link_keys": [],
+        "contact_keys": []
+      },
+      {
+        "order": 2,
+        "text": "Đặt mật khẩu mới theo Chính sách mật khẩu và bật xác thực nhiều yếu tố.",
+        "link_keys": [],
+        "contact_keys": []
+      },
+      {
+        "order": 3,
+        "text": "Mật khẩu tạm phải được đổi trong vòng 24 giờ.",
+        "link_keys": [],
+        "contact_keys": []
+      },
+      {
+        "order": 4,
+        "text": "Nếu không kích hoạt được, liên hệ IT Helpdesk.",
+        "link_keys": [],
+        "contact_keys": [
+          "it-email"
+        ]
+      }
+    ],
+    "next_step": "Liên hệ IT Helpdesk nếu quá 24 giờ chưa đổi được mật khẩu tạm.",
+    "source_docs": [
+      "P08",
+      "D08b"
+    ],
+    "sample_questions": [
+      "Kích hoạt tài khoản email lần đầu như thế nào?",
+      "Mật khẩu tạm đổi ra sao"
+    ],
+    "aliases": [
+      "kích hoạt email"
+    ]
+  },
+  {
+    "version_no": 1,
+    "status": "ACTIVE",
+    "effective_from": "2026-07-01",
+    "effective_to": null,
+    "code": "PR-VPN-SETUP",
+    "title": "Cài và kết nối VPN",
+    "category": "thiet-bi-tai-khoan",
+    "trigger_text": "Nhân sự cần cài VPN hoặc gặp lỗi VPN.",
+    "conditions": [],
+    "responsible_team": "IT",
+    "ticket_required": false,
+    "form_code": null,
+    "steps": [
+      {
+        "order": 1,
+        "text": "Tải ứng dụng VPN từ Cổng phần mềm đã duyệt.",
+        "link_keys": [
+          "L-VPN-CLIENT"
+        ],
+        "contact_keys": []
+      },
+      {
+        "order": 2,
+        "text": "Nhập máy chủ VPN do IT cung cấp và đăng nhập bằng tài khoản công ty.",
+        "link_keys": [],
+        "contact_keys": []
+      },
+      {
+        "order": 3,
+        "text": "Nếu không kết nối được, liên hệ IT Helpdesk.",
+        "link_keys": [],
+        "contact_keys": [
+          "it-email"
+        ]
+      }
+    ],
+    "next_step": "Liên hệ IT Helpdesk nếu vẫn lỗi sau khi thử lại.",
+    "source_docs": [
+      "P08"
+    ],
+    "sample_questions": [
+      "Cài VPN thế nào?",
+      "Không kết nối được VPN liên hệ ai"
+    ],
+    "aliases": [
+      "vpn"
+    ]
+  },
+  {
+    "version_no": 1,
+    "status": "ACTIVE",
+    "effective_from": "2026-07-01",
+    "effective_to": null,
+    "code": "PR-SYSTEM-ACCESS",
+    "title": "Xin cấp quyền hệ thống",
+    "category": "thiet-bi-tai-khoan",
+    "trigger_text": "Nhân sự cần quyền truy cập một hệ thống nội bộ.",
+    "conditions": [],
+    "responsible_team": "IT",
+    "ticket_required": true,
+    "form_code": "IT-ACC-01",
+    "steps": [
+      {
+        "order": 1,
+        "text": "Tạo yêu cầu bằng form IT-ACC-01 trên cổng IT, nêu hệ thống và lý do.",
+        "link_keys": [
+          "L-IT-PORTAL"
+        ],
+        "contact_keys": []
+      },
+      {
+        "order": 2,
+        "text": "Quản lý trực tiếp phê duyệt yêu cầu trên cổng.",
+        "link_keys": [],
+        "contact_keys": []
+      },
+      {
+        "order": 3,
+        "text": "IT cấp quyền trong 2 ngày làm việc sau khi được phê duyệt.",
+        "link_keys": [],
+        "contact_keys": [
+          "it-email"
+        ]
+      }
+    ],
+    "next_step": "Chờ quản lý phê duyệt; không xin quyền qua chat hoặc email.",
+    "source_docs": [
+      "P09"
+    ],
+    "sample_questions": [
+      "Xin quyền vào hệ thống thì làm sao?",
+      "Cấp quyền truy cập hệ thống"
+    ],
+    "aliases": [
+      "xin quyền"
+    ]
+  },
+  {
+    "version_no": 1,
+    "status": "ACTIVE",
+    "effective_from": "2026-07-01",
+    "effective_to": null,
+    "code": "PR-SECURITY-INCIDENT",
+    "title": "Báo cáo sự cố bảo mật",
+    "category": "bao-mat-thong-tin",
+    "trigger_text": "Nhân sự nghi ngờ mã độc, mất thiết bị hoặc tài khoản bị chiếm quyền.",
+    "conditions": [],
+    "responsible_team": "VINSOC",
+    "ticket_required": false,
+    "form_code": null,
+    "steps": [
+      {
+        "order": 1,
+        "text": "Không tự xử lý và không xóa dấu vết trên thiết bị.",
+        "link_keys": [],
+        "contact_keys": []
+      },
+      {
+        "order": 2,
+        "text": "Ngắt kết nối mạng của thiết bị (rút cáp mạng hoặc tắt Wi-Fi).",
+        "link_keys": [],
+        "contact_keys": []
+      },
+      {
+        "order": 3,
+        "text": "Báo cho Trực SOC trong vòng 1 giờ kể từ khi phát hiện.",
+        "link_keys": [],
+        "contact_keys": [
+          "soc-oncall"
+        ]
+      },
+      {
+        "order": 4,
+        "text": "Ghi nhận mã sự cố do Trực SOC cung cấp và làm theo hướng dẫn.",
+        "link_keys": [],
+        "contact_keys": []
+      }
+    ],
+    "next_step": "Làm theo hướng dẫn của Trực SOC.",
+    "source_docs": [
+      "D10"
+    ],
+    "sample_questions": [
+      "Máy tôi nghi nhiễm mã độc thì làm gì?",
+      "Mất laptop công ty phải báo ai"
+    ],
+    "aliases": [
+      "mã độc",
+      "virus"
+    ]
+  },
+  {
+    "version_no": 1,
+    "status": "ACTIVE",
+    "effective_from": "2026-07-01",
+    "effective_to": null,
+    "code": "PR-PARKING-CARD",
+    "title": "Đăng ký thẻ xe",
+    "category": "onboarding-ngay-dau",
+    "trigger_text": "Nhân sự cần gửi xe tại tòa nhà.",
+    "conditions": [],
+    "responsible_team": "FACILITIES",
+    "ticket_required": true,
+    "form_code": "FAC-02",
+    "steps": [
+      {
+        "order": 1,
+        "text": "Đăng ký thẻ xe bằng form FAC-02 trên cổng Facilities.",
+        "link_keys": [
+          "L-FAC-PORTAL"
+        ],
+        "contact_keys": []
+      },
+      {
+        "order": 2,
+        "text": "Yêu cầu vào hàng đợi Facilities và xử lý trong 3 ngày làm việc.",
+        "link_keys": [],
+        "contact_keys": [
+          "fac-email"
+        ]
+      }
+    ],
+    "next_step": "Nhận thẻ xe theo hướng dẫn của Facilities.",
+    "source_docs": [
+      "P10"
+    ],
+    "sample_questions": [
+      "Đăng ký thẻ xe làm sao?",
+      "Tôi muốn gửi xe máy"
+    ],
+    "aliases": [
+      "gửi xe",
+      "thẻ xe"
+    ]
+  },
+  {
+    "version_no": 1,
+    "status": "ACTIVE",
+    "effective_from": "2026-07-01",
+    "effective_to": null,
+    "code": "PR-LEAVE-REGISTRATION",
+    "title": "Đăng ký nghỉ phép",
+    "category": "nghi-phep",
+    "trigger_text": "Nhân viên chính thức cần đăng ký nghỉ phép.",
+    "conditions": [],
+    "responsible_team": "HR_ONBOARDING",
+    "ticket_required": false,
+    "form_code": null,
+    "steps": [
+      {
+        "order": 1,
+        "text": "Đăng ký nghỉ phép trên HR Portal trước ít nhất 2 ngày làm việc.",
+        "link_keys": [
+          "L-HR-LEAVE"
+        ],
+        "contact_keys": []
+      },
+      {
+        "order": 2,
+        "text": "Nghỉ từ 5 ngày liên tục trở lên cần trưởng phòng phê duyệt.",
+        "link_keys": [],
+        "contact_keys": []
+      }
+    ],
+    "next_step": "Chờ quản lý phê duyệt trên HR Portal.",
+    "source_docs": [
+      "D03b"
+    ],
+    "sample_questions": [
+      "Đăng ký nghỉ phép ở đâu?",
+      "Xin nghỉ phép thế nào"
+    ],
+    "aliases": [
+      "xin nghỉ"
+    ]
+  }
+]

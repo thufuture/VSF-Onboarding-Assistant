@@ -1,0 +1,196 @@
+[
+  {
+    "code": "IT-DEV-01",
+    "version_no": 1,
+    "name": "Yêu cầu cấu hình thiết bị",
+    "team": "IT",
+    "status": "ACTIVE",
+    "effective_from": "2026-07-01",
+    "effective_to": null,
+    "fields": [
+      {
+        "key": "employee_id",
+        "label": "Mã nhân viên",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "department",
+        "label": "Đơn vị",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "device_id",
+        "label": "Mã thiết bị",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "os_request",
+        "label": "Hệ điều hành cần cấu hình",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Ubuntu 22.04 LTS",
+          "Windows 11"
+        ]
+      },
+      {
+        "key": "note",
+        "label": "Mô tả nhu cầu",
+        "type": "textarea",
+        "required": false
+      }
+    ]
+  },
+  {
+    "code": "IT-SW-01",
+    "version_no": 1,
+    "name": "Yêu cầu cài phần mềm",
+    "team": "IT",
+    "status": "ACTIVE",
+    "effective_from": "2026-07-01",
+    "effective_to": null,
+    "fields": [
+      {
+        "key": "employee_id",
+        "label": "Mã nhân viên",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "software_name",
+        "label": "Tên phần mềm",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "business_reason",
+        "label": "Lý do công việc",
+        "type": "textarea",
+        "required": true
+      },
+      {
+        "key": "proposed_link",
+        "label": "Liên kết đề xuất (nếu có)",
+        "type": "text",
+        "required": false
+      }
+    ]
+  },
+  {
+    "code": "IT-ACC-01",
+    "version_no": 1,
+    "name": "Yêu cầu cấp quyền hệ thống",
+    "team": "IT",
+    "status": "ACTIVE",
+    "effective_from": "2026-07-01",
+    "effective_to": null,
+    "fields": [
+      {
+        "key": "employee_id",
+        "label": "Mã nhân viên",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "system_name",
+        "label": "Hệ thống cần truy cập",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "access_level",
+        "label": "Mức quyền",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Đọc",
+          "Ghi",
+          "Quản trị"
+        ]
+      },
+      {
+        "key": "business_reason",
+        "label": "Lý do",
+        "type": "textarea",
+        "required": true
+      },
+      {
+        "key": "manager_email",
+        "label": "Email quản lý phê duyệt",
+        "type": "text",
+        "required": true
+      }
+    ]
+  },
+  {
+    "code": "FAC-01",
+    "version_no": 1,
+    "name": "Yêu cầu đổi chỗ ngồi",
+    "team": "FACILITIES",
+    "status": "ACTIVE",
+    "effective_from": "2026-07-01",
+    "effective_to": null,
+    "fields": [
+      {
+        "key": "employee_id",
+        "label": "Mã nhân viên",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "current_location",
+        "label": "Vị trí hiện tại",
+        "type": "text",
+        "required": false
+      },
+      {
+        "key": "requested_location",
+        "label": "Vị trí mong muốn",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "reason",
+        "label": "Lý do",
+        "type": "textarea",
+        "required": true
+      }
+    ]
+  },
+  {
+    "code": "FAC-02",
+    "version_no": 1,
+    "name": "Đăng ký thẻ xe",
+    "team": "FACILITIES",
+    "status": "ACTIVE",
+    "effective_from": "2026-07-01",
+    "effective_to": null,
+    "fields": [
+      {
+        "key": "employee_id",
+        "label": "Mã nhân viên",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "vehicle_type",
+        "label": "Loại xe",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Xe máy",
+          "Ô tô"
+        ]
+      },
+      {
+        "key": "plate_number",
+        "label": "Biển số xe",
+        "type": "text",
+        "required": true
+      }
+    ]
+  }
+]

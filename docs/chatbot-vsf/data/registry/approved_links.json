@@ -1,0 +1,118 @@
+[
+  {
+    "key": "L-IT-PORTAL",
+    "url": "https://it.vsf-demo.example/requests",
+    "label": "Cổng yêu cầu IT",
+    "status": "APPROVED",
+    "requires_security_review": false,
+    "security_review": null,
+    "verified_by": "hr1@vsf-demo.example",
+    "verified_at": "2026-06-20",
+    "effective_from": "2026-07-01",
+    "effective_to": null
+  },
+  {
+    "key": "L-SOFTWARE-CATALOG",
+    "url": "https://it.vsf-demo.example/software-catalog",
+    "label": "Danh mục phần mềm được duyệt",
+    "status": "APPROVED",
+    "requires_security_review": true,
+    "security_review": {
+      "reviewer_team": "VINSOC",
+      "result": "PASSED",
+      "reference": "SOC-2026-0142",
+      "reviewed_at": "2026-06-25"
+    },
+    "verified_by": "it.staff@vsf-demo.example",
+    "verified_at": "2026-06-26",
+    "effective_from": "2026-07-01",
+    "effective_to": null
+  },
+  {
+    "key": "L-VPN-CLIENT",
+    "url": "https://it.vsf-demo.example/software-catalog/vpn",
+    "label": "Tải ứng dụng VPN",
+    "status": "APPROVED",
+    "requires_security_review": true,
+    "security_review": {
+      "reviewer_team": "VINSOC",
+      "result": "PASSED",
+      "reference": "SOC-2026-0143",
+      "reviewed_at": "2026-06-25"
+    },
+    "verified_by": "it.staff@vsf-demo.example",
+    "verified_at": "2026-06-26",
+    "effective_from": "2026-07-01",
+    "effective_to": null
+  },
+  {
+    "key": "L-HR-LEAVE",
+    "url": "https://hr.vsf-demo.example/leave",
+    "label": "Đăng ký nghỉ phép trên HR Portal",
+    "status": "APPROVED",
+    "requires_security_review": false,
+    "security_review": null,
+    "verified_by": "hr1@vsf-demo.example",
+    "verified_at": "2026-06-20",
+    "effective_from": "2026-07-01",
+    "effective_to": null
+  },
+  {
+    "key": "L-FAC-PORTAL",
+    "url": "https://facilities.vsf-demo.example/requests",
+    "label": "Cổng yêu cầu Facilities",
+    "status": "APPROVED",
+    "requires_security_review": false,
+    "security_review": null,
+    "verified_by": "hr1@vsf-demo.example",
+    "verified_at": "2026-06-20",
+    "effective_from": "2026-07-01",
+    "effective_to": null
+  },
+  {
+    "key": "L-UBUNTU-INSTALLER-DRAFT",
+    "url": "https://tools.vsf-demo.example/ubuntu-installer",
+    "label": "Bộ cài Ubuntu (chờ VinSOC duyệt)",
+    "status": "PENDING_REVIEW",
+    "requires_security_review": true,
+    "security_review": {
+      "reviewer_team": "VINSOC",
+      "result": "PENDING",
+      "reference": null,
+      "reviewed_at": null
+    },
+    "verified_by": null,
+    "verified_at": null,
+    "effective_from": null,
+    "effective_to": null
+  },
+  {
+    "key": "L-VPN-LEGACY",
+    "url": "https://old.vsf-demo.example/vpn",
+    "label": "VPN cũ (đã thu hồi)",
+    "status": "REVOKED",
+    "requires_security_review": true,
+    "security_review": {
+      "reviewer_team": "VINSOC",
+      "result": "FAILED",
+      "reference": "SOC-2025-0999",
+      "reviewed_at": "2025-11-01"
+    },
+    "verified_by": "it.staff@vsf-demo.example",
+    "verified_at": "2025-10-01",
+    "effective_from": "2025-01-01",
+    "effective_to": "2025-11-01"
+  },
+  {
+    "key": "L-OLD-PORTAL",
+    "url": "https://old.vsf-demo.example/portal",
+    "label": "Cổng cũ (hết hiệu lực)",
+    "status": "APPROVED",
+    "requires_security_review": false,
+    "security_review": null,
+    "verified_by": "hr1@vsf-demo.example",
+    "verified_at": "2024-12-01",
+    "effective_from": "2025-01-01",
+    "effective_to": "2025-12-31"
+  }
+]

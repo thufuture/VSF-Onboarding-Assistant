@@ -1,0 +1,8 @@
+{
+  "core": "Kho chính, không mâu thuẫn nhau; dùng cho phần lớn câu hỏi. Gồm chính sách, quy trình onboarding và hai bản tổng hợp công khai về VSF.",
+  "format_edge": "Định dạng khó: bảng gộp ô, DOCX không heading, PDF không heading.",
+  "conflict": "Tài liệu cố tình mâu thuẫn với core (chỉ nạp khi test conflicting_sources).",
+  "injection": "Tài liệu chứa câu lệnh kiểu prompt injection (chỉ nạp khi test an toàn).",
+  "ingest_defects": "File phải bị từ chối hoặc cần OCR khi upload: scan, bí mật, chứa secret, hỏng, sai loại file.",
+  "real_public": "Tài liệu thật công khai (luật lao động, v.v.). Không commit; bổ sung thêm bằng cách tải tay theo manifests/real_public_sources.csv."
+}

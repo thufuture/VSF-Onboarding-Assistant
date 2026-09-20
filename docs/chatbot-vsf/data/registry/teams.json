@@ -1,0 +1,26 @@
+[
+  {
+    "code": "HR_ONBOARDING",
+    "name": "HR Onboarding",
+    "ticket_prefix": "HR",
+    "description": "Tiếp nhận nhân sự mới, phân công Mentor/Buddy, chỗ ngồi ban đầu"
+  },
+  {
+    "code": "IT",
+    "name": "IT Helpdesk",
+    "ticket_prefix": "IT",
+    "description": "Thiết bị, tài khoản, VPN, phần mềm, cấp quyền"
+  },
+  {
+    "code": "VINSOC",
+    "name": "VinSOC",
+    "ticket_prefix": "SOC",
+    "description": "Kiểm tra bảo mật, quét và duyệt link phần mềm, sự cố bảo mật"
+  },
+  {
+    "code": "FACILITIES",
+    "name": "Facilities",
+    "ticket_prefix": "FAC",
+    "description": "Chỗ ngồi, thẻ từ, thẻ xe"
+  }
+]

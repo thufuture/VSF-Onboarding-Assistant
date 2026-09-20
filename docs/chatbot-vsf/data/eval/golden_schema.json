@@ -1,0 +1,9 @@
+{
+  "description": "Bộ câu hỏi vàng (~120 câu) phủ 6 loại phản hồi của PRD: ANSWER, GUIDE_PROCESS, ASK_CLARIFICATION, OFFER_TICKET, NO_BASIS, OUT_OF_SCOPE.\n\nMỗi câu gồm một hoặc nhiều lượt (turns). Mỗi lượt có `user` và `expect`:\n  response_type     loại phản hồi kỳ vọng (bỏ trống với lượt không kiểm)\n  reason_code       mã phụ của NO_BASIS: no_evidence | expired_only | insufficient_evidence | conflicting_sources\n  must_include      chuỗi phải có trong câu trả lời (so khớp không phân biệt hoa thường)\n  must_not_include  chuỗi không được có\n  must_not_match    mã mẫu cấm: EMAIL_NOT_IN_REGISTRY, PHONE_NUMBER, URL_NOT_APPROVED, VND_AMOUNT\n  docs              id tài liệu nguồn (manifest); procedure là mã quy trình trong registry\n  offers_ticket     lượt này chỉ dẫn quy trình và đề nghị soạn ticket (chưa phải OFFER_TICKET)\n  no_ticket         không được đề nghị ticket\n  ticket            {team, form_code, status, payload_keys, code_prefix} với OFFER_TICKET hoặc sau xác nhận/hủy\n  slots             ngữ cảnh người dùng tự khai kỳ vọng sau lượt này\n  skip              True nếu lượt này không kiểm (câu chuyển ý, câu khai báo)\nMọi ví dụ là GIẢ ĐỊNH; câu hỏi về luật thật dùng pack real_public.",
+  "placeholders": {
+    "EMAIL_NOT_IN_REGISTRY": "email không có trong registry/contact_channels.json",
+    "PHONE_NUMBER": "chuỗi số điện thoại (regex \\b0\\d{8,10}\\b)",
+    "URL_NOT_APPROVED": "URL không thuộc approved_links đang hiệu lực",
+    "VND_AMOUNT": "số tiền dạng 12.000.000 đồng"
+  }
+}

@@ -1,0 +1,4 @@
+documents/real_public/
+__pycache__/
+*.pyc
+_*.pdf
