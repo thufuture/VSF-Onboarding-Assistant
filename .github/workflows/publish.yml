@@ -1,8 +1,10 @@
 name: publish
 
-# Đẩy image amd64 lên GHCR. Chạy tay ở Phase 1b; release.yml tự động thuộc Phase 11b.
+# Đẩy image amd64 lên GHCR. Tự chạy khi merge vào main (và chạy tay được). Tự deploy lên VPS thuộc release.yml, Phase 11b.
 on:
-  workflow_dispatch:
+  push:
+    branches: [main]
+  workflow_dispatch: # vẫn chạy tay được
 
 permissions:
   contents: read
