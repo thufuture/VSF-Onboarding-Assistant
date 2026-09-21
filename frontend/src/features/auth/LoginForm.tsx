@@ -16,6 +16,7 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const ERROR_KEY: Record<SessionError["code"], string> = {
   invalid_credentials: "invalid",
+  account_inactive: "inactive",
   rate_limited: "tooMany",
   unavailable: "unavailable",
   network: "unavailable",

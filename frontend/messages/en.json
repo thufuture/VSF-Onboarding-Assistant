@@ -234,7 +234,8 @@
       "passwordRequired": "Enter your password.",
       "invalid": "Incorrect email or password.",
       "tooMany": "Too many attempts. Please wait a moment and try again.",
-      "unavailable": "Sign-in is unavailable right now. Please try again later."
+      "unavailable": "Sign-in is unavailable right now. Please try again later.",
+      "inactive": "This account is locked. Please contact HR or Admin."
     },
     "welcomeLine1": "Just ask and know the next step.",
     "welcomeLine2": "Start with confidence.",

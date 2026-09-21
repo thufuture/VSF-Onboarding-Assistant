@@ -234,7 +234,8 @@
       "passwordRequired": "Hãy nhập mật khẩu.",
       "invalid": "Email hoặc mật khẩu không đúng.",
       "tooMany": "Bạn thử quá nhiều lần. Hãy đợi một lúc rồi thử lại.",
-      "unavailable": "Không thể đăng nhập lúc này. Hãy thử lại sau."
+      "unavailable": "Không thể đăng nhập lúc này. Hãy thử lại sau.",
+      "inactive": "Tài khoản này đã bị khóa. Hãy liên hệ HR hoặc Admin."
     },
     "welcomeDescription": "Trợ lý trả lời từ tài liệu đã được duyệt, chỉ đúng quy trình và đầu mối, và nói thẳng khi chưa có căn cứ.",
     "benefits": {

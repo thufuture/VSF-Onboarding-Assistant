@@ -2,7 +2,13 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { SessionError, authApi } from "./session";
 
-const USER = { id: 1, email: "hr1@vsf-demo.example", display_name: "HR Demo 1", role: "HR" } as const;
+const USER = {
+  id: 1,
+  email: "hr1@vsf-demo.example",
+  display_name: "HR Demo 1",
+  role: "HR",
+  expires_at: "2026-09-21T09:22:03Z",
+} as const;
 
 function mockFetch(implementation: () => Promise<Response>) {
   const fetchMock = vi.fn(implementation);
@@ -29,7 +35,7 @@ describe("authApi.login", () => {
 
   it.each([
     [401, "invalid_credentials"],
-    [403, "invalid_credentials"],
+    [403, "unavailable"], // 403 không kèm mã ACCOUNT_INACTIVE
     [429, "rate_limited"],
     [404, "unavailable"],
     [500, "unavailable"],
@@ -37,6 +43,13 @@ describe("authApi.login", () => {
     mockFetch(async () => new Response("{}", { status }));
 
     await expect(authApi.login("a@b.co", "pw")).rejects.toMatchObject({ name: "SessionError", code });
+  });
+
+  it("403 kèm mã ACCOUNT_INACTIVE là tài khoản bị khóa", async () => {
+    const body = { code: "ACCOUNT_INACTIVE", message_key: "auth.account_inactive", detail: null };
+    mockFetch(async () => new Response(JSON.stringify(body), { status: 403 }));
+
+    await expect(authApi.login("a@b.co", "pw")).rejects.toMatchObject({ code: "account_inactive" });
   });
 
   it("lỗi mạng được đổi thành mã network", async () => {

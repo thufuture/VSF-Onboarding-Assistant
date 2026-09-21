@@ -1,6 +1,7 @@
+import type { UserRoleDTO } from "@/features/auth/dto/responseDTO/auth.response";
 import { stripLocale } from "@/i18n/routing";
 
-export type UserRole = "USER" | "HR" | "ADMIN";
+export type UserRole = UserRoleDTO;
 
 const ORIGIN = "http://vsf.local";
 const ADMIN_AREA = "/admin";

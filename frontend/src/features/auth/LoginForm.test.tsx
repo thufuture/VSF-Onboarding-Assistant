@@ -12,6 +12,7 @@ vi.mock("@/i18n/navigation", () => ({ useRouter: () => ({ replace }) }));
 vi.mock("next/navigation", () => ({ useSearchParams: () => ({ get: () => nextParam }) }));
 
 const login = viMessages.login;
+const EXPIRES = "2026-09-21T09:22:03Z";
 
 function fill(email: string, password: string) {
   fireEvent.change(screen.getByLabelText(login.fields.email), { target: { value: email } });
@@ -64,7 +65,13 @@ describe("LoginForm", () => {
   });
 
   it("thành công: chuyển tới trang mặc định theo vai trò", async () => {
-    vi.spyOn(authApi, "login").mockResolvedValue({ id: 1, email: "a@b.co", display_name: "A", role: "USER" });
+    vi.spyOn(authApi, "login").mockResolvedValue({
+      id: 1,
+      email: "a@b.co",
+      display_name: "A",
+      role: "USER",
+      expires_at: EXPIRES,
+    });
     render(<LoginForm />);
 
     fill("a@b.co", "pw");
@@ -74,7 +81,9 @@ describe("LoginForm", () => {
   });
 
   it("thành công: nhận ?next= nội bộ, bỏ ?next= độc hại", async () => {
-    const spy = vi.spyOn(authApi, "login").mockResolvedValue({ id: 1, email: "a@b.co", display_name: "A", role: "HR" });
+    const spy = vi
+      .spyOn(authApi, "login")
+      .mockResolvedValue({ id: 1, email: "a@b.co", display_name: "A", role: "HR", expires_at: EXPIRES });
     nextParam = "/admin/documents";
     const first = render(<LoginForm />);
     fill("a@b.co", "pw");
@@ -93,6 +102,7 @@ describe("LoginForm", () => {
 
   it.each([
     ["invalid_credentials", login.errors.invalid],
+    ["account_inactive", login.errors.inactive],
     ["rate_limited", login.errors.tooMany],
     ["unavailable", login.errors.unavailable],
     ["network", login.errors.unavailable],

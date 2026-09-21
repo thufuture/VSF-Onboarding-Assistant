@@ -2,6 +2,7 @@
 
 > Thuộc [master-plan.md](../master-plan.md), **Phase 4 — Xác thực và trang đăng nhập** [Bắt buộc]; kế thừa [frontend-login-reuse.md](../frontend-login-reuse.md) và [phase-2/bao-cao-phase-2.md](../phase-2/bao-cao-phase-2.md) (giao diện đăng nhập dạng vỏ đã xong).
 > Yêu cầu của bạn: **làm luồng đăng nhập và đăng xuất trước, giống mã tham khảo của Ralion, rồi có trang cho người dùng mới ("kỹ sư mới" theo cách gọi của Ralion, **nhân sự mới** theo PRD của VSF) hiện ngay sau khi đăng nhập.**
+> **Trạng thái (21/09/2026): 4-A ĐÃ XONG**, xem [bao-cao-phase-4.md](bao-cao-phase-4.md). Các bước 4-B và 4-C chưa làm. Nội dung dưới là kế hoạch gốc.
 > Mọi đoạn mã ở đây là **bản dự kiến**. Ước lượng ≈ **1,4 ngày công**.
 
 ## 0. Trả lời nhanh: có hợp lý không?
@@ -81,7 +82,10 @@ backend/src/services/auth/login_throttle.py giới hạn thử sai trong tiến 
 backend/src/services/auth/auth_service.py   login, logout (thu hồi), current_user_profile
 backend/src/api/dependencies.py             get_current_user (cookie), require_role(*roles)
 backend/src/api/routers/auth_router.py      POST /auth/login, POST /auth/logout, GET /auth/me, POST /auth/refresh
-backend/src/dto/auth.py                     LoginRequest, SessionUser (khớp frontend), ErrorBody {code, message_key, detail}
+backend/src/dto/request/auth_request_dto.py    LoginRequestDTO
+backend/src/dto/response/auth_response_dto.py  SessionUserResponseDTO (khớp frontend)
+backend/src/dto/response/error_response_dto.py ErrorResponseDTO {code, message_key, detail}
+backend/src/dto/response/health_response_dto.py HealthResponseDTO, ReadyResponseDTO
 backend/src/cli/seed_users.py               nạp teams và users từ registry/*.json (D5)
 ```
 
@@ -110,6 +114,9 @@ backend/src/cli/seed_users.py               nạp teams và users từ registry/
 **Tệp:**
 
 ```text
+frontend/src/features/auth/dto/requestDTO/auth.request.ts    LoginRequestDTO
+frontend/src/features/auth/dto/responseDTO/auth.response.ts  SessionUserResponseDTO, UserRoleDTO
+frontend/src/types/apiError.ts               ErrorResponseDTO (dùng chung)
 frontend/src/features/auth/session.ts        + me(), logout(), refresh(); mã lỗi khớp {code, message_key}
 frontend/src/features/auth/server-session.ts getSessionUser(): gọi /api/v1/auth/me ở phía server, chuyển tiếp cookie
 frontend/src/features/auth/useSession.ts     hook client: gia hạn định kỳ khi tab đang mở (D2), đăng xuất
