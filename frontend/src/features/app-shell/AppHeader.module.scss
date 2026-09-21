@@ -1,0 +1,104 @@
+@use "../../styles/tokens" as *;
+
+.header {
+  position: sticky;
+  z-index: 10;
+  top: 0;
+  border-bottom: 1px solid #dbe6f2;
+  background: rgb(255 255 255 / 94%);
+  backdrop-filter: blur(8px);
+  font-family: $font;
+}
+
+.inner {
+  display: flex;
+  max-width: 1200px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 0 auto;
+  padding: 12px 24px;
+
+  @include phone-down {
+    padding: 10px 14px;
+  }
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  @include phone-down {
+    gap: 8px;
+  }
+}
+
+.user {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  line-height: 1.25;
+
+  @include phone-down {
+    display: none;
+  }
+}
+
+.name {
+  color: $navy;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.role {
+  color: $ink-muted;
+  font-size: 12px;
+}
+
+.logout {
+  display: inline-flex;
+  min-height: 38px;
+  align-items: center;
+  gap: 8px;
+  padding: 0 14px;
+  border: 1px solid #c5d6ea;
+  border-radius: 8px;
+  background: #fff;
+  color: $navy;
+  cursor: pointer;
+  font: 600 14px/1 $font;
+
+  // Điện thoại: chỉ giữ biểu tượng để đủ chỗ cho logo và chọn ngôn ngữ (nút vẫn có nhãn cho trình đọc màn hình).
+  @include phone-down {
+    padding: 0 11px;
+
+    span {
+      @include visually-hidden;
+    }
+  }
+
+  &:hover:not(:disabled) {
+    border-color: $brand;
+    color: $brand-hover;
+  }
+
+  &:disabled {
+    cursor: progress;
+    opacity: 0.7;
+  }
+
+  &:focus-visible {
+    outline: 3px solid rgb(16 144 203 / 40%);
+    outline-offset: 2px;
+  }
+}
+
+.error {
+  margin: 0;
+  padding: 8px 24px;
+  background: #fdecee;
+  color: $accent-red-deep;
+  font-size: 13px;
+  text-align: center;
+}

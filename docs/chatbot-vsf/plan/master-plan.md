@@ -209,7 +209,7 @@ Kế hoạch chi tiết: [phase-1/phase-1.md](phase-1/phase-1.md) mục 8.
 
 ## Phase 4 — Xác thực và trang đăng nhập (M1) [Bắt buộc]
 
-Chi tiết giao diện: [frontend-login-reuse.md](frontend-login-reuse.md).
+Chi tiết giao diện: [frontend-login-reuse.md](frontend-login-reuse.md). Kế hoạch và **báo cáo tiến độ**: [phase-4/phase-4.md](phase-4/phase-4.md), [phase-4/bao-cao-phase-4.md](phase-4/bao-cao-phase-4.md) (4-A đến 4-C đã xong; Playwright dời sang Phase 9).
 
 **Mục tiêu.** Đăng nhập email + mật khẩu, có vai trò; trang `/vi/login` tái dùng từ Ralion.
 

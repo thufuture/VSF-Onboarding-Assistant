@@ -255,5 +255,60 @@
     "language": "Ngôn ngữ",
     "vietnamese": "Tiếng Việt",
     "english": "Tiếng Anh"
+  },
+  "app": {
+    "roles": {
+      "USER": "Nhân sự mới",
+      "HR": "Nhân sự (HR)",
+      "ADMIN": "Quản trị viên"
+    },
+    "signOut": "Đăng xuất",
+    "signingOut": "Đang đăng xuất…",
+    "signOutFailed": "Không đăng xuất được lúc này. Hãy thử lại."
+  },
+  "chat": {
+    "greeting": "Xin chào, {name}",
+    "intro": "Hỏi về quy trình, giấy tờ, thiết bị hay đầu mối trong những ngày đầu. Trợ lý chỉ trả lời từ tài liệu đã được duyệt.",
+    "demoNotice": "Nội dung minh họa: chat thật với nguồn dẫn từ tài liệu đã duyệt sẽ được nối ở giai đoạn sau.",
+    "conversation": "Cuộc trò chuyện",
+    "suggestionsTitle": "Câu hỏi gợi ý",
+    "suggestionsLabel": "Câu hỏi gợi ý",
+    "inputLabel": "Câu hỏi của bạn",
+    "placeholder": "Nhập câu hỏi của bạn…",
+    "send": "Gửi",
+    "sourceLabel": "Nguồn:",
+    "noSource": "Mình chưa có tài liệu đã duyệt nào cho câu hỏi này nên chưa thể trả lời. Bạn có thể hỏi HR để được hỗ trợ.",
+    "suggestions": {
+      "firstDay": {
+        "question": "Ngày đầu đi làm tôi cần chuẩn bị gì?",
+        "answer": "Bạn mang giấy tờ tùy thân, đến đúng giờ hẹn và gặp HR ở quầy tiếp đón để nhận thẻ ra vào và lịch làm quen.",
+        "source": "Cẩm nang ngày đầu (minh họa)"
+      },
+      "equipment": {
+        "question": "Tôi nhận laptop và tài khoản ở đâu?",
+        "answer": "Thiết bị và tài khoản được cấp qua yêu cầu IT do HR gửi trước ngày bạn vào; nhận tại bộ phận IT ở buổi làm quen.",
+        "source": "Quy trình cấp thiết bị (minh họa)"
+      },
+      "leave": {
+        "question": "Tôi xin nghỉ phép như thế nào?",
+        "answer": "Bạn gửi đơn nghỉ phép cho quản lý trực tiếp trước ít nhất 3 ngày làm việc, trừ trường hợp khẩn cấp.",
+        "source": "Quy định nghỉ phép (minh họa)"
+      },
+      "contact": {
+        "question": "Tôi hỏi ai khi gặp vấn đề ở tuần đầu?",
+        "answer": "Người hướng dẫn (buddy) của đội là đầu mối đầu tiên; các vấn đề về hành chính thì liên hệ HR.",
+        "source": "Danh bạ đầu mối (minh họa)"
+      }
+    }
+  },
+  "admin": {
+    "title": "Xin chào, {name}",
+    "description": "Khu quản trị đang được xây dựng. Hiện tại bạn có thể xem trang chat như nhân sự mới.",
+    "upcoming": {
+      "documents": "Quản lý tài liệu và phiên bản",
+      "registry": "Danh bạ đầu mối và liên kết",
+      "tickets": "Yêu cầu hỗ trợ từ nhân sự mới"
+    },
+    "openChat": "Mở trang chat"
   }
 }

@@ -1,0 +1,58 @@
+@use "../../styles/tokens" as *;
+
+.main {
+  min-height: calc(100dvh - 64px);
+  padding: 48px 24px;
+  background: #f3f7fc;
+  font-family: $font;
+
+  @include phone-down {
+    padding: 24px 14px;
+  }
+}
+
+.card {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 32px;
+  border: 1px solid #dbe6f2;
+  border-radius: 12px;
+  background: #fff;
+  color: $navy;
+
+  h1 {
+    margin: 12px 0 8px;
+    font-size: 26px;
+    line-height: 1.25;
+  }
+
+  p {
+    margin: 0 0 16px;
+    color: $ink-muted;
+    line-height: 1.6;
+  }
+
+  ul {
+    margin: 0 0 24px;
+    padding-left: 20px;
+    list-style: disc;
+    color: $navy;
+    line-height: 1.8;
+  }
+}
+
+.card .badge {
+  display: inline-block;
+  margin: 0;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: #e5f3fb;
+  color: $brand-hover;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.link {
+  color: $brand-hover;
+  font-weight: 700;
+}

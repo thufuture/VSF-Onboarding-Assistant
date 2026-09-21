@@ -45,6 +45,15 @@ npm run dev                                  # http://127.0.0.1:3000 (/ chuyển
 | Backend | 8000 | `BACKEND_HOST_PORT` |
 | Frontend (dev) | 3000 | `next dev --port` |
 
+### Đăng nhập thử (dữ liệu dev)
+
+```powershell
+cd backend
+.\.venv\Scripts\python -m src.cli.seed_users   # nạp 4 đội và 9 người dùng dev (chạy lại không nhân đôi; từ chối ở production)
+```
+
+Mở **`http://localhost:3000`** (không dùng `127.0.0.1`: Next dev chặn tài nguyên từ origin đó) rồi đăng nhập, ví dụ `it.staff@vsf-demo.example` (nhân sự mới, vào `/vi/chat`) hoặc `hr1@vsf-demo.example` (HR, vào `/vi/admin`), mật khẩu dev `ChangeMe!123`. Sau khi sửa backend, chạy lại `docker compose up -d --build backend` để cổng 8000 có `/api/v1/auth/*`.
+
 Dự án dùng tên project, volume và cổng DB riêng (`vsf-onboarding`, `vsf-onboarding_pgdata`, 5434), nên chạy được cùng lúc với Ralion; chỉ cổng backend 8000 trùng, hãy đặt `BACKEND_HOST_PORT` nếu chạy cả hai. `docker compose down` giữ dữ liệu; `docker compose down -v` **xóa** volume.
 
 **Không ghi đè `command` của image ParadeDB** trong compose: lệnh mặc định đã nạp `pg_search` và `pg_cron`; ghi đè thiếu `pg_cron` làm image không khởi động.

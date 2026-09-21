@@ -363,7 +363,7 @@ Frontend có thể hiển thị `result` với hiệu ứng "gõ dần" thuần 
 
 | Nhóm | Endpoint | Vai trò |
 |---|---|---|
-| Auth | `POST /auth/login`, `POST /auth/logout`, `GET /auth/me` | mọi user |
+| Auth | `POST /auth/login`, `POST /auth/logout` (xóa cookie **và** thu hồi mọi phiên của người dùng), `GET /auth/me`, `POST /auth/refresh` (gia hạn khi đã dùng quá nửa thời hạn) | mọi user |
 | Tài liệu | `POST /documents` (multipart, `202`), `GET /documents`, `GET /documents/{id}` | HR |
 | Phiên bản | `POST /documents/{id}/versions`, `POST .../versions/{v}/activate` (duyệt), `POST .../archive` | HR |
 | Duyệt | `GET .../versions/{v}/content`, `GET .../versions/{v}/diff?against=`, `PATCH .../versions/{v}/hints`, `GET .../versions/{v}/original` | HR |

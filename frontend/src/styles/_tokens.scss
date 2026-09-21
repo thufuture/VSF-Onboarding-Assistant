@@ -45,3 +45,16 @@ $bp-phone: 767px;
   inset: 0;
   background: $background;
 }
+
+// Ẩn khỏi mắt nhưng vẫn đọc được bằng trình đọc màn hình
+@mixin visually-hidden {
+  position: absolute;
+  overflow: hidden;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}

@@ -68,3 +68,64 @@ describe("authApi.login", () => {
     await expect(authApi.login("a@b.co", "pw")).rejects.toMatchObject({ code: "unavailable" });
   });
 });
+
+describe("authApi.me và refresh", () => {
+  it("me trả hồ sơ khi 200 và gửi cookie", async () => {
+    const fetchMock = mockFetch(async () => new Response(JSON.stringify(USER), { status: 200 }));
+
+    await expect(authApi.me()).resolves.toEqual(USER);
+
+    const [url, init] = fetchMock.mock.calls[0] as unknown as [string, RequestInit];
+    expect(url).toBe("/api/v1/auth/me");
+    expect(init.credentials).toBe("include");
+  });
+
+  it.each([["me"], ["refresh"]] as const)("%s trả null khi 401 (chưa đăng nhập)", async (name) => {
+    mockFetch(async () => new Response("{}", { status: 401 }));
+
+    await expect(authApi[name]()).resolves.toBeNull();
+  });
+
+  it.each([["me"], ["refresh"]] as const)("%s báo lỗi khi 500 hoặc mất mạng", async (name) => {
+    mockFetch(async () => new Response("{}", { status: 500 }));
+    await expect(authApi[name]()).rejects.toMatchObject({ code: "unavailable" });
+
+    mockFetch(async () => {
+      throw new TypeError("Failed to fetch");
+    });
+    await expect(authApi[name]()).rejects.toMatchObject({ code: "network" });
+  });
+
+  it("refresh dùng POST", async () => {
+    const fetchMock = mockFetch(async () => new Response(JSON.stringify(USER), { status: 200 }));
+
+    await authApi.refresh();
+
+    const [url, init] = fetchMock.mock.calls[0] as unknown as [string, RequestInit];
+    expect(url).toBe("/api/v1/auth/refresh");
+    expect(init.method).toBe("POST");
+  });
+});
+
+describe("authApi.logout", () => {
+  it("gửi POST kèm cookie và thành công khi 204", async () => {
+    const fetchMock = mockFetch(async () => new Response(null, { status: 204 }));
+
+    await expect(authApi.logout()).resolves.toBeUndefined();
+
+    const [url, init] = fetchMock.mock.calls[0] as unknown as [string, RequestInit];
+    expect(url).toBe("/api/v1/auth/logout");
+    expect(init.method).toBe("POST");
+    expect(init.credentials).toBe("include");
+  });
+
+  it("báo lỗi khi backend lỗi hoặc mất mạng để giao diện không giả vờ đã đăng xuất", async () => {
+    mockFetch(async () => new Response("{}", { status: 500 }));
+    await expect(authApi.logout()).rejects.toMatchObject({ code: "unavailable" });
+
+    mockFetch(async () => {
+      throw new TypeError("Failed to fetch");
+    });
+    await expect(authApi.logout()).rejects.toMatchObject({ code: "network" });
+  });
+});

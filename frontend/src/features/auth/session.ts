@@ -57,4 +57,41 @@ async function login(email: string, password: string): Promise<SessionUserRespon
   }
 }
 
-export const authApi = { login };
+/** Đọc hồ sơ từ phản hồi của `/me` hoặc `/refresh`: 401 nghĩa là chưa đăng nhập, trả `null`. */
+async function readProfile(request: () => Promise<Response>): Promise<SessionUserResponseDTO | null> {
+  let response: Response;
+  try {
+    response = await request();
+  } catch {
+    throw new SessionError("network");
+  }
+  if (response.status === 401) return null;
+  if (!response.ok) throw new SessionError("unavailable");
+  try {
+    return (await response.json()) as SessionUserResponseDTO;
+  } catch {
+    throw new SessionError("unavailable");
+  }
+}
+
+/** Người đang đăng nhập, hoặc `null` khi cookie thiếu, hết hạn hay đã bị thu hồi. */
+function me(): Promise<SessionUserResponseDTO | null> {
+  return readProfile(() => fetch("/api/v1/auth/me", { credentials: "include", cache: "no-store" }));
+}
+
+/** Gia hạn phiên (backend chỉ cấp cookie mới khi đã dùng quá nửa thời hạn). */
+function refresh(): Promise<SessionUserResponseDTO | null> {
+  return readProfile(() => fetch("/api/v1/auth/refresh", { method: "POST", credentials: "include" }));
+}
+
+/** Đăng xuất: backend xóa cookie và thu hồi mọi phiên của người dùng. */
+async function logout(): Promise<void> {
+  try {
+    const response = await fetch("/api/v1/auth/logout", { method: "POST", credentials: "include" });
+    if (!response.ok) throw new SessionError("unavailable");
+  } catch (caught) {
+    throw caught instanceof SessionError ? caught : new SessionError("network");
+  }
+}
+
+export const authApi = { login, me, refresh, logout };

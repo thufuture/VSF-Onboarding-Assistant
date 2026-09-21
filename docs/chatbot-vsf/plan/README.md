@@ -13,6 +13,7 @@
 | [phase-0/phase-0.md](phase-0/phase-0.md) | Phase 0 chi tiết: hiện trạng đã kiểm, 5 điểm dừng để duyệt, 15 bước, mã dự kiến, thư mentor nháp, cổng hoàn thành, rủi ro |
 | [phase-0/bao-cao-phase-0.md](phase-0/bao-cao-phase-0.md) | **Báo cáo Phase 0**: đã hoàn thành gì, kết quả kiểm, còn lại gì |
 | [phase-1/phase-1.md](phase-1/phase-1.md) | Phase 1 chi tiết (1a khung cục bộ + CI, 1b khung triển khai): hiện trạng đã kiểm, quyết định, từng bước, cổng, rủi ro, mã dự kiến |
+| [phase-4/phase-4.md](phase-4/phase-4.md), [phase-4/bao-cao-phase-4.md](phase-4/bao-cao-phase-4.md) | Phase 4: kế hoạch và **báo cáo** đăng nhập, đăng xuất, trang cho nhân sự mới (4-A đến 4-C đã xong, chưa push) |
 | [huong-dan-thiet-lap-may-chu.md](huong-dan-thiet-lap-may-chu.md) | Phase 0: hướng dẫn từng bước cài công cụ, tạo khóa SSH, thuê VPS, DuckDNS, thử HTTPS, cấu hình GitHub |
 | [phu-luc-may-chu-va-chi-phi.md](phu-luc-may-chu-va-chi-phi.md) | So sánh máy chủ/PaaS, tên miền, CI, bảng "đủ hay không", chi phí (nguồn chính thức) |
 

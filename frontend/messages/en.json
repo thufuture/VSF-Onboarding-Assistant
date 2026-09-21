@@ -255,5 +255,60 @@
     "language": "Language",
     "vietnamese": "Vietnamese",
     "english": "English"
+  },
+  "app": {
+    "roles": {
+      "USER": "New joiner",
+      "HR": "HR",
+      "ADMIN": "Administrator"
+    },
+    "signOut": "Sign out",
+    "signingOut": "Signing out…",
+    "signOutFailed": "Could not sign out right now. Please try again."
+  },
+  "chat": {
+    "greeting": "Hello, {name}",
+    "intro": "Ask about procedures, paperwork, equipment or contacts in your first days. The assistant answers only from approved documents.",
+    "demoNotice": "Illustrative content: the real chat with citations from approved documents will be connected in a later phase.",
+    "conversation": "Conversation",
+    "suggestionsTitle": "Suggested questions",
+    "suggestionsLabel": "Suggested questions",
+    "inputLabel": "Your question",
+    "placeholder": "Type your question…",
+    "send": "Send",
+    "sourceLabel": "Source:",
+    "noSource": "I have no approved document for this question yet, so I cannot answer it. You can ask HR for help.",
+    "suggestions": {
+      "firstDay": {
+        "question": "What do I need to prepare for my first day?",
+        "answer": "Bring your ID, arrive on time and meet HR at reception to get your access card and onboarding schedule.",
+        "source": "First-day handbook (illustrative)"
+      },
+      "equipment": {
+        "question": "Where do I get my laptop and accounts?",
+        "answer": "Equipment and accounts are requested through IT by HR before you start; collect them from IT at the onboarding session.",
+        "source": "Equipment provisioning procedure (illustrative)"
+      },
+      "leave": {
+        "question": "How do I request leave?",
+        "answer": "Send a leave request to your line manager at least 3 working days ahead, except in emergencies.",
+        "source": "Leave policy (illustrative)"
+      },
+      "contact": {
+        "question": "Who do I ask when I hit a problem in week one?",
+        "answer": "Your team buddy is the first contact; for administrative matters contact HR.",
+        "source": "Contact directory (illustrative)"
+      }
+    }
+  },
+  "admin": {
+    "title": "Hello, {name}",
+    "description": "The admin area is under construction. For now you can view the chat page as a new joiner.",
+    "upcoming": {
+      "documents": "Document and version management",
+      "registry": "Contact and link registry",
+      "tickets": "Support requests from new joiners"
+    },
+    "openChat": "Open chat"
   }
 }
