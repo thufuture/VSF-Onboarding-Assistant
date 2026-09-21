@@ -1,6 +1,6 @@
 # Kế hoạch triển khai VSF Onboarding Assistant
 
-> Trạng thái: **bản nháp v4 để duyệt** — chưa thực hiện phase nào.
+> Trạng thái: **bản nháp v4**. **Phase 0 đã thực hiện phần kỹ thuật** ([báo cáo](phase-0/bao-cao-phase-0.md)); đang chờ duyệt kế hoạch [Phase 1](phase-1/phase-1.md).
 > Phạm vi: **1 người, timebox 4 tuần** (20,5 ngày công gồm 1,1 ngày stretch), **có bản demo trên máy chủ thật**. Đây là timebox mục tiêu, không phải cam kết production; khoảng dao động thực tế 4–6 tuần. Repo đích: https://github.com/thufuture/VSF-Onboarding-Assistant (private, đang trống).
 
 ## Tài liệu trong thư mục này
@@ -10,7 +10,9 @@
 | [master-plan.md](master-plan.md) | Phase 0–12: mục tiêu, việc, đầu ra, cổng hoàn thành, phụ thuộc, rủi ro; bắt buộc/stretch; quyết định kỹ thuật và hạ tầng; đối chiếu nhận xét Codex |
 | [landing-page-plan.md](landing-page-plan.md) | Phase 10 [stretch]: landing tiếng Việt tối giản (0,5 ngày) theo bố cục VLearn, một ảnh minh họa có giấy phép |
 | [frontend-login-reuse.md](frontend-login-reuse.md) | Phase 4: tái sử dụng giao diện đăng nhập của Ralion (giữ / đổi / bỏ), việc R1–R4, cổng kiểm |
-| [phase-0.md](phase-0.md) | Phase 0 chi tiết: hiện trạng đã kiểm, 5 điểm dừng để duyệt, 15 bước, mã dự kiến, thư mentor nháp, cổng hoàn thành, rủi ro |
+| [phase-0/phase-0.md](phase-0/phase-0.md) | Phase 0 chi tiết: hiện trạng đã kiểm, 5 điểm dừng để duyệt, 15 bước, mã dự kiến, thư mentor nháp, cổng hoàn thành, rủi ro |
+| [phase-0/bao-cao-phase-0.md](phase-0/bao-cao-phase-0.md) | **Báo cáo Phase 0**: đã hoàn thành gì, kết quả kiểm, còn lại gì |
+| [phase-1/phase-1.md](phase-1/phase-1.md) | Phase 1 chi tiết (1a khung cục bộ + CI, 1b khung triển khai): hiện trạng đã kiểm, quyết định, từng bước, cổng, rủi ro, mã dự kiến |
 | [huong-dan-thiet-lap-may-chu.md](huong-dan-thiet-lap-may-chu.md) | Phase 0: hướng dẫn từng bước cài công cụ, tạo khóa SSH, thuê VPS, DuckDNS, thử HTTPS, cấu hình GitHub |
 | [phu-luc-may-chu-va-chi-phi.md](phu-luc-may-chu-va-chi-phi.md) | So sánh máy chủ/PaaS, tên miền, CI, bảng "đủ hay không", chi phí (nguồn chính thức) |
 
@@ -54,7 +56,7 @@
 
 ## Quyết định đã chốt (chi tiết ở master-plan mục 5)
 
-- **Hạ tầng:** VPS cá nhân Hetzner Cloud CX23 (thuê 1 tháng rồi xóa), tên miền DuckDNS, GitHub Actions + GHCR, chỉ dữ liệu giả lập trên VPS.
+- **Hạ tầng:** máy chủ chính Oracle Cloud Always Free (ARM, thử nghiệm, có thể bị thu hồi khi nhàn rỗi), dự phòng Hetzner Cloud CX23 (thuê 1 tháng rồi xóa), tên miền DuckDNS, GitHub Actions + GHCR, chỉ dữ liệu giả lập trên VPS.
 - **Provider:** LLM **DeepSeek** (`deepseek-flash`, JSON output), embedding **BGE-M3 trên Modal**; khóa lấy từ Ralion, **chỉ dùng cục bộ** (khóa riêng có hạn mức trước khi lên VPS); embedding và LLM giả trong test/CI.
 - **Migration:** `0001_core` viết đầy đủ ở Phase 2, `0002_registry` ở Phase 6, `0003_chat` + `0004_tickets` ở Phase 7; không có bảng `sessions`.
 - **Route:** `/` → `/vi`; `/vi/login`, `/vi/chat`; toàn bộ API ở `/api/v1/*`; `/api/v1/health` công khai, `/api/v1/ready*` chỉ nội bộ.

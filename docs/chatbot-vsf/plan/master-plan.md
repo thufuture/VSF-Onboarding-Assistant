@@ -1,6 +1,6 @@
 # VSF Onboarding Assistant — Kế hoạch phase (1 người, timebox 4 tuần)
 
-> Trạng thái: **bản nháp v4 để duyệt**. v2: sửa theo nhận xét vòng 1 của Codex; v3: đưa triển khai vào 4 tuần; **v4: sửa theo nhận xét vòng 2** (migration, route, versioning link, provider, timebox). Chưa thực hiện phase nào.
+> Trạng thái: **bản nháp v4 để duyệt**. v2: sửa theo nhận xét vòng 1 của Codex; v3: đưa triển khai vào 4 tuần; **v4: sửa theo nhận xét vòng 2** (migration, route, versioning link, provider, timebox). **Phase 0 đã thực hiện phần kỹ thuật** (báo cáo: [phase-0/bao-cao-phase-0.md](phase-0/bao-cao-phase-0.md)); các phase còn lại chưa thực hiện.
 > Repo đích: https://github.com/thufuture/VSF-Onboarding-Assistant (private, đang trống).
 > PRD chuẩn: [../vsf-onboarding-assistant-prd.md](../vsf-onboarding-assistant-prd.md). Tài liệu này không thay thế thiết kế; nó xếp thứ tự, gắn mốc, cổng kiểm và nói rõ cái gì bắt buộc, cái gì là stretch.
 
@@ -83,7 +83,7 @@
 | LLM | **DeepSeek** qua giao diện tương thích OpenAI: `LLM_BASE_URL=https://api.deepseek.com`, `LLM_MODEL=deepseek-flash`, `LLM_API_KEY`. Dùng chế độ **JSON output** ([DeepSeek API docs](https://api-docs.deepseek.com/)) và kiểm kết quả bằng schema Pydantic, thử lại một lần nếu JSON hỏng. **Không hard-code tên model**: Ralion đang dùng `deepseek-chat`, tên mà DeepSeek từng lên lịch ngừng vào 2026-07-24; [trang Models & Pricing](https://api-docs.deepseek.com/quick_start/pricing/) hiện nêu `deepseek-flash` và `deepseek-v4-pro`. Gọi thử `LLM_MODEL` ngay đầu Phase 2. Đổi nhà cung cấp chỉ cần đổi biến môi trường |
 | Khóa và bí mật | Khóa DeepSeek và khóa/endpoint Modal **đã có ở Ralion**. Dùng ở **máy cục bộ** bằng cách bạn tự chép giá trị vào `.env` của repo mới (đã bị `.gitignore`; **tôi không đọc `.env` của Ralion**). **Không đưa khóa Ralion lên VPS cá nhân**: trước Phase 1b/11a tạo khóa DeepSeek riêng và (nên) triển khai bản Modal riêng cho VSF, mỗi cái có hạn mức chi tiêu. Lý do: chi phí và hạn mức không lẫn với Ralion, thu hồi một bên không làm hỏng bên kia, và khóa của một dự án nhóm không nằm trên máy chủ cá nhân. Kiểm khóa thuộc quyền dùng của bạn |
 | Kiểm thử và CI | **Embedding giả xác định** và **LLM giả**; CI không bao giờ gọi API trả phí. Chưa có khóa LLM ở Phase 2: chạy LLM giả cho contract test; **chất lượng câu trả lời chưa được tính** tới khi có khóa thật |
-| Máy chủ | **VPS cá nhân Hetzner Cloud CX23** (2 vCPU / 4 GB / 40 GB), thuê 1 tháng rồi xóa (Hetzner [tính tiền cả khi tắt máy](https://docs.hetzner.com/cloud/billing/faq/)) |
+| Máy chủ | **Chính: Oracle Cloud Always Free** (ARM A1.Flex, 1–2 OCPU / 4–6 GB, thử nghiệm; Oracle có thể thu hồi máy nhàn rỗi và có lúc hết máy, xem [phụ lục](phu-luc-may-chu-va-chi-phi.md)). **Dự phòng: Hetzner Cloud CX23** (2 vCPU / 4 GB / 40 GB), thuê 1 tháng rồi xóa (Hetzner [tính tiền cả khi tắt máy](https://docs.hetzner.com/cloud/billing/faq/)). Tạo máy Oracle quá khoảng 1 giờ không được thì chuyển sang Hetzner |
 | Tên miền | `<tên>.duckdns.org` (miễn phí); **không dùng `sslip.io` cho HTTPS** |
 | CI/CD | GitHub Actions (runner của GitHub; gói Free có [2.000 phút/tháng cho repo private](https://docs.github.com/en/actions/concepts/billing-and-usage)); image lên GHCR ([billing](https://docs.github.com/en/billing/concepts/product-billing/github-packages)) |
 | Dữ liệu trên VPS | Chỉ dữ liệu **giả lập**; dữ liệu thật của VSF chỉ đưa lên khi mentor duyệt nơi lưu trữ |
@@ -105,7 +105,7 @@ Khi mâu thuẫn, PRD chuẩn thắng.
 
 ## Phase 0 — Repo, tài liệu chuẩn/lưu trữ, xin dữ liệu thật [Bắt buộc]
 
-Kế hoạch từng bước, điểm dừng duyệt, mã dự kiến và thư mentor nháp: [phase-0.md](phase-0.md).
+Kế hoạch từng bước, điểm dừng duyệt, mã dự kiến và thư mentor nháp: [phase-0/phase-0.md](phase-0/phase-0.md). **Báo cáo kết quả (đã hoàn thành gì, còn gì):** [phase-0/bao-cao-phase-0.md](phase-0/bao-cao-phase-0.md).
 
 **Mục tiêu.** Repo cục bộ nối GitHub, tài liệu chuẩn tách khỏi bản lưu trữ, kiểm được từ repo mới; yêu cầu dữ liệu thật gửi mentor **ngay ngày đầu**; VPS sẵn sàng.
 
@@ -133,6 +133,8 @@ Kế hoạch từng bước, điểm dừng duyệt, mã dự kiến và thư me
 
 ## Phase 1a — Khung cục bộ [Bắt buộc]
 
+Kế hoạch chi tiết (1a-A backend, 1a-B frontend, 1a-C CI): [phase-1/phase-1.md](phase-1/phase-1.md). **Trạng thái (2026-09-21): 1a-A và 1a-B đã làm và kiểm chứng cục bộ (nhánh `phase-1a-skeleton`, chưa commit); 1a-C (CI) và 1b (triển khai) chưa làm.** Báo cáo: [phase-1/bao-cao-phase-1.md](phase-1/bao-cao-phase-1.md).
+
 **Mục tiêu.** Khung chạy ở máy cục bộ và CI xanh.
 
 **Việc.**
@@ -150,6 +152,8 @@ Kế hoạch từng bước, điểm dừng duyệt, mã dự kiến và thư me
 
 ## Phase 1b — Khung triển khai [Bắt buộc, giới hạn cứng 1 ngày]
 
+Kế hoạch chi tiết: [phase-1/phase-1.md](phase-1/phase-1.md) mục 8.
+
 **Mục tiêu.** Một bản khung chạy trên máy chủ thật qua HTTPS để rủi ro hạ tầng lộ sớm ([deployment-ci mục 0](../vsf-onboarding-assistant-deployment-ci.md)).
 
 **Việc.**
@@ -162,7 +166,7 @@ Kế hoạch từng bước, điểm dừng duyệt, mã dự kiến và thư me
 
 **Đường lui nếu quá 1 ngày.** Dừng phần còn lại, tiếp tục Phase 2 cục bộ, dời deploy thủ công sang Phase 11a. Ghi lý do (DNS, chứng chỉ, extension, RAM) vào nhật ký để 11a không lặp lại lỗi.
 
-**Phụ thuộc.** Phase 1a; VPS + DuckDNS từ Phase 0. **Rủi ro.** 4 GB RAM không đủ (đo, nâng gói nếu cần và ghi lại); Let's Encrypt/DuckDNS; lỗi kiến trúc CPU (máy x86, image `linux/amd64`).
+**Phụ thuộc.** Phase 1a; VPS + DuckDNS từ Phase 0. **Rủi ro.** 4 GB RAM không đủ (đo, nâng gói nếu cần và ghi lại); Let's Encrypt/DuckDNS; lỗi kiến trúc CPU (Oracle là ARM: build đa kiến trúc `linux/amd64` + `linux/arm64`, kiểm ảnh nền có bản arm64); Oracle hết máy hoặc thu hồi máy nhàn rỗi (chuyển Hetzner, dựng lại bằng compose + seed); quy tắc `iptables` trong máy Oracle chặn 80/443.
 
 ---
 

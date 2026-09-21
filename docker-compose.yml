@@ -1,0 +1,56 @@
+name: ${COMPOSE_PROJECT_NAME:-vsf-onboarding}
+
+services:
+  db:
+    # PostgreSQL 16 + pgvector + ParadeDB pg_search. KHÔNG ghi đè `command`: lệnh mặc định của image đã nạp
+    # pg_search,pg_cron,pg_stat_statements; ghi đè thiếu pg_cron làm script khởi tạo của image lỗi.
+    image: paradedb/paradedb:${PARADEDB_TAG:-v0.25.4-pg16}
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: vsf
+      POSTGRES_PASSWORD: vsf # chỉ cho dev; máy chủ thật dùng mật khẩu riêng trong env file
+      POSTGRES_DB: vsf
+    ports:
+      - "${POSTGRES_HOST_PORT:-5434}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      # Máy chủ tạm lúc khởi tạo cũng trả lời pg_isready qua socket; postmaster.pid = 1 xác nhận máy chủ thật.
+      test:
+        - CMD-SHELL
+        - >-
+          test "$$(head -n 1 /var/lib/postgresql/data/postmaster.pid)" = "1" &&
+          pg_isready -U vsf -d vsf
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  migrate:
+    build: ./backend
+    command: ["alembic", "upgrade", "head"]
+    environment:
+      # Trong mạng Docker, "localhost" là chính container: phải trỏ tới tên service "db" (cổng 5432 trong mạng).
+      DATABASE_URL: postgresql+asyncpg://vsf:vsf@db:5432/vsf
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: "no"
+
+  backend:
+    build: ./backend
+    ports:
+      - "${BACKEND_HOST_PORT:-8000}:8000"
+    environment:
+      DATABASE_URL: postgresql+asyncpg://vsf:vsf@db:5432/vsf
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    init: true
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+    # Volume riêng của VSF (không dùng chung/ngoài như Ralion) để hai dự án không đụng nhau.
+    name: ${POSTGRES_DATA_VOLUME:-vsf-onboarding_pgdata}

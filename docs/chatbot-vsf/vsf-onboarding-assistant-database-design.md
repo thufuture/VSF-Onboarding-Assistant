@@ -652,7 +652,7 @@ Corpus pilot vài chục tài liệu, khoảng 10³ chunk; mỗi vector 1024 chi
 4. **Ai duyệt link và bằng chứng kiểm tra bảo mật** (VinSOC ghi nhận thế nào: mã phiếu, ngày, kết quả) để điền `security_review` đúng thực tế.
 5. **Các kiểu trường form** được phép (danh sách hiện đề xuất: văn bản ngắn/dài, số, ngày, lựa chọn).
 6. `documents.source_key` (định danh ổn định giữa các lần upload) lấy từ mã tài liệu trong header hay tên file: chốt khi có tài liệu thật.
-7. **Kiểm tra ở M0:** `btree_gist` có trong image ParadeDB không; nếu không, dự phòng là partial unique index cũ kèm job chuyển trạng thái theo ngày.
+7. ~~Kiểm tra ở M0: `btree_gist` có trong image ParadeDB không~~ **Đã kiểm (2026-09-21, image `paradedb/paradedb:v0.25.4-pg16`, PostgreSQL 16.15): có.** `btree_gist 1.7`, `pg_search 0.25.4`, `vector 0.8.4` đều có sẵn (`vector` và `pg_search` được image cài sẵn; `btree_gist` cần `CREATE EXTENSION`, nằm trong `0001_core`). Ràng buộc `EXCLUDE USING gist (code WITH =, daterange(...) WITH &&) WHERE (status = 'ACTIVE')` chạy đúng và từ chối bản chồng ngày (có test tích hợp `backend/tests/integration/test_database.py`). Không cần phương án dự phòng partial unique index.
 8. Cỡ child/parent và có cần parent-child ngay không: chốt bằng A/B trên bộ câu hỏi vàng (heading-only → thêm parent-child → thêm gợi ý tìm kiếm).
 9. Bảng `procedure_steps` riêng (ràng buộc cứng) thay cho JSONB `steps` khi nào: xem lại sau khi HR dùng thử giao diện quản lý.
 

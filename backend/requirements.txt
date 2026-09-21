@@ -1,0 +1,10 @@
+# Runtime. Khoảng phiên bản có cận trên; khóa phiên bản cụ thể cho image ở Phase 1b.
+fastapi>=0.115,<1.0
+uvicorn[standard]>=0.34,<1.0
+pydantic>=2.10,<3
+pydantic-settings>=2.7,<3
+sqlalchemy>=2.0.36,<3
+asyncpg>=0.30,<1
+alembic>=1.14,<2
+# zoneinfo trên Windows/slim không có dữ liệu múi giờ; cần cho APP_TIMEZONE (Asia/Ho_Chi_Minh).
+tzdata>=2024.1

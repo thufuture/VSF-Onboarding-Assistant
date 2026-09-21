@@ -1,0 +1,32 @@
+{
+	email {$ACME_EMAIL}
+}
+
+{$PUBLIC_HOST} {
+	encode zstd gzip
+
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		-Server
+	}
+
+	# /api/v1/ready* lộ phiên bản migration, extension, cấu hình: chỉ gọi nội bộ qua mạng Docker.
+	@internal path /api/v1/ready /api/v1/ready/*
+	handle @internal {
+		respond 404
+	}
+
+	# flush_interval -1: không đệm, để SSE của chat chảy ngay về trình duyệt.
+	handle /api/* {
+		reverse_proxy backend:8000 {
+			flush_interval -1
+		}
+	}
+
+	handle {
+		reverse_proxy frontend:3000
+	}
+}

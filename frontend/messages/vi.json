@@ -1,0 +1,17 @@
+{
+  "metadata": {
+    "title": "VSF Onboarding Assistant",
+    "description": "Trợ lý onboarding cho nhân sự mới: trả lời từ tài liệu đã được duyệt, có trích dẫn nguồn."
+  },
+  "home": {
+    "demoNote": "Bản demo thực tập",
+    "title": "Mới vào công ty, hỏi là biết bước tiếp theo",
+    "description": "Trợ lý trả lời từ tài liệu đã được duyệt, chỉ đúng quy trình và đúng đầu mối. Điều gì chưa có nguồn, trợ lý nói thẳng là chưa có, thay vì đoán.",
+    "cta": "Bắt đầu hỏi"
+  },
+  "login": {
+    "title": "Đăng nhập",
+    "placeholder": "Trang đăng nhập sẽ được làm ở Phase 4.",
+    "back": "Về trang chủ"
+  }
+}

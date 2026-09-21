@@ -1,0 +1,86 @@
+name: vsf
+
+# Chạy: docker compose --env-file /opt/vsf/env/compose.env -f compose.vps.yml up -d
+# Chỉ Caddy publish cổng. Image ứng dụng đến từ BACKEND_IMAGE / FRONTEND_IMAGE (ghim theo digest).
+services:
+  caddy:
+    image: caddy:2.10-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    environment:
+      PUBLIC_HOST: ${PUBLIC_HOST:?đặt PUBLIC_HOST trong compose.env}
+      ACME_EMAIL: ${ACME_EMAIL:?đặt ACME_EMAIL trong compose.env}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    networks: [private]
+    depends_on: [backend, frontend]
+    logging: &logging
+      driver: json-file
+      options: {max-size: 10m, max-file: "5"}
+
+  frontend:
+    image: ${FRONTEND_IMAGE:?đặt FRONTEND_IMAGE}
+    restart: unless-stopped
+    expose: ["3000"]
+    networks: [private]
+    logging: *logging
+
+  backend:
+    image: ${BACKEND_IMAGE:?đặt BACKEND_IMAGE}
+    restart: unless-stopped
+    init: true
+    expose: ["8000"]
+    env_file: ${ENV_DIR:-/opt/vsf/env}/backend.env
+    networks: [private]
+    depends_on:
+      db:
+        condition: service_healthy
+    logging: *logging
+
+  db:
+    # KHÔNG ghi đè `command`: lệnh mặc định của image đã nạp pg_search,pg_cron,pg_stat_statements.
+    image: paradedb/paradedb:${PARADEDB_TAG:-v0.25.4-pg16}
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?đặt POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?đặt POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:?đặt POSTGRES_DB}
+    expose: ["5432"]
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks: [private]
+    healthcheck:
+      # postmaster.pid = 1 xác nhận máy chủ thật, không phải máy chủ tạm lúc khởi tạo.
+      test:
+        - CMD-SHELL
+        - >-
+          test "$$(head -n 1 /var/lib/postgresql/data/postmaster.pid)" = "1" &&
+          pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    logging: *logging
+
+  migrate:
+    image: ${BACKEND_IMAGE:?đặt BACKEND_IMAGE}
+    profiles: [tools]
+    command: ["alembic", "upgrade", "head"]
+    env_file: ${ENV_DIR:-/opt/vsf/env}/backend.env
+    networks: [private]
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: "no"
+
+networks:
+  private:
+
+volumes:
+  pgdata:
+  caddy_data:
+  caddy_config:

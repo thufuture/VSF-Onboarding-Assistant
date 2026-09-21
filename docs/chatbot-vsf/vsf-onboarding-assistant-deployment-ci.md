@@ -24,7 +24,7 @@
 | **Staging / Pilot** | 1 VM Linux (Ubuntu 24.04) chạy Docker Compose sau Caddy | Demo cho mentor, pilot 5–10 người |
 | **Production** *(sau)* | Cùng mẫu, VM khác | Chỉ khi VSF có yêu cầu vận hành thật |
 
-**Đề xuất về máy chủ:** VM 2 vCPU / 4 GB RAM / 30 GB đĩa (tương đương e2-medium của Ralion) là đủ vì embedding chạy dịch vụ ngoài (Modal) và LLM là API. Nếu chạy embedding cục bộ thì cần thêm RAM (xem 13). **Không dùng lại VM của Ralion:** runbook của Ralion đặt hạn phá hủy tài nguyên vào 2026-11-08 (hết credit GCP), nên hệ thống mới phải có máy chủ và ngân sách riêng.
+**Đề xuất về máy chủ:** VM 2 vCPU / 4 GB RAM / 30 GB đĩa (tương đương e2-medium của Ralion) là đủ vì embedding chạy dịch vụ ngoài (Modal) và LLM là API. Nếu chạy embedding cục bộ thì cần thêm RAM (xem 13). **Máy demo hiện chọn:** Oracle Cloud Always Free (ARM `VM.Standard.A1.Flex`, thử nghiệm) và Hetzner CX23 (x86) làm dự phòng; máy Oracle có thể bị thu hồi khi nhàn rỗi nên chỉ là thử nghiệm, xem [phụ lục](plan/phu-luc-may-chu-va-chi-phi.md). **Không dùng lại VM của Ralion:** runbook của Ralion đặt hạn phá hủy tài nguyên vào 2026-11-08 (hết credit GCP), nên hệ thống mới phải có máy chủ và ngân sách riêng.
 
 ## 2. Topology chạy trên máy chủ
 
@@ -62,7 +62,7 @@ flowchart LR
 | `frontend` | `ghcr.io/<org>/vsf-frontend@sha256:…` | Next.js `output: standalone`, người dùng không root |
 | `backend` | `ghcr.io/<org>/vsf-backend@sha256:…` | `expose 8000`, không publish ra host |
 | `worker` | cùng image `backend` | Lệnh `python -m vsf.worker`; cùng env, không nhận HTTP |
-| `db` | `paradedb/paradedb:<một phiên bản duy nhất>-pg16` | `expose 5432`, không publish; volume `pgdata` |
+| `db` | `paradedb/paradedb:<một phiên bản duy nhất>-pg16` | `expose 5432`, không publish; volume `pgdata`. **Không ghi đè `command` của image:** lệnh mặc định đã nạp `shared_preload_libraries = pg_search,pg_cron,pg_stat_statements`; ghi đè thiếu `pg_cron` làm script khởi tạo của image lỗi (đã gặp khi thử). Image cài sẵn PostGIS nên Alembic phải lọc `spatial_ref_sys`, `_typmod_cache` (xem `backend/alembic/env.py`) |
 | `migrate` | cùng image `backend` | `alembic upgrade head`; profile `tools`, chạy một lần mỗi deploy |
 
 **Quyết định — frontend chạy chung máy chủ sau Caddy, không dùng Vercel.** Ralion dùng Vercel vì phải rewrite `/api` để cookie session là first-party; cùng máy chủ với Caddy làm việc đó tự nhiên (`/api/*` → backend, còn lại → frontend, cùng một origin), bớt một nền tảng, một token và một điểm timeout (Ralion phải nâng `proxyTimeout`/`proxyClientMaxBodySize` cho upload). Đổi lại: tự vận hành frontend. Phương án thay thế (Vercel) vẫn khả thi nếu mentor muốn URL Vercel; khi đó giữ nguyên rewrite `/api` như Ralion.
@@ -95,7 +95,7 @@ docker-compose.ci.yml        CI: DB tmpfs + e2e
 - **Backend** (`backend/Dockerfile`): multi-stage; stage build cài dependency từ lockfile, stage runtime `python:3.12-slim`, người dùng không root (uid cố định), `HEALTHCHECK` gọi `/api/v1/health`. Không chứa model nặng hay secret. Một image dùng cho `backend`, `worker`, `migrate`.
 - **Frontend** (`frontend/Dockerfile`): Node LTS, `npm ci`, `next build` với `output: standalone`, runtime chỉ copy `.next/standalone` + `static`, người dùng không root.
 - **Nhãn:** `sha-<commit>` (bất biến) và `main` (con trỏ tiện lợi). Deploy luôn dùng digest.
-- **Kiến trúc:** `linux/amd64` (khớp VM). Bật provenance và SBOM khi publish như Ralion.
+- **Kiến trúc:** đa kiến trúc `linux/amd64` + `linux/arm64` (Oracle A1 là ARM, Hetzner là x86; một manifest phục vụ cả hai). Build ARM bằng buildx/QEMU hoặc runner ARM; đo thời gian build ở CI. Bật provenance và SBOM khi publish như Ralion.
 - **Cache:** cache lớp Docker qua registry hoặc cache của GitHub Actions.
 
 ## 5. Luồng phát hành
@@ -198,7 +198,7 @@ Quyết định: **trunk-based đơn giản** — nhánh `main` bảo vệ, mọ
 
 | Job | Nội dung | Ghi chú |
 |---|---|---|
-| `backend` | `ruff check` + `ruff format --check`; `mypy`; kiểm tra luật phụ thuộc (import-linter); `alembic upgrade head` + `alembic check` trên Postgres/ParadeDB service; `pytest` với ngưỡng coverage | Test dùng Postgres thật, embedding/LLM giả tất định |
+| `backend` | `ruff check` + `ruff format --check`; `mypy`; kiểm tra luật phụ thuộc (import-linter); `alembic upgrade head` + `alembic check` trên Postgres/ParadeDB service (**service container của GitHub dùng được vì không cần ghi đè `command`**; kết nối TCP từ runner chỉ thành công khi máy chủ thật đã chạy, vì lúc khởi tạo image chỉ lắng nghe socket); `pytest` với ngưỡng coverage | Test dùng Postgres thật, embedding/LLM giả tất định |
 | `frontend` | `npm ci`; `eslint`; `tsc --noEmit`; `vitest`; `next build` | Cache npm |
 | `images` | Build backend và frontend (không push), chạy container backend và `curl /api/v1/health`; quét lỗ hổng/secret (Trivy hoặc tương đương) | Bắt lỗi Dockerfile trước khi merge |
 | `e2e` | Dựng `docker-compose.ci.yml` (DB + backend + worker + frontend) với dữ liệu seed và provider giả, chạy Playwright (đăng nhập → hỏi → thấy trích dẫn → bị từ chối) | Chạy sau `backend` và `frontend` |
@@ -244,6 +244,7 @@ Chạy bộ câu hỏi vàng đầy đủ với LLM và embedding thật, xuất
 ## 12. Cứng hóa bảo mật máy chủ
 
 - `bootstrap.sh`: cài Docker, `ufw` chỉ mở 22/80/443, SSH chỉ dùng khóa (tắt mật khẩu, tắt root login), `unattended-upgrades`, người dùng deploy riêng.
+- **Oracle Cloud:** ảnh Ubuntu có quy tắc `iptables` trong máy bên cạnh Security List của VCN; `bootstrap.sh` phải mở 80/443 (TCP) và 443 (UDP) ở cả hai lớp, và chỉ dùng một nguồn quy tắc (`ufw` hoặc `iptables`). Người dùng mặc định là `ubuntu`, không phải `root`.
 - **Hạn chế SSH:** giới hạn nguồn nếu có thể (VPN/IP cố định); nếu deploy từ runner GitHub (IP thay đổi) thì dùng khóa riêng chỉ cho việc deploy, host key ghim, và cân nhắc `fail2ban`. Người dùng deploy thuộc nhóm `docker` (tương đương root — ghi nhận rủi ro, không cấp thêm `NOPASSWD sudo` như Ralion nếu không cần).
 - Container không root, hệ thống tệp chỉ đọc khi có thể, không publish cổng DB/backend.
 - Caddy: HSTS, `X-Content-Type-Options`, `Referrer-Policy`, giới hạn kích thước body cho `/api/v1/documents`.
@@ -273,7 +274,7 @@ Sau D3, mỗi bước M1–M6 của lộ trình build (system design mục 15) c
 
 ## 15. Câu hỏi mở
 
-1. **Máy chủ của VSF ở đâu?** VM cloud tự thuê (GCP/khác) hay hạ tầng nội bộ của VSF? Nếu nội bộ VSF, có thể không dùng GHCR/Let's Encrypt/SSH từ GitHub mà cần kênh triển khai khác (mục 2, 5, 12 sẽ đổi).
+1. **Máy chủ của VSF ở đâu?** Giai đoạn demo thực tập: Oracle Always Free (thử nghiệm) và Hetzner (dự phòng), xem [phụ lục](plan/phu-luc-may-chu-va-chi-phi.md). Khi triển khai cho VSF thật: VM cloud tự thuê hay hạ tầng nội bộ của VSF? Nếu nội bộ VSF, có thể không dùng GHCR/Let's Encrypt/SSH từ GitHub mà cần kênh triển khai khác (mục 2, 5, 12 sẽ đổi).
 2. **Frontend:** cùng máy chủ sau Caddy (đề xuất) hay Vercel như Ralion?
 3. **Tên miền:** có tên miền/hostname nào cố định không, hay dùng tên miền con miễn phí như `duckdns.org` với IP tĩnh? (Không dùng `sslip.io` cho HTTPS: hạn mức chứng chỉ Let's Encrypt dùng chung của nó đã từng cạn.)
 4. **Dịch vụ LLM/embedding** dùng nhà cung cấp nào và ngân sách hằng tháng bao nhiêu? Ảnh hưởng cấu hình `backend.env` và cảnh báo chi phí.
