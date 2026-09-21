@@ -198,7 +198,8 @@ Nếu không ra HTTPS: kiểm `nslookup`, kiểm firewall (Hetzner và `ufw`), �
 4. Trong Environment `staging`:
    - Secrets: `VPS_HOST` (IP hoặc tên miền), `VPS_USER` (`deploy`), `VPS_SSH_KEY` (nội dung **khóa riêng** `vsf_deploy`), `VPS_SSH_HOST_KEY` (kết quả `ssh-keyscan`).
    - Variables: `VPS_PORT` (`22`), `PUBLIC_URL` (`https://vsf-demo.duckdns.org`).
-5. Bí mật chạy của ứng dụng (khóa LLM, khóa embedding, `SESSION_SECRET`, mật khẩu DB) **không** đưa vào GitHub: đặt ở `/opt/vsf/env/*.env` trên máy chủ theo [deployment-ci mục 7](../vsf-onboarding-assistant-deployment-ci.md). Tôi sẽ viết script cấu hình một lần ở Phase 1.
+5. **Bật deploy tự động:** trong Settings → Secrets and variables → Actions → tab **Variables**, tạo biến repo `DEPLOY_ENABLED` = `true`. Khi biến chưa có hoặc khác `true`, `release.yml` chỉ build và đẩy image, không SSH vào máy. Sau khi bật: mỗi lần merge vào `main` sẽ chạy `verify`, build, rồi deploy bằng digest và chạy smoke test công khai; deploy lỗi thì `deploy.sh` tự chạy lại bản trước.
+6. Bí mật chạy của ứng dụng (khóa LLM, khóa embedding, `SESSION_SECRET`, mật khẩu DB) **không** đưa vào GitHub: đặt ở `/opt/vsf/env/*.env` trên máy chủ theo [deployment-ci mục 7](../vsf-onboarding-assistant-deployment-ci.md). Tôi sẽ viết script cấu hình một lần ở Phase 1.
 
 Tài liệu tham khảo: https://docs.github.com/actions
 
