@@ -47,6 +47,9 @@ async def test_there_are_no_routes_at_the_root_or_without_version(path: str) -> 
 
 async def test_api_docs_are_disabled_in_production(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("APP_ENV", "production")
+    monkeypatch.setenv(
+        "SESSION_SECRET", "f3b1c9d2a7e84f6b95a0c3d1e7b28a4f6d0c9e5b1a3f7d2c"
+    )  # production bắt buộc khóa mạnh
     get_settings.cache_clear()
     try:
         async with _client(create_app()) as client:

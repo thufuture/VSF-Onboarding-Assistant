@@ -1,0 +1,369 @@
+@use "../../styles/tokens" as *;
+
+// Khung khu đã đăng nhập. Bộ biến màu dưới đây dùng chung cho mọi trang trong khung (chat, admin) và đổi theo data-theme.
+$sidebar-width: 268px;
+
+.shell {
+  --app-bg: #f3f7fc;
+  --app-surface: #fff;
+  --app-surface-2: #eaf1f9;
+  --app-border: #dbe6f2;
+  --app-border-strong: #c3d4e8;
+  --app-ink: #0b1f3a;
+  --app-ink-2: #4b5b70;
+  --app-ink-3: #7a8aa0;
+  --app-accent: #1090cb;
+  --app-accent-strong: #0877ac;
+  --app-accent-soft: #e5f3fb;
+  --app-on-accent: #fff;
+  --app-user-bubble: #0c2d5b;
+  --app-success: #157f53;
+  --app-success-soft: #e1f5ec;
+  --app-shadow: 0 10px 30px rgb(15 48 86 / 10%);
+
+  display: flex;
+  min-height: 100dvh;
+  background: var(--app-bg);
+  color: var(--app-ink);
+  font-family: $font;
+  color-scheme: light;
+
+  &[data-theme="dark"] {
+    --app-bg: #071426;
+    --app-surface: #0d2038;
+    --app-surface-2: #12294a;
+    --app-border: #223c5c;
+    --app-border-strong: #33547a;
+    --app-ink: #eef4fd;
+    --app-ink-2: #a9bbd2;
+    --app-ink-3: #7f93ad;
+    --app-accent: #35b0e6;
+    --app-accent-strong: #6cc6ef;
+    --app-accent-soft: #0f3554;
+    --app-on-accent: #04182d;
+    --app-user-bubble: #1a4f8c;
+    --app-success: #4cd39a;
+    --app-success-soft: #0e3a2c;
+    --app-shadow: 0 10px 30px rgb(0 0 0 / 40%);
+
+    color-scheme: dark;
+  }
+}
+
+// ── Thanh bên ──
+.sidebar {
+  position: sticky;
+  z-index: 30;
+  top: 0;
+  display: flex;
+  width: $sidebar-width;
+  height: 100dvh;
+  flex: none;
+  flex-direction: column;
+  gap: 8px;
+  padding: 18px 14px 16px;
+  border-right: 1px solid var(--app-border);
+  background: var(--app-surface);
+
+  // Logo dùng chữ "Assistant" theo màu chữ của khung (sáng/tối).
+  --vsf-brand-accent: var(--app-ink);
+  --vsf-brand-primary: var(--app-accent-strong);
+  color: var(--app-ink);
+
+  @include tablet-down {
+    position: fixed;
+    inset: 0 auto 0 0;
+    width: min(320px, 88vw);
+    transform: translateX(-102%);
+    transition: transform 200ms ease;
+    box-shadow: var(--app-shadow);
+  }
+}
+
+.sidebarOpen {
+  transform: none;
+}
+
+.backdrop {
+  position: fixed;
+  z-index: 20;
+  inset: 0;
+  background: rgb(6 20 38 / 55%);
+}
+
+.sidebarHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2px 6px 14px;
+
+  [data-mobile-only] {
+    display: none;
+
+    @include tablet-down {
+      display: inline-grid;
+    }
+  }
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.navItem {
+  display: flex;
+  min-height: 42px;
+  align-items: center;
+  gap: 12px;
+  padding: 0 12px;
+  border-radius: 10px;
+  color: var(--app-ink-2);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+
+  > span {
+    min-width: 0;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  small {
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: var(--app-surface-2);
+    color: var(--app-ink-3);
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+}
+
+a.navItem:hover {
+  background: var(--app-surface-2);
+  color: var(--app-ink);
+}
+
+.navActive,
+a.navActive:hover {
+  background: var(--app-accent-soft);
+  color: var(--app-accent-strong);
+}
+
+.navSoon {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.navItem:focus-visible,
+.logout:focus-visible,
+.iconButton:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--app-accent) 45%, transparent);
+  outline-offset: 2px;
+}
+
+// ── Thẻ người dùng và đăng xuất ──
+.account {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid var(--app-border);
+}
+
+.userCard {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 6px;
+}
+
+.avatar {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  flex: none;
+  place-items: center;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ef4b55, #b3141f);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.userText {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  line-height: 1.3;
+
+  b {
+    overflow: hidden;
+    font-size: 14px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  small {
+    color: var(--app-ink-3);
+    font-size: 12px;
+  }
+}
+
+.logout {
+  display: flex;
+  min-height: 40px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid var(--app-border-strong);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--app-ink);
+  cursor: pointer;
+  font: 600 14px/1 $font;
+
+  &:hover:not(:disabled) {
+    border-color: var(--app-accent);
+    color: var(--app-accent-strong);
+  }
+
+  &:disabled {
+    cursor: progress;
+    opacity: 0.7;
+  }
+}
+
+.signOutError {
+  margin: 0;
+  color: #d63a45;
+  font-size: 12px;
+  text-align: center;
+}
+
+// ── Vùng làm việc ──
+.content {
+  display: flex;
+  min-width: 0;
+  height: 100dvh;
+  flex: 1;
+  flex-direction: column;
+}
+
+// Thanh trên: nút menu và logo (chỉ hiện trên điện thoại/máy tính bảng), ngôn ngữ và sáng/tối (luôn hiện).
+.toolbar {
+  position: sticky;
+  z-index: 10;
+  top: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 24px;
+  border-bottom: 1px solid var(--app-border);
+  background: color-mix(in srgb, var(--app-surface) 92%, transparent);
+  backdrop-filter: blur(8px);
+
+  @include phone-down {
+    gap: 6px;
+    padding: 8px 10px;
+  }
+}
+
+// Ngôn ngữ và sáng/tối nằm ở góc phải thanh trên.
+.toolbarRight {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+
+  :global(details) {
+    color: #17304f;
+  }
+}
+
+.iconButton {
+  display: inline-grid;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  border: 1px solid var(--app-border-strong);
+  border-radius: 10px;
+  background: var(--app-surface);
+  color: var(--app-ink);
+  cursor: pointer;
+
+  &:hover {
+    border-color: var(--app-accent);
+    color: var(--app-accent-strong);
+  }
+}
+
+// Tiêu đề trang (chỉ máy tính để bàn; nhỏ hơn thì dùng logo).
+.pageTitle {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 12px;
+
+  b {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    white-space: nowrap;
+
+    svg {
+      color: var(--app-accent);
+    }
+  }
+
+  @include tablet-down {
+    display: none;
+  }
+}
+
+.scope {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--app-success-soft);
+  color: var(--app-success);
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.menuButton,
+.mobileBrand {
+  display: none;
+
+  @include tablet-down {
+    display: inline-grid;
+  }
+}
+
+// Trên khung tối, chữ "Assistant" theo màu chữ sáng của khung.
+.mobileBrand {
+  --vsf-brand-accent: var(--app-ink);
+  --vsf-brand-primary: var(--app-accent-strong);
+
+  @include tablet-down {
+    display: inline-flex;
+  }
+}
+
+.page {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  overflow-y: auto;
+}

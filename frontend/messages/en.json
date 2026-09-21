@@ -1,0 +1,340 @@
+{
+  "metadata": {
+    "title": "VSF Onboarding Assistant",
+    "description": "Onboarding assistant for new hires: answers from approved documents, with cited sources."
+  },
+  "landing": {
+    "skipLink": "Skip to content",
+    "nav": {
+      "label": "Main navigation",
+      "brand": "VSF Onboarding Assistant",
+      "top": "What it does",
+      "how": "How it works",
+      "roles": "Roles",
+      "login": "Sign in"
+    },
+    "hero": {
+      "line1": "New to the company,",
+      "line2": "just ask and know the next step",
+      "description": "The assistant answers from approved documents and points you to the right process and contact. When something has no source, it says so instead of guessing.",
+      "primary": "Start asking",
+      "secondary": "See how it works",
+      "checkSources": "Answers come with sources",
+      "checkProcess": "Right process, contact and form",
+      "photoAlt": "Vincom Center Dong Khoi building seen from the park, Ho Chi Minh City"
+    },
+    "services": {
+      "chat": {
+        "title": "Sourced answers",
+        "sub": "With quotes from the exact passage"
+      },
+      "process": {
+        "title": "Step-by-step processes",
+        "sub": "With approved links, contacts and forms"
+      },
+      "clarify": {
+        "title": "Asks when details are missing",
+        "sub": "Never guesses your unit or role"
+      },
+      "ticket": {
+        "title": "Internal tickets",
+        "sub": "Drafts only, sent when you confirm"
+      }
+    },
+    "intro": {
+      "heading": "One place to ask when you are new here.",
+      "text": "The assistant brings approved documents, processes and contacts into a single place to ask: sourced, using the version in force, and honest when there is no basis."
+    },
+    "features": {
+      "chat": {
+        "label": "Sourced answers",
+        "sub": "You ask, it answers from the documents",
+        "titleStart": "Answers cite",
+        "titleAccent": "real documents",
+        "titleEnd": "in force on the day you ask.",
+        "body": "Ask about house rules, leave, benefits or security. The assistant only uses approved documents that are in force and answers with verbatim quotes so you can check for yourself. With no basis, it says so."
+      },
+      "process": {
+        "label": "Processes and contacts",
+        "sub": "Step by step, right person, right form",
+        "titleStart": "Points you to the right",
+        "titleAccent": "process",
+        "titleEnd": "with approved links and contacts.",
+        "body": "For things you need to do, such as installing software, requesting access or registering a parking card, the assistant lists the steps from the owning team's process. Links, contacts and forms come from the approved catalogue, never invented by the assistant."
+      },
+      "ticket": {
+        "label": "Follow-up and tickets",
+        "sub": "You confirm before anything is sent",
+        "titleStart": "Missing details? It",
+        "titleAccent": "asks back",
+        "titleEnd": ", and drafts a ticket when action is needed.",
+        "body": "When the answer depends on your unit or role, the assistant asks instead of guessing. If another team must act, it drafts a ticket from the form; the ticket is sent only after you confirm."
+      }
+    },
+    "mock": {
+      "sample": "Sample conversation, simulated data",
+      "chat": {
+        "title": "VSF Onboarding Assistant",
+        "badge": "Approved documents",
+        "label": "SOURCED Q&A",
+        "question": "How many days of annual leave do permanent employees get?",
+        "assistant": "Assistant",
+        "answer": "Permanent employees get 12 days of annual leave, according to the 2024 annual leave policy.",
+        "cite": "Annual leave policy (2024)",
+        "sources": "1 source checked and in force",
+        "placeholder": "Ask about house rules, leave, devices, accounts...",
+        "send": "Send"
+      },
+      "process": {
+        "badge": "PROCESS",
+        "name": "Software installation request",
+        "version": "Version 1",
+        "s1": {
+          "cat": "FORM",
+          "label": "Submit a request with form IT-SW-01 on the IT portal"
+        },
+        "s2": {
+          "cat": "CONTACT",
+          "label": "IT forwards it to VinSOC, which scans within 3 working days"
+        },
+        "s3": {
+          "cat": "APPROVED LINK",
+          "label": "Only download from the approved software catalogue"
+        },
+        "s4": {
+          "cat": "NOTE",
+          "label": "Never open install links received by chat or email"
+        },
+        "foot": "4 steps · 2 approved links",
+        "button": "Open form IT-SW-01"
+      },
+      "ticket": {
+        "title": "Ticket draft",
+        "team": "IT",
+        "k1": {
+          "value": "IT-DEV-01",
+          "label": "Form"
+        },
+        "k2": {
+          "value": "Ubuntu",
+          "label": "Operating system"
+        },
+        "k3": {
+          "value": "IT",
+          "label": "Handling team"
+        },
+        "m1": "✓ Pick a process",
+        "m2": "✓ Fill in the form",
+        "m3": "⏳ Waiting for your confirmation",
+        "m4": "○ Send to the handling team"
+      }
+    },
+    "roles": {
+      "lead": "For everyone who shapes the onboarding experience.",
+      "flow": "From approved documents to answers for newcomers",
+      "asker": {
+        "tag": "01 · Q&A",
+        "title": "New employee",
+        "body": "Ask in everyday language, get sourced answers, follow processes step by step and open a ticket when needed.",
+        "cta": "Sign in to ask"
+      },
+      "hr": {
+        "tag": "02 · Content",
+        "title": "HR",
+        "body": "Upload documents and approve new versions, review differences between versions, manage processes, links and contacts, and track questions with no document yet.",
+        "cta": "Sign in to manage"
+      },
+      "team": {
+        "tag": "03 · Handling",
+        "title": "Ticket-handling teams",
+        "body": "Receive tickets the user has confirmed, see all details from the form and update the handling status.",
+        "cta": "Sign in to handle"
+      },
+      "admin": {
+        "tag": "04 · System",
+        "title": "Administrator",
+        "body": "Manage accounts, roles and teams, and review the change log of documents and configuration.",
+        "cta": "Sign in to administer"
+      },
+      "titleStart": "Value for",
+      "titleAccent": "every role"
+    },
+    "tech": {
+      "title": "Built on familiar foundations",
+      "web": {
+        "name": "Next.js 16",
+        "detail": "Web interface"
+      },
+      "api": {
+        "name": "FastAPI",
+        "detail": "Async API"
+      },
+      "db": {
+        "name": "PostgreSQL",
+        "detail": "ParadeDB and pgvector: hybrid search"
+      },
+      "docker": {
+        "name": "Docker",
+        "detail": "Reproducible runtime"
+      },
+      "llm": {
+        "name": "DeepSeek",
+        "detail": "Language model"
+      },
+      "embed": {
+        "name": "BGE-M3 on Modal",
+        "detail": "Multilingual embeddings"
+      },
+      "proxy": {
+        "name": "Caddy",
+        "detail": "HTTPS and routing"
+      },
+      "ci": {
+        "name": "GitHub Actions",
+        "detail": "Automated tests and releases"
+      }
+    },
+    "cta": {
+      "heading": "Ready to ask?",
+      "text": "Sign in with the account HR gave you and ask your first question.",
+      "button": "Sign in"
+    },
+    "footer": {
+      "tagline": "Onboarding assistant for new hires. Internship demo, not an official product.",
+      "email": "onboarding@vsf-demo.example",
+      "aboutTitle": "About",
+      "how": "How it works",
+      "roles": "Roles",
+      "login": "Sign in",
+      "contactTitle": "Contact",
+      "contactLine": "Internship demo",
+      "contactNote": "The contact address is a placeholder.",
+      "copyright": "© 2026 VSF Onboarding Assistant. Internship demo.",
+      "photoLead": "Illustrative photos of Vincom Center Dong Khoi, Ho Chi Minh City. Photos by: ",
+      "photoSource": "via Wikimedia Commons",
+      "photoEdited": "cropped and compressed",
+      "accessTitle": "Access"
+    }
+  },
+  "login": {
+    "title": "Sign in",
+    "subtitle": "Use the account issued by HR.",
+    "fields": {
+      "email": "Email",
+      "emailPlaceholder": "you@vsf-demo.example",
+      "password": "Password"
+    },
+    "submit": "Sign in",
+    "submitting": "Signing in…",
+    "note": "Accounts are created by HR or Admin; there is no self-registration.",
+    "back": "Back to home",
+    "errors": {
+      "emailRequired": "Enter your email.",
+      "emailInvalid": "The email format is not valid.",
+      "passwordRequired": "Enter your password.",
+      "invalid": "Incorrect email or password.",
+      "tooMany": "Too many attempts. Please wait a moment and try again.",
+      "unavailable": "Sign-in is unavailable right now. Please try again later.",
+      "inactive": "This account is locked. Please contact HR or Admin."
+    },
+    "welcomeLine1": "Just ask and know the next step.",
+    "welcomeLine2": "Start with confidence.",
+    "welcomeDescription": "The assistant answers from approved documents, points you to the right process and contact, and says so when it has no basis.",
+    "benefits": {
+      "sources": "Answers come with cited sources",
+      "approved": "Approved processes, links and contacts",
+      "noGuess": "It never guesses your personal data"
+    },
+    "firstTime": "Signing in for the first time?",
+    "support": "Support",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "quote": "“Where there is no source, the assistant says so.”"
+  },
+  "common": {
+    "language": "Language",
+    "vietnamese": "Vietnamese",
+    "english": "English"
+  },
+  "app": {
+    "roles": {
+      "USER": "New joiner",
+      "HR": "HR",
+      "ADMIN": "Administrator"
+    },
+    "signOut": "Sign out",
+    "signingOut": "Signing out…",
+    "signOutFailed": "Could not sign out right now. Please try again.",
+    "navigation": "Main navigation",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "lightMode": "Switch to light theme",
+    "darkMode": "Switch to dark theme",
+    "nav": {
+      "chat": "Q&A assistant",
+      "documents": "Documents",
+      "contacts": "Contacts",
+      "tickets": "Support requests",
+      "admin": "Admin area",
+      "soon": "Soon"
+    }
+  },
+  "chat": {
+    "greeting": "Hello, {name}",
+    "intro": "Ask about procedures, paperwork, equipment or contacts in your first days. The assistant answers only from approved documents.",
+    "conversation": "Conversation",
+    "suggestionsLabel": "Suggested questions",
+    "inputLabel": "Your question",
+    "placeholder": "Type your question…",
+    "send": "Send",
+    "sourceLabel": "Source:",
+    "noSource": "I have no approved document for this question yet, so I cannot answer it. You can ask HR for help.",
+    "suggestions": {
+      "firstDay": {
+        "question": "What do I need to prepare for my first day?",
+        "answer": "Bring your ID, arrive on time and meet HR at reception to get your access card and onboarding schedule.",
+        "source": "First-day handbook (illustrative)",
+        "title": "First day",
+        "excerpt": "“New joiners arrive at reception at the agreed time with their ID. HR hands out the access card and the first-week schedule.” (illustrative)"
+      },
+      "equipment": {
+        "question": "Where do I get my laptop and accounts?",
+        "answer": "Equipment and accounts are requested through IT by HR before you start; collect them from IT at the onboarding session.",
+        "source": "Equipment provisioning procedure (illustrative)",
+        "title": "Equipment and accounts",
+        "excerpt": "“HR sends the equipment and account request to IT before the new joiner starts; handover happens at the onboarding session.” (illustrative)"
+      },
+      "leave": {
+        "question": "How do I request leave?",
+        "answer": "Send a leave request to your line manager at least 3 working days ahead, except in emergencies.",
+        "source": "Leave policy (illustrative)",
+        "title": "Leave",
+        "excerpt": "“Leave requests go to the line manager at least 3 working days before the leave, except in emergencies.” (illustrative)"
+      },
+      "contact": {
+        "question": "Who do I ask when I hit a problem in week one?",
+        "answer": "Your team buddy is the first contact; for administrative matters contact HR.",
+        "source": "Contact directory (illustrative)",
+        "title": "Who can help",
+        "excerpt": "“Each new joiner has a buddy in the team; administrative matters go to HR.” (illustrative)"
+      }
+    },
+    "title": "Q&A assistant",
+    "scope": "Approved documents",
+    "newConversation": "New conversation",
+    "checking": "Searching the approved documents…",
+    "keyboardHint": "Enter to send, Shift+Enter for a new line",
+    "disclaimer": "The assistant answers only from approved documents. For anything important, confirm with HR.",
+    "excerptLabel": "Source excerpt"
+  },
+  "admin": {
+    "title": "Hello, {name}",
+    "description": "The admin area is under construction. For now you can view the chat page as a new joiner.",
+    "upcoming": {
+      "documents": "Document and version management",
+      "registry": "Contact and link registry",
+      "tickets": "Support requests from new joiners"
+    },
+    "openChat": "Open chat"
+  }
+}

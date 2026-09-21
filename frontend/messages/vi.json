@@ -3,15 +3,338 @@
     "title": "VSF Onboarding Assistant",
     "description": "Trợ lý onboarding cho nhân sự mới: trả lời từ tài liệu đã được duyệt, có trích dẫn nguồn."
   },
-  "home": {
-    "demoNote": "Bản demo thực tập",
-    "title": "Mới vào công ty, hỏi là biết bước tiếp theo",
-    "description": "Trợ lý trả lời từ tài liệu đã được duyệt, chỉ đúng quy trình và đúng đầu mối. Điều gì chưa có nguồn, trợ lý nói thẳng là chưa có, thay vì đoán.",
-    "cta": "Bắt đầu hỏi"
+  "landing": {
+    "skipLink": "Bỏ qua tới nội dung",
+    "nav": {
+      "label": "Điều hướng chính",
+      "brand": "VSF Onboarding Assistant",
+      "top": "Trợ lý làm gì",
+      "how": "Cách hoạt động",
+      "roles": "Vai trò",
+      "login": "Đăng nhập"
+    },
+    "hero": {
+      "line1": "Mới vào công ty,",
+      "line2": "hỏi là biết bước tiếp theo",
+      "description": "Trợ lý trả lời từ tài liệu đã được duyệt, chỉ đúng quy trình và đúng đầu mối. Điều gì chưa có nguồn, trợ lý nói thẳng là chưa có, thay vì đoán.",
+      "primary": "Bắt đầu hỏi",
+      "secondary": "Xem cách hoạt động",
+      "checkSources": "Câu trả lời kèm nguồn",
+      "checkProcess": "Đúng quy trình, đầu mối, biểu mẫu",
+      "photoAlt": "Tòa nhà Vincom Center Đồng Khởi nhìn từ công viên, TP.HCM"
+    },
+    "services": {
+      "chat": {
+        "title": "Hỏi đáp có nguồn",
+        "sub": "Kèm trích dẫn đúng đoạn tài liệu"
+      },
+      "process": {
+        "title": "Quy trình từng bước",
+        "sub": "Kèm link, đầu mối, biểu mẫu đã duyệt"
+      },
+      "clarify": {
+        "title": "Hỏi lại khi thiếu điều kiện",
+        "sub": "Không đoán đơn vị hay vai trò của bạn"
+      },
+      "ticket": {
+        "title": "Ticket nội bộ",
+        "sub": "Bản nháp, chỉ gửi khi bạn xác nhận"
+      }
+    },
+    "intro": {
+      "heading": "Một nơi để hỏi khi bạn mới vào công ty.",
+      "text": "Trợ lý gom tài liệu đã duyệt, quy trình và đầu mối thành một chỗ hỏi đáp duy nhất: có nguồn, đúng phiên bản còn hiệu lực, và nói thẳng khi chưa có căn cứ."
+    },
+    "features": {
+      "chat": {
+        "label": "Hỏi đáp có nguồn",
+        "sub": "Bạn hỏi, trợ lý trả lời đúng tài liệu",
+        "titleStart": "Câu trả lời dẫn về",
+        "titleAccent": "tài liệu thật",
+        "titleEnd": "còn hiệu lực tại ngày bạn hỏi.",
+        "body": "Bạn có thể hỏi về nội quy, nghỉ phép, phúc lợi hay bảo mật. Trợ lý chỉ dùng tài liệu đã được duyệt và còn hiệu lực, trả lời kèm trích dẫn nguyên văn để bạn tự kiểm tra. Không có căn cứ thì trợ lý nói thẳng là chưa có."
+      },
+      "process": {
+        "label": "Quy trình và đầu mối",
+        "sub": "Từng bước, đúng người, đúng biểu mẫu",
+        "titleStart": "Chỉ đúng",
+        "titleAccent": "quy trình",
+        "titleEnd": "kèm link và đầu mối đã duyệt.",
+        "body": "Với việc cần làm như cài phần mềm, xin cấp quyền hay đăng ký thẻ xe, trợ lý đưa các bước theo quy trình của bộ phận phụ trách. Link, đầu mối và biểu mẫu lấy từ danh mục đã duyệt, không do trợ lý tự nghĩ ra."
+      },
+      "ticket": {
+        "label": "Hỏi lại và ticket",
+        "sub": "Bạn xác nhận trước khi gửi",
+        "titleStart": "Thiếu điều kiện thì",
+        "titleAccent": "hỏi lại",
+        "titleEnd": ", cần xử lý thì soạn ticket nháp.",
+        "body": "Khi câu trả lời phụ thuộc đơn vị hay vai trò của bạn, trợ lý hỏi lại thay vì đoán. Nếu cần bộ phận khác xử lý, trợ lý soạn sẵn ticket nháp từ biểu mẫu; ticket chỉ được gửi sau khi bạn xác nhận."
+      }
+    },
+    "mock": {
+      "sample": "Hội thoại minh họa, dữ liệu giả lập",
+      "chat": {
+        "title": "VSF Onboarding Assistant",
+        "badge": "Tài liệu đã duyệt",
+        "label": "HỎI ĐÁP CÓ NGUỒN",
+        "question": "Nhân viên chính thức được nghỉ phép năm bao nhiêu ngày?",
+        "assistant": "Trợ lý",
+        "answer": "Nhân viên chính thức được nghỉ 12 ngày phép năm, theo chính sách nghỉ phép năm bản 2024.",
+        "cite": "Chính sách nghỉ phép năm (2024)",
+        "sources": "1 nguồn đã được đối chiếu và còn hiệu lực",
+        "placeholder": "Hỏi về nội quy, nghỉ phép, thiết bị, tài khoản...",
+        "send": "Gửi"
+      },
+      "process": {
+        "badge": "QUY TRÌNH",
+        "name": "Yêu cầu cài phần mềm",
+        "version": "Bản 1",
+        "s1": {
+          "cat": "BIỂU MẪU",
+          "label": "Tạo yêu cầu bằng form IT-SW-01 trên cổng IT"
+        },
+        "s2": {
+          "cat": "ĐẦU MỐI",
+          "label": "IT chuyển tới VinSOC quét trong 3 ngày làm việc"
+        },
+        "s3": {
+          "cat": "LIÊN KẾT ĐÃ DUYỆT",
+          "label": "Chỉ tải từ Danh mục phần mềm được duyệt"
+        },
+        "s4": {
+          "cat": "LƯU Ý",
+          "label": "Không mở liên kết cài đặt nhận qua chat hay email"
+        },
+        "foot": "4 bước · 2 liên kết đã duyệt",
+        "button": "Mở biểu mẫu IT-SW-01"
+      },
+      "ticket": {
+        "title": "Bản nháp ticket",
+        "team": "IT",
+        "k1": {
+          "value": "IT-DEV-01",
+          "label": "Biểu mẫu"
+        },
+        "k2": {
+          "value": "Ubuntu",
+          "label": "Hệ điều hành"
+        },
+        "k3": {
+          "value": "IT",
+          "label": "Đội xử lý"
+        },
+        "m1": "✓ Chọn quy trình",
+        "m2": "✓ Điền biểu mẫu",
+        "m3": "⏳ Chờ bạn xác nhận",
+        "m4": "○ Gửi cho đội xử lý"
+      }
+    },
+    "roles": {
+      "lead": "Dành cho những người cùng làm nên trải nghiệm onboarding.",
+      "flow": "Từ tài liệu được duyệt đến câu trả lời cho người mới",
+      "asker": {
+        "tag": "01 · Hỏi đáp",
+        "title": "Nhân sự mới",
+        "body": "Hỏi bằng ngôn ngữ thường ngày, nhận câu trả lời có nguồn, làm theo quy trình từng bước và tạo ticket khi cần.",
+        "cta": "Đăng nhập để hỏi"
+      },
+      "hr": {
+        "tag": "02 · Nội dung",
+        "title": "Nhân sự (HR)",
+        "body": "Nạp tài liệu và duyệt bản mới, xem khác biệt giữa các phiên bản, quản lý quy trình, link và đầu mối, theo dõi câu hỏi chưa có tài liệu.",
+        "cta": "Đăng nhập quản lý"
+      },
+      "team": {
+        "tag": "03 · Xử lý",
+        "title": "Đội xử lý ticket",
+        "body": "Nhận ticket đã được người dùng xác nhận, xem đủ thông tin theo biểu mẫu và cập nhật trạng thái xử lý.",
+        "cta": "Đăng nhập xử lý"
+      },
+      "admin": {
+        "tag": "04 · Hệ thống",
+        "title": "Quản trị viên",
+        "body": "Quản lý tài khoản, vai trò và đội; xem nhật ký thay đổi của tài liệu và cấu hình.",
+        "cta": "Đăng nhập quản trị"
+      },
+      "titleStart": "Giá trị cho từng",
+      "titleAccent": "vai trò"
+    },
+    "tech": {
+      "title": "Xây dựng trên nền tảng quen thuộc",
+      "web": {
+        "name": "Next.js 16",
+        "detail": "Giao diện web"
+      },
+      "api": {
+        "name": "FastAPI",
+        "detail": "API bất đồng bộ"
+      },
+      "db": {
+        "name": "PostgreSQL",
+        "detail": "ParadeDB và pgvector: tìm kiếm kết hợp"
+      },
+      "docker": {
+        "name": "Docker",
+        "detail": "Chạy lặp lại được"
+      },
+      "llm": {
+        "name": "DeepSeek",
+        "detail": "Mô hình ngôn ngữ"
+      },
+      "embed": {
+        "name": "BGE-M3 trên Modal",
+        "detail": "Embedding đa ngôn ngữ"
+      },
+      "proxy": {
+        "name": "Caddy",
+        "detail": "HTTPS và định tuyến"
+      },
+      "ci": {
+        "name": "GitHub Actions",
+        "detail": "Kiểm thử và phát hành tự động"
+      }
+    },
+    "cta": {
+      "heading": "Sẵn sàng hỏi?",
+      "text": "Đăng nhập bằng tài khoản do HR cấp và đặt câu hỏi đầu tiên.",
+      "button": "Đăng nhập"
+    },
+    "footer": {
+      "tagline": "Trợ lý onboarding cho nhân sự mới. Bản demo thực tập, chưa phải sản phẩm chính thức.",
+      "email": "onboarding@vsf-demo.example",
+      "aboutTitle": "Về trợ lý",
+      "how": "Cách hoạt động",
+      "roles": "Vai trò",
+      "login": "Đăng nhập",
+      "contactTitle": "Liên hệ",
+      "contactLine": "Bản demo thực tập",
+      "contactNote": "Địa chỉ liên hệ là địa chỉ giả lập.",
+      "copyright": "© 2026 VSF Onboarding Assistant. Bản demo thực tập.",
+      "photoLead": "Ảnh minh họa Vincom Center Đồng Khởi, TP.HCM. Ảnh: ",
+      "photoSource": "qua Wikimedia Commons",
+      "photoEdited": "đã cắt và nén",
+      "accessTitle": "Truy cập"
+    }
   },
   "login": {
     "title": "Đăng nhập",
-    "placeholder": "Trang đăng nhập sẽ được làm ở Phase 4.",
-    "back": "Về trang chủ"
+    "subtitle": "Dùng tài khoản do bộ phận HR cấp.",
+    "fields": {
+      "email": "Email",
+      "emailPlaceholder": "ban@vsf-demo.example",
+      "password": "Mật khẩu"
+    },
+    "submit": "Đăng nhập",
+    "submitting": "Đang đăng nhập…",
+    "note": "Tài khoản do HR hoặc Admin tạo, không có tự đăng ký.",
+    "back": "Về trang chủ",
+    "errors": {
+      "emailRequired": "Hãy nhập email.",
+      "emailInvalid": "Email chưa đúng định dạng.",
+      "passwordRequired": "Hãy nhập mật khẩu.",
+      "invalid": "Email hoặc mật khẩu không đúng.",
+      "tooMany": "Bạn thử quá nhiều lần. Hãy đợi một lúc rồi thử lại.",
+      "unavailable": "Không thể đăng nhập lúc này. Hãy thử lại sau.",
+      "inactive": "Tài khoản này đã bị khóa. Hãy liên hệ HR hoặc Admin."
+    },
+    "welcomeDescription": "Trợ lý trả lời từ tài liệu đã được duyệt, chỉ đúng quy trình và đầu mối, và nói thẳng khi chưa có căn cứ.",
+    "benefits": {
+      "sources": "Câu trả lời kèm nguồn dẫn chứng",
+      "approved": "Quy trình, link và đầu mối đã được duyệt",
+      "noGuess": "Không đoán dữ liệu cá nhân của bạn"
+    },
+    "welcomeLine1": "Hỏi là biết bước tiếp theo.",
+    "welcomeLine2": "Bắt đầu tự tin hơn.",
+    "firstTime": "Đăng nhập lần đầu?",
+    "support": "Hỗ trợ",
+    "showPassword": "Hiện mật khẩu",
+    "hidePassword": "Ẩn mật khẩu",
+    "quote": "“Chỗ nào chưa có nguồn, trợ lý nói thẳng là chưa có.”"
+  },
+  "common": {
+    "language": "Ngôn ngữ",
+    "vietnamese": "Tiếng Việt",
+    "english": "Tiếng Anh"
+  },
+  "app": {
+    "roles": {
+      "USER": "Nhân sự mới",
+      "HR": "Nhân sự (HR)",
+      "ADMIN": "Quản trị viên"
+    },
+    "signOut": "Đăng xuất",
+    "signingOut": "Đang đăng xuất…",
+    "signOutFailed": "Không đăng xuất được lúc này. Hãy thử lại.",
+    "navigation": "Điều hướng chính",
+    "openMenu": "Mở menu",
+    "closeMenu": "Đóng menu",
+    "lightMode": "Chuyển sang giao diện sáng",
+    "darkMode": "Chuyển sang giao diện tối",
+    "nav": {
+      "chat": "Trợ lý hỏi đáp",
+      "documents": "Tài liệu",
+      "contacts": "Đầu mối",
+      "tickets": "Yêu cầu hỗ trợ",
+      "admin": "Khu quản trị",
+      "soon": "Sắp có"
+    }
+  },
+  "chat": {
+    "greeting": "Xin chào, {name}",
+    "intro": "Hỏi về quy trình, giấy tờ, thiết bị hay đầu mối trong những ngày đầu. Trợ lý chỉ trả lời từ tài liệu đã được duyệt.",
+    "conversation": "Cuộc trò chuyện",
+    "suggestionsLabel": "Câu hỏi gợi ý",
+    "inputLabel": "Câu hỏi của bạn",
+    "placeholder": "Nhập câu hỏi của bạn…",
+    "send": "Gửi",
+    "sourceLabel": "Nguồn:",
+    "noSource": "Mình chưa có tài liệu đã duyệt nào cho câu hỏi này nên chưa thể trả lời. Bạn có thể hỏi HR để được hỗ trợ.",
+    "suggestions": {
+      "firstDay": {
+        "question": "Ngày đầu đi làm tôi cần chuẩn bị gì?",
+        "answer": "Bạn mang giấy tờ tùy thân, đến đúng giờ hẹn và gặp HR ở quầy tiếp đón để nhận thẻ ra vào và lịch làm quen.",
+        "source": "Cẩm nang ngày đầu (minh họa)",
+        "title": "Ngày đầu tiên",
+        "excerpt": "“Nhân sự mới có mặt tại quầy tiếp đón đúng giờ hẹn, mang theo giấy tờ tùy thân. HR phát thẻ ra vào và lịch làm quen tuần đầu.” (nội dung minh họa)"
+      },
+      "equipment": {
+        "question": "Tôi nhận laptop và tài khoản ở đâu?",
+        "answer": "Thiết bị và tài khoản được cấp qua yêu cầu IT do HR gửi trước ngày bạn vào; nhận tại bộ phận IT ở buổi làm quen.",
+        "source": "Quy trình cấp thiết bị (minh họa)",
+        "title": "Thiết bị và tài khoản",
+        "excerpt": "“HR gửi yêu cầu cấp thiết bị và tài khoản cho IT trước ngày nhân sự mới vào; bàn giao tại buổi làm quen.” (nội dung minh họa)"
+      },
+      "leave": {
+        "question": "Tôi xin nghỉ phép như thế nào?",
+        "answer": "Bạn gửi đơn nghỉ phép cho quản lý trực tiếp trước ít nhất 3 ngày làm việc, trừ trường hợp khẩn cấp.",
+        "source": "Quy định nghỉ phép (minh họa)",
+        "title": "Nghỉ phép",
+        "excerpt": "“Đơn nghỉ phép gửi quản lý trực tiếp ít nhất 3 ngày làm việc trước ngày nghỉ, trừ trường hợp khẩn cấp.” (nội dung minh họa)"
+      },
+      "contact": {
+        "question": "Tôi hỏi ai khi gặp vấn đề ở tuần đầu?",
+        "answer": "Người hướng dẫn (buddy) của đội là đầu mối đầu tiên; các vấn đề về hành chính thì liên hệ HR.",
+        "source": "Danh bạ đầu mối (minh họa)",
+        "title": "Cần ai giúp",
+        "excerpt": "“Mỗi nhân sự mới có một người hướng dẫn (buddy) trong đội; việc hành chính liên hệ HR.” (nội dung minh họa)"
+      }
+    },
+    "title": "Trợ lý hỏi đáp",
+    "scope": "Tài liệu đã duyệt",
+    "newConversation": "Cuộc trò chuyện mới",
+    "checking": "Đang tìm trong tài liệu đã duyệt…",
+    "keyboardHint": "Enter để gửi, Shift+Enter để xuống dòng",
+    "disclaimer": "Trợ lý chỉ trả lời từ tài liệu đã được duyệt. Với việc quan trọng, hãy xác nhận lại với HR.",
+    "excerptLabel": "Trích đoạn nguồn"
+  },
+  "admin": {
+    "title": "Xin chào, {name}",
+    "description": "Khu quản trị đang được xây dựng. Hiện tại bạn có thể xem trang chat như nhân sự mới.",
+    "upcoming": {
+      "documents": "Quản lý tài liệu và phiên bản",
+      "registry": "Danh bạ đầu mối và liên kết",
+      "tickets": "Yêu cầu hỗ trợ từ nhân sự mới"
+    },
+    "openChat": "Mở trang chat"
   }
 }
