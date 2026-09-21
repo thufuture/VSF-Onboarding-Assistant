@@ -1,8 +1,8 @@
 # Phase 0 — Kế hoạch chi tiết (chưa thực hiện, chờ bạn duyệt)
 
-> Trạng thái: **bản nháp để duyệt**. Chưa tạo thư mục, chưa chép, chưa sửa mã, chưa commit, chưa đẩy GitHub.
-> Thuộc [master-plan.md](master-plan.md) (Phase 0 [Bắt buộc], ≈ 0,5 ngày công). Sau Phase 0 là Phase 1a.
-> Tài liệu này chỉ mô tả việc sẽ làm; các đoạn mã bên dưới là **bản dự kiến**, chưa áp dụng vào đâu.
+> Trạng thái: **ĐÃ THỰC HIỆN phần kỹ thuật (20 → 21/09/2026)**; xem [bao-cao-phase-0.md](bao-cao-phase-0.md) để biết đã hoàn thành gì và còn gì. Nội dung bên dưới là kế hoạch gốc, giữ nguyên để đối chiếu.
+> Thuộc [master-plan.md](../master-plan.md) (Phase 0 [Bắt buộc], ≈ 0,5 ngày công). Sau Phase 0 là Phase 1a.
+> Các đoạn mã bên dưới là **bản dự kiến** trong kế hoạch gốc; kết quả thực tế ở báo cáo.
 
 ## 1. Mục tiêu và ranh giới
 
@@ -253,7 +253,7 @@ Gửi ngay trong ngày đầu vì độ trễ phản hồi là bên ngoài.
 
 ### Bước 15 — Chuẩn bị VPS (bạn làm, song song)
 
-Làm theo [huong-dan-thiet-lap-may-chu.md](huong-dan-thiet-lap-may-chu.md) tới bước "hello có HTTPS" (1–2 giờ). Chi tiết lựa chọn ở [phu-luc-may-chu-va-chi-phi.md](phu-luc-may-chu-va-chi-phi.md). Không đưa khóa Ralion lên VPS.
+Làm theo [huong-dan-thiet-lap-may-chu.md](../huong-dan-thiet-lap-may-chu.md) tới bước "hello có HTTPS" (1–2 giờ). Chi tiết lựa chọn ở [phu-luc-may-chu-va-chi-phi.md](../phu-luc-may-chu-va-chi-phi.md). Không đưa khóa Ralion lên VPS.
 
 ## 6. Việc của bạn và việc của tôi
 

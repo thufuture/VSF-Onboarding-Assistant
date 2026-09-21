@@ -1,14 +1,14 @@
 # Hướng dẫn thiết lập máy chủ demo (cho người chưa từng deploy)
 
 > Thuộc [master-plan.md](master-plan.md), **Phase 0** (bước 8) và nền cho Phase 1. Thời gian ước tính: 1–2 giờ nếu không vướng xác minh tài khoản (chưa đo).
-> Đã chốt: **VPS cá nhân Hetzner Cloud CX23** + tên miền miễn phí **DuckDNS** + CI **GitHub Actions**. Lý do, so sánh và bảng "đủ hay không" ở [phu-luc-may-chu-va-chi-phi.md](phu-luc-may-chu-va-chi-phi.md).
+> Đã chốt (cập nhật 2026-09-21): máy chính **Oracle Cloud Always Free (ARM A1.Flex, thử nghiệm)**, **dự phòng Hetzner Cloud CX23**; tên miền miễn phí **DuckDNS**; CI **GitHub Actions**. **Quy tắc thử: tạo máy Oracle tối đa khoảng 1 giờ; không được thì làm mục 3B (Hetzner).** Lý do, rủi ro thu hồi máy và bảng "đủ hay không" ở [phu-luc-may-chu-va-chi-phi.md](phu-luc-may-chu-va-chi-phi.md).
 > Giá, gói và giao diện các trang bên dưới thay đổi theo thời gian: nếu màn hình khác hướng dẫn, làm theo trang chính thức.
 
 ## 0. Việc nào bạn phải tự làm, việc nào tôi làm
 
 | Bạn tự làm (cần tài khoản, thanh toán, khóa riêng) | Tôi làm sau khi bạn xong |
 |---|---|
-| Đăng ký Hetzner, tạo server, thêm khóa SSH | Viết `bootstrap.sh`, Dockerfile, `compose.vps.yml`, Caddyfile, `deploy.sh`, `release.yml` |
+| Đăng ký Oracle (hoặc Hetzner), tạo server, thêm khóa SSH | Viết `bootstrap.sh`, Dockerfile, `compose.vps.yml`, Caddyfile, `deploy.sh`, `release.yml` |
 | Đăng ký tên miền DuckDNS | Hướng dẫn cấu hình secrets trên GitHub |
 | Tạo secrets/variables trong GitHub Environment | Gỡ lỗi khi bạn dán **thông báo lỗi** (không dán khóa/mật khẩu) |
 
@@ -41,7 +41,35 @@ ssh-keygen -t ed25519 -C "vsf-demo-deploy" -f $HOME\.ssh\vsf_deploy -N '""'
 - File `.pub` là **khóa công khai** (đưa lên máy chủ được). File không có đuôi là **khóa riêng** (giữ kín).
 - Xem khóa công khai: `Get-Content $HOME\.ssh\vsf_admin.pub`.
 
-## 3. Đăng ký Hetzner và tạo server
+## 3A. Máy chính: Oracle Cloud Always Free (ARM)
+
+Tài liệu chính thức: [Always Free Resources](https://docs.oracle.com/en-us/iaas/Content/FreeTier/freetier_topic-Always_Free_Resources.htm). Giao diện Oracle thay đổi thường xuyên; nếu màn hình khác hướng dẫn, làm theo tài liệu của Oracle. **Bắt đầu đếm 1 giờ khi bấm đăng ký.**
+
+1. Đăng ký tại https://www.oracle.com/cloud/free/ . Cần email và thường cần thẻ để xác minh (điều kiện chính xác **chưa xác minh**, trang FAQ chặn truy cập lúc tra cứu). **Chọn home region cẩn thận (đề xuất Singapore): theo hiểu biết chung, không đổi được sau này.** Giữ tài khoản ở mức **Always Free**, không nâng lên trả phí nếu không cần.
+2. Vào **Compute → Instances → Create instance** với:
+   - Image: **Canonical Ubuntu 24.04** (bản aarch64/ARM).
+   - Shape: **Ampere → VM.Standard.A1.Flex**, **1–2 OCPU, 4–6 GB RAM**. Không cần hết 2 OCPU / 12 GB: cấp vừa đủ giúp mức dùng bộ nhớ không quá thấp (xem rủi ro thu hồi máy nhàn rỗi ở [phụ lục mục 2](phu-luc-may-chu-va-chi-phi.md)). Có thể chỉnh lại sau (cần khởi động lại máy).
+   - Boot volume: **khoảng 50 GB** (tối thiểu 47 GB; tổng 200 GB cho tài khoản).
+   - Mạng: dùng VCN mặc định, bật **public IPv4**; sau khi tạo nên gán **Reserved public IP** để IP không đổi khi tắt/bật.
+   - SSH key: dán nội dung `vsf_admin.pub`.
+3. Nếu gặp lỗi **"Out of host capacity"**: Oracle nêu đây là tình trạng tạm thời hết máy Always Free tại vùng của bạn. Thử availability domain khác, giảm cấu hình, rồi thử lại sau vài phút. **Nếu quá khoảng 1 giờ vẫn không tạo được, dừng và làm mục 3B.**
+4. Mở cổng ở **VCN Security List** (Networking → Virtual cloud networks → Subnet → Security Lists → Add ingress rules): TCP 22, TCP 80, TCP 443, UDP 443, nguồn `0.0.0.0/0`.
+5. Ghi lại **địa chỉ IPv4 công khai**. Người dùng mặc định của Ubuntu trên Oracle là **`ubuntu`** (không phải `root`):
+
+```powershell
+ssh -i $HOME\.ssh\vsf_admin ubuntu@<IP-server>
+```
+
+**Khác biệt so với Hetzner ở mục 5:**
+- Đăng nhập bằng `ubuntu`, dùng `sudo` (thay cho `root`); khóa cho `deploy` lấy từ `/home/ubuntu/.ssh/authorized_keys`.
+- Ảnh Ubuntu trên Oracle thường có sẵn quy tắc `iptables` chặn cổng trong máy, **ngoài** Security List. Nếu Security List đã mở mà vẫn không vào được cổng 80/443, mở cả trong máy (theo kinh nghiệm chung, kiểm bằng cách thử): `sudo iptables -I INPUT 6 -m state --state NEW -p tcp --dport 80 -j ACCEPT` (tương tự 443, cổng UDP 443), rồi lưu quy tắc (`sudo apt-get install -y iptables-persistent && sudo netfilter-persistent save`). `bootstrap.sh` sẽ làm bước này. Dùng `ufw` **hoặc** `iptables` cho một nguồn quy tắc, tránh trộn hai bên.
+- Máy là **ARM (aarch64)**: ảnh Docker phải có bản `linux/arm64` (`paradedb`, `caddy`, `traefik/whoami` đều nên có; kiểm bằng `docker manifest inspect <image>` nếu nghi ngờ). Ảnh của dự án sẽ được build đa kiến trúc ở CI.
+- Không có "Firewall Hetzner" riêng: lớp ngoài là Security List.
+- Nên tạo **bản sao lưu ổ khởi động** (Boot volume backup) sau khi cấu hình xong; Always Free có 5 bản sao lưu volume.
+
+**Trước khi coi Oracle là dùng được:** chạy ổn định cả ngày và không mất SSH. **Chưa đặt lịch demo lên Oracle** khi chưa chạy ổn định vài ngày liên tục.
+
+## 3B. Máy dự phòng: Hetzner (dùng khi Oracle không tạo được hoặc không ổn định)
 
 1. Đăng ký tại https://www.hetzner.com/cloud/ rồi vào https://console.hetzner.cloud/. Có thể bị yêu cầu xác minh thẻ hoặc danh tính; nếu bị từ chối, xem đường lui ở [master-plan.md mục 5](master-plan.md) và [phụ lục](phu-luc-may-chu-va-chi-phi.md) (lưu ý: Quick Tunnel của Cloudflare không hỗ trợ SSE nên chat phải dùng chế độ không stream).
 2. Tạo **Project** (ví dụ `vsf-demo`).
@@ -68,17 +96,18 @@ ssh-keygen -t ed25519 -C "vsf-demo-deploy" -f $HOME\.ssh\vsf_deploy -N '""'
 nslookup vsf-demo.duckdns.org
 ```
 
-Kết quả phải là IP của server. Nếu xóa và tạo lại server thì IP đổi, phải cập nhật lại ở bước này.
+Kết quả phải là IP của server. Nếu xóa và tạo lại server (hoặc chuyển từ Oracle sang Hetzner) thì IP đổi, phải cập nhật lại ở bước này.
 
 Không dùng `<ip>.sslip.io` để lấy HTTPS: hạn mức chứng chỉ chung của nó [đã từng cạn](https://github.com/cunnie/sslip.io/issues/108).
 
 ## 5. Đăng nhập lần đầu và chuẩn bị máy chủ
 
 ```powershell
-ssh -i $HOME\.ssh\vsf_admin root@<IP-server>
+ssh -i $HOME\.ssh\vsf_admin root@<IP-server>      # Hetzner
+ssh -i $HOME\.ssh\vsf_admin ubuntu@<IP-server>    # Oracle (sau đó gõ: sudo -i để có quyền root)
 ```
 
-Gõ `yes` khi hỏi về host key lần đầu. Trên server (Ubuntu), chạy lần lượt:
+Gõ `yes` khi hỏi về host key lần đầu. Trên server (Ubuntu, quyền root), chạy lần lượt. **Trên Oracle:** thay `/root/.ssh/authorized_keys` bằng `/home/ubuntu/.ssh/authorized_keys` ở bước tạo `deploy`, và xem lưu ý `iptables` ở mục 3A (thay cho `ufw` nếu bạn chọn `iptables`); lệnh cài Docker giống nhau vì `$(dpkg --print-architecture)` tự chọn `arm64`.
 
 ```bash
 # cập nhật hệ thống
@@ -182,7 +211,8 @@ Tài liệu tham khảo: https://docs.github.com/actions
 
 | Khoản | Ước tính |
 |---|---|
-| Server Hetzner CX23 | ≈ €5,49 (trần theo tháng; tính theo giờ nên xóa sớm thì ít hơn); có thể có phụ phí IPv4 nhỏ; chưa gồm thuế |
+| Server Oracle Always Free (máy chính) | 0 (trong hạn mức) |
+| Server Hetzner CX23 (chỉ khi phải dùng dự phòng) | ≈ €5,49 (trần theo tháng; tính theo giờ nên xóa sớm thì ít hơn); có thể có phụ phí IPv4 nhỏ; chưa gồm thuế |
 | Tên miền DuckDNS | 0 |
 | CI GitHub Actions + GHCR | 0 nếu trong hạn mức |
 | **Gọi LLM và embedding (Modal/API)** | **Chưa biết**, phụ thuộc số câu hỏi và số lần chạy đánh giá; là khoản dễ vượt nhất, cần đặt cảnh báo chi phí ở nhà cung cấp |
@@ -191,8 +221,9 @@ Tài liệu tham khảo: https://docs.github.com/actions
 
 - [ ] Công cụ ở mục 1 chạy được.
 - [ ] Có hai khóa SSH (`vsf_admin`, `vsf_deploy`), khóa riêng không nằm trong repo.
-- [ ] Server Ubuntu 24.04 (CX23) chạy; SSH bằng người dùng `deploy` được.
+- [ ] Server Ubuntu 24.04 chạy (Oracle A1.Flex, hoặc Hetzner CX23 nếu quá 1 giờ không tạo được Oracle); SSH bằng người dùng `deploy` được.
+- [ ] Nếu là Oracle: Security List và `iptables` đã mở 80/443; đã gán Reserved public IP; đã ghi nhận máy chạy ổn định trước khi đặt lịch demo.
 - [ ] `nslookup <tên>.duckdns.org` ra đúng IP.
 - [ ] Trang `hello` truy cập được qua HTTPS từ máy khác.
 - [ ] Environment `staging` có đủ secrets/variables ở mục 7.
-- [ ] Đã ghi ngày xóa server và đặt cảnh báo chi phí ở nhà cung cấp API.
+- [ ] Nếu dùng Hetzner: đã ghi ngày xóa server. Với mọi máy: đã đặt cảnh báo chi phí ở nhà cung cấp API.
