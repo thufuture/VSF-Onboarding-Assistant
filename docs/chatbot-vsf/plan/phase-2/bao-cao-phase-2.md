@@ -2,14 +2,14 @@
 
 > Kế hoạch gốc: [phase-2.md](phase-2.md). Kế hoạch bước tiếp theo: [ke-hoach-tiep-theo.md](ke-hoach-tiep-theo.md).
 > Nhánh: `phase-2-vertical-slice` (từ `main` sau PR #3). **Đã commit cục bộ, chưa push, chưa mở PR.**
-> **Kết luận: 2-A (`0001_core` và model) đã xong và kiểm chứng trên PostgreSQL/ParadeDB thật. Các bước 2-B đến 2-F chưa làm. Đang chờ bạn xem checkpoint CP-2A.**
+> **Kết luận: 2-A (`0001_core` và model), U1 (landing) và U2 (trang đăng nhập, vỏ) đã xong và kiểm chứng. Các bước 2-B đến 2-F và U3 chưa làm. Đang chờ bạn xem CP-2A và CP-U1.**
 
 ## 1. Bảng checkpoint
 
 | Checkpoint | Nội dung cần bạn xem | Trạng thái |
 |---|---|---|
 | **CP-2A** | `0001_core` và 10 model (rủi ro lớn nhất: migration khó sửa về sau) | **Sẵn sàng để xem** |
-| CP-U1 | Landing page và trang đăng nhập (vỏ giao diện) | Chưa làm (kế hoạch ở [ke-hoach-tiep-theo.md](ke-hoach-tiep-theo.md)) |
+| **CP-U1** | Landing page và trang đăng nhập (vỏ giao diện): chạy `npm run dev`, mở `/vi` và `/vi/login`; ảnh chụp ở [screenshots/](screenshots/) | **Sẵn sàng để xem** |
 | CP-2B | Nạp `SYN_D03b`: xem section, chunk, embedding trong DB | Chưa làm |
 | CP-2C | Kết quả tìm kiếm hybrid với embedding **thật**, trước khi gọi LLM | Chưa làm |
 | CP-2D | LLM thật và validator quote | Chưa làm |
@@ -25,6 +25,9 @@
 | 2-D | LLM, hợp đồng JSON, validator | Chưa | ≈ 0,5 ngày |
 | 2-E | Endpoint và trang chat | Chưa | ≈ 0,25 ngày |
 | 2-F | Đo, báo cáo, cập nhật tài liệu | Chưa | ≈ 0,25 ngày |
+| **U1** | Landing page | **Xong** (commit `530ca4b`) | ≈ 0,5 ngày |
+| **U2** | Trang đăng nhập (vỏ) | **Xong** (commit `77ac880`) | ≈ 0,4 ngày |
+| U3 | Trang chat giả (`/vi/chat`) | Chưa | ≈ 0,2 ngày |
 
 **Giờ công thật của 2-A:** chưa đo chính xác (làm liền mạch trong một phiên, không bấm giờ). Từ 2-B sẽ ghi giờ từng bước để hiệu chỉnh lịch ở 2-F, đúng yêu cầu của master-plan.
 
@@ -38,6 +41,18 @@
 | Chỉ mục tìm kiếm | HNSW `vector_cosine_ops` (`m=16`, `ef_construction=64`) và BM25 (`pg_search`, `key_field='id'`) trên `document_chunks` |
 | Phụ thuộc | Thêm `pgvector` vào `requirements.txt` |
 | Test | 10 test tích hợp mới trong `tests/integration/test_core_schema.py`; `conftest.py` tự chạy `alembic upgrade head` cho DB test |
+
+## 3B. Đã làm ở U1 và U2 (giao diện)
+
+| Nhóm | Nội dung |
+|---|---|
+| **U1 Landing** (`frontend/src/features/landing/`) | `Navbar`, `Hero`, `Steps` (5 bước), `FeatureCards` (3 thẻ), `Footer`; ghép ở `app/[locale]/page.tsx`; liên kết "Bỏ qua tới nội dung"; cuộn mượt tới mục neo (tắt khi giảm chuyển động); hero dùng nền gradient theo token, **chưa có ảnh** (quyết định U-D2). Toàn bộ chữ ở `messages/vi.json`, khối `landing` (thay khối `home`) |
+| **U2 Đăng nhập** (`frontend/src/features/auth/`, `app/[locale]/login/page.tsx`) | Bố cục hai cột (panel ba nguyên tắc ẩn dưới 680 px), `LoginForm` (kiểm email/mật khẩu ở client, đọc `FormData`, `autoComplete` đúng, spinner, hộp lỗi `role="alert"`), `routing.ts` (`internalPath`, `resolvePostLoginPath`), `session.ts` (`authApi.login` gọi `POST /api/v1/auth/login` với cookie). Viết lại bằng Tailwind theo token, **không** chép CSS của Ralion, **không** thêm phụ thuộc |
+| Test giao diện | 72 test Vitest (từ 13 ở Phase 1): landing, định tuyến an toàn (`//evil.com`, `/\evil.com`, `https://…`, `javascript:` đều bị loại), gọi API (401/403/429/404/500/lỗi mạng, không header định danh tự chế), form (kiểm nhập liệu, lỗi server, trạng thái đang gửi, chuyển trang theo vai trò), quét mã nguồn: không chữ tiếng Việt cứng, không mã màu hex, không `ralion`/`X-User-Id`/`LanguageSwitcher`/`localStorage`, landing không có số liệu chưa đo và không nhắc Vincom |
+| Kiểm chứng | `npm run lint`, `typecheck`, `test` (72 qua), `build` xanh. Ảnh chụp thật ở 1280 px và 375 px (375 px chụp bằng iframe rộng đúng 375 px để không bị bề rộng cửa sổ tối thiểu của Chrome headless làm sai): [landing-1280](screenshots/landing-1280.png), [landing-375](screenshots/landing-375.png), [login-1280](screenshots/login-1280.png), [login-375](screenshots/login-375.png). Không tràn ngang |
+| Hành vi khi gửi form | `POST /api/v1/auth/login` qua Next dev hiện trả **404** (backend chưa có route, Phase 4). Form hiển thị "Không thể đăng nhập lúc này. Hãy thử lại sau." Đây là hành vi đúng của bản vỏ |
+
+**Chưa kiểm chứng:** Lighthouse (chưa chạy); chế độ tối (token có sẵn nhưng chưa xem bằng mắt); Playwright (dời sang Phase 9, quyết định U-D6); chạy trình duyệt thật bấm gửi form (chỉ kiểm bằng test đơn vị và `curl` tới rewrite).
 
 ## 4. Kiểm chứng (trên PostgreSQL/ParadeDB thật, `paradedb:v0.25.4-pg16`)
 
@@ -67,6 +82,15 @@ Các test ràng buộc chứng minh: hai bản `ACTIVE` chồng ngày bị **t�
 
 **Lưu ý cho lần triển khai thật:** vì `0001_core` chưa áp dụng ở môi trường nào ngoài máy bạn và CI, đây là lúc cuối cùng sửa nó mà không cần migration mới. Nếu bạn muốn đổi gì (tên cột, độ dài, khóa ngoại), hãy nói **trước khi** đẩy nhánh lên `main` và triển khai.
 
+## 5B. Sai lệch so với kế hoạch ở U1/U2
+
+| # | Nội dung | Vì sao |
+|---|---|---|
+| 1 | Landing đặt ở `app/[locale]/page.tsx`, không tạo nhóm route `(marketing)` | Giữ cấu trúc hiện có, không cần thay đổi định tuyến |
+| 2 | Trang đăng nhập không có biểu tượng từ `@primer/octicons-react` | Dùng SVG nhúng để không thêm phụ thuộc (U-D5) |
+| 3 | Kiểm `Lighthouse` và Playwright chưa làm | U-D6: dời; đã chụp ảnh và kiểm tay thay thế |
+| 4 | Khi chạy `npx prettier` lần đầu tôi vô tình định dạng lại một số tệp cũ (dòng 80 cột) | Đã hoàn tác các tệp không thuộc phạm vi; repo dùng dòng dài 120 cột. Không có cấu hình Prettier trong dự án; nên thêm ở một PR riêng nếu muốn thống nhất |
+
 ## 6. Việc theo dõi (không chặn)
 
 - **Cảnh báo `mypy`/ruff cho migration:** `alembic/versions/*.py` được ruff định dạng lại (dấu nháy kép); các migration sau nên chạy `ruff format` trước khi commit.
@@ -76,4 +100,4 @@ Các test ràng buộc chứng minh: hai bản `ACTIVE` chồng ngày bị **t�
 
 ## 7. Bước tiếp theo
 
-Xem [ke-hoach-tiep-theo.md](ke-hoach-tiep-theo.md): làm song song hai luồng (giao diện landing/đăng nhập/chat giả và backend nạp tài liệu, tìm kiếm, LLM), mỗi luồng có checkpoint riêng.
+Sau CP-U1: làm luồng backend theo [ke-hoach-tiep-theo.md](ke-hoach-tiep-theo.md): **2-B** (nạp tài liệu), **2-C** (tìm kiếm hybrid, mở đầu bằng spike BM25), **2-D** (LLM và validator), rồi **U3** (chat giả) cùng **2-E** (nối endpoint thật) và **2-F** (đo, báo cáo). Cần khóa DeepSeek và Modal từ 2-B/2-D trở đi (chưa có thì làm bằng giả và ghi "chưa đo").
