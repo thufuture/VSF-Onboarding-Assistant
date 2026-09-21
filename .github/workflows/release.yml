@@ -1,0 +1,84 @@
+name: release
+
+# Merge vào main: verify -> build và đẩy image -> (nếu bật) deploy lên VPS -> smoke test công khai.
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    uses: ./.github/workflows/verify.yml
+
+  publish:
+    needs: verify
+    uses: ./.github/workflows/publish.yml
+    permissions:
+      contents: read
+      packages: write
+
+  deploy:
+    needs: publish
+    # Chỉ deploy khi đã có VPS: đặt biến repo DEPLOY_ENABLED=true (Settings -> Secrets and variables -> Actions -> Variables).
+    if: ${{ vars.DEPLOY_ENABLED == 'true' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    environment: staging # secrets/vars của VPS nằm ở Environment này (giới hạn nhánh main)
+    concurrency:
+      group: deploy-staging
+      cancel-in-progress: false # không hủy deploy đang chạy dở
+    permissions:
+      contents: read
+    env:
+      SSH_TARGET: ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}
+      SSH_PORT: ${{ vars.VPS_PORT || '22' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Chuẩn bị SSH (ghim host key, StrictHostKeyChecking=yes)
+        env:
+          SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+          SSH_HOST_KEY: ${{ secrets.VPS_SSH_HOST_KEY }}
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/id_deploy
+          chmod 600 ~/.ssh/id_deploy
+          printf '%s\n' "$SSH_HOST_KEY" > ~/.ssh/known_hosts
+          cat > ~/.ssh/config <<CONF
+          Host vps
+            HostName ${VPS_HOST}
+            User ${VPS_USER}
+            Port ${SSH_PORT}
+            IdentityFile ~/.ssh/id_deploy
+            IdentitiesOnly yes
+            StrictHostKeyChecking yes
+          CONF
+
+      - name: Đẩy deploy/ và scripts/vps/ lên máy chủ
+        run: |
+          tar czf - deploy scripts/vps | ssh vps 'tar xzf - -C /opt/vsf && chmod +x /opt/vsf/scripts/vps/*.sh'
+
+      - name: Đăng nhập GHCR trên máy chủ (dùng cho package private; deploy.sh tự logout khi xong)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          printf '%s' "$GH_TOKEN" | ssh vps "docker login ghcr.io -u '${GITHUB_ACTOR}' --password-stdin"
+
+      - name: Deploy (backup, migrate, khởi động, smoke, tự rollback nếu lỗi)
+        env:
+          BACKEND_IMAGE: ${{ needs.publish.outputs.backend_image }}
+          FRONTEND_IMAGE: ${{ needs.publish.outputs.frontend_image }}
+          PUBLIC_URL: ${{ vars.PUBLIC_URL }}
+        run: |
+          owner="${GITHUB_REPOSITORY_OWNER,,}"
+          ssh vps "IMAGE_PREFIX='ghcr.io/${owner}/' SMOKE_URL='${PUBLIC_URL}' \
+            /opt/vsf/scripts/vps/deploy.sh '${BACKEND_IMAGE}' '${FRONTEND_IMAGE}'"
+
+      - name: Kiểm tra công khai từ runner
+        env:
+          PUBLIC_URL: ${{ vars.PUBLIC_URL }}
+        run: scripts/vps/smoke-test.sh "$PUBLIC_URL"

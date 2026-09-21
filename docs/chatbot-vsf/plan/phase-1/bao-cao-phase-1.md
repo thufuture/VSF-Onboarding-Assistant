@@ -1,7 +1,7 @@
-# Báo cáo Phase 1 — tình hình (1a-A và 1a-B)
+# Báo cáo Phase 1 — tình hình (1a, 1b, cập nhật 21/09/2026)
 
-> Thực hiện: đêm 20 → 21/09/2026, trên nhánh `phase-1a-skeleton` của repo. **Chưa commit.** Kế hoạch gốc: [phase-1.md](phase-1.md).
-> **Kết luận: 1a-A (backend, DB, Docker) và 1a-B (frontend) đã xong và được kiểm chứng cục bộ. 1a-C (CI) và 1b (triển khai) chưa làm, đúng như bạn yêu cầu (làm ngày mai).**
+> Thực hiện: 20–21/09/2026. Mã đã commit và merge vào `main` qua PR #1 và #2 (repo `thufuture/VSF-Onboarding-Assistant`). Kế hoạch gốc: [phase-1.md](phase-1.md).
+> **Kết luận: 1a (backend, frontend, CI) đã xong và CI xanh trên GitHub; 1b (khung triển khai) đã viết và chạy thử cục bộ, image đã lên GHCR. Chưa triển khai lên máy chủ thật vì chưa thuê VPS (Oracle lỗi, dùng Hetzner khi thuê).**
 
 ## 1. Tóm tắt
 
@@ -9,9 +9,11 @@
 |---|---|
 | 1a-A Backend FastAPI, `/api/v1/health` và `/ready`, Alembic khung, Dockerfile, `docker-compose.yml` với ParadeDB | **Xong**, cổng 9.1 đạt |
 | 1a-B Frontend Next.js: i18n `vi`, token thiết kế, trang khung `/`, `/vi`, `/vi/login`, test | **Xong**, cổng 9.2 đạt |
-| 1a-C CI GitHub Actions (`verify.yml`) | **Chưa** (ngày mai) |
-| 1b Khung triển khai lên VPS | **Chưa** (ngày mai; cần VPS của bạn) |
-| Commit và đẩy nhánh | **Chưa**: chờ bạn xác nhận (CP3, CP4) |
+| 1a-C CI GitHub Actions (`verify.yml`, `ci.yml`) | **Xong**: PR #1 và #2 xanh (backend 57 giây, frontend 58 giây) |
+| 1b Khung triển khai: Dockerfile frontend, `compose.vps.yml`, Caddyfile, `bootstrap/deploy/rollback/backup/smoke`, `publish.yml`, `release.yml` | **Đã viết**. Chạy thử cục bộ: stack VPS lên, smoke test qua 6/6. **Chưa chạy trên VPS thật** (`deploy.sh`, `bootstrap.sh` mới kiểm cú pháp) |
+| Image lên GHCR (amd64) | **Xong** lần đầu, do `publish` chạy sau khi merge PR #2 (build khoảng 2 phút 38 giây mỗi image) |
+| Commit, push, PR | **Xong**: nhánh đã merge vào `main` |
+| Thuê VPS, DuckDNS, deploy thật | **Chưa** (bước tiếp theo, tốn khoảng €5,49/tháng) |
 
 ## 2. Đã làm
 
@@ -92,10 +94,29 @@ Chưa nên suy ra tốc độ cho các phase sau: Phase 1a là khung ít logic. 
 
 ## 8. Còn lại và bước tiếp theo
 
+**Đã xong từ danh sách cũ:** commit tách mã và tài liệu, `verify.yml`, đẩy nhánh, PR, CI xanh, khung 1b.
+
+**Quyết định thay đổi:** Oracle không tạo được, chuyển sang **Hetzner CX23 (x86)**. Vì vậy `publish.yml` chỉ build `linux/amd64` (giảm thời gian và phút Actions). Quay lại Oracle (ARM) thì thêm `linux/arm64` và `setup-qemu-action`.
+
+**Cấu hình CI/CD hiện có:**
+- `ci.yml`: PR vào `main` chạy `verify` (backend trên ParadeDB service container, frontend).
+- `release.yml`: merge vào `main` chạy `verify`, rồi `publish`, rồi `deploy` (SSH, `deploy.sh`, smoke test). Job `deploy` **chỉ chạy khi biến repo `DEPLOY_ENABLED=true`**, nên hiện đang bỏ qua an toàn.
+- `publish.yml`: build và đẩy image, xuất digest; chạy tay được để thử build.
+
 | # | Việc | Ai | Ghi chú |
 |---|---|---|---|
-| 1 | **CP3:** commit 1a-A và 1a-B vào nhánh `phase-1a-skeleton` (cục bộ) | Bạn xác nhận, tôi làm | 57 tệp mã + cập nhật tài liệu; nên tách hai commit (mã, tài liệu) |
-| 2 | **1a-C:** viết `verify.yml` (backend, frontend, images) | Tôi | Ngày mai |
-| 3 | **CP4:** đẩy nhánh, mở PR, xem CI xanh | Bạn xác nhận; tôi làm nếu có `gh`, còn không bạn bấm và báo kết quả | Đẩy là hành động ra ngoài |
-| 4 | **1b:** Dockerfile frontend, `compose.vps.yml`, Caddyfile, `bootstrap.sh`, `deploy.sh`, `smoke-test.sh`, GHCR | Tôi viết; **bạn cần VPS (Oracle trước, dự phòng Hetzner) + DuckDNS + khóa SSH trước**; nếu Oracle (ARM) thì phải build image `linux/arm64` | Giới hạn cứng 1 ngày; xem [phase-1.md](phase-1.md) mục 8 |
-| 5 | Việc tồn từ Phase 0: VPS, thư mentor, bảo vệ nhánh | Bạn | [bao-cao-phase-0.md](../phase-0/bao-cao-phase-0.md) mục 8 |
+| 1 | Đặt hai package GHCR sang **Public** (hoặc dùng token `read:packages`) | Bạn | [huong-dan mục 7](../huong-dan-thiet-lap-may-chu.md) |
+| 2 | Thuê VPS Hetzner CX23, DuckDNS | Bạn | [huong-dan mục 3B, 4](../huong-dan-thiet-lap-may-chu.md) |
+| 3 | `bootstrap.sh` rồi `deploy.sh` lần đầu bằng digest, `smoke-test.sh` | Bạn làm, tôi hướng dẫn | Lỗi thật sẽ lộ ở đây; sửa tại chỗ rồi commit |
+| 4 | Tạo Environment `staging`, đặt secrets/vars, đặt `DEPLOY_ENABLED=true` | Bạn | Khóa riêng `vsf_deploy` chỉ dán vào GitHub |
+| 5 | Bảo vệ nhánh `main`, đặt Actions spending limit $0, thư gửi mentor | Bạn | Tồn từ Phase 0 |
+| 6 | Bật `SMOKE_AUTH_ME=1` khi có `/api/v1/auth/me` | Tôi | Từ Phase 4 |
+| 7 | Sang Phase 2 (`0001_core`, embedding, LLM) | Tôi | Không cần VPS |
+
+**Chưa kiểm chứng:** `deploy.sh`, `bootstrap.sh`, `backup-db.sh`, `release.yml` (job `deploy`) chưa từng chạy trên máy thật. Cơ chế rollback tự động chưa thử. Cấp chứng chỉ HTTPS của Caddy chưa thử.
+
+## 9. Lỗi đã gặp ở 1b (đã sửa)
+
+1. **`/api/v1/ready` lộ ra ngoài (trả 200):** `respond` chạy sau `reverse_proxy` trong Caddy. Sửa bằng `handle @internal { respond 404 }` đặt trước.
+2. **Script mất quyền chạy:** trên Windows git lưu chế độ `100644`. Sửa bằng `git update-index --chmod=+x`.
+3. **Ghi đè nhầm `backend/.dockerignore` có sẵn:** đã khôi phục bằng `git checkout`.
