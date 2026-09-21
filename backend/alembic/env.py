@@ -7,9 +7,7 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from alembic import context
 from src.config import get_settings
-from src.model.base import Base
-
-# Từ Phase 2: import các module thực thể ở đây để chúng đăng ký vào Base.metadata (ví dụ `import src.model.user`).
+from src.model import Base  # import src.model đăng ký mọi thực thể vào Base.metadata
 
 config = context.config
 

@@ -8,3 +8,5 @@ asyncpg>=0.30,<1
 alembic>=1.14,<2
 # zoneinfo trên Windows/slim không có dữ liệu múi giờ; cần cho APP_TIMEZONE (Asia/Ho_Chi_Minh).
 tzdata>=2024.1
+# Vector 1024 chiều (BGE-M3) và chỉ mục HNSW.
+pgvector>=0.3.6,<1
