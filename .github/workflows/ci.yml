@@ -1,0 +1,17 @@
+name: ci
+
+on:
+  pull_request:
+    branches: [main]
+
+# PR mới hủy lần chạy cũ của cùng nhánh.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    uses: ./.github/workflows/verify.yml
