@@ -2,7 +2,7 @@
 
 Trợ lý onboarding cho nhân sự mới: trả lời **từ tài liệu đã được duyệt, có trích dẫn nguồn**, chỉ đúng quy trình, đúng đầu mối và biểu mẫu; khi thiếu căn cứ thì nói thẳng là chưa có thay vì đoán.
 
-> **Trạng thái:** Phase 0 xong; Phase 1a đã có khung backend (FastAPI + PostgreSQL/ParadeDB) và frontend (Next.js) chạy cục bộ; CI và triển khai chưa làm. **Bản demo thực tập, chưa phải sản phẩm chính thức.** Chưa có tính năng nghiệp vụ nào (Phase 2 trở đi).
+> **Trạng thái:** Phase 0 xong; Phase 1a đã có khung backend (FastAPI + PostgreSQL/ParadeDB) và frontend (Next.js) chạy cục bộ; đã có CI (`verify.yml`) và khung triển khai VPS (`deploy/`, `scripts/vps/`, chạy thử cục bộ; chưa chạy trên máy chủ thật). **Bản demo thực tập, chưa phải sản phẩm chính thức.** Chưa có tính năng nghiệp vụ nào (Phase 2 trở đi).
 
 ## Tài liệu
 
