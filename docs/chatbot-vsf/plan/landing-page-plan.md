@@ -1,5 +1,6 @@
 # Phase 10 — Landing page tiếng Việt, tối giản (0,5 ngày công)
 
+> **Cập nhật 21/09/2026: đã làm sớm (trước Phase 10).** Thiết kế chép từ landing của Ralion, hero dùng ảnh Vincom Center Đồng Khởi (CC BY-SA 4.0) như VLearn; chữ ở `messages/vi.json`. Xem [phase-2/bao-cao-phase-2.md](phase-2/bao-cao-phase-2.md) mục 3B. Phần còn lại của Phase 10: hội thoại mẫu thật sau Phase 7, Lighthouse.
 > Trạng thái: **bản nháp v4 để duyệt** (rút còn 0,5 ngày để nhường chỗ cho triển khai). Thuộc [master-plan.md](master-plan.md), **Phase 10 [Stretch]** (tuần 4, ≈ 0,5 ngày công). Làm **sau khi chatbot lõi đã chạy**; nếu trễ thì đây là thứ đầu tiên bị cắt, và Phase 12 (nghiệm thu) **không phụ thuộc** vào phase này. Trước khi phase này xong, `/vi` chuyển hướng tới `/vi/login` (chưa đăng nhập) hoặc `/vi/chat`.
 > Nguồn bố cục: https://vlearn.dev/welcome (đã đọc cấu trúc). **Chỉ mượn bố cục**, không mượn chữ, ảnh, logo, minh họa của VLearn/VinUni.
 

@@ -25,8 +25,8 @@
 | 2-D | LLM, hợp đồng JSON, validator | Chưa | ≈ 0,5 ngày |
 | 2-E | Endpoint và trang chat | Chưa | ≈ 0,25 ngày |
 | 2-F | Đo, báo cáo, cập nhật tài liệu | Chưa | ≈ 0,25 ngày |
-| **U1** | Landing page | **Xong** (commit `530ca4b`) | ≈ 0,5 ngày |
-| **U2** | Trang đăng nhập (vỏ) | **Xong** (commit `77ac880`) | ≈ 0,4 ngày |
+| **U1** | Landing page (thiết kế lại theo Ralion và VLearn) | **Xong** | ≈ 0,5 ngày |
+| **U2** | Trang đăng nhập (vỏ, bố cục Ralion) | **Xong** | ≈ 0,4 ngày |
 | U3 | Trang chat giả (`/vi/chat`) | Chưa | ≈ 0,2 ngày |
 
 **Giờ công thật của 2-A:** chưa đo chính xác (làm liền mạch trong một phiên, không bấm giờ). Từ 2-B sẽ ghi giờ từng bước để hiệu chỉnh lịch ở 2-F, đúng yêu cầu của master-plan.
@@ -42,17 +42,25 @@
 | Phụ thuộc | Thêm `pgvector` vào `requirements.txt` |
 | Test | 10 test tích hợp mới trong `tests/integration/test_core_schema.py`; `conftest.py` tự chạy `alembic upgrade head` cho DB test |
 
-## 3B. Đã làm ở U1 và U2 (giao diện)
+## 3B. Đã làm ở U1 và U2 (giao diện, bản thiết kế lại theo Ralion và VLearn)
+
+> Bản đầu (Tailwind tối giản) bị bạn yêu cầu làm lại: **giao diện phải giống landing và trang đăng nhập của Ralion, hero dùng ảnh Vincom Center Đồng Khởi như VLearn, chỉ đổi nội dung.** Bản dưới là bản đã làm lại. Yêu cầu này thay các quyết định **U-D2** (hero gradient, chưa có ảnh) và **U-D5** (viết lại bằng Tailwind, không chép CSS Ralion).
 
 | Nhóm | Nội dung |
 |---|---|
-| **U1 Landing** (`frontend/src/features/landing/`) | `Navbar`, `Hero`, `Steps` (5 bước), `FeatureCards` (3 thẻ), `Footer`; ghép ở `app/[locale]/page.tsx`; liên kết "Bỏ qua tới nội dung"; cuộn mượt tới mục neo (tắt khi giảm chuyển động); hero dùng nền gradient theo token, **chưa có ảnh** (quyết định U-D2). Toàn bộ chữ ở `messages/vi.json`, khối `landing` (thay khối `home`) |
-| **U2 Đăng nhập** (`frontend/src/features/auth/`, `app/[locale]/login/page.tsx`) | Bố cục hai cột (panel ba nguyên tắc ẩn dưới 680 px), `LoginForm` (kiểm email/mật khẩu ở client, đọc `FormData`, `autoComplete` đúng, spinner, hộp lỗi `role="alert"`), `routing.ts` (`internalPath`, `resolvePostLoginPath`), `session.ts` (`authApi.login` gọi `POST /api/v1/auth/login` với cookie). Viết lại bằng Tailwind theo token, **không** chép CSS của Ralion, **không** thêm phụ thuộc |
-| Test giao diện | 72 test Vitest (từ 13 ở Phase 1): landing, định tuyến an toàn (`//evil.com`, `/\evil.com`, `https://…`, `javascript:` đều bị loại), gọi API (401/403/429/404/500/lỗi mạng, không header định danh tự chế), form (kiểm nhập liệu, lỗi server, trạng thái đang gửi, chuyển trang theo vai trò), quét mã nguồn: không chữ tiếng Việt cứng, không mã màu hex, không `ralion`/`X-User-Id`/`LanguageSwitcher`/`localStorage`, landing không có số liệu chưa đo và không nhắc Vincom |
-| Kiểm chứng | `npm run lint`, `typecheck`, `test` (72 qua), `build` xanh. Ảnh chụp thật ở 1280 px và 375 px (375 px chụp bằng iframe rộng đúng 375 px để không bị bề rộng cửa sổ tối thiểu của Chrome headless làm sai): [landing-1280](screenshots/landing-1280.png), [landing-375](screenshots/landing-375.png), [login-1280](screenshots/login-1280.png), [login-375](screenshots/login-375.png). Không tràn ngang |
-| Hành vi khi gửi form | `POST /api/v1/auth/login` qua Next dev hiện trả **404** (backend chưa có route, Phase 4). Form hiển thị "Không thể đăng nhập lúc này. Hãy thử lại sau." Đây là hành vi đúng của bản vỏ |
+| **U1 Landing** (`frontend/src/features/landing/`) | `LandingPage.tsx` chuyển thể từ landing của Ralion: header cố định (trong suốt trên ảnh, đổi sang nền trắng khi cuộn, mục đang xem được tô sáng), **hero ảnh Vincom Center Đồng Khởi toàn khung + lớp phủ xanh đậm + chữ trắng căn giữa** (như VLearn), dải bốn dịch vụ, phần giới thiệu, **ba tính năng kèm mockup** (hỏi đáp có nguồn, quy trình/link/đầu mối, ticket nháp), bốn vai trò, bảy công nghệ, kêu gọi cuối trang, chân trang. `LandingPage.module.css` chép từ CSS của Ralion (đã bỏ phần video, hero cũ, chọn ngôn ngữ; đổi biến màu và phông) cộng phần hero mới |
+| **Ảnh hero** | `public/images/landing/hero-vincom-dong-khoi.webp` (325 KB, cắt 1920×1080), **CC BY-SA 4.0**, tác giả Steffen Schmitz (Wikimedia Commons), giấy phép đã đối chiếu qua API của Commons. Ghi công hiển thị ngay trên hero (tác giả, giấy phép, "đã cắt và nén") và trong `CREDITS.md`; chú thích "Ảnh minh họa" đúng như [landing-page-plan.md](../landing-page-plan.md) mục 4 (trang không nói VSF làm việc ở tòa nhà này) |
+| **Nội dung VSF** | Chữ nằm hết trong `messages/vi.json` (khối `landing`), không viết cứng trong component như Ralion. Mockup dùng dữ liệu **có thật trong bộ seed**: quy trình `PR-SOFTWARE-REQUEST` (4 bước, biểu mẫu `IT-SW-01`, đầu mối IT/VinSOC), biểu mẫu `IT-DEV-01`, chính sách nghỉ phép 2024 (12 ngày); ghi rõ "hội thoại minh họa, dữ liệu giả lập". Không có số liệu hiệu quả chưa đo |
+| **U2 Đăng nhập** (`frontend/src/features/auth/`, `app/[locale]/login/page.tsx`) | Bố cục Ralion: header có thương hiệu và ba liên kết về landing; **panel trái xanh có cạnh cắt hình mũi tên** (nhãn, tiêu đề, mô tả, ba lợi ích); thẻ đăng nhập bên phải. `LoginPage.module.css` chép từ CSS của Ralion (đã bỏ video, khung "tài khoản test", chọn ngôn ngữ). `LoginForm` giữ logic của tôi (kiểm nhập liệu ở client, đọc `FormData`, gọi `POST /api/v1/auth/login`, `?next=` an toàn, trạng thái đang gửi) nhưng dùng markup và biểu tượng của Ralion |
+| Phụ thuộc và phông | Thêm `lucide-react` (icon landing) và `@primer/octicons-react` (icon đăng nhập), đều là phụ thuộc Ralion đã dùng. Phông **Be Vietnam Pro** qua `next/font/google` (tải lúc build, tự host; Poppins của Ralion thiếu ký tự tiếng Việt). Không gọi Google Fonts hay CDN nào khi chạy |
+| Không chép từ Ralion | Logo Ralion (thay bằng `VsfBrand`: chữ + biểu tượng bong bóng chat vẽ SVG), video demo và `iframe` Google Drive, khung "tài khoản test" trỏ Google Doc, `LanguageSwitcher` và bản `en`, `X-User-Id`/`localStorage`, biểu tượng công nghệ tải từ CDN bên thứ ba, các liên kết mạng xã hội giả |
+| Test giao diện | **74 test** Vitest (Phase 1 có 13): cấu trúc và neo của landing, hero (ảnh, ghi công, nút), dữ liệu mockup, quy tắc nội dung (không %, không nhắc VLearn/VinUni/Ralion, chỉ chú thích ảnh mới nhắc Vincom, không chữ Việt cứng trong component); đăng nhập (định tuyến an toàn, gọi API, form, quét mã nguồn không `ralion`/`X-User-Id`/`localStorage`; CSS không còn video hay liên kết ngoài) |
+| Kiểm chứng | `npm run lint`, `typecheck`, `test` (74 qua), `build` xanh. Ảnh chụp thật trên dev server: [hero 1440 px](screenshots/landing-hero-1440.jpg), [landing toàn trang 1440 px](screenshots/landing-full-1440.jpg), [landing 375 px](screenshots/landing-full-375.jpg) (chụp bằng iframe rộng đúng 375 px), [đăng nhập 1440 px](screenshots/login-1440.jpg), [đăng nhập 375 px](screenshots/login-375.jpg). Không tràn ngang |
+| Hành vi khi gửi form | `POST /api/v1/auth/login` hiện trả **404** (backend chưa có route, Phase 4): form hiện "Không thể đăng nhập lúc này. Hãy thử lại sau." Đúng hành vi của bản vỏ |
 
-**Chưa kiểm chứng:** Lighthouse (chưa chạy); chế độ tối (token có sẵn nhưng chưa xem bằng mắt); Playwright (dời sang Phase 9, quyết định U-D6); chạy trình duyệt thật bấm gửi form (chỉ kiểm bằng test đơn vị và `curl` tới rewrite).
+**Chưa kiểm chứng:** Lighthouse; chế độ tối (landing và đăng nhập của Ralion là nền sáng, chưa có công tắc); công tắc ngôn ngữ EN/VI như VLearn (MVP chỉ tiếng Việt nên không làm); bấm gửi form trong trình duyệt thật; Playwright (dời sang Phase 9).
+
+**Lưu ý:** landing mô tả các tính năng theo thiết kế (quy trình, ticket, quản lý tài liệu) nhưng hiện mới có khung; nhãn "Bản demo thực tập" và "hội thoại minh họa, dữ liệu giả lập" nằm trên trang để không gây hiểu nhầm. Build cần mạng để `next/font` tải phông (CI và `publish` đều có mạng).
 
 ## 4. Kiểm chứng (trên PostgreSQL/ParadeDB thật, `paradedb:v0.25.4-pg16`)
 
@@ -86,10 +94,14 @@ Các test ràng buộc chứng minh: hai bản `ACTIVE` chồng ngày bị **t�
 
 | # | Nội dung | Vì sao |
 |---|---|---|
-| 1 | Landing đặt ở `app/[locale]/page.tsx`, không tạo nhóm route `(marketing)` | Giữ cấu trúc hiện có, không cần thay đổi định tuyến |
-| 2 | Trang đăng nhập không có biểu tượng từ `@primer/octicons-react` | Dùng SVG nhúng để không thêm phụ thuộc (U-D5) |
-| 3 | Kiểm `Lighthouse` và Playwright chưa làm | U-D6: dời; đã chụp ảnh và kiểm tay thay thế |
-| 4 | Khi chạy `npx prettier` lần đầu tôi vô tình định dạng lại một số tệp cũ (dòng 80 cột) | Đã hoàn tác các tệp không thuộc phạm vi; repo dùng dòng dài 120 cột. Không có cấu hình Prettier trong dự án; nên thêm ở một PR riêng nếu muốn thống nhất |
+| 1 | Thiết kế **chép từ Ralion** (CSS module, mockup, bố cục), hero dùng **ảnh thật** | Theo yêu cầu của bạn sau khi xem bản đầu; thay các quyết định U-D2 và U-D5 |
+| 2 | Thêm hai phụ thuộc (`lucide-react`, `@primer/octicons-react`) và phông qua `next/font/google` | Cần để giữ đúng thiết kế Ralion; Poppins thiếu tiếng Việt nên đổi sang Be Vietnam Pro |
+| 3 | Chữ vẫn nằm trong `messages/vi.json` (Ralion viết cứng trong component) | Giữ quy ước i18n của dự án; có test chặn chữ Việt cứng |
+| 4 | Không có công tắc ngôn ngữ EN/VI và công tắc chế độ tối như ảnh VLearn | MVP chỉ tiếng Việt (quyết định đã chốt); nền sáng theo Ralion. Có thể thêm sau nếu bạn muốn |
+| 5 | Ảnh CC BY-SA 4.0 nên **ảnh** (không phải mã) phải giữ giấy phép này | Đã ghi trong `CREDITS.md` và hiển thị ghi công trên trang |
+| 6 | Lighthouse và Playwright chưa làm | U-D6: dời; đã chụp ảnh và kiểm tay thay thế |
+| 7 | Bản đầu bạn thấy ở `localhost:3000` không có CSS và hiện nội dung cũ | Không phải lỗi thiết kế: cổng 3000 lúc đó chạy `next start` (bản build cũ) trong khi tôi đã build lại nên tệp CSS cũ biến mất. Bây giờ dev server chạy đúng mã mới |
+| 8 | Lần chạy `npx prettier` đầu tiên vô tình định dạng lại một số tệp cũ (dòng 80 cột) | Đã hoàn tác các tệp ngoài phạm vi; repo dùng dòng dài 120 cột, chưa có cấu hình Prettier (nên thêm ở PR riêng) |
 
 ## 6. Việc theo dõi (không chặn)
 

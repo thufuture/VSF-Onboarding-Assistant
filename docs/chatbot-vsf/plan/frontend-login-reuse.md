@@ -1,5 +1,6 @@
 # Tái sử dụng giao diện đăng nhập của Ralion
 
+> **Cập nhật 21/09/2026: phần giao diện đã làm sớm (vỏ).** Bố cục và CSS chép từ trang đăng nhập của Ralion, không chép video, khung tài khoản test, chọn ngôn ngữ, `X-User-Id`. Backend xác thực vẫn thuộc Phase 4. Xem [phase-2/bao-cao-phase-2.md](phase-2/bao-cao-phase-2.md) mục 3B.
 > Trạng thái: **bản nháp v4 để duyệt**. Thuộc [master-plan.md](master-plan.md), **Phase 4** [Bắt buộc] (giao diện và nối API làm cùng một phase, ≈ 1,5 ngày công gồm cả xác thực phía backend; bảng `users`/`teams`/`team_members` đã có từ `0001_core` nên không có migration ở phase này, và không có bảng `sessions`). Landing page làm sau (Phase 10) nên trang login **không** dùng Navbar của landing.
 > Nguồn: mã Ralion trong repo `P-040` (đã đọc), gồm `frontend/src/app/login/page.tsx`, `page.module.css`, `page.test.tsx`, `features/auth/routing.ts`, `features/auth/session.ts`, và khối `login` trong `messages/vi.json`.
 > **MVP chỉ có tiếng Việt**: không chép `LanguageSwitcher`, không làm bản `en`; chỉ giữ cấu trúc `messages/vi.json` để thêm `en` sau.

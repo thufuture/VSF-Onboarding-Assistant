@@ -1,12 +1,15 @@
 "use client";
 
+import { ArrowRightIcon, KeyIcon, MailIcon } from "@primer/octicons-react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useState, type FormEvent, type ReactNode } from "react";
+import { useState, type FormEvent } from "react";
 
 import { resolvePostLoginPath } from "@/features/auth/routing";
 import { SessionError, authApi } from "@/features/auth/session";
 import { useRouter } from "@/i18n/navigation";
+
+import styles from "./LoginPage.module.css";
 
 // Kiểm tra sơ bộ ở client; server mới là nơi quyết định email và mật khẩu có hợp lệ hay không.
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -17,26 +20,6 @@ const ERROR_KEY: Record<SessionError["code"], string> = {
   unavailable: "unavailable",
   network: "unavailable",
 };
-
-function FieldIcon({ children }: { children: ReactNode }) {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 24 24"
-      className="text-ink-3 pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      {children}
-    </svg>
-  );
-}
-
-const INPUT_CLASS =
-  "border-border-strong bg-surface text-ink placeholder:text-ink-3 focus:border-accent w-full rounded-md border py-2.5 pr-3 pl-9 transition-colors disabled:opacity-60";
 
 export function LoginForm() {
   const t = useTranslations("login");
@@ -71,69 +54,48 @@ export function LoginForm() {
   }
 
   return (
-    <form onSubmit={submit} noValidate className="flex flex-col gap-4">
-      <div className="flex flex-col gap-1.5">
-        <label htmlFor="login-email" className="text-ink text-sm font-medium">
-          {t("fields.email")}
-        </label>
-        <div className="relative">
-          <FieldIcon>
-            <path d="M4 6h16v12H4V6Zm0 1 8 6 8-6" />
-          </FieldIcon>
-          <input
-            id="login-email"
-            name="email"
-            type="email"
-            inputMode="email"
-            autoComplete="username"
-            placeholder={t("fields.emailPlaceholder")}
-            disabled={pending}
-            className={INPUT_CLASS}
-          />
-        </div>
-      </div>
-
-      <div className="flex flex-col gap-1.5">
-        <label htmlFor="login-password" className="text-ink text-sm font-medium">
-          {t("fields.password")}
-        </label>
-        <div className="relative">
-          <FieldIcon>
-            <path d="M6 11h12v9H6v-9Zm2 0V8a4 4 0 0 1 8 0v3" />
-          </FieldIcon>
-          <input
-            id="login-password"
-            name="password"
-            type="password"
-            autoComplete="current-password"
-            disabled={pending}
-            className={INPUT_CLASS}
-          />
-        </div>
-      </div>
-
+    <form className={styles.form} onSubmit={submit} noValidate>
       {error ? (
-        <p
-          role="alert"
-          className="border-critical-border bg-critical-bg text-critical rounded-md border px-3 py-2 text-sm"
-        >
-          {error}
-        </p>
+        <div className={styles.error} role="alert">
+          <span aria-hidden="true">!</span>
+          <span>{error}</span>
+        </div>
       ) : null}
 
-      <button
-        type="submit"
-        disabled={pending}
-        aria-busy={pending}
-        className="bg-accent hover:bg-accent-hover flex items-center justify-center gap-2 rounded-md px-4 py-2.5 font-semibold text-white transition-colors disabled:opacity-70"
-      >
-        {pending ? (
-          <svg aria-hidden="true" viewBox="0 0 24 24" className="h-4 w-4 animate-spin" fill="none">
-            <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="3" opacity="0.3" />
-            <path d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
-          </svg>
-        ) : null}
+      <label className={styles.field}>
+        <span>{t("fields.email")}</span>
+        <span className={styles.inputControl}>
+          <MailIcon aria-hidden="true" size={17} />
+          <input
+            autoComplete="username"
+            className={styles.input}
+            disabled={pending}
+            inputMode="email"
+            name="email"
+            placeholder={t("fields.emailPlaceholder")}
+            type="email"
+          />
+        </span>
+      </label>
+
+      <label className={styles.field}>
+        <span>{t("fields.password")}</span>
+        <span className={styles.inputControl}>
+          <KeyIcon aria-hidden="true" size={17} />
+          <input
+            autoComplete="current-password"
+            className={styles.input}
+            disabled={pending}
+            name="password"
+            type="password"
+          />
+        </span>
+      </label>
+
+      <button aria-busy={pending} className={styles.submit} disabled={pending} type="submit">
+        {pending ? <i aria-hidden="true" className={styles.spinner} /> : null}
         {pending ? t("submitting") : t("submit")}
+        {pending ? null : <ArrowRightIcon size={17} />}
       </button>
     </form>
   );
