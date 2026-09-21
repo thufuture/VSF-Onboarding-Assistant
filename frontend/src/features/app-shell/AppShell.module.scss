@@ -270,7 +270,8 @@ a.navActive:hover {
   backdrop-filter: blur(8px);
 
   @include phone-down {
-    padding: 8px 12px;
+    gap: 6px;
+    padding: 8px 10px;
   }
 }
 

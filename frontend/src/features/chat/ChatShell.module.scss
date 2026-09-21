@@ -55,12 +55,12 @@ $column: 780px;
 
 .empty {
   display: flex;
-  flex: 1;
   flex-direction: column;
   align-items: center;
-  // margin auto thay cho justify-content: center để nội dung cao hơn khung vẫn cuộn được từ đầu.
+  // margin auto (không dùng flex: 1) để khối chào + thẻ gợi ý nằm giữa khung, cách đều đầu trang và ô nhập;
+  // nội dung cao hơn khung vẫn cuộn được từ đầu. Padding dưới lớn hơn để khối lệch nhẹ lên trên cho cân mắt.
   margin: auto 0;
-  padding: 12px 0 8px;
+  padding: 0 0 48px;
   text-align: center;
 
   h2 {

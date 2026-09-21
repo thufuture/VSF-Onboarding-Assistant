@@ -186,7 +186,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             )}
           </div>
           <span className={styles.mobileBrand}>
-            <VsfBrand href={home} size={22} />
+            <VsfBrand href={home} size={19} />
           </span>
           <div className={styles.toolbarRight}>
             <LanguageSwitcher />
