@@ -37,6 +37,7 @@ const USER: SessionUserResponseDTO = {
   email: "user1@vsf-demo.example",
   display_name: "Nguyễn Văn A",
   role: "USER",
+  department: null,
   expires_at: "2026-09-21T10:00:00Z",
 };
 const HR: SessionUserResponseDTO = { ...USER, role: "HR", display_name: "HR Demo 1" };
@@ -69,6 +70,27 @@ describe("AppShell", () => {
     expect(account.getByText(app.roles.USER)).toBeInTheDocument();
     expect(account.getByText("NA")).toBeInTheDocument();
     expect(screen.getByText("nội dung")).toBeInTheDocument();
+  });
+
+  it("dưới tên hiện phòng ban; chưa có phòng ban thì hiện vai trò", () => {
+    const { unmount } = renderWithSession(<AppShell>x</AppShell>, { ...USER, department: "IT Helpdesk" });
+    const account = () => within(screen.getByRole("button", { name: app.signOut }).parentElement as HTMLElement);
+    expect(account().getByText("IT Helpdesk")).toBeInTheDocument();
+    expect(account().queryByText(app.roles.USER)).toBeNull();
+    unmount();
+
+    renderWithSession(<AppShell>x</AppShell>);
+    expect(account().getByText(app.roles.USER)).toBeInTheDocument();
+  });
+
+  it("thanh trên có tiêu đề trang và nhãn phạm vi, cùng chọn ngôn ngữ và sáng/tối", () => {
+    renderWithSession(<AppShell>x</AppShell>);
+
+    const bar = within(screen.getByRole("banner"));
+    expect(bar.getByText(chat.title)).toBeInTheDocument();
+    expect(bar.getByText(chat.scope)).toBeInTheDocument();
+    expect(bar.getByLabelText(new RegExp(`^${viMessages.common.language}: `))).toBeInTheDocument();
+    expect(bar.getByRole("button", { name: app.darkMode })).toBeInTheDocument();
   });
 
   it("nhân sự mới: trợ lý hỏi đáp là trang hiện tại, các mục chưa có trang mờ kèm nhãn Sắp có", () => {

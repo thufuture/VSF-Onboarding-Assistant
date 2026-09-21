@@ -7,6 +7,7 @@ const USER = {
   email: "hr1@vsf-demo.example",
   display_name: "HR Demo 1",
   role: "HR",
+  department: null,
   expires_at: "2026-09-21T09:22:03Z",
 } as const;
 

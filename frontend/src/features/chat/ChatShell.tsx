@@ -7,7 +7,6 @@ import {
   FileText,
   Laptop,
   Plus,
-  ShieldCheck,
   Sparkles,
   Users,
   type LucideIcon,
@@ -105,25 +104,14 @@ export function ChatShell() {
 
   return (
     <div className={styles.chat}>
-      <header className={styles.header}>
-        <h1>
-          <Sparkles aria-hidden="true" size={18} />
-          {t("title")}
-        </h1>
-        <span className={styles.scope}>
-          <ShieldCheck aria-hidden="true" size={14} />
-          {t("scope")}
-        </span>
-        {turns.length > 0 || pending ? (
-          <button className={styles.newChat} onClick={reset} type="button">
-            <Plus aria-hidden="true" size={15} />
-            {t("newConversation")}
-          </button>
-        ) : null}
-      </header>
-
       <div className={styles.scroll}>
         <div className={styles.column}>
+          {empty ? null : (
+            <button className={styles.newChat} onClick={reset} type="button">
+              <Plus aria-hidden="true" size={15} />
+              {t("newConversation")}
+            </button>
+          )}
           {empty ? (
             <section className={styles.empty}>
               <span aria-hidden="true" className={styles.emptyMark}>

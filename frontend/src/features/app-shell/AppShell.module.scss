@@ -127,6 +127,9 @@ $sidebar-width: 268px;
   > span {
     min-width: 0;
     flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   small {
@@ -136,6 +139,7 @@ $sidebar-width: 268px;
     color: var(--app-ink-3);
     font-size: 11px;
     font-weight: 600;
+    white-space: nowrap;
   }
 }
 
@@ -297,6 +301,43 @@ a.navActive:hover {
     border-color: var(--app-accent);
     color: var(--app-accent-strong);
   }
+}
+
+// Tiêu đề trang (chỉ máy tính để bàn; nhỏ hơn thì dùng logo).
+.pageTitle {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 12px;
+
+  b {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    white-space: nowrap;
+
+    svg {
+      color: var(--app-accent);
+    }
+  }
+
+  @include tablet-down {
+    display: none;
+  }
+}
+
+.scope {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--app-success-soft);
+  color: var(--app-success);
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
 }
 
 .menuButton,

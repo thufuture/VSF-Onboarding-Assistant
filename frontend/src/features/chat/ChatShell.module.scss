@@ -11,52 +11,13 @@ $column: 780px;
   color: var(--app-ink);
 }
 
-// ── Đầu trang chat ──
-.header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 14px max(24px, calc((100% - $column) / 2));
-  border-bottom: 1px solid var(--app-border);
-  background: var(--app-surface);
-
-  h1 {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin: 0;
-    font-size: 16px;
-    font-weight: 700;
-
-    svg {
-      color: var(--app-accent);
-    }
-  }
-
-  @include phone-down {
-    padding: 10px 14px;
-  }
-}
-
-.scope {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: var(--app-success-soft);
-  color: var(--app-success);
-  font-size: 12px;
-  font-weight: 700;
-  white-space: nowrap;
-}
-
 .newChat {
   display: inline-flex;
   min-height: 34px;
   align-items: center;
+  align-self: flex-end;
   gap: 6px;
-  margin-left: auto;
+  margin-bottom: 14px;
   padding: 0 12px;
   border: 1px solid var(--app-border-strong);
   border-radius: 10px;
@@ -69,14 +30,6 @@ $column: 780px;
     border-color: var(--app-accent);
     color: var(--app-accent-strong);
   }
-}
-
-.header .scope {
-  margin-left: auto;
-}
-
-.header .newChat {
-  margin-left: 0;
 }
 
 // ── Cột hội thoại ──
@@ -92,7 +45,7 @@ $column: 780px;
   min-height: 100%;
   flex-direction: column;
   margin: 0 auto;
-  padding: 28px 0 20px;
+  padding: 20px 0 20px;
 
   @include phone-down {
     width: calc(100% - 28px);

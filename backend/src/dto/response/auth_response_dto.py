@@ -13,4 +13,6 @@ class SessionUserResponseDTO(BaseModel):
     email: str
     display_name: str
     role: UserRoleDTO
+    # Tên phòng ban (đội) của người dùng, nhiều đội thì nối bằng ", "; chưa thuộc đội nào thì null.
+    department: str | None = None
     expires_at: datetime

@@ -272,7 +272,7 @@
     "darkMode": "Switch to dark theme",
     "nav": {
       "chat": "Q&A assistant",
-      "documents": "Approved documents",
+      "documents": "Documents",
       "contacts": "Contacts",
       "tickets": "Support requests",
       "admin": "Admin area",

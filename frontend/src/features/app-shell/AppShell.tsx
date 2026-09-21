@@ -7,6 +7,8 @@ import {
   LogOut,
   Menu,
   MessageSquareText,
+  ShieldCheck,
+  Sparkles,
   Moon,
   Sun,
   Users,
@@ -50,6 +52,7 @@ function initials(name: string): string {
  */
 export function AppShell({ children }: { children: ReactNode }) {
   const t = useTranslations("app");
+  const chatText = useTranslations("chat");
   const { user, logout } = useSession();
   const { theme, toggleTheme } = useTheme();
   const pathname = usePathname();
@@ -83,13 +86,14 @@ export function AppShell({ children }: { children: ReactNode }) {
   }
 
   const items = user.role === "USER" ? MEMBER_NAV : STAFF_NAV;
+  const onChat = pathname.startsWith("/chat");
   const home = user.role === "USER" ? "/chat" : "/admin";
 
   return (
     <div className={styles.shell} data-theme={theme}>
       <aside className={`${styles.sidebar} ${drawerOpen ? styles.sidebarOpen : ""}`} id="app-sidebar">
         <div className={styles.sidebarHead}>
-          <VsfBrand href={home} size={30} stacked />
+          <VsfBrand href={home} size={24} />
           <button
             aria-label={t("closeMenu")}
             className={styles.iconButton}
@@ -134,7 +138,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             </span>
             <span className={styles.userText}>
               <b>{user.display_name}</b>
-              <small>{t(`roles.${user.role}`)}</small>
+              <small>{user.department ?? t(`roles.${user.role}`)}</small>
             </span>
           </div>
           <button className={styles.logout} disabled={signingOut} onClick={signOut} type="button">
@@ -162,8 +166,27 @@ export function AppShell({ children }: { children: ReactNode }) {
           >
             <Menu aria-hidden="true" size={20} />
           </button>
+          <div className={styles.pageTitle}>
+            {onChat ? (
+              <>
+                <b>
+                  <Sparkles aria-hidden="true" size={18} />
+                  {chatText("title")}
+                </b>
+                <span className={styles.scope}>
+                  <ShieldCheck aria-hidden="true" size={14} />
+                  {chatText("scope")}
+                </span>
+              </>
+            ) : (
+              <b>
+                <LayoutDashboard aria-hidden="true" size={18} />
+                {t("nav.admin")}
+              </b>
+            )}
+          </div>
           <span className={styles.mobileBrand}>
-            <VsfBrand href={home} size={28} stacked />
+            <VsfBrand href={home} size={22} />
           </span>
           <div className={styles.toolbarRight}>
             <LanguageSwitcher />

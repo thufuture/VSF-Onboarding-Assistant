@@ -106,12 +106,41 @@ async def test_login_sets_an_httponly_cookie_and_returns_the_profile(app: FastAP
 
     assert response.status_code == 200
     body = response.json()
-    assert set(body) == {"id", "email", "display_name", "role", "expires_at"}
+    assert set(body) == {"id", "email", "display_name", "role", "department", "expires_at"}
+    assert body["department"] is None  # chưa thuộc đội nào
     assert body["email"] == user.email and body["role"] == "HR" and body["display_name"] == "Nhân sự HR"
     cookie = response.headers["set-cookie"].lower()
     assert f"{SESSION_COOKIE_NAME}=" in cookie
     assert "httponly" in cookie and "samesite=lax" in cookie and "path=/" in cookie
     assert "secure" not in cookie  # localhost chạy HTTP; production mới bật Secure
+
+
+async def test_profile_reports_the_department_from_team_membership(
+    app: FastAPI, make_user: MakeUser, session_factory: async_sessionmaker[AsyncSession]
+) -> None:
+    user = await make_user()
+    code = f"T{uuid4().hex[:8]}"
+    async with session_factory() as session:
+        team_a = Team(code=f"{code}A", name="Zeta Team")
+        team_b = Team(code=f"{code}B", name="Alpha Team")
+        inactive = Team(code=f"{code}C", name="Ẩn", is_active=False)
+        session.add_all([team_a, team_b, inactive])
+        await session.flush()
+        session.add_all([TeamMember(team_id=t.id, user_id=user.id) for t in (team_a, team_b, inactive)])
+        await session.commit()
+        team_ids = [team_a.id, team_b.id, inactive.id]
+    try:
+        async with client_for(app) as client:
+            logged_in = await login(client, user)
+            me = await client.get("/api/v1/auth/me")
+        # Nhiều đội thì nối theo tên; đội đã tắt không hiện.
+        assert logged_in.json()["department"] == "Alpha Team, Zeta Team"
+        assert me.json()["department"] == "Alpha Team, Zeta Team"
+    finally:
+        async with session_factory() as session:
+            await session.execute(delete(TeamMember).where(TeamMember.user_id == user.id))
+            await session.execute(delete(Team).where(Team.id.in_(team_ids)))
+            await session.commit()
 
 
 async def test_login_is_case_insensitive_for_email(app: FastAPI, make_user: MakeUser) -> None:

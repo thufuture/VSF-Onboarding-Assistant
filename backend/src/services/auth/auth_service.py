@@ -6,6 +6,8 @@ from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.model.enums import UserStatus
+from src.model.team import Team
+from src.model.team_member import TeamMember
 from src.model.user import User
 from src.services.auth.errors import AuthError
 from src.services.auth.login_throttle import LoginThrottle
@@ -64,6 +66,19 @@ def start_session(user: User, secret: str, ttl_seconds: int) -> tuple[str, int]:
     issued = next_issue_ms(user.session_invalid_before)
     token = issue_token(user.id, secret, ttl_seconds=ttl_seconds, issued_at_ms=issued)
     return token, issued // 1000 + ttl_seconds
+
+
+async def department_name(session: AsyncSession, user_id: int) -> str | None:
+    """Phòng ban của người dùng (tên các đội đang hoạt động, sắp theo tên); chưa thuộc đội nào thì `None`."""
+    names = (
+        await session.scalars(
+            select(Team.name)
+            .join(TeamMember, TeamMember.team_id == Team.id)
+            .where(TeamMember.user_id == user_id, Team.is_active.is_(True))
+            .order_by(Team.name)
+        )
+    ).all()
+    return ", ".join(names) or None
 
 
 async def load_session_user(session: AsyncSession, token: SessionToken) -> User:

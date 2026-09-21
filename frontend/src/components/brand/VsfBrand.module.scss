@@ -19,15 +19,15 @@
   white-space: nowrap;
 }
 
-/* Bản hai dòng cho thanh bên: "VSF Onboarding" theo --vsf-brand-primary (mặc định màu chữ hiện tại). */
+/* "VSF Onboarding" theo --vsf-brand-primary (mặc định màu chữ hiện tại); bản `stacked` xếp hai dòng. */
+.word > span:first-child {
+  color: var(--vsf-brand-primary, inherit);
+}
+
 .stacked .word {
   flex-direction: column;
   gap: 0.12em;
   line-height: 1.1;
-}
-
-.stacked .word > span:first-child {
-  color: var(--vsf-brand-primary, inherit);
 }
 
 /* "Assistant" màu đen và đậm hơn. Nền tối (header trong suốt trên ảnh) đặt --vsf-brand-accent thành trắng. */

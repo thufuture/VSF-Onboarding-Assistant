@@ -7,6 +7,8 @@ export type SessionUserResponseDTO = {
   email: string;
   display_name: string;
   role: UserRoleDTO;
+  /** Tên phòng ban (đội) của người dùng; nhiều đội nối bằng ", "; chưa thuộc đội nào thì null. */
+  department: string | null;
   /** Thời điểm hết hạn của phiên, ISO 8601. */
   expires_at: string;
 };

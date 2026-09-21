@@ -70,6 +70,7 @@ describe("LoginForm", () => {
       email: "a@b.co",
       display_name: "A",
       role: "USER",
+      department: null,
       expires_at: EXPIRES,
     });
     render(<LoginForm />);
@@ -83,7 +84,7 @@ describe("LoginForm", () => {
   it("thành công: nhận ?next= nội bộ, bỏ ?next= độc hại", async () => {
     const spy = vi
       .spyOn(authApi, "login")
-      .mockResolvedValue({ id: 1, email: "a@b.co", display_name: "A", role: "HR", expires_at: EXPIRES });
+      .mockResolvedValue({ id: 1, email: "a@b.co", display_name: "A", role: "HR", department: null, expires_at: EXPIRES });
     nextParam = "/admin/documents";
     const first = render(<LoginForm />);
     fill("a@b.co", "pw");
