@@ -119,6 +119,8 @@ describe("LandingPage: logo", () => {
     const nav = within(screen.getByRole("navigation", { name: landing.nav.label }));
     const brand = nav.getByRole("link", { name: landing.nav.brand });
     expect(brand.querySelector("svg")).not.toBeNull();
+    expect(brand.querySelector("circle")).toBeNull(); // không có chấm đỏ trên biểu tượng
+    expect(existsSync(join(ROOT, "src", "app", "icon.svg"))).toBe(true); // biểu tượng trên tab trình duyệt
     expect(within(brand).getByText("VSF Onboarding", { exact: false })).toBeInTheDocument();
     expect(within(brand).getByText("Assistant").className).toMatch(/accent/);
   });

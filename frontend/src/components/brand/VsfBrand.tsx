@@ -34,7 +34,6 @@ export function VsfBrand({
         </defs>
         <rect fill={`url(#${gradientId})`} height="32" rx="9" width="32" />
         <path d="M8.5 9.5 16 23l7.5-13.5" stroke="#fff" strokeLinecap="round" strokeLinejoin="round" strokeWidth="4" />
-        <circle cx="16" cy="23" fill="#ff4d55" r="2.2" />
       </svg>
       <span aria-hidden="true" className={styles.word} style={{ fontSize: Math.round(size * 0.62) }}>
         <span>VSF Onboarding</span>
