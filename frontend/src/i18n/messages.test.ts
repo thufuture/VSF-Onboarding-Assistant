@@ -29,7 +29,9 @@ describe("messages/vi.json", () => {
       "landing.features.title",
       "landing.footer.demo",
       "login.title",
-      "login.placeholder",
+      "login.subtitle",
+      "login.submit",
+      "login.errors.invalid",
       "login.back",
     ]) {
       expect(keys).toContain(required);

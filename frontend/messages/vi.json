@@ -75,7 +75,42 @@
   },
   "login": {
     "title": "Đăng nhập",
-    "placeholder": "Trang đăng nhập sẽ được làm ở Phase 4.",
-    "back": "Về trang chủ"
+    "subtitle": "Dùng tài khoản do bộ phận HR cấp.",
+    "brand": "VSF Onboarding Assistant",
+    "demoBadge": "Bản demo thực tập",
+    "fields": {
+      "email": "Email",
+      "emailPlaceholder": "ban@vsf-demo.example",
+      "password": "Mật khẩu"
+    },
+    "submit": "Đăng nhập",
+    "submitting": "Đang đăng nhập…",
+    "note": "Tài khoản do HR hoặc Admin tạo, không có tự đăng ký.",
+    "back": "Về trang chủ",
+    "errors": {
+      "emailRequired": "Hãy nhập email.",
+      "emailInvalid": "Email chưa đúng định dạng.",
+      "passwordRequired": "Hãy nhập mật khẩu.",
+      "invalid": "Email hoặc mật khẩu không đúng.",
+      "tooMany": "Bạn thử quá nhiều lần. Hãy đợi một lúc rồi thử lại.",
+      "unavailable": "Không thể đăng nhập lúc này. Hãy thử lại sau."
+    },
+    "panel": {
+      "title": "Hỏi là biết bước tiếp theo",
+      "items": {
+        "sources": {
+          "title": "Có nguồn dẫn chứng",
+          "body": "Mỗi câu trả lời kèm đoạn trích và tên tài liệu."
+        },
+        "noGuess": {
+          "title": "Không đoán",
+          "body": "Dữ liệu cá nhân của bạn, trợ lý chỉ cách tra cứu đúng nơi, không tự nêu con số."
+        },
+        "approved": {
+          "title": "Link và form đã duyệt",
+          "body": "Chỉ đưa đường dẫn, đầu mối và biểu mẫu còn hiệu lực."
+        }
+      }
+    }
   }
 }
