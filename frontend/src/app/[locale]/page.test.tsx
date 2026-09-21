@@ -13,12 +13,34 @@ vi.mock("@/i18n/navigation", () => ({
   ),
 }));
 
-describe("HomePage", () => {
-  it("hiển thị tên, nhãn bản demo và liên kết tới trang đăng nhập", () => {
+describe("HomePage (landing)", () => {
+  it("ghép đủ các phần: điều hướng, nội dung chính, chân trang", () => {
     render(<HomePage />);
 
-    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(viMessages.home.title);
-    expect(screen.getByText(viMessages.home.demoNote)).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: viMessages.home.cta })).toHaveAttribute("href", "/vi/login");
+    expect(screen.getByRole("navigation", { name: viMessages.landing.nav.label })).toBeInTheDocument();
+    expect(screen.getByRole("main")).toBeInTheDocument();
+    expect(screen.getByRole("contentinfo")).toBeInTheDocument();
+  });
+
+  it("có một h1 là tiêu đề hero và nhãn bản demo", () => {
+    render(<HomePage />);
+
+    expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(viMessages.landing.hero.title);
+    expect(screen.getByText(viMessages.landing.hero.demoBadge)).toBeInTheDocument();
+  });
+
+  it("nút 'Bắt đầu hỏi' và 'Đăng nhập' dẫn tới trang đăng nhập", () => {
+    render(<HomePage />);
+
+    expect(screen.getByRole("link", { name: viMessages.landing.hero.primary })).toHaveAttribute("href", "/vi/login");
+    expect(screen.getByRole("link", { name: viMessages.landing.nav.login })).toHaveAttribute("href", "/vi/login");
+  });
+
+  it("có liên kết 'Bỏ qua tới nội dung' trỏ tới vùng main", () => {
+    render(<HomePage />);
+
+    expect(screen.getByRole("link", { name: viMessages.landing.skipLink })).toHaveAttribute("href", "#main");
+    expect(screen.getByRole("main")).toHaveAttribute("id", "main");
   });
 });

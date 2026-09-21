@@ -1,24 +1,30 @@
 import { useTranslations } from "next-intl";
 
-import { Link } from "@/i18n/navigation";
+import { FeatureCards } from "@/features/landing/FeatureCards";
+import { Footer } from "@/features/landing/Footer";
+import { Hero } from "@/features/landing/Hero";
+import { Navbar } from "@/features/landing/Navbar";
+import { Steps } from "@/features/landing/Steps";
 
-// Trang khung của Phase 1. Landing đầy đủ (nếu làm) là Phase 10; trước đó trang này dẫn tới đăng nhập.
+// Landing tĩnh, chỉ tiếng Việt, không gọi API (landing-page-plan.md). Nút "Bắt đầu hỏi" dẫn tới /vi/login.
 export default function HomePage() {
-  const t = useTranslations("home");
+  const t = useTranslations("landing");
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-2xl flex-col justify-center gap-4 px-4 py-16">
-      <p className="text-ink-3 text-xs">{t("demoNote")}</p>
-      <h1 className="text-ink text-[22px] font-bold">{t("title")}</h1>
-      <p className="text-ink-2">{t("description")}</p>
-      <div>
-        <Link
-          href="/login"
-          className="bg-accent hover:bg-accent-hover inline-block rounded-md px-4 py-2 font-semibold text-white transition-colors"
-        >
-          {t("cta")}
-        </Link>
-      </div>
-    </main>
+    <>
+      <a
+        href="#main"
+        className="bg-surface text-ink border-border sr-only rounded-md border px-3 py-2 focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-20"
+      >
+        {t("skipLink")}
+      </a>
+      <Navbar />
+      <main id="main">
+        <Hero />
+        <Steps />
+        <FeatureCards />
+      </main>
+      <Footer />
+    </>
   );
 }
