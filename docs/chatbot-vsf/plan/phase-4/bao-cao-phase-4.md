@@ -86,7 +86,9 @@ Trong `backend/`: `python -m src.cli.seed_users` (một lần), rồi `python -m
 | Trang giữ chỗ HR/Admin (`features/app-shell/AdminPlaceholder`) | Lời chào, vai trò, danh sách việc sắp có, đường về chat |
 | Giao diện | SCSS module, cùng token màu, phông và logo với landing; điện thoại (375 px) thu nút đăng xuất thành biểu tượng để đủ chỗ; song ngữ vi/en |
 
-Kiểm chứng: `lint`, `typecheck`, `build` xanh; **128 test frontend** (thêm 28: cổng đăng nhập ở proxy, `me/refresh/logout`, đầu trang, `SessionProvider`, chat, trang giữ chỗ).
+**Thiết kế lại giao diện nhân sự mới (theo bố cục portal và chat của Ralion):** khung `AppShell` gồm thanh bên (logo hai dòng "VSF Onboarding" xanh / "Assistant" đen, điều hướng theo vai trò, mục chưa có trang mờ kèm nhãn "Sắp có", thẻ người dùng, đăng xuất) và thanh trên (chọn ngôn ngữ, sáng/tối). Chat: màn chào với 4 thẻ gợi ý, câu hỏi bên phải, trả lời bên trái có avatar, chấm "đang tìm nguồn", chip nguồn bấm mở trích đoạn, ô nhập tự cao (Enter gửi, Shift+Enter xuống dòng), nút cuộc trò chuyện mới, chế độ tối (nhớ lựa chọn), điện thoại dùng ngăn kéo. Vẫn là dữ liệu minh họa.
+
+Kiểm chứng: `lint`, `typecheck`, `build` xanh; **135 test frontend** (trước khi thiết kế lại: 128) (thêm 28: cổng đăng nhập ở proxy, `me/refresh/logout`, đầu trang, `SessionProvider`, chat, trang giữ chỗ).
 
 Chạy thật trên trình duyệt (Chrome headless qua CDP, backend thật, tài khoản dev):
 
@@ -100,7 +102,7 @@ bấm câu hỏi gợi ý                  -> hiện câu trả lời kèm "Ngu�
 bấm Đăng xuất                      -> /vi/login; mở lại /vi/chat -> /vi/login
 ```
 
-Ảnh: [chat 1440 vi](screenshots/chat-1440-vi.png), [chat sau khi hỏi](screenshots/chat-1440-vi-hoi.png), [chat 375](screenshots/chat-375-vi.png), [chat 1440 en](screenshots/chat-1440-en.png), [admin](screenshots/admin-1440-vi.png), [chưa đăng nhập bị chuyển](screenshots/chat-chua-dang-nhap.png).
+Ảnh: [chat 1440 vi](screenshots/chat-1440-vi.png), [chế độ tối](screenshots/chat-1440-vi-toi.png), [ngăn kéo điện thoại](screenshots/chat-375-menu.png), [chat sau khi hỏi](screenshots/chat-1440-vi-hoi.png), [chat 375](screenshots/chat-375-vi.png), [chat 1440 en](screenshots/chat-1440-en.png), [admin](screenshots/admin-1440-vi.png), [chưa đăng nhập bị chuyển](screenshots/chat-chua-dang-nhap.png).
 
 Lưu ý khi tự thử: trong chế độ dev, Next chặn tài nguyên khi mở bằng `127.0.0.1` (trang không tương tác được); hãy mở bằng **`http://localhost:3000`**. Frontend dev gọi backend qua `API_UPSTREAM_URL` (mặc định cổng 8000, là ảnh Docker cũ chưa có `/auth/*`): chạy `API_UPSTREAM_URL=http://127.0.0.1:8100 npm run dev` với backend `uvicorn --port 8100`, hoặc build lại ảnh backend.
 

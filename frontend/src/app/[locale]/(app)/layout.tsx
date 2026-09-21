@@ -1,7 +1,7 @@
 import { getLocale } from "next-intl/server";
 import type { ReactNode } from "react";
 
-import { AppHeader } from "@/features/app-shell/AppHeader";
+import { AppShell } from "@/features/app-shell/AppShell";
 import { SessionProvider } from "@/features/auth/SessionProvider";
 import { getSessionUser } from "@/features/auth/server";
 import { redirect } from "@/i18n/navigation";
@@ -14,8 +14,7 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
 
   return (
     <SessionProvider initialUser={user}>
-      <AppHeader />
-      {children}
+      <AppShell>{children}</AppShell>
     </SessionProvider>
   );
 }

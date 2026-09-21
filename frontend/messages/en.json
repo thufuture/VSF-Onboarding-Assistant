@@ -264,14 +264,26 @@
     },
     "signOut": "Sign out",
     "signingOut": "Signing out…",
-    "signOutFailed": "Could not sign out right now. Please try again."
+    "signOutFailed": "Could not sign out right now. Please try again.",
+    "navigation": "Main navigation",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "lightMode": "Switch to light theme",
+    "darkMode": "Switch to dark theme",
+    "nav": {
+      "chat": "Q&A assistant",
+      "documents": "Approved documents",
+      "contacts": "Contacts",
+      "tickets": "Support requests",
+      "admin": "Admin area",
+      "soon": "Soon"
+    }
   },
   "chat": {
     "greeting": "Hello, {name}",
     "intro": "Ask about procedures, paperwork, equipment or contacts in your first days. The assistant answers only from approved documents.",
     "demoNotice": "Illustrative content: the real chat with citations from approved documents will be connected in a later phase.",
     "conversation": "Conversation",
-    "suggestionsTitle": "Suggested questions",
     "suggestionsLabel": "Suggested questions",
     "inputLabel": "Your question",
     "placeholder": "Type your question…",
@@ -282,24 +294,39 @@
       "firstDay": {
         "question": "What do I need to prepare for my first day?",
         "answer": "Bring your ID, arrive on time and meet HR at reception to get your access card and onboarding schedule.",
-        "source": "First-day handbook (illustrative)"
+        "source": "First-day handbook (illustrative)",
+        "title": "First day",
+        "excerpt": "“New joiners arrive at reception at the agreed time with their ID. HR hands out the access card and the first-week schedule.” (illustrative)"
       },
       "equipment": {
         "question": "Where do I get my laptop and accounts?",
         "answer": "Equipment and accounts are requested through IT by HR before you start; collect them from IT at the onboarding session.",
-        "source": "Equipment provisioning procedure (illustrative)"
+        "source": "Equipment provisioning procedure (illustrative)",
+        "title": "Equipment and accounts",
+        "excerpt": "“HR sends the equipment and account request to IT before the new joiner starts; handover happens at the onboarding session.” (illustrative)"
       },
       "leave": {
         "question": "How do I request leave?",
         "answer": "Send a leave request to your line manager at least 3 working days ahead, except in emergencies.",
-        "source": "Leave policy (illustrative)"
+        "source": "Leave policy (illustrative)",
+        "title": "Leave",
+        "excerpt": "“Leave requests go to the line manager at least 3 working days before the leave, except in emergencies.” (illustrative)"
       },
       "contact": {
         "question": "Who do I ask when I hit a problem in week one?",
         "answer": "Your team buddy is the first contact; for administrative matters contact HR.",
-        "source": "Contact directory (illustrative)"
+        "source": "Contact directory (illustrative)",
+        "title": "Who can help",
+        "excerpt": "“Each new joiner has a buddy in the team; administrative matters go to HR.” (illustrative)"
       }
-    }
+    },
+    "title": "Q&A assistant",
+    "scope": "Approved documents",
+    "newConversation": "New conversation",
+    "checking": "Searching the approved documents…",
+    "keyboardHint": "Enter to send, Shift+Enter for a new line",
+    "disclaimer": "The assistant answers only from approved documents. For anything important, confirm with HR.",
+    "excerptLabel": "Source excerpt"
   },
   "admin": {
     "title": "Hello, {name}",

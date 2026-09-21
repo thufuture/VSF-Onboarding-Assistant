@@ -13,10 +13,13 @@ import styles from "./VsfBrand.module.scss";
 export function VsfBrand({
   href = "/",
   size = 26,
+  stacked = false,
   onClick,
 }: {
   href?: string;
   size?: number;
+  /** Hai dòng: "VSF Onboarding" (màu --vsf-brand-primary) trên, "Assistant" (màu đen) dưới. */
+  stacked?: boolean;
   onClick?: MouseEventHandler<HTMLAnchorElement>;
 }) {
   const t = useTranslations("landing.nav");
@@ -24,7 +27,7 @@ export function VsfBrand({
   const gradientId = useId();
 
   return (
-    <Link aria-label={t("brand")} className={styles.brand} href={href} onClick={onClick}>
+    <Link aria-label={t("brand")} className={`${styles.brand} ${stacked ? styles.stacked : ""}`} href={href} onClick={onClick}>
       <svg aria-hidden="true" className={styles.mark} fill="none" height={size} viewBox="0 0 32 32" width={size}>
         <defs>
           <linearGradient id={gradientId} x1="4" x2="28" y1="2" y2="30" gradientUnits="userSpaceOnUse">

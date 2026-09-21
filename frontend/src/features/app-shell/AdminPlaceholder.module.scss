@@ -1,9 +1,7 @@
 @use "../../styles/tokens" as *;
 
 .main {
-  min-height: calc(100dvh - 64px);
-  padding: 48px 24px;
-  background: #f3f7fc;
+  padding: 40px 24px;
   font-family: $font;
 
   @include phone-down {
@@ -15,10 +13,10 @@
   max-width: 720px;
   margin: 0 auto;
   padding: 32px;
-  border: 1px solid #dbe6f2;
+  border: 1px solid var(--app-border);
   border-radius: 12px;
-  background: #fff;
-  color: $navy;
+  background: var(--app-surface);
+  color: var(--app-ink);
 
   h1 {
     margin: 12px 0 8px;
@@ -28,7 +26,7 @@
 
   p {
     margin: 0 0 16px;
-    color: $ink-muted;
+    color: var(--app-ink-2);
     line-height: 1.6;
   }
 
@@ -36,7 +34,7 @@
     margin: 0 0 24px;
     padding-left: 20px;
     list-style: disc;
-    color: $navy;
+    color: var(--app-ink);
     line-height: 1.8;
   }
 }
@@ -46,13 +44,13 @@
   margin: 0;
   padding: 4px 12px;
   border-radius: 999px;
-  background: #e5f3fb;
-  color: $brand-hover;
+  background: var(--app-accent-soft);
+  color: var(--app-accent-strong);
   font-size: 13px;
   font-weight: 700;
 }
 
 .link {
-  color: $brand-hover;
+  color: var(--app-accent-strong);
   font-weight: 700;
 }
