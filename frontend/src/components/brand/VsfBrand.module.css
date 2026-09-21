@@ -1,0 +1,26 @@
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.mark {
+  flex: none;
+}
+
+.word {
+  display: inline-flex;
+  gap: 0.3em;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* "Assistant" màu đen và đậm hơn. Nền tối (header trong suốt trên ảnh) đặt --vsf-brand-accent thành trắng. */
+.accent {
+  color: var(--vsf-brand-accent, #0b1f3a);
+  font-weight: 800;
+}

@@ -2,14 +2,9 @@
 
 import {
   ArrowRight,
-  Bot,
-  Braces,
-  Brain,
   Check,
   CircleHelp,
   ClipboardList,
-  Container,
-  Database,
   Headset,
   LayoutList,
   Mail,
@@ -19,13 +14,13 @@ import {
   ShieldCheck,
   Ticket,
   Users,
-  Workflow,
 } from "lucide-react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type MouseEvent, type ReactNode } from "react";
 
 import { VsfBrand } from "@/components/brand/VsfBrand";
+import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
 import { Link } from "@/i18n/navigation";
 
 import styles from "./LandingPage.module.css";
@@ -36,7 +31,7 @@ type T = ReturnType<typeof useTranslations>;
 const SERVICE_KEYS = ["chat", "process", "clarify", "ticket"] as const;
 const FEATURE_KEYS = ["chat", "process", "ticket"] as const;
 const ROLE_KEYS = ["asker", "hr", "team", "admin"] as const;
-const TECH_KEYS = ["web", "api", "db", "search", "embed", "llm", "docker"] as const;
+const TECH_KEYS = ["web", "api", "db", "docker", "llm", "embed", "proxy", "ci"] as const;
 const PROCESS_STEP_KEYS = ["s1", "s2", "s3", "s4"] as const;
 const TICKET_KPI_KEYS = ["k1", "k2", "k3"] as const;
 const TICKET_STATE_KEYS = ["m1", "m2", "m3", "m4"] as const;
@@ -55,14 +50,15 @@ const ROLE_STYLES: Record<(typeof ROLE_KEYS)[number], { icon: ReactNode; color: 
   admin: { icon: <ShieldCheck size={22} />, color: "#D95D00", bg: "#FFF2E8" },
 };
 
-const TECH_ICONS: Record<(typeof TECH_KEYS)[number], ReactNode> = {
-  web: <Braces size={23} />,
-  api: <Workflow size={23} />,
-  db: <Database size={23} />,
-  search: <Search size={23} />,
-  embed: <Brain size={23} />,
-  llm: <Bot size={23} />,
-  docker: <Container size={23} />,
+const TECH_LOGOS: Record<(typeof TECH_KEYS)[number], string> = {
+  web: "nextjs",
+  api: "fastapi",
+  db: "postgresql",
+  docker: "docker",
+  llm: "deepseek",
+  embed: "modal",
+  proxy: "caddy",
+  ci: "githubactions",
 };
 
 /* ─── Mockup: hỏi đáp có nguồn ─────────────────────────────── */
@@ -242,6 +238,14 @@ export function LandingPage() {
   }, []);
 
   const navLink = (id: SectionId) => `${styles.navLinkItem} ${activeSection === id ? styles.navLinkActive : ""}`;
+  /* Về đầu trang: không dùng Link vì điều hướng cùng một URL nên Next không cuộn lại. */
+  function scrollToTop(event: MouseEvent<HTMLElement>) {
+    event.preventDefault();
+    pendingNavTarget.current = "hero";
+    setActiveSection("hero");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
   function selectSection(id: SectionId) {
     pendingNavTarget.current = id;
     setActiveSection(id);
@@ -263,18 +267,18 @@ export function LandingPage() {
       <header className={`${styles.header} ${atTop ? styles.headerTop : ""}`}>
         <nav className={styles.nav} aria-label={t("nav.label")}>
           <span className={styles.brand}>
-            <VsfBrand href="/#hero" size={28} />
+            <VsfBrand href="/" onClick={scrollToTop} size={30} />
           </span>
 
           <div className={styles.navLinks}>
-            <Link
+            <a
               aria-current={activeSection === "hero" ? "page" : undefined}
               className={navLink("hero")}
-              href="/#hero"
-              onClick={() => selectSection("hero")}
+              href="#hero"
+              onClick={scrollToTop}
             >
               {t("nav.top")}
-            </Link>
+            </a>
             <a
               aria-current={activeSection === "how" ? "page" : undefined}
               className={navLink("how")}
@@ -294,6 +298,7 @@ export function LandingPage() {
           </div>
 
           <div className={styles.navRight}>
+            <LanguageSwitcher />
             <Link className={styles.loginBtn} href="/login">
               {t("nav.login")}
             </Link>
@@ -315,7 +320,6 @@ export function LandingPage() {
           <div className={styles.heroShade} aria-hidden="true" />
 
           <div className={styles.heroContent}>
-            <p className={styles.heroBadge}>{t("hero.badge")}</p>
             <h1 className={styles.heroTitle}>
               {t("hero.line1")}
               <br />
@@ -344,22 +348,6 @@ export function LandingPage() {
               </li>
             </ul>
           </div>
-
-          <p className={styles.heroCredit}>
-            {t("hero.creditLead")}{" "}
-            <a
-              href="https://commons.wikimedia.org/wiki/File:Ho_Chi_Minh_City,_Vincom_Center,_2020-01_CN-01.jpg"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {t("hero.creditAuthor")}
-            </a>
-            ,{" "}
-            <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer">
-              {t("hero.creditLicense")}
-            </a>
-            , {t("hero.creditSource")} ({t("hero.creditEdited")})
-          </p>
         </section>
 
         {/* ─── DỊCH VỤ ─── */}
@@ -483,7 +471,17 @@ export function LandingPage() {
           <div className={`${styles.techRow} ${styles.animUp}`} data-aos="">
             {TECH_KEYS.map((key) => (
               <article className={styles.techBadge} key={key}>
-                <span className={styles.techIcon}>{TECH_ICONS[key]}</span>
+                <span className={styles.techIcon}>
+                  {/* Logo nhiều màu lưu sẵn trong public/images/tech; trang trí nên alt rỗng vì tên nằm bên cạnh. */}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    alt=""
+                    className={styles.techLogo}
+                    height={28}
+                    src={`/images/tech/${TECH_LOGOS[key]}.svg`}
+                    width={28}
+                  />
+                </span>
                 <span>
                   <strong>{t(`tech.${key}.name`)}</strong>
                   <small>{t(`tech.${key}.detail`)}</small>
@@ -533,6 +531,21 @@ export function LandingPage() {
 
         <div className={styles.footerBottom}>
           <span>{t("footer.copyright")}</span>
+          <span className={styles.photoCredit}>
+            {t("footer.photoLead")}
+            <a
+              href="https://commons.wikimedia.org/wiki/File:Ho_Chi_Minh_City,_Vincom_Center,_2020-01_CN-01.jpg"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              {t("footer.photoAuthor")}
+            </a>
+            ,{" "}
+            <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="noopener noreferrer" target="_blank">
+              {t("footer.photoLicense")}
+            </a>
+            , {t("footer.photoSource")} ({t("footer.photoEdited")})
+          </span>
         </div>
       </footer>
     </div>

@@ -1,30 +1,44 @@
 import { useTranslations } from "next-intl";
+import { useId, type MouseEventHandler } from "react";
 
 import { Link } from "@/i18n/navigation";
 
+import styles from "./VsfBrand.module.css";
+
 /**
- * Nhãn thương hiệu dạng chữ + biểu tượng bong bóng chat vẽ bằng SVG. Chưa dùng logo Vin/VSF vì chưa được đồng ý
- * (xem landing-page-plan.md mục 5). Màu theo `currentColor` để đổi được trên nền ảnh hoặc nền trắng.
+ * Logo chữ của VSF Onboarding Assistant: biểu tượng chữ "V" trên ô bo góc, kèm tên "VSF Onboarding" (màu theo
+ * `currentColor`, đổi được trên nền ảnh hoặc nền trắng) và "Assistant" màu đen, đậm hơn. Chưa dùng logo Vin/VSF vì chưa được
+ * đồng ý (xem landing-page-plan.md mục 5).
  */
-export function VsfBrand({ href = "/", size = 26 }: { href?: string; size?: number }) {
+export function VsfBrand({
+  href = "/",
+  size = 26,
+  onClick,
+}: {
+  href?: string;
+  size?: number;
+  onClick?: MouseEventHandler<HTMLAnchorElement>;
+}) {
   const t = useTranslations("landing.nav");
+  // Mỗi logo một id riêng: nhiều logo trên cùng trang (kể cả logo đang ẩn) không được dùng chung gradient.
+  const gradientId = useId();
 
   return (
-    <Link
-      href={href}
-      aria-label={t("brand")}
-      style={{ display: "inline-flex", alignItems: "center", gap: 10, color: "inherit" }}
-    >
-      <svg aria-hidden="true" width={size} height={size} viewBox="0 0 32 32" fill="none">
-        <rect width="32" height="32" rx="9" fill="currentColor" opacity="0.16" />
-        <path
-          d="M8 10.5A3.5 3.5 0 0 1 11.5 7h9A3.5 3.5 0 0 1 24 10.5v6a3.5 3.5 0 0 1-3.5 3.5H15l-4.2 3.6c-.6.5-1.5.1-1.5-.7V20A3.5 3.5 0 0 1 8 16.5v-6Z"
-          fill="currentColor"
-        />
-        <path d="M12.5 13.5h7M12.5 16.5h4.5" stroke="#fff" strokeWidth="1.6" strokeLinecap="round" opacity="0.9" />
+    <Link aria-label={t("brand")} className={styles.brand} href={href} onClick={onClick}>
+      <svg aria-hidden="true" className={styles.mark} fill="none" height={size} viewBox="0 0 32 32" width={size}>
+        <defs>
+          <linearGradient id={gradientId} x1="4" x2="28" y1="2" y2="30" gradientUnits="userSpaceOnUse">
+            <stop stopColor="#1aa5e0" />
+            <stop offset="1" stopColor="#0a66a8" />
+          </linearGradient>
+        </defs>
+        <rect fill={`url(#${gradientId})`} height="32" rx="9" width="32" />
+        <path d="M8.5 9.5 16 23l7.5-13.5" stroke="#fff" strokeLinecap="round" strokeLinejoin="round" strokeWidth="4" />
+        <circle cx="16" cy="23" fill="#ff4d55" r="2.2" />
       </svg>
-      <span style={{ fontSize: Math.round(size * 0.66), fontWeight: 700, letterSpacing: "-0.02em", lineHeight: 1 }}>
-        {t("brand")}
+      <span aria-hidden="true" className={styles.word} style={{ fontSize: Math.round(size * 0.62) }}>
+        <span>VSF Onboarding</span>
+        <span className={styles.accent}>Assistant</span>
       </span>
     </Link>
   );

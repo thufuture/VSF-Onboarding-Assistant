@@ -14,7 +14,6 @@
       "login": "Đăng nhập"
     },
     "hero": {
-      "badge": "Bản demo thực tập",
       "line1": "Mới vào công ty,",
       "line2": "hỏi là biết bước tiếp theo",
       "description": "Trợ lý trả lời từ tài liệu đã được duyệt, chỉ đúng quy trình và đúng đầu mối. Điều gì chưa có nguồn, trợ lý nói thẳng là chưa có, thay vì đoán.",
@@ -22,12 +21,7 @@
       "secondary": "Xem cách hoạt động",
       "checkSources": "Câu trả lời kèm nguồn",
       "checkProcess": "Đúng quy trình, đầu mối, biểu mẫu",
-      "photoAlt": "Tòa nhà Vincom Center Đồng Khởi nhìn từ công viên, TP.HCM",
-      "creditLead": "Ảnh minh họa: Vincom Center Đồng Khởi, TP.HCM. Ảnh:",
-      "creditAuthor": "Steffen Schmitz",
-      "creditLicense": "CC BY-SA 4.0",
-      "creditSource": "qua Wikimedia Commons",
-      "creditEdited": "đã cắt và nén"
+      "photoAlt": "Tòa nhà Vincom Center Đồng Khởi nhìn từ công viên, TP.HCM"
     },
     "services": {
       "chat": {
@@ -176,23 +170,27 @@
       },
       "db": {
         "name": "PostgreSQL",
-        "detail": "Cơ sở dữ liệu"
+        "detail": "ParadeDB và pgvector: tìm kiếm kết hợp"
       },
-      "search": {
-        "name": "ParadeDB + pgvector",
-        "detail": "Tìm kiếm kết hợp"
-      },
-      "embed": {
-        "name": "BGE-M3",
-        "detail": "Embedding đa ngôn ngữ"
+      "docker": {
+        "name": "Docker",
+        "detail": "Chạy lặp lại được"
       },
       "llm": {
         "name": "DeepSeek",
         "detail": "Mô hình ngôn ngữ"
       },
-      "docker": {
-        "name": "Docker",
-        "detail": "Chạy lặp lại được"
+      "embed": {
+        "name": "BGE-M3 trên Modal",
+        "detail": "Embedding đa ngôn ngữ"
+      },
+      "proxy": {
+        "name": "Caddy",
+        "detail": "HTTPS và định tuyến"
+      },
+      "ci": {
+        "name": "GitHub Actions",
+        "detail": "Kiểm thử và phát hành tự động"
       }
     },
     "cta": {
@@ -210,14 +208,17 @@
       "contactTitle": "Liên hệ",
       "contactLine": "Bản demo thực tập",
       "contactNote": "Địa chỉ liên hệ là địa chỉ giả lập.",
-      "copyright": "© 2026 VSF Onboarding Assistant. Bản demo thực tập."
+      "copyright": "© 2026 VSF Onboarding Assistant. Bản demo thực tập.",
+      "photoLead": "Ảnh nền phần đầu trang (ảnh minh họa Vincom Center Đồng Khởi, TP.HCM): ",
+      "photoAuthor": "Steffen Schmitz",
+      "photoLicense": "CC BY-SA 4.0",
+      "photoSource": "qua Wikimedia Commons",
+      "photoEdited": "đã cắt và nén"
     }
   },
   "login": {
     "title": "Đăng nhập",
     "subtitle": "Dùng tài khoản do bộ phận HR cấp.",
-    "brand": "VSF Onboarding Assistant",
-    "demoBadge": "Bản demo thực tập",
     "fields": {
       "email": "Email",
       "emailPlaceholder": "ban@vsf-demo.example",
@@ -235,13 +236,18 @@
       "tooMany": "Bạn thử quá nhiều lần. Hãy đợi một lúc rồi thử lại.",
       "unavailable": "Không thể đăng nhập lúc này. Hãy thử lại sau."
     },
-    "eyebrow": "Trợ lý onboarding cho nhân sự mới",
-    "welcomeTitle": "Hỏi là biết bước tiếp theo. Bắt đầu tự tin hơn.",
     "welcomeDescription": "Trợ lý trả lời từ tài liệu đã được duyệt, chỉ đúng quy trình và đầu mối, và nói thẳng khi chưa có căn cứ.",
     "benefits": {
       "sources": "Câu trả lời kèm nguồn dẫn chứng",
       "approved": "Quy trình, link và đầu mối đã được duyệt",
       "noGuess": "Không đoán dữ liệu cá nhân của bạn"
-    }
+    },
+    "welcomeLine1": "Hỏi là biết bước tiếp theo.",
+    "welcomeLine2": "Bắt đầu tự tin hơn."
+  },
+  "common": {
+    "language": "Ngôn ngữ",
+    "vietnamese": "Tiếng Việt",
+    "english": "Tiếng Anh"
   }
 }

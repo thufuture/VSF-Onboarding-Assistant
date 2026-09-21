@@ -31,6 +31,12 @@ describe("proxy", () => {
     expect(response.headers.get("x-middleware-request-x-vsf-locale")).toBe("vi");
   });
 
+  it("cho đi tiếp đường dẫn tiếng Anh và gắn header ngôn ngữ en", () => {
+    const response = proxy(request("/en/login"));
+    expect(response.status).toBe(200);
+    expect(response.headers.get("x-middleware-request-x-vsf-locale")).toBe("en");
+  });
+
   it("matcher loại trừ /api, tài nguyên Next và tệp có đuôi", async () => {
     const { config } = await import("./proxy");
     const pattern = new RegExp(`^${config.matcher[0].replace(/^\//, "\\/")}$`);

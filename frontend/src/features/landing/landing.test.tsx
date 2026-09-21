@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
-import { render, screen, within } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import type { ImgHTMLAttributes, ReactNode } from "react";
 import { describe, expect, it, vi } from "vitest";
 
@@ -9,6 +9,8 @@ import viMessages from "../../../messages/vi.json";
 import { LandingPage } from "./LandingPage";
 
 vi.mock("@/i18n/navigation", () => ({
+  usePathname: () => "/",
+  useRouter: () => ({ replace: vi.fn() }),
   Link: ({
     href,
     children,
@@ -83,6 +85,69 @@ describe("LandingPage: cấu trúc", () => {
   });
 });
 
+describe("LandingPage: cuộn về đầu trang", () => {
+  it.each([
+    ["mục Trợ lý làm gì", landing.nav.top],
+    ["logo", landing.nav.brand],
+  ])("bấm %s cuộn mượt về đầu trang (kể cả khi URL đã có #hero)", (_label, name) => {
+    const scrollTo = vi.fn();
+    vi.stubGlobal("scrollTo", scrollTo);
+    render(<LandingPage />);
+
+    const nav = within(screen.getByRole("navigation", { name: landing.nav.label }));
+    fireEvent.click(nav.getByRole("link", { name }));
+
+    expect(scrollTo).toHaveBeenCalledWith({ top: 0, behavior: "smooth" });
+    vi.unstubAllGlobals();
+  });
+});
+
+describe("LandingPage: ngôn ngữ", () => {
+  it("header có công tắc ngôn ngữ Việt/Anh", () => {
+    render(<LandingPage />);
+
+    const nav = within(screen.getByRole("navigation", { name: landing.nav.label }));
+    expect(nav.getByLabelText(new RegExp(`^${viMessages.common.language}: `))).toBeInTheDocument();
+    expect(nav.getByRole("menuitem", { name: /English/ })).toBeInTheDocument();
+  });
+});
+
+describe("LandingPage: logo", () => {
+  it("có chữ V, tên VSF Onboarding và chữ Assistant in đậm màu riêng", () => {
+    render(<LandingPage />);
+
+    const nav = within(screen.getByRole("navigation", { name: landing.nav.label }));
+    const brand = nav.getByRole("link", { name: landing.nav.brand });
+    expect(brand.querySelector("svg")).not.toBeNull();
+    expect(within(brand).getByText("VSF Onboarding", { exact: false })).toBeInTheDocument();
+    expect(within(brand).getByText("Assistant").className).toMatch(/accent/);
+  });
+});
+
+describe("LandingPage: công nghệ", () => {
+  it("hiển thị đủ tám công nghệ, mỗi cái một logo có thật", () => {
+    const { container } = render(<LandingPage />);
+
+    const keys = Object.keys(landing.tech).filter((key) => key !== "title");
+    expect(keys).toHaveLength(8);
+    const logos = Array.from(container.querySelectorAll("img[src^='/images/tech/']"));
+    expect(logos).toHaveLength(8);
+    for (const logo of logos) {
+      expect(existsSync(join(ROOT, "public", logo.getAttribute("src") as string))).toBe(true);
+    }
+    for (const key of keys) {
+      const item = landing.tech[key as keyof typeof landing.tech] as { name: string };
+      expect(screen.getByText(item.name)).toBeInTheDocument();
+    }
+  });
+
+  it("logo được ghi nguồn và giấy phép trong CREDITS.md", () => {
+    const credits = readFileSync(join(ROOT, "public", "images", "tech", "CREDITS.md"), "utf8");
+    expect(credits).toMatch(/devicon/i);
+    expect(credits).toMatch(/Simple Icons/i);
+  });
+});
+
 describe("LandingPage: hero", () => {
   it("nút chính và nút Đăng nhập dẫn tới trang đăng nhập; nút phụ cuộn tới #how", () => {
     const { container } = render(<LandingPage />);
@@ -94,27 +159,36 @@ describe("LandingPage: hero", () => {
     expect(hero.getByRole("link", { name: landing.hero.secondary })).toHaveAttribute("href", "#how");
   });
 
-  it("dùng ảnh Vincom Center Đồng Khởi, có chữ mô tả, ghi công tác giả và giấy phép", () => {
+  it("dùng ảnh Vincom Center Đồng Khởi làm nền, có chữ mô tả", () => {
     render(<LandingPage />);
 
     const photo = screen.getByRole("img", { name: landing.hero.photoAlt });
     expect(photo).toHaveAttribute("src", "/images/landing/hero-vincom-dong-khoi.webp");
-    expect(screen.getByRole("link", { name: landing.hero.creditAuthor })).toHaveAttribute(
-      "href",
-      expect.stringContaining("commons.wikimedia.org/wiki/File:Ho_Chi_Minh_City,_Vincom_Center"),
-    );
-    expect(screen.getByRole("link", { name: landing.hero.creditLicense })).toHaveAttribute(
-      "href",
-      "https://creativecommons.org/licenses/by-sa/4.0/",
-    );
-    expect(screen.getByText(new RegExp(landing.hero.creditLead))).toBeInTheDocument();
   });
 
-  it("có nhãn bản demo và hai cam kết", () => {
+  it("ghi công tác giả và giấy phép ảnh ở chân trang (CC BY-SA yêu cầu), không đặt trên ảnh", () => {
     const { container } = render(<LandingPage />);
 
     const hero = within(container.querySelector("#hero") as HTMLElement);
-    expect(hero.getByText(landing.hero.badge)).toBeInTheDocument();
+    expect(hero.queryByRole("link", { name: landing.footer.photoAuthor })).toBeNull();
+    const footer = within(screen.getByRole("contentinfo"));
+    expect(footer.getByRole("link", { name: landing.footer.photoAuthor })).toHaveAttribute(
+      "href",
+      expect.stringContaining("commons.wikimedia.org/wiki/File:Ho_Chi_Minh_City,_Vincom_Center"),
+    );
+    expect(footer.getByRole("link", { name: landing.footer.photoLicense })).toHaveAttribute(
+      "href",
+      "https://creativecommons.org/licenses/by-sa/4.0/",
+    );
+    expect(footer.getByText(landing.footer.photoEdited, { exact: false })).toBeInTheDocument();
+  });
+
+  it("tiêu đề trắng hai dòng, có hai cam kết, không còn nhãn bản demo", () => {
+    const { container } = render(<LandingPage />);
+
+    const hero = within(container.querySelector("#hero") as HTMLElement);
+    expect(hero.getByRole("heading", { level: 1 })).toHaveTextContent(landing.hero.line2);
+    expect(hero.queryByText("Bản demo thực tập")).toBeNull();
     expect(hero.getByText(landing.hero.checkSources)).toBeInTheDocument();
     expect(hero.getByText(landing.hero.checkProcess)).toBeInTheDocument();
   });
@@ -141,9 +215,6 @@ describe("LandingPage: nội dung", () => {
     for (const role of ["asker", "hr", "team", "admin"] as const) {
       const heading = screen.getByRole("heading", { name: landing.roles[role].title });
       expect(within(heading.closest("article") as HTMLElement).getByRole("link")).toHaveAttribute("href", "/vi/login");
-    }
-    for (const key of ["web", "api", "db", "search", "embed", "llm", "docker"] as const) {
-      expect(screen.getByText(landing.tech[key].name)).toBeInTheDocument();
     }
   });
 
@@ -175,10 +246,10 @@ describe("LandingPage: quy tắc nội dung", () => {
 
   it("chỉ phần chú thích ảnh minh họa mới nhắc Vincom Đồng Khởi, và ghi rõ là ảnh minh họa", () => {
     for (const [key, value] of texts) {
-      if (key === "hero.photoAlt" || key === "hero.creditLead") continue;
+      if (key === "hero.photoAlt" || key === "footer.photoLead") continue;
       expect(value, key).not.toMatch(/vincom|đồng khởi/i);
     }
-    expect(landing.hero.creditLead).toMatch(/Ảnh minh họa/);
+    expect(landing.footer.photoLead).toMatch(/ảnh minh họa/i);
   });
 
   it("không có chữ tiếng Việt nằm cứng trong component (chữ phải ở messages/vi.json)", () => {

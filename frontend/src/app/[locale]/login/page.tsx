@@ -3,6 +3,7 @@ import { useTranslations } from "next-intl";
 import { Suspense } from "react";
 
 import { VsfBrand } from "@/components/brand/VsfBrand";
+import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
 import { LoginForm } from "@/features/auth/LoginForm";
 import styles from "@/features/auth/LoginPage.module.css";
 import { Link } from "@/i18n/navigation";
@@ -27,6 +28,7 @@ export default function LoginPage() {
             <Link href="/#how">{nav("how")}</Link>
             <Link href="/#roles">{nav("roles")}</Link>
           </div>
+          <LanguageSwitcher className={styles.languageSwitcher} />
         </nav>
       </header>
 
@@ -34,8 +36,10 @@ export default function LoginPage() {
         <section aria-labelledby="login-intro-title" className={styles.storyPanel}>
           <div aria-hidden="true" className={styles.storyGlow} />
           <div className={styles.storyContent}>
-            <span className={styles.eyebrow}>{t("eyebrow")}</span>
-            <h1 id="login-intro-title">{t("welcomeTitle")}</h1>
+            <h1 id="login-intro-title">
+              <span>{t("welcomeLine1")}</span>
+              <span>{t("welcomeLine2")}</span>
+            </h1>
             <p>{t("welcomeDescription")}</p>
             <ul className={styles.benefits}>
               {BENEFIT_KEYS.map((key) => (

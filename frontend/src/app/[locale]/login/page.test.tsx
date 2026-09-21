@@ -15,6 +15,7 @@ vi.mock("@/i18n/navigation", () => ({
       {children}
     </a>
   ),
+  usePathname: () => "/login",
   useRouter: () => ({ replace: vi.fn() }),
 }));
 vi.mock("next/navigation", () => ({ useSearchParams: () => ({ get: () => null }) }));
@@ -26,7 +27,9 @@ describe("LoginPage", () => {
   it("panel trái có tiêu đề h1, mô tả và ba lợi ích; thẻ đăng nhập có h2 và form", () => {
     render(<LoginPage />);
 
-    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(login.welcomeTitle);
+    const h1 = screen.getByRole("heading", { level: 1 });
+    expect(h1).toHaveTextContent(login.welcomeLine1);
+    expect(h1).toHaveTextContent(login.welcomeLine2);
     expect(screen.getByText(login.welcomeDescription)).toBeInTheDocument();
     for (const benefit of Object.values(login.benefits)) {
       expect(screen.getByText(benefit)).toBeInTheDocument();
@@ -45,6 +48,16 @@ describe("LoginPage", () => {
     expect(header.getByRole("link", { name: nav.roles })).toHaveAttribute("href", "/vi/#roles");
     expect(screen.getByText(login.note)).toBeInTheDocument();
     expect(screen.getByRole("link", { name: login.back })).toHaveAttribute("href", "/vi");
+  });
+});
+
+describe("LoginPage: ngôn ngữ và nhãn", () => {
+  it("header có công tắc ngôn ngữ và không còn nhãn giới thiệu phía trên tiêu đề", () => {
+    render(<LoginPage />);
+
+    const header = within(screen.getByRole("navigation", { name: nav.label }));
+    expect(header.getByLabelText(new RegExp(`^${viMessages.common.language}: `))).toBeInTheDocument();
+    expect(screen.queryByText("Trợ lý onboarding cho nhân sự mới")).toBeNull();
   });
 });
 
@@ -75,7 +88,7 @@ describe("mã nguồn giao diện đăng nhập", () => {
   it("không có dấu vết của Ralion, cơ chế định danh qua header hay lưu định danh ở trình duyệt", () => {
     for (const file of files) {
       const code = stripComments(readFileSync(file, "utf8"));
-      expect(code, file).not.toMatch(/ralion|X-User-Id|LanguageSwitcher|localStorage/i);
+      expect(code, file).not.toMatch(/ralion|X-User-Id|localStorage/i);
     }
   });
 

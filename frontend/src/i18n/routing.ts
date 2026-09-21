@@ -1,8 +1,8 @@
 import { defineRouting } from "next-intl/routing";
 
-// MVP chỉ có tiếng Việt; cấu trúc sẵn để thêm "en" sau.
+// Tiếng Việt (mặc định) và tiếng Anh; công tắc ngôn ngữ ở đầu landing và trang đăng nhập.
 export const routing = defineRouting({
-  locales: ["vi"],
+  locales: ["vi", "en"],
   defaultLocale: "vi",
   localePrefix: "always",
   localeDetection: false,

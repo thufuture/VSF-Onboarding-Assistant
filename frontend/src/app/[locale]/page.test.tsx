@@ -6,6 +6,8 @@ import viMessages from "../../../messages/vi.json";
 import HomePage from "./page";
 
 vi.mock("@/i18n/navigation", () => ({
+  usePathname: () => "/",
+  useRouter: () => ({ replace: vi.fn() }),
   Link: ({ href, children, className }: { href: string; children: ReactNode; className?: string }) => (
     <a href={`/vi${href === "/" ? "" : href}`} className={className}>
       {children}
