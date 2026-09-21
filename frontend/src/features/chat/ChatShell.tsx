@@ -114,14 +114,8 @@ export function ChatShell() {
           )}
           {empty ? (
             <section className={styles.empty}>
-              <span aria-hidden="true" className={styles.emptyMark}>
-                <Sparkles size={26} />
-              </span>
               <h2>{t("greeting", { name: user.display_name })}</h2>
               <p>{t("intro")}</p>
-              <p className={styles.notice} role="note">
-                {t("demoNotice")}
-              </p>
               <div aria-label={t("suggestionsLabel")} className={styles.cards} role="group">
                 {SUGGESTIONS.map(({ key, icon: Icon }) => (
                   <button className={styles.card} key={key} onClick={() => ask(t(`suggestions.${key}.question`), key)} type="button">

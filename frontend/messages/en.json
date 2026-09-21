@@ -282,7 +282,6 @@
   "chat": {
     "greeting": "Hello, {name}",
     "intro": "Ask about procedures, paperwork, equipment or contacts in your first days. The assistant answers only from approved documents.",
-    "demoNotice": "Illustrative content: the real chat with citations from approved documents will be connected in a later phase.",
     "conversation": "Conversation",
     "suggestionsLabel": "Suggested questions",
     "inputLabel": "Your question",

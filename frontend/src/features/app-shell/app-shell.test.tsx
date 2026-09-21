@@ -207,11 +207,11 @@ describe("SessionProvider", () => {
 });
 
 describe("ChatShell", () => {
-  it("trạng thái đầu: lời chào theo tên, ghi chú minh họa, 4 thẻ gợi ý, ô nhập trống và nút gửi khóa", () => {
+  it("trạng thái đầu: lời chào theo tên, 4 thẻ gợi ý, ô nhập trống và nút gửi khóa", () => {
     renderWithSession(<ChatShell />);
 
     expect(screen.getByRole("heading", { level: 2 })).toHaveTextContent(USER.display_name);
-    expect(screen.getByRole("note")).toHaveTextContent(chat.demoNotice);
+    expect(screen.queryByRole("note")).toBeNull();
     expect(within(screen.getByRole("group", { name: chat.suggestionsLabel })).getAllByRole("button")).toHaveLength(4);
     expect(screen.getByRole("button", { name: chat.send })).toBeDisabled();
     expect(screen.queryByRole("button", { name: chat.newConversation })).toBeNull();

@@ -64,7 +64,7 @@ $column: 780px;
   text-align: center;
 
   h2 {
-    margin: 18px 0 8px;
+    margin: 0 0 8px;
     font-size: 30px;
     font-weight: 800;
     letter-spacing: -0.02em;
@@ -81,28 +81,6 @@ $column: 780px;
     color: var(--app-ink-2);
     line-height: 1.6;
   }
-}
-
-.emptyMark {
-  display: grid;
-  width: 60px;
-  height: 60px;
-  place-items: center;
-  border-radius: 18px;
-  background: linear-gradient(135deg, #1aa5e0, #0a66a8);
-  box-shadow: 0 10px 24px rgb(16 144 203 / 32%);
-  color: #fff;
-}
-
-.empty > .notice {
-  margin-top: 14px;
-  padding: 6px 14px;
-  border: 1px dashed var(--app-border-strong);
-  border-radius: 999px;
-  background: var(--app-accent-soft);
-  color: var(--app-accent-strong);
-  font-size: 12px;
-  font-weight: 600;
 }
 
 .cards {

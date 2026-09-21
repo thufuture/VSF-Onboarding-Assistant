@@ -282,7 +282,6 @@
   "chat": {
     "greeting": "Xin chào, {name}",
     "intro": "Hỏi về quy trình, giấy tờ, thiết bị hay đầu mối trong những ngày đầu. Trợ lý chỉ trả lời từ tài liệu đã được duyệt.",
-    "demoNotice": "Nội dung minh họa: chat thật với nguồn dẫn từ tài liệu đã duyệt sẽ được nối ở giai đoạn sau.",
     "conversation": "Cuộc trò chuyện",
     "suggestionsLabel": "Câu hỏi gợi ý",
     "inputLabel": "Câu hỏi của bạn",
