@@ -37,6 +37,17 @@ describe("LoginForm", () => {
     expect(screen.getByLabelText(login.fields.password)).toHaveAttribute("type", "password");
   });
 
+  it("nút con mắt hiện và ẩn mật khẩu", () => {
+    render(<LoginForm />);
+
+    const input = screen.getByLabelText(login.fields.password);
+    expect(input).toHaveAttribute("type", "password");
+    fireEvent.click(screen.getByRole("button", { name: login.showPassword }));
+    expect(input).toHaveAttribute("type", "text");
+    fireEvent.click(screen.getByRole("button", { name: login.hidePassword }));
+    expect(input).toHaveAttribute("type", "password");
+  });
+
   it.each([
     ["", "pw", login.errors.emailRequired],
     ["khong-phai-email", "pw", login.errors.emailInvalid],

@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRightIcon, KeyIcon, MailIcon } from "@primer/octicons-react";
+import { ArrowRightIcon, EyeClosedIcon, EyeIcon, KeyIcon, MailIcon } from "@primer/octicons-react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState, type FormEvent } from "react";
@@ -9,7 +9,7 @@ import { resolvePostLoginPath } from "@/features/auth/routing";
 import { SessionError, authApi } from "@/features/auth/session";
 import { useRouter } from "@/i18n/navigation";
 
-import styles from "./LoginPage.module.css";
+import styles from "./LoginPage.module.scss";
 
 // Kiểm tra sơ bộ ở client; server mới là nơi quyết định email và mật khẩu có hợp lệ hay không.
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -27,6 +27,7 @@ export function LoginForm() {
   const searchParams = useSearchParams();
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -62,35 +63,46 @@ export function LoginForm() {
         </div>
       ) : null}
 
-      <label className={styles.field}>
-        <span>{t("fields.email")}</span>
-        <span className={styles.inputControl}>
+      <div className={styles.field}>
+        <label htmlFor="login-email">{t("fields.email")}</label>
+        <div className={styles.inputControl}>
           <MailIcon aria-hidden="true" size={17} />
           <input
             autoComplete="username"
             className={styles.input}
             disabled={pending}
+            id="login-email"
             inputMode="email"
             name="email"
             placeholder={t("fields.emailPlaceholder")}
             type="email"
           />
-        </span>
-      </label>
+        </div>
+      </div>
 
-      <label className={styles.field}>
-        <span>{t("fields.password")}</span>
-        <span className={styles.inputControl}>
+      <div className={styles.field}>
+        <label htmlFor="login-password">{t("fields.password")}</label>
+        <div className={styles.inputControl}>
           <KeyIcon aria-hidden="true" size={17} />
           <input
             autoComplete="current-password"
             className={styles.input}
             disabled={pending}
+            id="login-password"
             name="password"
-            type="password"
+            type={showPassword ? "text" : "password"}
           />
-        </span>
-      </label>
+          <button
+            aria-label={showPassword ? t("hidePassword") : t("showPassword")}
+            aria-pressed={showPassword}
+            className={styles.toggle}
+            onClick={() => setShowPassword((current) => !current)}
+            type="button"
+          >
+            {showPassword ? <EyeClosedIcon size={17} /> : <EyeIcon size={17} />}
+          </button>
+        </div>
+      </div>
 
       <button aria-busy={pending} className={styles.submit} disabled={pending} type="submit">
         {pending ? <i aria-hidden="true" className={styles.spinner} /> : null}

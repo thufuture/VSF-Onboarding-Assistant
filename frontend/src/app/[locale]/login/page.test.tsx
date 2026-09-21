@@ -10,8 +10,17 @@ import viMessages from "../../../../messages/vi.json";
 import LoginPage from "./page";
 
 vi.mock("@/i18n/navigation", () => ({
-  Link: ({ href, children, className }: { href: string; children: ReactNode; className?: string }) => (
-    <a href={`/vi${href === "/" ? "" : href}`} className={className}>
+  Link: ({
+    href,
+    children,
+    ...rest
+  }: {
+    href: string;
+    children: ReactNode;
+    className?: string;
+    "aria-label"?: string;
+  }) => (
+    <a href={`/vi${href === "/" ? "" : href}`} {...rest}>
       {children}
     </a>
   ),
@@ -19,12 +28,19 @@ vi.mock("@/i18n/navigation", () => ({
   useRouter: () => ({ replace: vi.fn() }),
 }));
 vi.mock("next/navigation", () => ({ useSearchParams: () => ({ get: () => null }) }));
+vi.mock("next/image", () => ({
+  default: ({ src, alt }: { src: string; alt: string }) => (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src={src} alt={alt} />
+  ),
+}));
 
 const login = viMessages.login;
 const nav = viMessages.landing.nav;
+const footer = viMessages.landing.footer;
 
 describe("LoginPage", () => {
-  it("panel trái có tiêu đề h1, mô tả và ba lợi ích; thẻ đăng nhập có h2 và form", () => {
+  it("bên trái có tiêu đề h1 hai dòng, mô tả, ba lợi ích và câu trích; thẻ đăng nhập có h2 và form", () => {
     render(<LoginPage />);
 
     const h1 = screen.getByRole("heading", { level: 1 });
@@ -34,29 +50,34 @@ describe("LoginPage", () => {
     for (const benefit of Object.values(login.benefits)) {
       expect(screen.getByText(benefit)).toBeInTheDocument();
     }
+    expect(screen.getByText(login.quote)).toBeInTheDocument();
     expect(screen.getByRole("heading", { level: 2, name: login.title })).toBeInTheDocument();
     expect(screen.getByLabelText(login.fields.email)).toBeInTheDocument();
     expect(screen.getByLabelText(login.fields.password)).toBeInTheDocument();
   });
 
-  it("header có thương hiệu và ba liên kết về landing; có ghi chú bản demo và đường về trang chủ", () => {
+  it("dùng ảnh nền toàn khung của landing, có header với logo và chọn ngôn ngữ", () => {
+    const { container } = render(<LoginPage />);
+
+    expect(container.querySelector("img[src='/images/landing/hero-vincom-dong-khoi.webp']")).not.toBeNull();
+    const header = within(screen.getByRole("navigation", { name: nav.label }));
+    expect(header.getByRole("link", { name: nav.brand })).toHaveAttribute("href", "/vi");
+    expect(header.getByLabelText(new RegExp(`^${viMessages.common.language}: `))).toBeInTheDocument();
+  });
+
+  it("chân thẻ có gợi ý đăng nhập lần đầu (mở ra ghi chú) và nút hỗ trợ; chân trang có bản quyền và đường về trang chủ", () => {
     render(<LoginPage />);
 
-    const header = within(screen.getByRole("navigation", { name: nav.label }));
-    expect(header.getByRole("link", { name: nav.top })).toHaveAttribute("href", "/vi");
-    expect(header.getByRole("link", { name: nav.how })).toHaveAttribute("href", "/vi/#how");
-    expect(header.getByRole("link", { name: nav.roles })).toHaveAttribute("href", "/vi/#roles");
+    expect(screen.getByText(login.firstTime)).toBeInTheDocument();
     expect(screen.getByText(login.note)).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: login.support })).toHaveAttribute("href", `mailto:${footer.email}`);
+    expect(screen.getByText(footer.copyright)).toBeInTheDocument();
     expect(screen.getByRole("link", { name: login.back })).toHaveAttribute("href", "/vi");
   });
-});
 
-describe("LoginPage: ngôn ngữ và nhãn", () => {
-  it("header có công tắc ngôn ngữ và không còn nhãn giới thiệu phía trên tiêu đề", () => {
+  it("không còn nhãn giới thiệu phía trên tiêu đề", () => {
     render(<LoginPage />);
 
-    const header = within(screen.getByRole("navigation", { name: nav.label }));
-    expect(header.getByLabelText(new RegExp(`^${viMessages.common.language}: `))).toBeInTheDocument();
     expect(screen.queryByText("Trợ lý onboarding cho nhân sự mới")).toBeNull();
   });
 });
@@ -92,8 +113,8 @@ describe("mã nguồn giao diện đăng nhập", () => {
     }
   });
 
-  it("CSS đăng nhập không còn chữ Ralion, video hay liên kết ngoài", () => {
-    const css = readFileSync(join(root, "features", "auth", "LoginPage.module.css"), "utf8");
-    expect(css).not.toMatch(/ralion|video|https?:\/\//i);
+  it("SCSS đăng nhập không còn chữ Ralion, video hay liên kết ngoài", () => {
+    const scss = readFileSync(join(root, "features", "auth", "LoginPage.module.scss"), "utf8");
+    expect(scss).not.toMatch(/ralion|video|https?:\/\//i);
   });
 });

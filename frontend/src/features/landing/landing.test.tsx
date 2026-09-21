@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 
 import { fireEvent, render, screen, within } from "@testing-library/react";
@@ -38,6 +38,8 @@ vi.mock("next/image", () => ({
 }));
 
 const landing = viMessages.landing;
+// Khớp tên truy cập được có chứa chuỗi (không dùng RegExp vì tiêu đề có dấu ngoặc như "Nhân sự (HR)").
+const includes = (text: string) => (name: string) => name.includes(text);
 const ROOT = join(__dirname, "..", "..", "..");
 
 function leaves(node: unknown, prefix = ""): [string, string][] {
@@ -172,16 +174,20 @@ describe("LandingPage: hero", () => {
     const { container } = render(<LandingPage />);
 
     const hero = within(container.querySelector("#hero") as HTMLElement);
-    expect(hero.queryByRole("link", { name: landing.footer.photoAuthor })).toBeNull();
+    expect(hero.queryByRole("link", { name: "Steffen Schmitz" })).toBeNull();
     const footer = within(screen.getByRole("contentinfo"));
-    expect(footer.getByRole("link", { name: landing.footer.photoAuthor })).toHaveAttribute(
-      "href",
-      expect.stringContaining("commons.wikimedia.org/wiki/File:Ho_Chi_Minh_City,_Vincom_Center"),
-    );
-    expect(footer.getByRole("link", { name: landing.footer.photoLicense })).toHaveAttribute(
+    // Ba ảnh, mỗi ảnh một tác giả và một giấy phép.
+    for (const author of ["Steffen Schmitz", "trungydang", "pqthong0911"]) {
+      expect(footer.getByRole("link", { name: author })).toHaveAttribute(
+        "href",
+        expect.stringContaining("commons.wikimedia.org/wiki/File:"),
+      );
+    }
+    expect(footer.getByRole("link", { name: "CC BY-SA 4.0" })).toHaveAttribute(
       "href",
       "https://creativecommons.org/licenses/by-sa/4.0/",
     );
+    expect(footer.getAllByRole("link", { name: "CC BY 3.0" })).toHaveLength(2);
     expect(footer.getByText(landing.footer.photoEdited, { exact: false })).toBeInTheDocument();
   });
 
@@ -214,9 +220,36 @@ describe("LandingPage: nội dung", () => {
     for (const feature of Object.values(landing.features)) {
       expect(screen.getAllByText(feature.label).length).toBeGreaterThan(0);
     }
-    for (const role of ["asker", "hr", "team", "admin"] as const) {
-      const heading = screen.getByRole("heading", { name: landing.roles[role].title });
-      expect(within(heading.closest("article") as HTMLElement).getByRole("link")).toHaveAttribute("href", "/vi/login");
+  });
+
+  it("khối vai trò: thẻ ảnh đổi theo ô hình thoi được chọn, có một nút đăng nhập", () => {
+    render(<LandingPage />);
+
+    const section = screen
+      .getByRole("heading", { level: 2, name: new RegExp(landing.roles.titleStart) })
+      .closest("section") as HTMLElement;
+    const roles = within(section);
+    // Mặc định hiện vai trò đầu tiên.
+    expect(roles.getByRole("heading", { level: 3 })).toHaveTextContent(landing.roles.asker.title);
+    expect(roles.getByRole("link", { name: includes(landing.roles.asker.cta) })).toHaveAttribute("href", "/vi/login");
+    for (const key of ["asker", "hr", "team", "admin"] as const) {
+      expect(roles.getByRole("button", { name: includes(landing.roles[key].title) })).toBeInTheDocument();
+    }
+    fireEvent.click(roles.getByRole("button", { name: includes(landing.roles.hr.title) }));
+    expect(roles.getByRole("heading", { level: 3 })).toHaveTextContent(landing.roles.hr.title);
+    expect(roles.getByText(landing.roles.hr.body)).toBeInTheDocument();
+    fireEvent.mouseEnter(roles.getByRole("button", { name: includes(landing.roles.admin.title) }));
+    expect(roles.getByRole("heading", { level: 3 })).toHaveTextContent(landing.roles.admin.title);
+  });
+
+  it("phần kêu gọi có ảnh nền và chân trang có bốn cột", () => {
+    const { container } = render(<LandingPage />);
+
+    expect(container.querySelector("img[src='/images/landing/cta-vincom-towers.webp']")).not.toBeNull();
+    expect(container.querySelector("img[src='/images/landing/roles-vincom-facade.webp']")).not.toBeNull();
+    const footer = within(screen.getByRole("contentinfo"));
+    for (const title of [landing.footer.aboutTitle, landing.footer.accessTitle, landing.footer.contactTitle]) {
+      expect(footer.getByText(title)).toBeInTheDocument();
     }
   });
 
@@ -232,7 +265,24 @@ describe("LandingPage: nội dung", () => {
     render(<LandingPage />);
 
     const section = screen.getByRole("heading", { name: landing.cta.heading }).closest("section") as HTMLElement;
-    expect(within(section).getByRole("link")).toHaveAttribute("href", "/vi/login");
+    expect(within(section).getByRole("link", { name: includes(landing.cta.button) })).toHaveAttribute(
+      "href",
+      "/vi/login",
+    );
+  });
+});
+
+describe("kiểu dáng", () => {
+  function walk(dir: string): string[] {
+    return readdirSync(dir, { withFileTypes: true }).flatMap((entry) =>
+      entry.isDirectory() ? walk(join(dir, entry.name)) : [join(dir, entry.name)],
+    );
+  }
+
+  it("dùng SCSS module: không còn tệp .module.css nào trong src", () => {
+    const files = walk(join(ROOT, "src"));
+    expect(files.filter((file) => file.endsWith(".module.css"))).toEqual([]);
+    expect(files.filter((file) => file.endsWith(".module.scss")).length).toBeGreaterThanOrEqual(5);
   });
 });
 
@@ -256,7 +306,12 @@ describe("LandingPage: quy tắc nội dung", () => {
 
   it("không có chữ tiếng Việt nằm cứng trong component (chữ phải ở messages/vi.json)", () => {
     const vietnamese = /[àáảãạăằắẳẵặâầấẩẫậèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵđ]/i;
-    const files = [join(__dirname, "LandingPage.tsx"), join(ROOT, "src", "components", "brand", "VsfBrand.tsx")];
+    const files = [
+      join(__dirname, "LandingPage.tsx"),
+      join(__dirname, "RolesFlow.tsx"),
+      join(__dirname, "CtaFooter.tsx"),
+      join(ROOT, "src", "components", "brand", "VsfBrand.tsx"),
+    ];
     for (const file of files) {
       const code = readFileSync(file, "utf8")
         .replace(/\/\*[\s\S]*?\*\//g, "")

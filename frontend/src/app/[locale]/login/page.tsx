@@ -1,82 +1,88 @@
-import { KeyIcon } from "@primer/octicons-react";
+import { MailIcon } from "@primer/octicons-react";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Suspense } from "react";
 
 import { VsfBrand } from "@/components/brand/VsfBrand";
 import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
 import { LoginForm } from "@/features/auth/LoginForm";
-import styles from "@/features/auth/LoginPage.module.css";
+import styles from "@/features/auth/LoginPage.module.scss";
 import { Link } from "@/i18n/navigation";
 
 const BENEFIT_KEYS = ["sources", "approved", "noGuess"] as const;
 
-// Giao diện đăng nhập (bố cục chuyển thể từ trang đăng nhập của Ralion): kiểm nhập liệu và gọi
-// POST /api/v1/auth/login. Backend xác thực làm ở Phase 4.
+// Giao diện đăng nhập: ảnh nền toàn khung, chữ giới thiệu bên trái, thẻ đăng nhập bên phải. Kiểm nhập liệu ở client
+// và gọi POST /api/v1/auth/login; backend xác thực làm ở Phase 4.
 export default function LoginPage() {
   const t = useTranslations("login");
   const nav = useTranslations("landing.nav");
+  const footer = useTranslations("landing.footer");
 
   return (
-    <div className={styles.loginPage}>
-      <header className={styles.header}>
-        <nav aria-label={nav("label")} className={styles.nav}>
-          <span className={styles.headerBrand}>
-            <VsfBrand href="/" size={24} />
+    <div className={styles.page}>
+      <Image
+        alt=""
+        className={styles.bg}
+        fill
+        priority
+        sizes="100vw"
+        src="/images/landing/hero-vincom-dong-khoi.webp"
+      />
+      <div aria-hidden="true" className={styles.veil} />
+
+      <header className={styles.top}>
+        <nav aria-label={nav("label")} className={styles.topNav}>
+          <span className={styles.brand}>
+            <VsfBrand href="/" size={28} />
           </span>
-          <div className={styles.navLinks}>
-            <Link href="/">{nav("top")}</Link>
-            <Link href="/#how">{nav("how")}</Link>
-            <Link href="/#roles">{nav("roles")}</Link>
-          </div>
-          <LanguageSwitcher className={styles.languageSwitcher} />
+          <LanguageSwitcher />
         </nav>
       </header>
 
-      <main className={styles.loginMain}>
-        <section aria-labelledby="login-intro-title" className={styles.storyPanel}>
-          <div aria-hidden="true" className={styles.storyGlow} />
-          <div className={styles.storyContent}>
-            <h1 id="login-intro-title">
-              <span>{t("welcomeLine1")}</span>
-              <span>{t("welcomeLine2")}</span>
-            </h1>
-            <p>{t("welcomeDescription")}</p>
-            <ul className={styles.benefits}>
-              {BENEFIT_KEYS.map((key) => (
-                <li key={key}>
-                  <span aria-hidden="true">✓</span>
-                  {t(`benefits.${key}`)}
-                </li>
-              ))}
-            </ul>
-          </div>
+      <main className={styles.main}>
+        <section aria-labelledby="login-intro-title" className={styles.story}>
+          <h1 id="login-intro-title">
+            <span>{t("welcomeLine1")}</span>
+            <span>{t("welcomeLine2")}</span>
+          </h1>
+          <p>{t("welcomeDescription")}</p>
+          <ul className={styles.benefits}>
+            {BENEFIT_KEYS.map((key) => (
+              <li key={key}>
+                <span aria-hidden="true">✓</span>
+                {t(`benefits.${key}`)}
+              </li>
+            ))}
+          </ul>
+          <blockquote className={styles.quote}>{t("quote")}</blockquote>
         </section>
 
-        <section aria-labelledby="login-title" className={styles.formContent}>
-          <div className={styles.formHeading}>
-            <span className={styles.mobileBrand}>
-              <VsfBrand size={26} />
-            </span>
-            <div className={styles.formTitleRow}>
-              <span aria-hidden="true" className={styles.formTitleIcon}>
-                <KeyIcon size={18} />
-              </span>
-              <h2 id="login-title">{t("title")}</h2>
-            </div>
-            <span>{t("subtitle")}</span>
-          </div>
+        <section aria-labelledby="login-title" className={styles.cardWrap}>
           <div className={styles.card}>
+            <h2 id="login-title">{t("title")}</h2>
+            <p className={styles.subtitle}>{t("subtitle")}</p>
             {/* useSearchParams (?next=) trong LoginForm cần Suspense. */}
             <Suspense>
               <LoginForm />
             </Suspense>
+            <div className={styles.cardFoot}>
+              <details className={styles.firstTime}>
+                <summary>{t("firstTime")}</summary>
+                <p>{t("note")}</p>
+              </details>
+              <a className={styles.support} href={`mailto:${footer("email")}`}>
+                <MailIcon aria-hidden="true" size={14} />
+                {t("support")}
+              </a>
+            </div>
           </div>
-          <p className={styles.legal}>{t("note")}</p>
-          <p className={styles.legal}>
-            <Link href="/">{t("back")}</Link>
-          </p>
         </section>
       </main>
+
+      <footer className={styles.bottom}>
+        <span>{footer("copyright")}</span>
+        <Link href="/">{t("back")}</Link>
+      </footer>
     </div>
   );
 }

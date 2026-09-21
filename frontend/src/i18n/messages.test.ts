@@ -27,7 +27,7 @@ describe("messages/vi.json", () => {
       "landing.hero.primary",
       "landing.footer.photoLead",
       "landing.intro.heading",
-      "landing.roles.title",
+      "landing.roles.titleStart",
       "landing.footer.tagline",
       "login.title",
       "login.subtitle",

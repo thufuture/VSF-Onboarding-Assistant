@@ -6,7 +6,7 @@ import { useId } from "react";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
-import styles from "./LanguageSwitcher.module.css";
+import styles from "./LanguageSwitcher.module.scss";
 
 // Tên ngôn ngữ luôn hiển thị bằng chính ngôn ngữ đó nên không dịch.
 const LANGUAGE_NAMES: Record<Locale, string> = { vi: "Việt Nam", en: "English" };

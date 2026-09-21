@@ -3,7 +3,7 @@ import { useId, type MouseEventHandler } from "react";
 
 import { Link } from "@/i18n/navigation";
 
-import styles from "./VsfBrand.module.css";
+import styles from "./VsfBrand.module.scss";
 
 /**
  * Logo chữ của VSF Onboarding Assistant: biểu tượng chữ "V" trên ô bo góc, kèm tên "VSF Onboarding" (màu theo

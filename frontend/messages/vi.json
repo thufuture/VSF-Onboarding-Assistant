@@ -130,7 +130,6 @@
       }
     },
     "roles": {
-      "title": "Giá trị cho từng vai trò",
       "lead": "Dành cho những người cùng làm nên trải nghiệm onboarding.",
       "flow": "Từ tài liệu được duyệt đến câu trả lời cho người mới",
       "asker": {
@@ -156,7 +155,9 @@
         "title": "Quản trị viên",
         "body": "Quản lý tài khoản, vai trò và đội; xem nhật ký thay đổi của tài liệu và cấu hình.",
         "cta": "Đăng nhập quản trị"
-      }
+      },
+      "titleStart": "Giá trị cho từng",
+      "titleAccent": "vai trò"
     },
     "tech": {
       "title": "Xây dựng trên nền tảng quen thuộc",
@@ -209,11 +210,10 @@
       "contactLine": "Bản demo thực tập",
       "contactNote": "Địa chỉ liên hệ là địa chỉ giả lập.",
       "copyright": "© 2026 VSF Onboarding Assistant. Bản demo thực tập.",
-      "photoLead": "Ảnh nền phần đầu trang (ảnh minh họa Vincom Center Đồng Khởi, TP.HCM): ",
-      "photoAuthor": "Steffen Schmitz",
-      "photoLicense": "CC BY-SA 4.0",
+      "photoLead": "Ảnh minh họa Vincom Center Đồng Khởi, TP.HCM. Ảnh: ",
       "photoSource": "qua Wikimedia Commons",
-      "photoEdited": "đã cắt và nén"
+      "photoEdited": "đã cắt và nén",
+      "accessTitle": "Truy cập"
     }
   },
   "login": {
@@ -243,7 +243,12 @@
       "noGuess": "Không đoán dữ liệu cá nhân của bạn"
     },
     "welcomeLine1": "Hỏi là biết bước tiếp theo.",
-    "welcomeLine2": "Bắt đầu tự tin hơn."
+    "welcomeLine2": "Bắt đầu tự tin hơn.",
+    "firstTime": "Đăng nhập lần đầu?",
+    "support": "Hỗ trợ",
+    "showPassword": "Hiện mật khẩu",
+    "hidePassword": "Ẩn mật khẩu",
+    "quote": "“Chỗ nào chưa có nguồn, trợ lý nói thẳng là chưa có.”"
   },
   "common": {
     "language": "Ngôn ngữ",

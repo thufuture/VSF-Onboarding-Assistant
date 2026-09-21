@@ -1,10 +1,3 @@
-/* ═══════════════════════════════════════════════════════════════
-   LandingPage.module.css
-   Design: Figma "Agency Web" · Senior-level implementation
-   Tokens: #1090CB primary · #08D3BB accent · Poppins font
-   ═══════════════════════════════════════════════════════════════ */
-
-/* ── Scroll reveal ─────────────────────────────────────────────── */
 .animUp {
   opacity: 0;
   transform: translateY(22px);
@@ -16,7 +9,6 @@
   opacity: 1 !important;
   transform: none !important;
 }
-/* ── Page wrapper ──────────────────────────────────────────────── */
 .page {
   --vsf-brand: #1090cb;
   --vsf-brand-hover: #0877ac;
@@ -31,15 +23,10 @@
   color: #252525;
   overflow-x: clip;
 }
-/* Keep in-page navigation clear of the sticky landing header. */
 .servicesSection,
-.introSection,
-.rolesSection {
+.introSection {
   scroll-margin-top: 84px;
 }
-/* ════════════════════════════════════════════════════════════════
-   HEADER
-   ════════════════════════════════════════════════════════════════ */
 .header {
   position: fixed;
   top: 0;
@@ -54,8 +41,6 @@
     border-color 220ms ease,
     box-shadow 220ms ease;
 }
-
-/* Đầu trang: header trong suốt, chữ trắng nằm trên ảnh nền (giống VLearn). Cuộn xuống thì trở lại nền trắng. */
 .headerTop {
   --vsf-brand-accent: #fff;
   background: transparent;
@@ -88,7 +73,6 @@
   margin: 0 auto;
   padding: 0 32px;
 }
-/* Logo */
 .brand {
   display: inline-flex;
   align-items: center;
@@ -103,7 +87,6 @@
 .brand:hover {
   opacity: 0.82;
 }
-/* Center nav links matching Figma style */
 .navLinks {
   display: flex;
   align-items: center;
@@ -143,7 +126,6 @@
   background: #08d3bb;
   box-shadow: 0 0 8px #08d3bb;
 }
-/* Right side */
 .navRight {
   display: flex;
   align-items: center;
@@ -173,7 +155,6 @@
   transform: translateY(-1px);
   box-shadow: 0 4px 14px rgba(16, 144, 203, 0.25);
 }
-/* ─── App Mockup (High fidelity, large & clean) ─── */
 .appMockup {
   width: 100%;
   max-width: 580px;
@@ -402,7 +383,6 @@
 .sourceAvatars i:nth-child(3) {
   background: #bcebd5;
 }
-/* Interactive prompt mockup at bottom */
 .mockInputBar {
   display: flex;
   align-items: center;
@@ -438,7 +418,6 @@
     transform: translateY(-7px);
   }
 }
-/* ─── Plan Mockup ─── */
 .planMockup {
   width: 100%;
   max-width: 480px;
@@ -556,7 +535,6 @@
 .planBtn:hover {
   background: var(--vsf-brand-hover);
 }
-/* ─── Dash Mockup ─── */
 .dashMockup {
   width: 100%;
   max-width: 480px;
@@ -651,9 +629,6 @@
   border-radius: 99px;
   background: linear-gradient(90deg, #1090cb, #08d3bb);
 }
-/* ════════════════════════════════════════════════════════════════
-   HERO: ảnh toàn khung + lớp phủ xanh đậm, chữ trắng căn giữa
-   ════════════════════════════════════════════════════════════════ */
 .hero {
   position: relative;
   display: flex;
@@ -735,11 +710,8 @@
   border-radius: 50%;
   padding: 2px;
 }
-
-/* Nút dùng chung */
 .btnPrimary,
-.btnLight,
-.btnPrimaryLg {
+.btnLight {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -778,30 +750,11 @@
   transform: translateY(-2px);
   box-shadow: 0 12px 28px rgb(0 0 0 / 28%);
 }
-.btnPrimaryLg {
-  min-height: 52px;
-  padding: 0 34px;
-  background: var(--vsf-brand);
-  color: #fff;
-  font-size: 15.5px;
-  border: none;
-  box-shadow: 0 8px 24px rgb(16 144 203 / 30%);
-}
-.btnPrimaryLg:hover {
-  background: var(--vsf-brand-hover);
-  transform: translateY(-2px);
-  box-shadow: 0 14px 30px rgb(16 144 203 / 36%);
-}
-
 @media (max-width: 767px) {
   .heroContent {
     padding: 112px 20px 92px;
   }
 }
-
-/* ════════════════════════════════════════════════════════════════
-   SERVICES
-   ════════════════════════════════════════════════════════════════ */
 .servicesSection {
   max-width: 1340px;
   margin: 60px auto 0;
@@ -861,9 +814,6 @@
   font-size: 11.5px;
   line-height: 1.45;
 }
-/* ════════════════════════════════════════════════════════════════
-   INTRO
-   ════════════════════════════════════════════════════════════════ */
 .introSection {
   padding: 80px 32px 60px;
   scroll-margin-top: 84px;
@@ -886,9 +836,6 @@
   font-size: 15px;
   line-height: 1.75;
 }
-/* ════════════════════════════════════════════════════════════════
-   FEATURE SECTIONS
-   ════════════════════════════════════════════════════════════════ */
 .featuresSection {
   max-width: 1200px;
   margin: 0 auto;
@@ -910,7 +857,6 @@
 .featReverse > * {
   direction: ltr;
 }
-/* Feature copy */
 .featCopy {
   display: flex;
   flex-direction: column;
@@ -964,158 +910,10 @@
   display: flex;
   justify-content: center;
 }
-/* ════════════════════════════════════════════════════════════════
-   4 ROLE CARDS
-   ════════════════════════════════════════════════════════════════ */
-.rolesSection {
-  max-width: 1340px;
-  margin: 0 auto 90px;
-  padding: 20px 32px 0;
-}
-.rolesHeader {
-  text-align: center;
-  max-width: 680px;
-  margin: 0 auto 40px;
-  scroll-margin-top: 90px;
-}
-.rolesHeader h2 {
-  margin: 0;
-  color: #000;
-  font-size: clamp(22px, 2.3vw, 32px);
-  font-weight: 600;
-  line-height: 1.4;
-}
-.rolesHeader h2::after {
-  display: block;
-  width: 64px;
-  height: 4px;
-  margin: 14px auto 0;
-  border-radius: 999px;
-  background: linear-gradient(90deg, #1090cb, #08d3bb);
-  content: "";
-}
-.rolesHeader p {
-  margin: 10px 0 0;
-  color: #5c5c5c;
-  font-size: 14.5px;
-  line-height: 1.65;
-}
-.rolesFlowLabel {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 14px;
-  color: #1090cb;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-}
-.rolesFlowLabel::before,
-.rolesFlowLabel::after {
-  width: 22px;
-  height: 1px;
-  background: #9cd7ed;
-  content: "";
-}
-.roleMap {
-  position: relative;
-  display: grid;
-  min-height: 620px;
-  grid-template-columns: 1fr 1.06fr 1fr;
-  grid-template-rows: 1fr 1fr;
-  gap: 28px 110px;
-  align-items: center;
-  padding: 10px 0;
-}
-.roleMap::before {
-  position: absolute;
-  z-index: -1;
-  inset: 12% 22%;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgb(16 144 203 / 10%), transparent 68%);
-  filter: blur(18px);
-  content: "";
-}
-.roleMapLines {
-  position: absolute;
-  z-index: 0;
-  width: 100%;
-  height: 100%;
-  inset: 0;
-  overflow: visible;
-  pointer-events: none;
-}
-.roleMapLines path {
-  fill: none;
-  stroke: url(#role-flow-gradient);
-  stroke-dasharray: 7 7;
-  stroke-linecap: round;
-  stroke-width: 2;
-  vector-effect: non-scaling-stroke;
-  animation: roleDash 12s linear infinite;
-}
-.roleMapLines .roleOutputLine {
-  stroke: #1090cb;
-  stroke-dasharray: none;
-  stroke-width: 2.5;
-}
-.flowEdgeLabel {
-  position: absolute;
-  z-index: 3;
-  border: 1px solid rgb(16 144 203 / 12%);
-  border-radius: 999px;
-  padding: 5px 9px;
-  color: #52697f;
-  background: rgb(255 255 255 / 94%);
-  box-shadow: 0 5px 16px rgb(15 48 86 / 8%);
-  font-size: 9px;
-  font-weight: 700;
-  pointer-events: none;
-  white-space: nowrap;
-}
-.flowAccess {
-  top: 28%;
-  left: 29%;
-}
-.flowPolicy {
-  bottom: 27%;
-  left: 29%;
-}
-.flowProject {
-  top: 39%;
-  left: 49%;
-  transform: translateX(-50%);
-}
-.flowDelivery {
-  top: 55%;
-  right: 22%;
-}
 @keyframes roleDash {
   to {
     stroke-dashoffset: -140;
   }
-}
-.roleHub {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  width: 230px;
-  min-height: 230px;
-  grid-column: 2;
-  grid-row: 2;
-  align-self: center;
-  justify-self: center;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid rgb(16 144 203 / 24%);
-  border-radius: 50%;
-  padding: 30px;
-  background: linear-gradient(145deg, #fff, #eefaff);
-  box-shadow:
-    0 24px 70px rgb(16 144 203 / 18%),
-    inset 0 0 0 10px rgb(255 255 255 / 72%);
-  text-align: center;
 }
 .hubOrbit {
   position: absolute;
@@ -1159,126 +957,6 @@
   background: linear-gradient(135deg, #1090cb, #08bca9);
   box-shadow: 0 12px 28px rgb(16 144 203 / 30%);
 }
-.roleHub small {
-  margin-top: 14px;
-  color: #1090cb;
-  font-size: 9px;
-  font-weight: 800;
-  letter-spacing: 0.13em;
-}
-.roleHub strong {
-  margin-top: 5px;
-  color: #0b1f3a;
-  font-size: 16px;
-  line-height: 1.3;
-}
-.roleHub p {
-  margin: 7px 0 0;
-  color: #63758a;
-  font-size: 11px;
-  line-height: 1.5;
-}
-.roleCard {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  border: 1px solid rgba(16, 144, 203, 0.1);
-  border-radius: 18px;
-  padding: 24px 22px;
-  background: #fff;
-  box-shadow: 0 4px 18px rgba(12, 44, 80, 0.05);
-  transition:
-    transform 200ms ease,
-    box-shadow 200ms ease,
-    border-color 200ms ease;
-}
-.roleMapCard1 {
-  grid-column: 1;
-  grid-row: 1;
-}
-.roleMapCard2 {
-  grid-column: 1;
-  grid-row: 2;
-}
-.roleMapCard3 {
-  grid-column: 2;
-  grid-row: 1;
-}
-.roleMapCard4 {
-  grid-column: 3;
-  grid-row: 1 / 3;
-}
-.rolesGrid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 20px;
-  align-items: stretch;
-}
-.roleCard:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 16px 36px rgba(12, 44, 80, 0.1);
-  border-color: rgba(16, 144, 203, 0.28);
-}
-.roleCardTop {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 16px;
-}
-.roleIconWrap {
-  display: inline-flex;
-  width: 44px;
-  height: 44px;
-  align-items: center;
-  justify-content: center;
-  border-radius: 12px;
-}
-.roleTag {
-  font-size: 10.5px;
-  font-weight: 700;
-  border-radius: 6px;
-  padding: 3px 8px;
-  letter-spacing: 0.04em;
-}
-.roleCard h3 {
-  margin: 0;
-  color: #000;
-  font-size: 16.5px;
-  font-weight: 600;
-  line-height: 1.35;
-}
-.roleCard p {
-  margin: 10px 0 20px;
-  color: #5c5c5c;
-  font-size: 13px;
-  line-height: 1.65;
-  flex-grow: 1;
-}
-.roleBtn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  border: 1.5px solid #1090cb;
-  border-radius: 8px;
-  padding: 8px 14px;
-  background: #fff;
-  color: #1090cb;
-  font-size: 12.5px;
-  font-weight: 600;
-  text-decoration: none;
-  transition:
-    background 150ms ease,
-    color 150ms ease;
-}
-.roleBtn:hover {
-  background: #1090cb;
-  color: #fff;
-}
-/* ════════════════════════════════════════════════════════════════
-   TECH STACK
-   ════════════════════════════════════════════════════════════════ */
 .techSection {
   padding: 64px 32px 76px;
   background: linear-gradient(180deg, #fff, #f6fbfe);
@@ -1352,177 +1030,11 @@
   line-height: 1.35;
 }
 /* ════════════════════════════════════════════════════════════════
-   NEWSLETTER / BOTTOM CTA
-   ════════════════════════════════════════════════════════════════ */
-.nlSection {
-  background: #e8f4fa;
-  padding: 72px 32px;
-  text-align: center;
-}
-.nlInner {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 14px;
-  max-width: 540px;
-  margin: 0 auto;
-}
-.nlInner h2 {
-  margin: 0;
-  color: #000;
-  font-size: clamp(22px, 2.2vw, 30px);
-  font-weight: 600;
-  line-height: 1.45;
-}
-.nlInner p {
-  margin: 0;
-  color: #5c5c5c;
-  font-size: 14.5px;
-  line-height: 1.68;
-}
-/* ════════════════════════════════════════════════════════════════
-   FOOTER
-   ════════════════════════════════════════════════════════════════ */
-.footer {
-  background: #fff;
-  border-top: 1px solid #e8e8e8;
-}
-.footerInner {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
-  gap: 32px;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 48px 32px 32px;
-}
-.footerBrand {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.footerLogo {
-  color: #1090cb;
-  font-size: 22px;
-  font-weight: 700;
-  letter-spacing: -0.03em;
-}
-.footerBrand p {
-  color: #5c5c5c;
-  font-size: 13px;
-  line-height: 1.65;
-  margin: 0;
-}
-.footerMail {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  color: #1090cb;
-  font-size: 12.5px;
-  text-decoration: none;
-  transition: opacity 150ms ease;
-}
-.footerMail:hover {
-  opacity: 0.75;
-}
-.footerCol {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.footerCol strong {
-  display: block;
-  color: #000;
-  font-size: 14.5px;
-  font-weight: 600;
-  margin-bottom: 4px;
-}
-.footerCol a,
-.footerCol p,
-.footerCol span {
-  color: #5c5c5c;
-  font-size: 13.5px;
-  line-height: 1.7;
-  text-decoration: none;
-  transition: color 150ms ease;
-}
-.footerCol a:hover {
-  color: #1090cb;
-}
-.footerCol p {
-  margin: 0;
-}
-.footerSocial {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-.footerSocial strong {
-  color: #000;
-  font-size: 14.5px;
-  font-weight: 600;
-}
-.socialRow {
-  display: flex;
-  gap: 8px;
-}
-.socialBtn {
-  display: inline-flex;
-  width: 32px;
-  height: 32px;
-  align-items: center;
-  justify-content: center;
-  border-radius: 8px;
-  background: #f0f0f0;
-  color: #252525;
-  text-decoration: none;
-  transition:
-    background 150ms ease,
-    transform 150ms ease;
-}
-.socialBtn:hover {
-  background: #1090cb;
-  color: #fff;
-  transform: translateY(-2px);
-}
-.footerBottom {
-  border-top: 1px solid #e8e8e8;
-  padding: 16px 32px;
-  text-align: center;
-  color: #868686;
-  font-size: 12px;
-}
-/* ════════════════════════════════════════════════════════════════
    RESPONSIVE
    ════════════════════════════════════════════════════════════════ */
 @media (max-width: 1100px) {
   .servicesGrid {
     grid-template-columns: repeat(2, 1fr);
-  }
-  .roleMap {
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: auto;
-    gap: 20px;
-    padding-top: 270px;
-  }
-  .roleMapLines {
-    display: none;
-  }
-  .roleHub {
-    position: absolute;
-    top: 12px;
-    left: 50%;
-    width: 210px;
-    min-height: 210px;
-    transform: translateX(-50%);
-  }
-  .roleMapCard1,
-  .roleMapCard2,
-  .roleMapCard3,
-  .roleMapCard4 {
-    grid-column: auto;
-    grid-row: auto;
-    align-self: stretch;
-    transform: none;
   }
   .featRow {
     grid-template-columns: 1fr;
@@ -1531,17 +1043,8 @@
   .featReverse {
     direction: ltr;
   }
-  .footerInner {
-    grid-template-columns: 1fr 1fr;
-  }
   .techRow {
     grid-template-columns: repeat(2, 1fr);
-  }
-  .flowEdgeLabel {
-    display: none;
-  }
-  .rolesGrid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 @media (max-width: 767px) {
@@ -1586,31 +1089,9 @@
     padding: 0 16px 48px;
     gap: 48px;
   }
-  .rolesSection {
-    padding: 18px 16px 0;
-    margin-bottom: 48px;
-  }
-  .rolesHeader {
-    scroll-margin-top: 74px;
-    margin-bottom: 32px;
-  }
-  .roleMap {
-    grid-template-columns: 1fr;
-    gap: 16px;
-    padding-top: 236px;
-  }
-  .roleHub {
-    width: 186px;
-    min-height: 186px;
-    padding: 24px;
-  }
   .hubIcon {
     width: 46px;
     height: 46px;
-  }
-  .rolesGrid {
-    grid-template-columns: 1fr;
-    gap: 14px;
   }
   .techSection {
     padding: 40px 16px;
@@ -1618,16 +1099,6 @@
   .techRow {
     grid-template-columns: 1fr;
     gap: 10px;
-  }
-  .nlSection {
-    padding: 48px 16px;
-  }
-  .footerInner {
-    grid-template-columns: 1fr;
-    padding: 32px 16px 20px;
-  }
-  .footerBottom {
-    padding: 12px 16px;
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -1641,8 +1112,6 @@
     animation: none;
   }
 }
-
-/* Liên kết "Bỏ qua tới nội dung": chỉ hiện khi nhận focus bàn phím. */
 .skipLink {
   position: absolute;
   z-index: 60;
@@ -1658,15 +1127,12 @@
 .skipLink:focus {
   transform: none;
 }
-
-/* Chú thích dưới mockup hội thoại. */
 .mockCaption {
   margin: 12px 0 0;
   color: #868686;
   font-size: 12px;
   text-align: center;
 }
-
 /* Người dùng chọn giảm chuyển động: hiện ngay, không trượt. */
 @media (prefers-reduced-motion: reduce) {
   .animUp {
@@ -1675,11 +1141,9 @@
     transition: none;
   }
 }
-
 .mockWrap {
   width: 100%;
 }
-
 /* Điện thoại: bỏ thanh bên và nhãn trạng thái của mockup chat cho đủ chỗ. */
 @media (max-width: 767px) {
   .appSidebar,
@@ -1687,8 +1151,6 @@
     display: none;
   }
 }
-
-/* Logo công nghệ nhiều màu: ô trắng thay vì ô xanh nhạt một màu. */
 .techIcon {
   border: 1px solid #e3edf5;
   background: #fff;
@@ -1703,19 +1165,4 @@
 }
 .techBadge small {
   font-size: 11.5px;
-}
-
-/* Ghi công ảnh ở chân trang (CC BY-SA yêu cầu ghi tác giả và giấy phép, nhưng không cần đặt trên ảnh). */
-.footerBottom {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.photoCredit {
-  font-size: 11.5px;
-  color: #868686;
-}
-.photoCredit a {
-  color: inherit;
-  text-decoration: underline;
 }

@@ -1,0 +1,47 @@
+// Biến và mixin dùng chung cho các SCSS module của landing và đăng nhập.
+// Dùng: @use "../../styles/tokens" as *;
+
+// Màu thương hiệu
+$brand: #1090cb;
+$brand-hover: #0877ac;
+$brand-light: #29a8df;
+$navy: #0b1f3a;
+$navy-deep: #0c2d5b;
+$navy-mid: #1c5a9c;
+$ink-muted: #4b5b70;
+$accent-red: #d63a45;
+$accent-red-deep: #a3121f;
+
+// Phông chữ: Be Vietnam Pro nạp bằng next/font ở app/layout.tsx (biến --font-landing)
+$font: var(--font-landing), "Segoe UI", sans-serif;
+
+// Điểm ngắt
+$bp-tablet: 1000px;
+$bp-phone: 767px;
+
+@mixin tablet-down {
+  @media (max-width: $bp-tablet) {
+    @content;
+  }
+}
+
+@mixin phone-down {
+  @media (max-width: $bp-phone) {
+    @content;
+  }
+}
+
+// Ảnh nền phủ kín khung (dùng với next/image `fill`)
+@mixin cover-photo($z: -2, $position: 50% 50%) {
+  z-index: $z;
+  object-fit: cover;
+  object-position: $position;
+}
+
+// Lớp phủ toàn khung
+@mixin overlay($z: -1, $background: transparent) {
+  position: absolute;
+  z-index: $z;
+  inset: 0;
+  background: $background;
+}

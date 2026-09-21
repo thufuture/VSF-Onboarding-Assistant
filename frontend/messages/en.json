@@ -130,7 +130,6 @@
       }
     },
     "roles": {
-      "title": "Value for every role",
       "lead": "For everyone who shapes the onboarding experience.",
       "flow": "From approved documents to answers for newcomers",
       "asker": {
@@ -156,7 +155,9 @@
         "title": "Administrator",
         "body": "Manage accounts, roles and teams, and review the change log of documents and configuration.",
         "cta": "Sign in to administer"
-      }
+      },
+      "titleStart": "Value for",
+      "titleAccent": "every role"
     },
     "tech": {
       "title": "Built on familiar foundations",
@@ -209,11 +210,10 @@
       "contactLine": "Internship demo",
       "contactNote": "The contact address is a placeholder.",
       "copyright": "© 2026 VSF Onboarding Assistant. Internship demo.",
-      "photoLead": "Hero background photo (illustrative image of Vincom Center Dong Khoi, Ho Chi Minh City): ",
-      "photoAuthor": "Steffen Schmitz",
-      "photoLicense": "CC BY-SA 4.0",
+      "photoLead": "Illustrative photos of Vincom Center Dong Khoi, Ho Chi Minh City. Photos by: ",
       "photoSource": "via Wikimedia Commons",
-      "photoEdited": "cropped and compressed"
+      "photoEdited": "cropped and compressed",
+      "accessTitle": "Access"
     }
   },
   "login": {
@@ -243,7 +243,12 @@
       "sources": "Answers come with cited sources",
       "approved": "Approved processes, links and contacts",
       "noGuess": "It never guesses your personal data"
-    }
+    },
+    "firstTime": "Signing in for the first time?",
+    "support": "Support",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "quote": "“Where there is no source, the assistant says so.”"
   },
   "common": {
     "language": "Language",

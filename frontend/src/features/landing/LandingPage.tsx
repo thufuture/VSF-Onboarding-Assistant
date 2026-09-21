@@ -1,20 +1,6 @@
 "use client";
 
-import {
-  ArrowRight,
-  Check,
-  CircleHelp,
-  ClipboardList,
-  Headset,
-  LayoutList,
-  Mail,
-  MessageSquare,
-  Search,
-  Send,
-  ShieldCheck,
-  Ticket,
-  Users,
-} from "lucide-react";
+import { ArrowRight, Check, CircleHelp, LayoutList, MessageSquare, Search, Send, Ticket } from "lucide-react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState, type MouseEvent, type ReactNode } from "react";
@@ -23,14 +9,16 @@ import { VsfBrand } from "@/components/brand/VsfBrand";
 import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
 import { Link } from "@/i18n/navigation";
 
-import styles from "./LandingPage.module.css";
+import { CtaSection, SiteFooter } from "./CtaFooter";
+import { RolesFlow } from "./RolesFlow";
+
+import styles from "./LandingPage.module.scss";
 
 type SectionId = "hero" | "how" | "roles";
 type T = ReturnType<typeof useTranslations>;
 
 const SERVICE_KEYS = ["chat", "process", "clarify", "ticket"] as const;
 const FEATURE_KEYS = ["chat", "process", "ticket"] as const;
-const ROLE_KEYS = ["asker", "hr", "team", "admin"] as const;
 const TECH_KEYS = ["web", "api", "db", "docker", "llm", "embed", "proxy", "ci"] as const;
 const PROCESS_STEP_KEYS = ["s1", "s2", "s3", "s4"] as const;
 const TICKET_KPI_KEYS = ["k1", "k2", "k3"] as const;
@@ -41,13 +29,6 @@ const SERVICE_ICONS: Record<(typeof SERVICE_KEYS)[number], { icon: ReactNode; co
   process: { icon: <LayoutList size={24} />, color: "#4628A4", bg: "#EFEAFF" },
   clarify: { icon: <CircleHelp size={24} />, color: "#5FC400", bg: "#ECFFDA" },
   ticket: { icon: <Ticket size={24} />, color: "#BB3800", bg: "#FFE5DA" },
-};
-
-const ROLE_STYLES: Record<(typeof ROLE_KEYS)[number], { icon: ReactNode; color: string; bg: string }> = {
-  asker: { icon: <Users size={22} />, color: "#08A995", bg: "#E6FBF7" },
-  hr: { icon: <ClipboardList size={22} />, color: "#7C3AED", bg: "#F3EEFF" },
-  team: { icon: <Headset size={22} />, color: "#1090CB", bg: "#E6F4FF" },
-  admin: { icon: <ShieldCheck size={22} />, color: "#D95D00", bg: "#FFF2E8" },
 };
 
 const TECH_LOGOS: Record<(typeof TECH_KEYS)[number], string> = {
@@ -423,45 +404,7 @@ export function LandingPage() {
           ))}
         </section>
 
-        {/* ─── VAI TRÒ ─── */}
-        <section className={styles.rolesSection}>
-          <div className={`${styles.rolesHeader} ${styles.animUp}`} data-aos="" id="roles">
-            <h2>{t("roles.title")}</h2>
-            <p>{t("roles.lead")}</p>
-            <span className={styles.rolesFlowLabel}>{t("roles.flow")}</span>
-          </div>
-
-          <div aria-label={t("roles.flow")} className={styles.rolesGrid}>
-            {ROLE_KEYS.map((key, index) => (
-              <article
-                className={`${styles.roleCard} ${styles.animUp}`}
-                data-aos=""
-                key={key}
-                style={{ transitionDelay: `${index * 60}ms` }}
-              >
-                <div className={styles.roleCardTop}>
-                  <span
-                    className={styles.roleIconWrap}
-                    style={{ background: ROLE_STYLES[key].bg, color: ROLE_STYLES[key].color }}
-                  >
-                    {ROLE_STYLES[key].icon}
-                  </span>
-                  <span
-                    className={styles.roleTag}
-                    style={{ color: ROLE_STYLES[key].color, background: ROLE_STYLES[key].bg }}
-                  >
-                    {t(`roles.${key}.tag`)}
-                  </span>
-                </div>
-                <h3>{t(`roles.${key}.title`)}</h3>
-                <p>{t(`roles.${key}.body`)}</p>
-                <Link className={styles.roleBtn} href="/login">
-                  {t(`roles.${key}.cta`)} <ArrowRight size={14} />
-                </Link>
-              </article>
-            ))}
-          </div>
-        </section>
+        <RolesFlow />
 
         {/* ─── NỀN TẢNG ─── */}
         <section className={styles.techSection}>
@@ -491,63 +434,10 @@ export function LandingPage() {
           </div>
         </section>
 
-        {/* ─── KÊU GỌI HÀNH ĐỘNG ─── */}
-        <section className={styles.nlSection}>
-          <div className={`${styles.nlInner} ${styles.animUp}`} data-aos="">
-            <h2>{t("cta.heading")}</h2>
-            <p>{t("cta.text")}</p>
-            <Link className={styles.btnPrimaryLg} href="/login">
-              {t("cta.button")} <ArrowRight size={16} />
-            </Link>
-          </div>
-        </section>
+        <CtaSection />
       </main>
 
-      {/* ─── FOOTER ─── */}
-      <footer className={styles.footer}>
-        <div className={styles.footerInner}>
-          <div className={styles.footerBrand}>
-            <span className={styles.footerLogo}>{t("nav.brand")}</span>
-            <p>{t("footer.tagline")}</p>
-            <a className={styles.footerMail} href={`mailto:${t("footer.email")}`}>
-              <Mail size={13} />
-              {t("footer.email")}
-            </a>
-          </div>
-
-          <div className={styles.footerCol}>
-            <strong>{t("footer.aboutTitle")}</strong>
-            <a href="#how">{t("footer.how")}</a>
-            <a href="#roles">{t("footer.roles")}</a>
-            <Link href="/login">{t("footer.login")}</Link>
-          </div>
-
-          <div className={styles.footerCol}>
-            <strong>{t("footer.contactTitle")}</strong>
-            <p>{t("footer.contactLine")}</p>
-            <span>{t("footer.contactNote")}</span>
-          </div>
-        </div>
-
-        <div className={styles.footerBottom}>
-          <span>{t("footer.copyright")}</span>
-          <span className={styles.photoCredit}>
-            {t("footer.photoLead")}
-            <a
-              href="https://commons.wikimedia.org/wiki/File:Ho_Chi_Minh_City,_Vincom_Center,_2020-01_CN-01.jpg"
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              {t("footer.photoAuthor")}
-            </a>
-            ,{" "}
-            <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="noopener noreferrer" target="_blank">
-              {t("footer.photoLicense")}
-            </a>
-            , {t("footer.photoSource")} ({t("footer.photoEdited")})
-          </span>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }
