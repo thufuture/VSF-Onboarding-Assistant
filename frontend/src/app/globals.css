@@ -1,0 +1,121 @@
+@import "tailwindcss";
+
+/*
+ * Một bộ token duy nhất (system design mục 11.2). Màu đặt ở :root để chế độ tối chỉ đổi giá trị;
+ * bán kính, đổ bóng, phông và easing đặt trực tiếp trong @theme (là biến Tailwind, cũng phát ra thành CSS var).
+ * Component chỉ dùng class Tailwind (bg-surface, text-ink, ...) hoặc var(--...), không hard-code màu.
+ */
+:root {
+  --bg: #f5f6fa;
+  --surface: #ffffff;
+  --surface-2: #eef0f7;
+  --surface-3: #e4e7f1;
+  --border: #dee2ec;
+  --border-strong: #c7ccdc;
+  --ink: #171a22;
+  --ink-2: #5b6172;
+  --ink-3: #8b90a0;
+
+  /* nhấn: chỉ cho thương hiệu, lựa chọn, hành động */
+  --accent: #2657d9;
+  --accent-hover: #1d46b8;
+  --accent-bg: #e8effd;
+
+  /* trạng thái */
+  --success: #157f53;
+  --success-bg: #e1f5ec;
+  --success-border: #b7e4ce;
+  --warning: #a8660a;
+  --warning-bg: #fcefda;
+  --warning-border: #f1d3a0;
+  --critical: #b23a3a;
+  --critical-bg: #fbe8e8;
+  --critical-border: #efc2c2;
+}
+
+/* Bản đầu của chế độ tối: chưa có công tắc, chưa kiểm tương phản chi tiết. */
+:root[data-theme="dark"] {
+  --bg: #0f1117;
+  --surface: #171a22;
+  --surface-2: #1e222c;
+  --surface-3: #262b37;
+  --border: #2c3240;
+  --border-strong: #3a4152;
+  --ink: #e8eaf1;
+  --ink-2: #a5abbb;
+  --ink-3: #7b8194;
+  --accent: #6b8cff;
+  --accent-hover: #8aa4ff;
+  --accent-bg: #1d2848;
+  --success: #4cc38a;
+  --success-bg: #123324;
+  --success-border: #1f5a40;
+  --warning: #e0a44a;
+  --warning-bg: #3a2a10;
+  --warning-border: #5c4318;
+  --critical: #ef7b7b;
+  --critical-bg: #3a1717;
+  --critical-border: #5c2626;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-bg: var(--accent-bg);
+  --color-success: var(--success);
+  --color-success-bg: var(--success-bg);
+  --color-success-border: var(--success-border);
+  --color-warning: var(--warning);
+  --color-warning-bg: var(--warning-bg);
+  --color-warning-border: var(--warning-border);
+  --color-critical: var(--critical);
+  --color-critical-bg: var(--critical-bg);
+  --color-critical-border: var(--critical-border);
+}
+
+@theme {
+  --radius-sm: 5px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --shadow-sm: 0 1px 2px rgba(23, 26, 34, 0.06);
+  --shadow-md: 0 4px 16px rgba(23, 26, 34, 0.08), 0 1px 3px rgba(23, 26, 34, 0.06);
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  /* Chuỗi font hệ thống có Inter nếu máy đã cài; chưa tự host Inter (xem phase-1.md, quyết định P5). */
+  --font-sans: "Inter", "Segoe UI", -apple-system, Roboto, Arial, sans-serif;
+  --font-mono: ui-monospace, "JetBrains Mono", Consolas, monospace;
+}
+
+@layer base {
+  html {
+    background: var(--bg);
+    color: var(--ink);
+  }
+
+  body {
+    font-size: 13.5px;
+    line-height: 1.5;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    ::before,
+    ::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}

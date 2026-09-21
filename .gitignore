@@ -18,6 +18,9 @@ venv/
 node_modules/
 .next/
 out/
+# do `next typegen` / `next build` sinh ra mỗi lần chạy
+next-env.d.ts
+*.tsbuildinfo
 
 # Hệ điều hành / trình soạn thảo
 .DS_Store
