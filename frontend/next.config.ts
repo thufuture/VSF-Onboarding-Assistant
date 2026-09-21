@@ -13,6 +13,9 @@ const nextConfig: NextConfig = {
   // Cho image Docker ở Phase 1b: chỉ chép .next/standalone và static.
   output: "standalone",
 
+  // Dev: cho phép mở bằng 127.0.0.1 (mặc định Next chặn tài nguyên từ origin này nên trang không hydrate, nút không chạy).
+  allowedDevOrigins: ["127.0.0.1"],
+
   /**
    * Chỉ ở môi trường dev: đưa API về cùng origin với trang để cookie phiên là first-party.
    * Ở production việc này do Caddy đảm nhiệm (`/api/*` → backend, còn lại → frontend), nên không rewrite ở đây.

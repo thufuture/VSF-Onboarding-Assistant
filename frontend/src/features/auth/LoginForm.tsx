@@ -56,7 +56,7 @@ export function LoginForm() {
   }
 
   return (
-    <form className={styles.form} onSubmit={submit} noValidate>
+    <form className={styles.form} method="post" onSubmit={submit} noValidate>
       {error ? (
         <div className={styles.error} role="alert">
           <span aria-hidden="true">!</span>
