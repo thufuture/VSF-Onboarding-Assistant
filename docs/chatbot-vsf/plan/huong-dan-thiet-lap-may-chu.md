@@ -2,6 +2,7 @@
 
 > Thuộc [master-plan.md](master-plan.md), **Phase 0** (bước 8) và nền cho Phase 1. Thời gian ước tính: 1–2 giờ nếu không vướng xác minh tài khoản (chưa đo).
 > Đã chốt (cập nhật 2026-09-21): máy chính **Oracle Cloud Always Free (ARM A1.Flex, thử nghiệm)**, **dự phòng Hetzner Cloud CX23**; tên miền miễn phí **DuckDNS**; CI **GitHub Actions**. **Quy tắc thử: tạo máy Oracle tối đa khoảng 1 giờ; không được thì làm mục 3B (Hetzner).** Lý do, rủi ro thu hồi máy và bảng "đủ hay không" ở [phu-luc-may-chu-va-chi-phi.md](phu-luc-may-chu-va-chi-phi.md).
+> **Cập nhật 2026-09-21: Oracle không tạo được, dùng Hetzner CX23 (mục 3B).** Thứ tự làm: (1) CI trên GitHub, (2) đẩy image lên GHCR bằng `publish.yml` (chỉ `amd64`), (3) thuê VPS, (4) DuckDNS, (5) deploy tay lần đầu, (6) `release.yml` tự động. Sau (2) chưa tốn phí; VPS mới tốn tiền. Nếu quay lại Oracle (ARM) thì thêm `linux/arm64` vào `publish.yml`.
 > Giá, gói và giao diện các trang bên dưới thay đổi theo thời gian: nếu màn hình khác hướng dẫn, làm theo trang chính thức.
 
 ## 0. Việc nào bạn phải tự làm, việc nào tôi làm

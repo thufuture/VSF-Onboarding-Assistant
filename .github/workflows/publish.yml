@@ -1,6 +1,6 @@
 name: publish
 
-# Đẩy image đa kiến trúc (amd64 + arm64) lên GHCR. Chạy tay ở Phase 1b; release.yml tự động thuộc Phase 11b.
+# Đẩy image amd64 lên GHCR. Chạy tay ở Phase 1b; release.yml tự động thuộc Phase 11b.
 on:
   workflow_dispatch:
 
@@ -31,7 +31,6 @@ jobs:
             context: frontend
     steps:
       - uses: actions/checkout@v4
-      - uses: docker/setup-qemu-action@v3 # build arm64 (Oracle A1) trên runner x86
       - uses: docker/setup-buildx-action@v3
       - uses: docker/login-action@v3
         with:
@@ -45,7 +44,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: ${{ matrix.context }}
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64 # Hetzner là x86; thêm linux/arm64 (và setup-qemu-action) nếu dùng Oracle A1
           push: true
           tags: |
             ${{ steps.img.outputs.name }}:sha-${{ github.sha }}
