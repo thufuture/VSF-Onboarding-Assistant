@@ -36,4 +36,5 @@ storage/
 infra/aws/.terraform/
 infra/aws/terraform.tfstate*
 infra/aws/*.tfvars
+infra/aws/*.tfplan
 !infra/aws/terraform.tfvars.example

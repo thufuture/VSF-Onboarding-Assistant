@@ -15,6 +15,8 @@ provider "aws" {
   region = var.region
 }
 
+data "aws_caller_identity" "current" {}
+
 # Ubuntu 24.04 LTS chính chủ Canonical, x86_64 — khớp Docker image hiện có (không cần bản ARM).
 data "aws_ami" "ubuntu" {
   most_recent = true
@@ -83,6 +85,65 @@ resource "aws_security_group" "vsf" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+}
+
+# GitHub Actions nhận credential AWS ngắn hạn qua OIDC. Role chỉ tin đúng repo và Environment
+# production-aws; workflow dùng quyền này để mở IP runner /32 trong lúc deploy rồi thu hồi.
+resource "aws_iam_openid_connect_provider" "github" {
+  url = "https://token.actions.githubusercontent.com"
+
+  client_id_list = ["sts.amazonaws.com"]
+  thumbprint_list = [
+    "6938fd4d98bab03faadb97b34396831e3780aea1",
+  ]
+
+  tags = local.common_tags
+}
+
+data "aws_iam_policy_document" "github_deploy_assume_role" {
+  statement {
+    actions = ["sts:AssumeRoleWithWebIdentity"]
+
+    principals {
+      type        = "Federated"
+      identifiers = [aws_iam_openid_connect_provider.github.arn]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "token.actions.githubusercontent.com:aud"
+      values   = ["sts.amazonaws.com"]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "token.actions.githubusercontent.com:sub"
+      values   = ["repo:thufuture/VSF-Onboarding-Assistant:environment:production-aws"]
+    }
+  }
+}
+
+resource "aws_iam_role" "github_deploy" {
+  name               = "vsf-github-deploy"
+  assume_role_policy = data.aws_iam_policy_document.github_deploy_assume_role.json
+  tags               = local.common_tags
+}
+
+data "aws_iam_policy_document" "github_deploy" {
+  statement {
+    sid = "ManageTemporaryRunnerSshRule"
+    actions = [
+      "ec2:AuthorizeSecurityGroupIngress",
+      "ec2:RevokeSecurityGroupIngress",
+    ]
+    resources = [aws_security_group.vsf.arn]
+  }
+}
+
+resource "aws_iam_role_policy" "github_deploy" {
+  name   = "temporary-runner-ssh"
+  role   = aws_iam_role.github_deploy.id
+  policy = data.aws_iam_policy_document.github_deploy.json
 }
 
 resource "aws_instance" "vsf" {

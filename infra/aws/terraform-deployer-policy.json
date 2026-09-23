@@ -49,6 +49,36 @@
           "aws:RequestedRegion": "ap-southeast-1"
         }
       }
+    },
+    {
+      "Sid": "ManageVsfGitHubOidcDeployRole",
+      "Effect": "Allow",
+      "Action": [
+        "iam:AddClientIDToOpenIDConnectProvider",
+        "iam:CreateOpenIDConnectProvider",
+        "iam:CreateRole",
+        "iam:DeleteOpenIDConnectProvider",
+        "iam:DeleteRole",
+        "iam:DeleteRolePolicy",
+        "iam:GetOpenIDConnectProvider",
+        "iam:GetRole",
+        "iam:GetRolePolicy",
+        "iam:ListAttachedRolePolicies",
+        "iam:ListInstanceProfilesForRole",
+        "iam:ListRolePolicies",
+        "iam:PutRolePolicy",
+        "iam:RemoveClientIDFromOpenIDConnectProvider",
+        "iam:TagOpenIDConnectProvider",
+        "iam:TagRole",
+        "iam:UntagOpenIDConnectProvider",
+        "iam:UntagRole",
+        "iam:UpdateAssumeRolePolicy",
+        "iam:UpdateOpenIDConnectProviderThumbprint"
+      ],
+      "Resource": [
+        "arn:aws:iam::*:oidc-provider/token.actions.githubusercontent.com",
+        "arn:aws:iam::*:role/vsf-github-deploy"
+      ]
     }
   ]
 }
