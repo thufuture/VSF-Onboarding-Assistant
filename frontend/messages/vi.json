@@ -288,35 +288,24 @@
     "placeholder": "Nhập câu hỏi của bạn…",
     "send": "Gửi",
     "sourceLabel": "Nguồn:",
+    "openDocument": "Xem tài liệu",
     "noSource": "Mình chưa có tài liệu đã duyệt nào cho câu hỏi này nên chưa thể trả lời. Bạn có thể hỏi HR để được hỗ trợ.",
     "suggestions": {
       "firstDay": {
         "question": "Ngày đầu đi làm tôi cần chuẩn bị gì?",
-        "answer": "Bạn mang giấy tờ tùy thân, đến đúng giờ hẹn và gặp HR ở quầy tiếp đón để nhận thẻ ra vào và lịch làm quen.",
-        "source": "Cẩm nang ngày đầu (minh họa)",
-        "title": "Ngày đầu tiên",
-        "excerpt": "“Nhân sự mới có mặt tại quầy tiếp đón đúng giờ hẹn, mang theo giấy tờ tùy thân. HR phát thẻ ra vào và lịch làm quen tuần đầu.” (nội dung minh họa)"
+        "title": "Ngày đầu tiên"
       },
       "equipment": {
         "question": "Tôi nhận laptop và tài khoản ở đâu?",
-        "answer": "Thiết bị và tài khoản được cấp qua yêu cầu IT do HR gửi trước ngày bạn vào; nhận tại bộ phận IT ở buổi làm quen.",
-        "source": "Quy trình cấp thiết bị (minh họa)",
-        "title": "Thiết bị và tài khoản",
-        "excerpt": "“HR gửi yêu cầu cấp thiết bị và tài khoản cho IT trước ngày nhân sự mới vào; bàn giao tại buổi làm quen.” (nội dung minh họa)"
+        "title": "Thiết bị và tài khoản"
       },
       "leave": {
         "question": "Tôi xin nghỉ phép như thế nào?",
-        "answer": "Bạn gửi đơn nghỉ phép cho quản lý trực tiếp trước ít nhất 3 ngày làm việc, trừ trường hợp khẩn cấp.",
-        "source": "Quy định nghỉ phép (minh họa)",
-        "title": "Nghỉ phép",
-        "excerpt": "“Đơn nghỉ phép gửi quản lý trực tiếp ít nhất 3 ngày làm việc trước ngày nghỉ, trừ trường hợp khẩn cấp.” (nội dung minh họa)"
+        "title": "Nghỉ phép"
       },
       "contact": {
         "question": "Tôi hỏi ai khi gặp vấn đề ở tuần đầu?",
-        "answer": "Người hướng dẫn (buddy) của đội là đầu mối đầu tiên; các vấn đề về hành chính thì liên hệ HR.",
-        "source": "Danh bạ đầu mối (minh họa)",
-        "title": "Cần ai giúp",
-        "excerpt": "“Mỗi nhân sự mới có một người hướng dẫn (buddy) trong đội; việc hành chính liên hệ HR.” (nội dung minh họa)"
+        "title": "Cần ai giúp"
       }
     },
     "title": "Trợ lý hỏi đáp",
@@ -325,7 +314,18 @@
     "checking": "Đang tìm trong tài liệu đã duyệt…",
     "keyboardHint": "Enter để gửi, Shift+Enter để xuống dòng",
     "disclaimer": "Trợ lý chỉ trả lời từ tài liệu đã được duyệt. Với việc quan trọng, hãy xác nhận lại với HR.",
-    "excerptLabel": "Trích đoạn nguồn"
+    "excerptLabel": "Trích đoạn nguồn",
+    "error": {
+      "unauthorized": "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.",
+      "unavailable": "Hiện chưa gửi được câu hỏi. Bạn thử lại sau nhé.",
+      "network": "Không kết nối được mạng. Bạn kiểm tra kết nối rồi thử lại."
+    },
+    "documentModal": {
+      "loading": "Đang tải tài liệu…",
+      "loadFailed": "Không tải được nội dung tài liệu. Bạn thử lại sau nhé.",
+      "openOriginal": "Xem file gốc",
+      "close": "Đóng"
+    }
   },
   "admin": {
     "title": "Xin chào, {name}",

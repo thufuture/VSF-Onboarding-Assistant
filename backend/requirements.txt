@@ -10,3 +10,10 @@ alembic>=1.14,<2
 tzdata>=2024.1
 # Vector 1024 chiều (BGE-M3) và chỉ mục HNSW.
 pgvector>=0.3.6,<1
+
+# Nạp tài liệu (2-B): parse .docx/.pdf/.md, gọi dịch vụ embedding, tách từ tiếng Việt cho BM25.
+markitdown[docx,pdf]>=0.1.1,<1
+httpx>=0.28,<1.0
+underthesea>=6.8,<10
+# Lưu file tài liệu gốc khi STORAGE_PROVIDER=cloudinary (mặc định "local" không cần thư viện này ở runtime).
+cloudinary>=1.41,<2

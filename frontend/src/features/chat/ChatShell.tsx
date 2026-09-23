@@ -4,6 +4,7 @@ import {
   ArrowUp,
   Briefcase,
   CalendarDays,
+  ExternalLink,
   FileText,
   Laptop,
   Plus,
@@ -15,6 +16,10 @@ import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
 
 import { useSession } from "@/features/auth/SessionProvider";
+import { chatApi, ChatError } from "@/features/chat/api";
+import type { ClaimResponseDTO, SourceResponseDTO } from "@/features/chat/dto/responseDTO/chat.response";
+import { DocumentModal } from "@/features/chat/DocumentModal";
+import { useRouter } from "@/i18n/navigation";
 
 import styles from "./ChatShell.module.scss";
 
@@ -24,39 +29,37 @@ const SUGGESTIONS: { key: "firstDay" | "equipment" | "leave" | "contact"; icon: 
   { key: "leave", icon: CalendarDays },
   { key: "contact", icon: Users },
 ];
-type SuggestionKey = (typeof SUGGESTIONS)[number]["key"];
 
-/** Thời gian giả lập "đang tìm nguồn" trước khi hiện câu trả lời minh họa. */
-export const MOCK_DELAY_MS = 700;
 const MAX_ROWS_HEIGHT = 168;
 
-// `suggestion` null nghĩa là câu hỏi tự gõ: dữ liệu minh họa chưa có căn cứ nên trợ lý nói thẳng thay vì đoán.
-type Turn = { id: number; question: string; suggestion: SuggestionKey | null };
+type Turn =
+  | { id: number; question: string; status: "pending" }
+  | { id: number; question: string; status: "done"; claims: ClaimResponseDTO[] }
+  | { id: number; question: string; status: "error"; errorCode: "unauthorized" | "unavailable" | "network" };
 
 /**
- * Trang chat của nhân sự mới theo bố cục chat của Ralion: tiêu đề và phạm vi hỏi ở trên, cột hội thoại giữa, ô nhập
- * cố định ở dưới. Dùng dữ liệu minh họa: câu trả lời cố định theo câu hỏi gợi ý, câu khác nhận "chưa có nguồn".
- * Chưa gọi backend; Phase 2-E nối `POST /api/v1/chat/ask` (câu trả lời có nguồn dẫn thật).
+ * Trang chat của nhân sự mới: tiêu đề và phạm vi hỏi ở trên, cột hội thoại giữa, ô nhập cố định ở dưới.
+ * Gọi `POST /api/v1/chat/ask` thật (Phase 2-E) — một câu hỏi của người dùng có thể bị backend tách thành
+ * nhiều `claims[]` độc lập (câu hỏi nhiều ý, ví dụ "mai tôi đi làm mấy giờ, mentor tôi là ai").
  */
 export function ChatShell() {
   const t = useTranslations("chat");
   const { user } = useSession();
+  const router = useRouter();
   const [turns, setTurns] = useState<Turn[]>([]);
-  const [pending, setPending] = useState<Turn | null>(null);
   const [draft, setDraft] = useState("");
-  const [openSource, setOpenSource] = useState<number | null>(null);
-  const timer = useRef<number | null>(null);
+  const [openSource, setOpenSource] = useState<string | null>(null);
+  const [openDocument, setOpenDocument] = useState<SourceResponseDTO | null>(null);
+  const [inFlight, setInFlight] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const nextId = useRef(1);
 
-  useEffect(() => () => window.clearTimeout(timer.current ?? undefined), []);
-
   // Chỉ cuộn xuống khi đã có hội thoại; màn chào giữ nguyên ở đầu (kể cả trên màn hình thấp).
   useEffect(() => {
-    if (turns.length === 0 && !pending) return;
+    if (turns.length === 0) return;
     bottomRef.current?.scrollIntoView?.({ behavior: "smooth", block: "end" });
-  }, [turns, pending]);
+  }, [turns]);
 
   // Ô nhập tự cao theo nội dung, tối đa vài dòng rồi cuộn.
   useEffect(() => {
@@ -66,41 +69,51 @@ export function ChatShell() {
     el.style.height = `${Math.min(el.scrollHeight, MAX_ROWS_HEIGHT)}px`;
   }, [draft]);
 
-  function ask(question: string, suggestion: SuggestionKey | null) {
+  async function ask(question: string) {
     const text = question.trim();
-    if (!text || pending) return;
-    const turn: Turn = { id: nextId.current++, question: text, suggestion };
-    setPending(turn);
+    if (!text || inFlight) return;
+    const id = nextId.current++;
+    setInFlight(true);
     setDraft("");
-    timer.current = window.setTimeout(() => {
-      setTurns((current) => [...current, turn]);
-      setPending(null);
-    }, MOCK_DELAY_MS);
+    setTurns((current) => [...current, { id, question: text, status: "pending" }]);
+
+    try {
+      const response = await chatApi.ask(text);
+      setTurns((current) =>
+        current.map((turn) => (turn.id === id ? { id, question: text, status: "done", claims: response.claims } : turn)),
+      );
+    } catch (caught) {
+      if (caught instanceof ChatError && caught.code === "unauthorized") {
+        router.replace("/login");
+        return;
+      }
+      const errorCode = caught instanceof ChatError ? caught.code : "network";
+      setTurns((current) => current.map((turn) => (turn.id === id ? { id, question: text, status: "error", errorCode } : turn)));
+    } finally {
+      setInFlight(false);
+    }
   }
 
   function reset() {
-    window.clearTimeout(timer.current ?? undefined);
     setTurns([]);
-    setPending(null);
     setOpenSource(null);
     inputRef.current?.focus();
   }
 
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    ask(draft, null);
+    void ask(draft);
   }
 
   function onKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
     // Enter gửi, Shift+Enter xuống dòng; không gửi khi đang gõ bộ gõ tiếng Việt (IME).
     if (event.key === "Enter" && !event.shiftKey && !event.nativeEvent.isComposing) {
       event.preventDefault();
-      ask(draft, null);
+      void ask(draft);
     }
   }
 
-  const empty = turns.length === 0 && !pending;
-  const shown = pending ? [...turns, pending] : turns;
+  const empty = turns.length === 0;
 
   return (
     <div className={styles.chat}>
@@ -118,7 +131,7 @@ export function ChatShell() {
               <p>{t("intro")}</p>
               <div aria-label={t("suggestionsLabel")} className={styles.cards} role="group">
                 {SUGGESTIONS.map(({ key, icon: Icon }) => (
-                  <button className={styles.card} key={key} onClick={() => ask(t(`suggestions.${key}.question`), key)} type="button">
+                  <button className={styles.card} key={key} onClick={() => void ask(t(`suggestions.${key}.question`))} type="button">
                     <span aria-hidden="true" className={styles.cardIcon}>
                       <Icon size={18} />
                     </span>
@@ -132,57 +145,77 @@ export function ChatShell() {
             </section>
           ) : (
             <ol aria-label={t("conversation")} className={styles.thread}>
-              {shown.map((turn) => {
-                const answered = turn !== pending;
-                return (
-                  <li className={styles.turn} key={turn.id}>
-                    <p className={styles.question}>{turn.question}</p>
-                    <div className={styles.reply}>
-                      <span aria-hidden="true" className={styles.replyMark}>
-                        <Sparkles size={15} />
-                      </span>
-                      {answered ? (
-                        <article className={styles.answer}>
-                          {turn.suggestion ? (
-                            <>
-                              <p>{t(`suggestions.${turn.suggestion}.answer`)}</p>
-                              <div className={styles.sources}>
-                                <span>{t("sourceLabel")}</span>
-                                <button
-                                  aria-expanded={openSource === turn.id}
-                                  className={styles.chip}
-                                  onClick={() => setOpenSource(openSource === turn.id ? null : turn.id)}
-                                  type="button"
-                                >
-                                  <FileText aria-hidden="true" size={13} />
-                                  {t(`suggestions.${turn.suggestion}.source`)}
-                                </button>
+              {turns.map((turn) => (
+                <li className={styles.turn} key={turn.id}>
+                  <p className={styles.question}>{turn.question}</p>
+                  <div className={styles.reply}>
+                    <span aria-hidden="true" className={styles.replyMark}>
+                      <Sparkles size={15} />
+                    </span>
+                    {turn.status === "pending" ? (
+                      <div aria-live="polite" className={styles.thinking} role="status">
+                        <span aria-hidden="true" className={styles.dots}>
+                          <i />
+                          <i />
+                          <i />
+                        </span>
+                        {t("checking")}
+                      </div>
+                    ) : turn.status === "error" ? (
+                      <article className={styles.answer}>
+                        <p>{t(`error.${turn.errorCode}`)}</p>
+                      </article>
+                    ) : (
+                      <article className={styles.answer}>
+                        {turn.claims.length === 0 ? (
+                          <p>{t("noSource")}</p>
+                        ) : (
+                          turn.claims.map((claim, index) => {
+                            const sourceId = `${turn.id}-${index}`;
+                            return (
+                              <div className={styles.claim} key={sourceId}>
+                                {claim.response_type === "ANSWER" && claim.source ? (
+                                  <>
+                                    <p>{claim.text}</p>
+                                    <div className={styles.sources}>
+                                      <span>{t("sourceLabel")}</span>
+                                      <button
+                                        aria-expanded={openSource === sourceId}
+                                        className={styles.chip}
+                                        onClick={() => setOpenSource(openSource === sourceId ? null : sourceId)}
+                                        type="button"
+                                      >
+                                        <FileText aria-hidden="true" size={13} />
+                                        {claim.source.document_title} ({claim.source.version_label})
+                                      </button>
+                                      <button
+                                        className={styles.chip}
+                                        onClick={() => setOpenDocument(claim.source)}
+                                        type="button"
+                                      >
+                                        <ExternalLink aria-hidden="true" size={13} />
+                                        {t("openDocument")}
+                                      </button>
+                                    </div>
+                                    {openSource === sourceId && claim.quote ? (
+                                      <blockquote className={styles.excerpt}>
+                                        <small>{t("excerptLabel")}</small>
+                                        {claim.quote}
+                                      </blockquote>
+                                    ) : null}
+                                  </>
+                                ) : (
+                                  <p>{t("noSource")}</p>
+                                )}
                               </div>
-                              {openSource === turn.id ? (
-                                <blockquote className={styles.excerpt}>
-                                  <small>{t("excerptLabel")}</small>
-                                  {t(`suggestions.${turn.suggestion}.excerpt`)}
-                                </blockquote>
-                              ) : null}
-                            </>
-                          ) : (
-                            <p>{t("noSource")}</p>
-                          )}
-                        </article>
-                      ) : (
-                        <div aria-live="polite" className={styles.thinking} role="status">
-                          <span aria-hidden="true" className={styles.dots}>
-                            <i />
-                            <i />
-                            <i />
-                          </span>
-                          {t("checking")}
-                        </div>
-                      )}
-                    </div>
-                  </li>
-                );
-              })}
+                            );
+                          })
+                        )}
+                      </article>
+                    )}
+                  </div>
+                </li>
+              ))}
             </ol>
           )}
           <div ref={bottomRef} />
@@ -203,13 +236,24 @@ export function ChatShell() {
           />
           <div className={styles.composerFoot}>
             <span className={styles.hint}>{t("keyboardHint")}</span>
-            <button aria-label={t("send")} className={styles.send} disabled={!draft.trim() || pending !== null} type="submit">
+            <button aria-label={t("send")} className={styles.send} disabled={!draft.trim() || inFlight} type="submit">
               <ArrowUp aria-hidden="true" size={18} />
             </button>
           </div>
         </form>
         <p className={styles.disclaimer}>{t("disclaimer")}</p>
       </div>
+
+      {openDocument ? (
+        <DocumentModal
+          documentTitle={openDocument.document_title}
+          documentUrl={openDocument.document_url}
+          onClose={() => setOpenDocument(null)}
+          sectionHeading={openDocument.section_heading}
+          versionId={openDocument.version_id}
+          versionLabel={openDocument.version_label}
+        />
+      ) : null}
     </div>
   );
 }

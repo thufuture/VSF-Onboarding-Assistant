@@ -4,7 +4,9 @@ set -euo pipefail
 
 ROOT="${VSF_ROOT:-/opt/vsf}"
 BACKUP_DIR="${BACKUP_DIR:-$ROOT/backups}"
-COMPOSE=(docker compose --env-file "$ROOT/env/compose.env" -f "$ROOT/deploy/compose.vps.yml")
+# COMPOSE_FILE cho phép AWS (compose.aws.yml, VSF_ROOT khác) dùng lại script này nguyên văn thay vì viết
+# bản riêng — mặc định giữ đúng hành vi VPS cũ khi không đặt biến.
+COMPOSE=(docker compose --env-file "$ROOT/env/compose.env" -f "${COMPOSE_FILE:-$ROOT/deploy/compose.vps.yml}")
 set -a; . "$ROOT/env/compose.env"; set +a
 KEEP="${BACKUP_RETENTION_COUNT:-7}"
 

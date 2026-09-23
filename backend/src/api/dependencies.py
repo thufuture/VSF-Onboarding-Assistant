@@ -8,12 +8,23 @@ from fastapi import Cookie, Depends, Request
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from src.config import Settings, get_settings
+from src.infrastructure.ai.chat_completion_port import ChatCompletionPort
+from src.infrastructure.ai.deepseek_adapter import DeepSeekChatCompletion
+from src.infrastructure.observability.langfuse_tracer import LangfuseTracer
 from src.model.user import User
 from src.services.auth.auth_service import load_session_user
 from src.services.auth.errors import AuthError
 from src.services.auth.login_throttle import LoginThrottle
 from src.services.auth.sessions import SESSION_COOKIE_NAME, SessionError, SessionToken, read_token
+from src.services.chat.chat_throttle import ChatThrottle
+from src.services.ingest.embedding.port import EmbeddingPort
+from src.services.ingest.factory import build_embedding_port
 from src.services.readiness_service import ReadinessService
+
+
+def get_session_factory(request: Request) -> async_sessionmaker[AsyncSession]:
+    factory: async_sessionmaker[AsyncSession] = request.app.state.session_factory
+    return factory
 
 
 async def get_db(request: Request) -> AsyncIterator[AsyncSession]:
@@ -28,6 +39,11 @@ def get_readiness_service(session: AsyncSession = Depends(get_db)) -> ReadinessS
 
 def get_login_throttle(request: Request) -> LoginThrottle:
     throttle: LoginThrottle = request.app.state.login_throttle
+    return throttle
+
+
+def get_chat_throttle(request: Request) -> ChatThrottle:
+    throttle: ChatThrottle = request.app.state.chat_throttle
     return throttle
 
 
@@ -70,3 +86,20 @@ def require_role(*roles: str) -> Callable[[User], Coroutine[Any, Any, User]]:
         return user
 
     return dependency
+
+
+def get_embedding_port(settings: Annotated[Settings, Depends(get_settings)]) -> EmbeddingPort:
+    return build_embedding_port(settings)
+
+
+def get_chat_completion_port(settings: Annotated[Settings, Depends(get_settings)]) -> ChatCompletionPort:
+    if settings.llm_api_key is None:
+        raise RuntimeError("LLM_API_KEY chưa cấu hình")
+    return DeepSeekChatCompletion(
+        base_url=settings.llm_base_url, api_key=settings.llm_api_key.get_secret_value(), model=settings.llm_model
+    )
+
+
+def get_langfuse_tracer(request: Request) -> LangfuseTracer:
+    tracer: LangfuseTracer = request.app.state.langfuse_tracer
+    return tracer

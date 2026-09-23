@@ -47,15 +47,30 @@ else
 fi
 
 # Cứng hóa SSH: chỉ tắt mật khẩu khi người dùng deploy đã có khóa, để không tự khóa mình ngoài máy.
+# `restart` (không phải `reload`): trên máy chưa từng khởi động sshd một lần nào (gặp thật trên EC2 mới —
+# /run/sshd nằm tmpfs, có thể chưa được tạo kịp lúc cloud-init chạy), `reload` chỉ áp dụng cho service ĐANG
+# CHẠY nên âm thầm không làm gì, để sshd không bao giờ khởi động (mất SSH hoàn toàn, "connection refused").
+# `mkdir -p /run/sshd` phòng đúng ca thiếu thư mục privilege-separation đó.
 home="$(getent passwd "$DEPLOY_USER" | cut -d: -f6)"
 if [ -s "$home/.ssh/authorized_keys" ]; then
   printf 'PasswordAuthentication no\nPermitRootLogin no\n' > /etc/ssh/sshd_config.d/99-vsf.conf
-  sshd -t && systemctl reload ssh
+  mkdir -p /run/sshd
+  sshd -t && systemctl restart ssh
 else
   echo "CẢNH BÁO: $home/.ssh/authorized_keys trống, chưa tắt đăng nhập mật khẩu." >&2
 fi
 
 systemctl enable --now unattended-upgrades
+
+# Swap 2GB: đệm an toàn cho Postgres/ParadeDB khi RAM máy chủ thấp (đặc biệt hữu ích trên instance nhỏ);
+# vô hại và không tốn gì thêm trên máy nhiều RAM. Bỏ qua nếu đã có swap (chạy lại script vẫn an toàn).
+if [ "$(swapon --show=NAME --noheadings | wc -l)" -eq 0 ] && [ ! -f /swapfile ]; then
+  fallocate -l 2G /swapfile
+  chmod 600 /swapfile
+  mkswap /swapfile
+  swapon /swapfile
+  echo '/swapfile none swap sw 0 0' >> /etc/fstab
+fi
 
 install -d -o "$DEPLOY_USER" -g "$DEPLOY_USER" "$ROOT" "$ROOT/deploy" "$ROOT/env" "$ROOT/state" "$ROOT/backups" "$ROOT/scripts"
 chmod 700 "$ROOT/env"

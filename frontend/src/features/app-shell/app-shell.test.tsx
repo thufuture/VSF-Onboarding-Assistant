@@ -7,7 +7,9 @@ import viMessages from "../../../messages/vi.json";
 import { SessionProvider } from "@/features/auth/SessionProvider";
 import type { SessionUserResponseDTO } from "@/features/auth/dto/responseDTO/auth.response";
 import { authApi } from "@/features/auth/session";
-import { ChatShell, MOCK_DELAY_MS } from "@/features/chat/ChatShell";
+import { chatApi } from "@/features/chat/api";
+import { ChatShell } from "@/features/chat/ChatShell";
+import type { ChatAskResponseDTO } from "@/features/chat/dto/responseDTO/chat.response";
 
 import { AdminPlaceholder } from "./AdminPlaceholder";
 import { AppShell } from "./AppShell";
@@ -30,6 +32,10 @@ vi.mock("next-intl", async () => {
 vi.mock("@/features/auth/session", async (importOriginal) => {
   const original = await importOriginal<typeof import("@/features/auth/session")>();
   return { ...original, authApi: { login: vi.fn(), me: vi.fn(), refresh: vi.fn(), logout: vi.fn() } };
+});
+vi.mock("@/features/chat/api", async (importOriginal) => {
+  const original = await importOriginal<typeof import("@/features/chat/api")>();
+  return { ...original, chatApi: { ask: vi.fn(), getDocument: vi.fn() } };
 });
 
 const USER: SessionUserResponseDTO = {
@@ -57,9 +63,22 @@ beforeEach(() => {
   replace.mockReset();
   vi.mocked(authApi.logout).mockReset();
   vi.mocked(authApi.refresh).mockReset();
+  vi.mocked(chatApi.ask).mockReset();
+  vi.mocked(chatApi.getDocument).mockReset();
   window.localStorage.clear();
 });
 afterEach(() => vi.useRealTimers());
+
+function deferredAsk() {
+  let resolve!: (value: ChatAskResponseDTO) => void;
+  let reject!: (error: unknown) => void;
+  const promise = new Promise<ChatAskResponseDTO>((res, rej) => {
+    resolve = res;
+    reject = rej;
+  });
+  vi.mocked(chatApi.ask).mockReturnValue(promise);
+  return { resolve, reject };
+}
 
 describe("AppShell", () => {
   it("thanh bên hiện tên, chữ viết tắt và vai trò của người dùng", () => {
@@ -217,8 +236,8 @@ describe("ChatShell", () => {
     expect(screen.queryByRole("button", { name: chat.newConversation })).toBeNull();
   });
 
-  it("bấm thẻ gợi ý: hiện câu hỏi và trạng thái đang tìm, rồi câu trả lời kèm nguồn; bấm nguồn mở trích đoạn", () => {
-    vi.useFakeTimers();
+  it("bấm thẻ gợi ý: hiện câu hỏi và trạng thái đang tìm, rồi câu trả lời kèm nguồn; bấm nguồn mở trích đoạn", async () => {
+    const { resolve } = deferredAsk();
     renderWithSession(<ChatShell />);
     const s = chat.suggestions.firstDay;
 
@@ -226,38 +245,193 @@ describe("ChatShell", () => {
 
     expect(screen.getByText(s.question)).toBeInTheDocument();
     expect(screen.getByRole("status")).toHaveTextContent(chat.checking);
-    expect(screen.queryByText(s.answer)).toBeNull();
 
-    act(() => {
-      vi.advanceTimersByTime(MOCK_DELAY_MS);
-    });
+    const response: ChatAskResponseDTO = {
+      claims: [
+        {
+          question: s.question,
+          response_type: "ANSWER",
+          reason_code: null,
+          text: "Bạn mang giấy tờ tùy thân và đến đúng giờ hẹn.",
+          quote: "Nhân sự mới có mặt tại quầy tiếp đón đúng giờ hẹn.",
+          source: {
+            document_title: "Cẩm nang ngày đầu",
+            version_label: "v3",
+            section_heading: "Ngày đầu tiên",
+            document_url: "https://res.cloudinary.com/demo/raw/upload/cam-nang.docx",
+            version_id: 46,
+          },
+        },
+      ],
+    };
+    await act(async () => resolve(response));
 
     expect(screen.queryByRole("status")).toBeNull();
-    expect(screen.getByText(s.answer)).toBeInTheDocument();
-    expect(screen.queryByText(s.excerpt, { exact: false })).toBeNull();
+    expect(screen.getByText(response.claims[0].text!)).toBeInTheDocument();
+    expect(screen.queryByText(response.claims[0].quote!, { exact: false })).toBeNull();
 
-    fireEvent.click(screen.getByRole("button", { name: s.source }));
+    fireEvent.click(screen.getByRole("button", { name: /Cẩm nang ngày đầu/ }));
 
-    expect(screen.getByText(s.excerpt, { exact: false })).toBeInTheDocument();
+    expect(screen.getByText(response.claims[0].quote!, { exact: false })).toBeInTheDocument();
   });
 
-  it("câu hỏi tự gõ nhận lời nói thẳng là chưa có nguồn, không bịa", () => {
-    vi.useFakeTimers();
+  it("bấm 'Xem tài liệu' mở modal, tải nội dung và cuộn tới đúng section; Đóng thì tắt modal", async () => {
+    const { resolve } = deferredAsk();
+    let resolveDoc!: (value: { document_title: string; version_label: string; markdown: string }) => void;
+    vi.mocked(chatApi.getDocument).mockReturnValue(
+      new Promise((res) => {
+        resolveDoc = res;
+      }),
+    );
+    renderWithSession(<ChatShell />);
+    const s = chat.suggestions.firstDay;
+
+    fireEvent.click(screen.getByRole("button", { name: new RegExp(s.title) }));
+    await act(async () =>
+      resolve({
+        claims: [
+          {
+            question: s.question,
+            response_type: "ANSWER",
+            reason_code: null,
+            text: "Bạn mang giấy tờ tùy thân.",
+            quote: "Nhân sự mới mang theo giấy tờ tùy thân.",
+            source: {
+              document_title: "Cẩm nang ngày đầu",
+              version_label: "v3",
+              section_heading: "Chuẩn bị",
+              document_url: "https://res.cloudinary.com/demo/raw/upload/cam-nang.docx",
+              version_id: 46,
+            },
+          },
+        ],
+      }),
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: new RegExp(chat.openDocument) }));
+
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+    expect(chatApi.getDocument).toHaveBeenCalledWith(46);
+    expect(screen.getByText(chat.documentModal.loading)).toBeInTheDocument();
+
+    await act(async () =>
+      resolveDoc({
+        document_title: "Cẩm nang ngày đầu",
+        version_label: "v3",
+        markdown: "# Giới thiệu\nChào mừng.\n\n# Chuẩn bị\nMang giấy tờ tùy thân.\n\n# Liên hệ\nGặp HR.",
+      }),
+    );
+
+    expect(within(screen.getByRole("dialog")).getByText("Mang giấy tờ tùy thân.")).toBeInTheDocument();
+    const openOriginal = screen.getByRole("link", { name: new RegExp(chat.documentModal.openOriginal) });
+    expect(openOriginal).toHaveAttribute("href", "https://res.cloudinary.com/demo/raw/upload/cam-nang.docx");
+
+    fireEvent.click(screen.getAllByRole("button", { name: chat.documentModal.close })[0]);
+
+    expect(screen.queryByRole("dialog")).toBeNull();
+  });
+
+  it("nguồn cục bộ (không phải URL http): modal vẫn mở nhưng không hiện link file gốc", async () => {
+    const { resolve } = deferredAsk();
+    vi.mocked(chatApi.getDocument).mockResolvedValue({
+      document_title: "Quy định nghỉ phép",
+      version_label: "v1",
+      markdown: "Nội dung không có heading.",
+    });
+    renderWithSession(<ChatShell />);
+
+    fireEvent.change(screen.getByLabelText(chat.inputLabel), { target: { value: "Nghỉ phép năm bao nhiêu ngày?" } });
+    fireEvent.click(screen.getByRole("button", { name: chat.send }));
+    await act(async () =>
+      resolve({
+        claims: [
+          {
+            question: "Nghỉ phép năm bao nhiêu ngày?",
+            response_type: "ANSWER",
+            reason_code: null,
+            text: "12 ngày.",
+            quote: "12 ngày phép năm có lương.",
+            source: {
+              document_title: "Quy định nghỉ phép",
+              version_label: "v1",
+              section_heading: null,
+              document_url: "documents/abc123.docx",
+              version_id: 12,
+            },
+          },
+        ],
+      }),
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: new RegExp(chat.openDocument) }));
+
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+    await screen.findByText("Nội dung không có heading.");
+    expect(screen.queryByRole("link", { name: new RegExp(chat.documentModal.openOriginal) })).toBeNull();
+  });
+
+  it("câu hỏi tự gõ không có căn cứ (claims rỗng) nhận lời nói thẳng là chưa có nguồn, không bịa", async () => {
+    const { resolve } = deferredAsk();
     renderWithSession(<ChatShell />);
 
     fireEvent.change(screen.getByLabelText(chat.inputLabel), { target: { value: "Lương tháng này bao nhiêu?" } });
     fireEvent.click(screen.getByRole("button", { name: chat.send }));
-    act(() => {
-      vi.advanceTimersByTime(MOCK_DELAY_MS);
-    });
+    await act(async () => resolve({ claims: [] }));
 
     expect(screen.getByText("Lương tháng này bao nhiêu?")).toBeInTheDocument();
     expect(screen.getByText(chat.noSource)).toBeInTheDocument();
     expect(screen.queryByText(chat.sourceLabel)).toBeNull();
   });
 
+  it("câu hỏi nhiều ý: mỗi claim NO_BASIS hiện thông báo chưa có nguồn riêng", async () => {
+    const { resolve } = deferredAsk();
+    renderWithSession(<ChatShell />);
+
+    fireEvent.change(screen.getByLabelText(chat.inputLabel), {
+      target: { value: "ngày mai tôi đi làm mấy giờ ở hcm, mentor tôi là ai" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: chat.send }));
+    await act(async () =>
+      resolve({
+        claims: [
+          { question: "Ngày mai tôi đi làm mấy giờ ở HCM?", response_type: "NO_BASIS", reason_code: "no_evidence", text: null, quote: null, source: null },
+          { question: "Mentor tôi là ai?", response_type: "NO_BASIS", reason_code: "out_of_scope", text: null, quote: null, source: null },
+        ],
+      }),
+    );
+
+    expect(screen.getAllByText(chat.noSource)).toHaveLength(2);
+  });
+
+  it("lỗi 401: chuyển về trang đăng nhập, không hiện thông báo lỗi trong khung chat", async () => {
+    const { reject } = deferredAsk();
+    const { ChatError } = await import("@/features/chat/api");
+    renderWithSession(<ChatShell />);
+
+    fireEvent.change(screen.getByLabelText(chat.inputLabel), { target: { value: "Xin chào" } });
+    fireEvent.click(screen.getByRole("button", { name: chat.send }));
+    await act(async () => reject(new ChatError("unauthorized")));
+
+    await waitFor(() => expect(replace).toHaveBeenCalledWith("/login"));
+  });
+
+  it("lỗi mạng/máy chủ: hiện thông báo lỗi tương ứng, cho hỏi lại", async () => {
+    const { reject } = deferredAsk();
+    const { ChatError } = await import("@/features/chat/api");
+    renderWithSession(<ChatShell />);
+
+    fireEvent.change(screen.getByLabelText(chat.inputLabel), { target: { value: "Xin chào" } });
+    fireEvent.click(screen.getByRole("button", { name: chat.send }));
+    await act(async () => reject(new ChatError("network")));
+
+    expect(screen.getByText(chat.error.network)).toBeInTheDocument();
+    // Không còn chờ (inFlight=false) nên gõ lại được và nút gửi bật lên, cho hỏi lại.
+    fireEvent.change(screen.getByLabelText(chat.inputLabel), { target: { value: "hỏi lại" } });
+    expect(screen.getByRole("button", { name: chat.send })).toBeEnabled();
+  });
+
   it("Enter gửi câu hỏi; Shift+Enter không gửi", () => {
-    vi.useFakeTimers();
+    deferredAsk();
     renderWithSession(<ChatShell />);
     const input = screen.getByLabelText(chat.inputLabel);
 
@@ -271,7 +445,7 @@ describe("ChatShell", () => {
   });
 
   it("đang chờ trả lời thì không gửi thêm được", () => {
-    vi.useFakeTimers();
+    deferredAsk();
     renderWithSession(<ChatShell />);
 
     fireEvent.click(screen.getByRole("button", { name: new RegExp(chat.suggestions.leave.title) }));
@@ -280,17 +454,16 @@ describe("ChatShell", () => {
     expect(screen.getByRole("button", { name: chat.send })).toBeDisabled();
   });
 
-  it("cuộc trò chuyện mới xóa hội thoại và quay về màn chào", () => {
-    vi.useFakeTimers();
+  it("cuộc trò chuyện mới xóa hội thoại và quay về màn chào", async () => {
+    const { resolve } = deferredAsk();
     renderWithSession(<ChatShell />);
     fireEvent.click(screen.getByRole("button", { name: new RegExp(chat.suggestions.contact.title) }));
-    act(() => {
-      vi.advanceTimersByTime(MOCK_DELAY_MS);
-    });
+    await act(async () => resolve({ claims: [] }));
 
     fireEvent.click(screen.getByRole("button", { name: chat.newConversation }));
 
-    expect(screen.queryByText(chat.suggestions.contact.answer)).toBeNull();
+    // Màn chào hiện lại (thẻ gợi ý lại có câu hỏi này) — kiểm hội thoại cũ đã xóa bằng việc danh sách lượt hỏi biến mất.
+    expect(screen.queryByRole("list", { name: chat.conversation })).toBeNull();
     expect(screen.getByRole("heading", { level: 2 })).toHaveTextContent(USER.display_name);
   });
 });

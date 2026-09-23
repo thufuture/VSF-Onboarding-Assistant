@@ -1,0 +1,7 @@
+# Sao chép thành terraform.tfvars (đã .gitignore, không commit giá trị thật).
+# Lấy IP của bạn: curl -s https://checkip.amazonaws.com
+my_ip                = "<ip-cua-ban>/32"
+ssh_public_key_path  = "~/.ssh/vsf-aws.pub"
+# instance_type mặc định m7i-flex.large (variables.tf) — chỉ ghi đè nếu Console báo instance đó hết chỗ
+# ("insufficient capacity") ở Singapore; khi đó dùng phương án dự phòng, ví dụ:
+# instance_type = "c7i-flex.large"

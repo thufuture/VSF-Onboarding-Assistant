@@ -28,6 +28,44 @@ class Settings(BaseSettings):
     # Giới hạn thử sai theo (email, IP): quá ngưỡng trong cửa sổ thì bị chặn tạm. Đếm trong tiến trình (một worker).
     login_max_failures: int = 5
     login_window_seconds: int = 15 * 60
+    # Giới hạn số câu hỏi /chat/ask theo user_id (mục 4.4, 2-e-prompt-guardrail-rerank/03): endpoint tốn tiền
+    # thật (LLM + embedding) mỗi lần gọi, cần chặn lạm dụng/vòng lặp lỗi — nhưng vẫn đủ rộng để một người
+    # test tay hỏi liên tục không bị chặn (100 câu/5 phút ~ nhanh hơn nhiều so với tốc độ gõ tay thật).
+    chat_max_questions: int = 100
+    chat_window_seconds: int = 5 * 60
+
+    # Embedding BGE-M3 khi nạp tài liệu (2-B): "modal-bge-m3" gọi dịch vụ thật, "fake" dùng vector giả
+    # tất định (mặc định, an toàn cho dev/CI — không gọi mạng nếu chưa cấu hình).
+    embedding_provider: Literal["modal-bge-m3", "fake"] = "fake"
+    embedding_endpoint: str | None = None
+    embedding_api_key: SecretStr | None = None
+    # Timeout/retry riêng cho lúc nạp tài liệu (khác với lúc chat, chưa cần ở Phase 2).
+    ingestion_embedding_connect_timeout_seconds: float = 5
+    ingestion_embedding_read_timeout_seconds: float = 120
+    ingestion_embedding_max_attempts: int = 4
+    ingestion_embedding_backoff_initial_seconds: float = 1
+    ingestion_embedding_backoff_multiplier: float = 3
+    ingestion_embedding_backoff_max_seconds: float = 9
+
+    # Lưu file tài liệu gốc (2-B): "local" (mặc định, an toàn cho dev/CI, không cần tài khoản ngoài)
+    # ghi vào storage_path trên đĩa; "cloudinary" đẩy lên Cloudinary, DB chỉ lưu URL (storage_key).
+    storage_provider: Literal["local", "cloudinary"] = "local"
+    storage_path: str = "./storage"
+    cloudinary_cloud_name: str | None = None
+    cloudinary_api_key: str | None = None
+    cloudinary_api_secret: SecretStr | None = None
+
+    # LLM (2-D): DeepSeek qua giao diện tương thích OpenAI. Không hard-code tên model.
+    llm_base_url: str = "https://api.deepseek.com"
+    llm_model: str = "deepseek-flash"
+    llm_api_key: SecretStr | None = None
+
+    # Theo dõi từng bước gọi LLM/embedding bằng Langfuse (tùy chọn — mục 7, kế hoạch 2-C/2-D mở rộng).
+    # Tắt mặc định; bật khi có khóa. Chỉ metadata được gửi đi, không gửi nội dung câu hỏi/câu trả lời thật.
+    langfuse_enabled: bool = False
+    langfuse_public_key: str | None = None
+    langfuse_secret_key: SecretStr | None = None
+    langfuse_host: str = "https://cloud.langfuse.com"
 
     @field_validator("app_timezone")
     @classmethod
