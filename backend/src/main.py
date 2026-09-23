@@ -9,12 +9,15 @@ from fastapi import FastAPI, Request, Response
 from fastapi.responses import JSONResponse
 
 from src.api.routers.auth_router import router as auth_router
+from src.api.routers.chat_router import router as chat_router
 from src.api.routers.health_router import router as health_router
 from src.config import get_settings
+from src.infrastructure.observability.langfuse_tracer import LangfuseTracer
 from src.infrastructure.persistence.engine import create_engine, create_session_factory
 from src.services.auth.errors import AuthError
 from src.services.auth.login_throttle import LoginThrottle
 from src.services.auth.seed import assert_no_dev_accounts
+from src.services.chat.chat_throttle import ChatThrottle
 
 # Chỉ nhận ID từ client nếu đơn giản và ngắn; nếu không thì tự tạo (tránh chèn ký tự lạ vào log/header).
 _REQUEST_ID_PATTERN = re.compile(r"^[A-Za-z0-9._-]{1,64}$")
@@ -59,6 +62,17 @@ def create_app() -> FastAPI:
     # Bộ đếm đăng nhập sai nằm trong tiến trình (MVP một worker), xem services/auth/login_throttle.py.
     app.state.login_throttle = LoginThrottle(settings.login_max_failures, settings.login_window_seconds)
 
+    # Giới hạn số câu hỏi /chat/ask theo user_id (endpoint tốn tiền thật mỗi lần gọi), xem chat_throttle.py.
+    app.state.chat_throttle = ChatThrottle(settings.chat_max_questions, settings.chat_window_seconds)
+
+    # Theo dõi từng bước gọi LLM/embedding (2-D mở rộng); no-op nếu chưa bật/chưa cấu hình khóa.
+    app.state.langfuse_tracer = LangfuseTracer(
+        enabled=settings.langfuse_enabled,
+        public_key=settings.langfuse_public_key,
+        secret_key=settings.langfuse_secret_key.get_secret_value() if settings.langfuse_secret_key else None,
+        host=settings.langfuse_host,
+    )
+
     @app.exception_handler(AuthError)
     async def auth_error_handler(_: Request, exc: AuthError) -> JSONResponse:
         # Một hình dạng lỗi duy nhất: {code, message_key, detail} (system design mục 9).
@@ -70,6 +84,7 @@ def create_app() -> FastAPI:
 
     app.include_router(health_router)
     app.include_router(auth_router)
+    app.include_router(chat_router)
     return app
 
 

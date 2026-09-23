@@ -1,0 +1,96 @@
+name: release-aws
+
+# Bản AWS của release.yml — CHỈ deploy backend (frontend chạy trên Vercel, tự deploy qua GitHub App, không
+# cần workflow riêng ở đây). Không sửa release.yml/deploy VPS Hetzner — hai nhánh chạy song song độc lập.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  # Cả 3 job đều gate theo DEPLOY_AWS_ENABLED (kể cả verify/publish, không chỉ deploy): release.yml (Hetzner)
+  # đã tự verify+build+push mỗi lần push main — nếu để verify/publish ở đây chạy vô điều kiện thì MỖI lần
+  # push main sẽ verify 2 lần, build+push cùng image backend/frontend 2 lần, tốn phút Actions vô ích khi
+  # chưa dùng AWS (mặc định DEPLOY_AWS_ENABLED chưa bật). Khi đã bật, việc build 2 lần là đánh đổi chấp nhận
+  # được (2 đích deploy độc lập, không gộp workflow để giữ mỗi nhánh Hetzner/AWS tách biệt, dễ tắt riêng).
+  verify:
+    if: ${{ vars.DEPLOY_AWS_ENABLED == 'true' }}
+    uses: ./.github/workflows/verify.yml
+
+  publish:
+    needs: verify
+    if: ${{ vars.DEPLOY_AWS_ENABLED == 'true' }}
+    uses: ./.github/workflows/publish.yml
+    permissions:
+      contents: read
+      packages: write
+
+  deploy:
+    needs: publish
+    if: ${{ vars.DEPLOY_AWS_ENABLED == 'true' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    environment: production-aws # secrets/vars của AWS nằm ở Environment này (giới hạn nhánh main)
+    concurrency:
+      group: deploy-aws
+      cancel-in-progress: false # không hủy deploy đang chạy dở
+    permissions:
+      contents: read
+      # packages: read — bước "Đăng nhập GHCR" bên dưới dùng GITHUB_TOKEN để docker login kéo image private;
+      # khai báo `permissions:` ở job này THAY THẾ toàn bộ mặc định (mọi scope không liệt kê = none), thiếu
+      # dòng này thì token không có quyền packages, login GHCR sẽ báo denied/unauthorized.
+      packages: read
+    env:
+      SSH_TARGET: ${{ secrets.AWS_EC2_USER }}@${{ secrets.AWS_EC2_HOST }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Chuẩn bị SSH (ghim host key, StrictHostKeyChecking=yes)
+        env:
+          SSH_KEY: ${{ secrets.AWS_EC2_SSH_KEY }}
+          SSH_HOST_KEY: ${{ secrets.AWS_EC2_SSH_HOST_KEY }}
+          AWS_EC2_HOST: ${{ secrets.AWS_EC2_HOST }}
+          AWS_EC2_USER: ${{ secrets.AWS_EC2_USER }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/id_deploy
+          chmod 600 ~/.ssh/id_deploy
+          printf '%s\n' "$SSH_HOST_KEY" > ~/.ssh/known_hosts
+          cat > ~/.ssh/config <<CONF
+          Host aws-ec2
+            HostName ${AWS_EC2_HOST}
+            User ${AWS_EC2_USER}
+            IdentityFile ~/.ssh/id_deploy
+            IdentitiesOnly yes
+            StrictHostKeyChecking yes
+          CONF
+
+      - name: Đẩy deploy/aws, scripts/aws và scripts/vps/backup-db.sh lên máy chủ
+        # Giữ nguyên đường dẫn tương đối như trong repo (deploy/aws/..., scripts/aws/..., scripts/vps/backup-db.sh)
+        # — khớp đúng những gì scripts/aws/deploy.sh tự tính (COMPOSE_FILE, HERE/../vps) khi chạy trên máy chủ.
+        run: |
+          tar czf - deploy/aws scripts/aws scripts/vps/backup-db.sh \
+            | ssh aws-ec2 'mkdir -p /opt/vsf-aws && tar xzf - -C /opt/vsf-aws && chmod +x /opt/vsf-aws/scripts/aws/*.sh'
+
+      - name: Đăng nhập GHCR trên máy chủ (dùng cho package private; deploy.sh tự logout khi xong)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          printf '%s' "$GH_TOKEN" | ssh aws-ec2 "docker login ghcr.io -u '${GITHUB_ACTOR}' --password-stdin"
+
+      - name: Deploy (backup, migrate, khởi động, smoke, tự rollback nếu lỗi)
+        env:
+          BACKEND_IMAGE: ${{ needs.publish.outputs.backend_image }}
+          PUBLIC_API_URL: ${{ vars.PUBLIC_API_URL }}
+        run: |
+          owner="${GITHUB_REPOSITORY_OWNER,,}"
+          ssh aws-ec2 "IMAGE_PREFIX='ghcr.io/${owner}/' SMOKE_URL='${PUBLIC_API_URL}' \
+            /opt/vsf-aws/scripts/aws/deploy.sh '${BACKEND_IMAGE}'"
+
+      - name: Kiểm tra công khai từ runner
+        env:
+          PUBLIC_API_URL: ${{ vars.PUBLIC_API_URL }}
+        run: scripts/aws/smoke-test.sh "$PUBLIC_API_URL"

@@ -288,35 +288,24 @@
     "placeholder": "Type your question…",
     "send": "Send",
     "sourceLabel": "Source:",
+    "openDocument": "View document",
     "noSource": "I have no approved document for this question yet, so I cannot answer it. You can ask HR for help.",
     "suggestions": {
       "firstDay": {
         "question": "What do I need to prepare for my first day?",
-        "answer": "Bring your ID, arrive on time and meet HR at reception to get your access card and onboarding schedule.",
-        "source": "First-day handbook (illustrative)",
-        "title": "First day",
-        "excerpt": "“New joiners arrive at reception at the agreed time with their ID. HR hands out the access card and the first-week schedule.” (illustrative)"
+        "title": "First day"
       },
       "equipment": {
         "question": "Where do I get my laptop and accounts?",
-        "answer": "Equipment and accounts are requested through IT by HR before you start; collect them from IT at the onboarding session.",
-        "source": "Equipment provisioning procedure (illustrative)",
-        "title": "Equipment and accounts",
-        "excerpt": "“HR sends the equipment and account request to IT before the new joiner starts; handover happens at the onboarding session.” (illustrative)"
+        "title": "Equipment and accounts"
       },
       "leave": {
         "question": "How do I request leave?",
-        "answer": "Send a leave request to your line manager at least 3 working days ahead, except in emergencies.",
-        "source": "Leave policy (illustrative)",
-        "title": "Leave",
-        "excerpt": "“Leave requests go to the line manager at least 3 working days before the leave, except in emergencies.” (illustrative)"
+        "title": "Leave"
       },
       "contact": {
         "question": "Who do I ask when I hit a problem in week one?",
-        "answer": "Your team buddy is the first contact; for administrative matters contact HR.",
-        "source": "Contact directory (illustrative)",
-        "title": "Who can help",
-        "excerpt": "“Each new joiner has a buddy in the team; administrative matters go to HR.” (illustrative)"
+        "title": "Who can help"
       }
     },
     "title": "Q&A assistant",
@@ -325,7 +314,18 @@
     "checking": "Searching the approved documents…",
     "keyboardHint": "Enter to send, Shift+Enter for a new line",
     "disclaimer": "The assistant answers only from approved documents. For anything important, confirm with HR.",
-    "excerptLabel": "Source excerpt"
+    "excerptLabel": "Source excerpt",
+    "error": {
+      "unauthorized": "Your session has expired. Please sign in again.",
+      "unavailable": "Couldn't send your question right now. Please try again.",
+      "network": "No network connection. Check your connection and try again."
+    },
+    "documentModal": {
+      "loading": "Loading document…",
+      "loadFailed": "Couldn't load the document content. Please try again.",
+      "openOriginal": "View original file",
+      "close": "Close"
+    }
   },
   "admin": {
     "title": "Hello, {name}",

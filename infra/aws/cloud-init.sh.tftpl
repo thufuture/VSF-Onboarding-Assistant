@@ -1,0 +1,6 @@
+#!/bin/bash
+set -e
+cat > /tmp/bootstrap.sh <<'BOOTSTRAP_SCRIPT'
+${bootstrap_script}
+BOOTSTRAP_SCRIPT
+DEPLOY_USER=ubuntu VSF_ROOT=/opt/vsf-aws bash /tmp/bootstrap.sh

@@ -40,6 +40,10 @@ services:
     build: ./backend
     ports:
       - "${BACKEND_HOST_PORT:-8000}:8000"
+    # Khóa LLM/embedding/Cloudinary/Langfuse nằm trong .env gốc repo (gitignored) — thiếu dòng này thì
+    # container không thấy các biến đó (compose chỉ tự đọc .env để thay ${...} trong file này, không tự
+    # truyền hết vào container).
+    env_file: .env
     environment:
       DATABASE_URL: postgresql+asyncpg://vsf:vsf@db:5432/vsf
     depends_on:

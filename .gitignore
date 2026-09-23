@@ -31,3 +31,9 @@ Thumbs.db
 # Nhật ký, dữ liệu chạy cục bộ
 *.log
 storage/
+
+# Terraform — trạng thái hạ tầng và khóa không vào git
+infra/aws/.terraform/
+infra/aws/terraform.tfstate*
+infra/aws/*.tfvars
+!infra/aws/terraform.tfvars.example

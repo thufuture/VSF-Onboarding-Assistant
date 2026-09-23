@@ -1,0 +1,33 @@
+{
+	email {$ACME_EMAIL}
+}
+
+{$PUBLIC_HOST} {
+	encode zstd gzip
+
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		-Server
+	}
+
+	# /api/v1/ready* lộ phiên bản migration, extension, cấu hình: chỉ gọi nội bộ qua mạng Docker.
+	@internal path /api/v1/ready /api/v1/ready/*
+	handle @internal {
+		respond 404
+	}
+
+	# Miền này CHỈ phục vụ API (frontend chạy trên Vercel, rewrite /api/* sang đây) — không có nhánh route
+	# frontend:3000 như deploy/Caddyfile bản VPS.
+	handle /api/* {
+		reverse_proxy backend:8000 {
+			flush_interval -1
+		}
+	}
+
+	handle {
+		respond 404
+	}
+}
