@@ -6,7 +6,9 @@ from src.services.chat.prompt_builder import build_user_prompt
 from src.services.retrieval.hybrid_search import SectionEvidence
 
 
-def _section(section_id: int, content: str, *, title: str = "Quy định nghỉ phép", version: str = "v1") -> SectionEvidence:
+def _section(
+    section_id: int, content: str, *, title: str = "Quy định nghỉ phép", version: str = "v1"
+) -> SectionEvidence:
     return SectionEvidence(
         section_id=section_id,
         heading="Nghỉ phép năm",
