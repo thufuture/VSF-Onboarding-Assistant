@@ -118,7 +118,10 @@ data "aws_iam_policy_document" "github_deploy_assume_role" {
     condition {
       test     = "StringEquals"
       variable = "token.actions.githubusercontent.com:sub"
-      values   = ["repo:thufuture/VSF-Onboarding-Assistant:environment:production-aws"]
+      # Repo tạo sau 15/07/2026 dùng subject bất biến có owner/repository ID.
+      values = [
+        "repo:thufuture@157556870/VSF-Onboarding-Assistant@1378441705:environment:production-aws",
+      ]
     }
   }
 }
@@ -176,6 +179,12 @@ resource "aws_instance" "vsf" {
   user_data = templatefile("${path.module}/cloud-init.sh.tftpl", {
     bootstrap_script = file("${path.module}/../../scripts/vps/bootstrap.sh")
   })
+
+  # Data source `most_recent` sẽ trỏ sang AMI Ubuntu mới theo thời gian. Đây là máy stateful chứa
+  # PostgreSQL nên không được tự thay EC2/boot disk chỉ vì Canonical phát hành AMI mới.
+  lifecycle {
+    ignore_changes = [ami]
+  }
 
   tags = merge(local.common_tags, { Name = "vsf-aws" })
 }
