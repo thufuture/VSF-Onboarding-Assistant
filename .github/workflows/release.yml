@@ -1,9 +1,9 @@
 name: release
 
-# Merge vào main: verify -> build và đẩy image -> (nếu bật) deploy lên VPS -> smoke test công khai.
+# Luồng VPS/Hetzner cũ chỉ giữ làm phương án dự phòng và chỉ chạy thủ công.
+# Deploy tự động khi merge main do release-aws.yml phụ trách.
 on:
-  push:
-    branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: read
