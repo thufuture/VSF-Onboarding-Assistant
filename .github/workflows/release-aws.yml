@@ -26,7 +26,6 @@ jobs:
     uses: ./.github/workflows/publish.yml
     permissions:
       contents: read
-      id-token: write
       packages: write
 
   deploy:
@@ -40,6 +39,7 @@ jobs:
       cancel-in-progress: false # không hủy deploy đang chạy dở
     permissions:
       contents: read
+      id-token: write # aws-actions/configure-aws-credentials cần quyền xin OIDC token ở đúng job deploy
       # packages: read — bước "Đăng nhập GHCR" bên dưới dùng GITHUB_TOKEN để docker login kéo image private;
       # khai báo `permissions:` ở job này THAY THẾ toàn bộ mặc định (mọi scope không liệt kê = none), thiếu
       # dòng này thì token không có quyền packages, login GHCR sẽ báo denied/unauthorized.
