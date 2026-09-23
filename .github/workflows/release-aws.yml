@@ -118,7 +118,7 @@ jobs:
       - name: Kiểm tra công khai từ runner
         env:
           PUBLIC_API_URL: ${{ vars.PUBLIC_API_URL }}
-        run: scripts/aws/smoke-test.sh "$PUBLIC_API_URL"
+        run: bash scripts/aws/smoke-test.sh "$PUBLIC_API_URL"
 
       - name: Thu hồi quyền SSH của runner
         if: ${{ always() && env.RUNNER_CIDR != '' }}
