@@ -1,8 +1,8 @@
-# Báo cáo triển khai AWS + Vercel — tiến độ (cập nhật 23/09/2026, sau H-6: deploy lần đầu + HTTPS)
+# Báo cáo triển khai AWS + Vercel — tiến độ (cập nhật 24/09/2026: chạy thật end-to-end)
 
 > Kế hoạch: [trien-khai-aws-vercel.md](trien-khai-aws-vercel.md). **Backend chạy thật trên AWS, HTTPS hợp lệ,
 > smoke test 4/4 qua.** Domain: `https://vsf-assistant.duckdns.org` (đổi tên từ `vsf-api` — quyết định của
-> bạn, đã đồng bộ toàn bộ file). Còn lại: H-7 (GitHub Environment/CI), H-8/H-9 (Vercel).
+> bạn, đã đồng bộ toàn bộ file). **24/09: frontend Vercel chạy, đăng nhập và chat thật qua Vercel → AWS đã kiểm chứng** (mục 10–12).
 
 ## 1. Checkpoint
 
@@ -18,7 +18,9 @@
 | **Xác nhận máy chủ** | SSH vào được, Docker/swap/thư mục `/opt/vsf-aws` đúng | **Xong** (mục 6) |
 | H-5 | Trỏ DuckDNS `vsf-assistant.duckdns.org` → `3.1.239.21` | **Xong** (bạn tự làm, `nslookup` xác nhận đúng IP) |
 | **H-6** | Tạo `.env` thật, build+deploy image lần đầu, HTTPS, smoke test | **Xong** (mục 9) |
-| H-7 → H-9 | GitHub Environment + secrets, bật CI, Vercel | Chưa tới |
+| H-7 | GitHub Environment + secrets, bật CI, OIDC deploy | **Xong** — deploy xanh (run #6, #7) |
+| H-8/H-9 | Vercel | **Xong** — `https://vsf-onboarding-assistant.vercel.app` (mục 10) |
+| Dữ liệu + tài khoản | Nạp tài liệu, tạo tài khoản thật, chat thật | **Xong** (mục 11–12) |
 
 ## 2. Quyết định đã chốt khác với bản kế hoạch gốc
 
@@ -165,13 +167,50 @@ DB production hoàn toàn mới, chưa seed tài khoản nào, và production t�
 `assert_no_dev_accounts`). Sẽ cần tài khoản thật/quy trình mời riêng khi launch thật, không phải việc của
 H-6.
 
-## 10. Việc tiếp theo
+## 10. Vercel: nguyên nhân 404 và cách sửa (24/09)
 
-**H-7, cần bạn**: tạo GitHub Environment `production-aws` trên GitHub (Settings → Environments), thêm 4
-secret (`AWS_EC2_HOST=3.1.239.21`, `AWS_EC2_USER=ubuntu`, `AWS_EC2_SSH_KEY` = nội dung file khoá riêng
-`~/.ssh/vsf-aws`, `AWS_EC2_SSH_HOST_KEY` = kết quả `ssh-keyscan 3.1.239.21`), thêm biến
-`PUBLIC_API_URL=https://vsf-assistant.duckdns.org`, rồi bật biến repo `DEPLOY_AWS_ENABLED=true`. Khi đó push
-`main` sẽ tự build+deploy qua GHCR đúng luồng CI (thay cho image `vsf-backend:local` build tay hôm nay).
+Triệu chứng: `vsf-onboarding-assistant.vercel.app` trả `404 NOT_FOUND` dù deployment "Ready". Có 3 nguyên nhân chồng nhau:
 
-Sau đó H-8/H-9: tạo tài khoản Vercel, import repo, Root Directory = `frontend`, env
-`API_UPSTREAM_URL=https://vsf-assistant.duckdns.org`.
+1. **Framework Preset = "Other"** → Vercel coi là site tĩnh (build 0ms). Sửa: `frontend/vercel.json` với `"framework": "nextjs"`.
+2. **`output: "standalone"`** (dùng cho Docker) làm bước `onBuildComplete` của Vercel lỗi thiếu `next-server.js.nft.json`. Sửa: `frontend/next.config.ts` chỉ bật standalone khi không có biến `VERCEL`. Docker không đổi.
+3. **Dự án ở trạng thái rollback** → domain chính bị ghim vào bản cũ. Sửa: `vercel promote` bản mới.
+
+Khi dùng Vercel CLI, phải chạy từ **thư mục gốc repo** (Root Directory = `frontend` nên chạy trong `frontend/` sẽ nhân đôi đường dẫn). Thư mục `.vercel` đã nằm trong `.gitignore`.
+
+Kiểm chứng: `/` → 307 `/vi`, `/vi/login` 200, `/api/v1/health` qua Vercel → `{"status":"ok"}` (rewrite tới AWS, cookie first-party).
+
+## 11. Dữ liệu và tài khoản production
+
+Trước đó DB production **rỗng** (migration `0001`, mọi bảng 0 dòng), khác hẳn DB local (Docker, pgAdmin "Onboarding Local").
+
+- **Nạp dữ liệu:** `pg_dump --data-only` các bảng `teams`, `document_categories`, `documents`, `document_versions`, `document_sections`, `document_chunks` từ local, nạp vào DB AWS (đặt `session_replication_role = replica` vì các bảng tham chiếu `users`). Không copy `users`.
+  Kết quả khớp local: 4 đội, 12 danh mục, 1 tài liệu, 1 phiên bản, 32 section, 34 chunk (đủ 34 embedding). File gốc vẫn ở Cloudinary (dùng chung).
+- **Không dùng tài khoản dev:** backend production từ chối khởi động nếu còn email `@vsf-demo.example` (mật khẩu dev nằm trong repo). `seed_users` cũng từ chối chạy ở production.
+- **CLI mới `python -m src.cli.create_user`** (`--email --name --role --team [--generate-password]`): hỏi mật khẩu bằng `getpass` hoặc tự sinh mật khẩu mạnh, từ chối email miền dev, mật khẩu <12 ký tự, email trùng.
+- **Gán lại chủ sở hữu:** `documents.owner_id`, `document_versions.uploaded_by/reviewed_by` đổi sang admin (id 1); kiểm tra 0 dòng mồ côi.
+
+| Vai trò | Email | Bộ phận |
+|---|---|---|
+| ADMIN | `quan.nguyen@vsf.example` | — |
+| HR | `huong.le@vsf.example` | HR Onboarding |
+| USER | `anh.pham@vsf.example` | IT Helpdesk |
+| USER | `binh.vo@vsf.example` | VinSOC |
+| USER | `thu.tran@vsf.example` | Facilities |
+
+Mật khẩu **không lưu trong repo/báo cáo**: sinh ngẫu nhiên khi tạo và giao riêng cho người dùng. Đổi mật khẩu khi cần bằng cách tạo lại tài khoản hoặc bổ sung chức năng đổi mật khẩu.
+
+## 12. Kiểm chứng end-to-end (24/09)
+
+- Đăng nhập `thu.tran@vsf.example` qua Vercel → 200, `role: USER`, `department: Facilities`.
+- `POST /api/v1/chat/ask` "Chính sách nghỉ phép của công ty như thế nào?" → 200, trả lời "12 ngày phép năm" kèm trích dẫn nguyên văn, `document_url` Cloudinary và `version_id`.
+- Độ trễ: lần đầu **86s** (Modal khởi động GPU L4 lạnh), lần sau **~4s**.
+- Lưu ý: Modal còn ~$28,7 credit; app `ralion-bge-m3-embedder` cần khởi động lại sau thời gian không dùng. Có thể bật `min_containers=1` nếu cần bỏ độ trễ lạnh (tốn credit).
+
+**Cách kiểm tra:** (1) Vercel → project → Deployments: bản Production "Ready"; (2) `curl https://vsf-assistant.duckdns.org/api/v1/health` → `{"status":"ok"}`; (3) EC2 Console → `vsf-aws` running, Security Group cổng 22 chỉ mở khi cần; (4) DB: SSH vào EC2 rồi `sudo docker exec -it $(sudo docker ps -qf name=db) psql -U vsf -d vsf` (chỉ mở rule SSH tạm cho IP của bạn rồi thu hồi); (5) Billing → Credits xem credit AWS còn lại.
+
+## 13. Việc còn lại
+
+- Chức năng đổi mật khẩu / quản lý người dùng qua UI (hiện chỉ có CLI).
+- `langfuse` chưa có trong `requirements.txt` (tracing đang tắt).
+- Theo dõi credit AWS (Free Plan hết 22/03/2027 hoặc khi hết credit) và Modal.
+- Rule SSH trên Security Group: luôn thu hồi sau khi dùng (đã thu hồi 24/09).
