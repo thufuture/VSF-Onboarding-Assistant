@@ -11,7 +11,8 @@ const API_UPSTREAM_URL = process.env.API_UPSTREAM_URL ?? "http://127.0.0.1:8000"
 
 const nextConfig: NextConfig = {
   // Cho image Docker ở Phase 1b: chỉ chép .next/standalone và static.
-  output: "standalone",
+  // Vercel tự đóng gói; standalone làm bước onBuildComplete của Vercel lỗi thiếu *.nft.json.
+  output: process.env.VERCEL ? undefined : "standalone",
 
   // Dev: cho phép mở bằng 127.0.0.1 (mặc định Next chặn tài nguyên từ origin này nên trang không hydrate, nút không chạy).
   allowedDevOrigins: ["127.0.0.1"],
