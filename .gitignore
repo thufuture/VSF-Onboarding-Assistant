@@ -38,3 +38,6 @@ infra/aws/terraform.tfstate*
 infra/aws/*.tfvars
 infra/aws/*.tfplan
 !infra/aws/terraform.tfvars.example
+
+.vercel
+.env*.local
