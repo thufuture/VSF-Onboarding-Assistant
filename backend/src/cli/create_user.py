@@ -7,6 +7,7 @@ Từ chối email miền dev vì production không khởi động nếu còn tà
 import argparse
 import asyncio
 import getpass
+import secrets
 import sys
 
 from sqlalchemy import func, select
@@ -59,11 +60,16 @@ def main() -> None:
     parser.add_argument("--email", required=True)
     parser.add_argument("--name", required=True, help="tên hiển thị")
     parser.add_argument("--role", choices=[r.value for r in UserRole], default=UserRole.USER.value)
+    parser.add_argument("--generate-password", action="store_true", help="tự sinh mật khẩu mạnh và in ra một lần")
     args = parser.parse_args()
-    password = getpass.getpass("Mật khẩu: ")
-    if password != getpass.getpass("Nhập lại mật khẩu: "):
-        print("Từ chối: hai lần nhập không khớp.", file=sys.stderr)
-        sys.exit(2)
+    if args.generate_password:
+        password = secrets.token_urlsafe(12)
+        print(f"Mật khẩu (chỉ hiện một lần): {password}")
+    else:
+        password = getpass.getpass("Mật khẩu: ")
+        if password != getpass.getpass("Nhập lại mật khẩu: "):
+            print("Từ chối: hai lần nhập không khớp.", file=sys.stderr)
+            sys.exit(2)
     sys.exit(asyncio.run(_run(args.email, args.name, args.role, password)))
 
 
