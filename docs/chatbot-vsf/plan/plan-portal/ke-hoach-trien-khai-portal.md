@@ -57,17 +57,17 @@ Chốt **3 vai trò hệ thống, không hơn**: EMPLOYEE, HR, ADMIN. **MENTOR, 
 
 | Vai trò | Việc chính | Không được làm |
 |---|---|---|
-| **EMPLOYEE** | Xem lộ trình, làm task theo `completion_type` (SELF_CONFIRM / EVIDENCE_REQUIRED / HR_APPROVAL), báo kẹt, hỏi Viga | Tự đổi trạng thái task ngoài rule; xem lộ trình người khác |
-| **HR** | Soạn/duyệt/publish JourneyTemplate, quản lý tài liệu, duyệt đầu mối/link, dùng AI đề xuất task, xử lý ticket theo team, xem tiến độ/nhắc nhân viên và duyệt task `HR_APPROVAL` | Tự publish task chưa qua bước AI-đề-xuất → HR-duyệt nếu dùng nguồn AI |
+| **EMPLOYEE** | Xem lộ trình, đọc hướng dẫn task rồi **tự bấm "Hoàn thành"** khi xong, báo kẹt/hỏi Viga khi không hiểu | Tự đổi trạng thái task ngoài rule (task tiên quyết chưa xong thì không bấm hoàn thành được); xem lộ trình người khác |
+| **HR** | Soạn/publish JourneyTemplate, quản lý tài liệu, duyệt đầu mối/link, dùng AI đề xuất task, xử lý ticket theo team, xem tiến độ nhân viên | Tự publish task chưa qua bước AI-đề-xuất → HR-duyệt nếu dùng nguồn AI |
 | **ADMIN** | Quản lý user, team, role, audit log | Không mặc định sửa nội dung nghiệp vụ (roadmap/task) |
 
-Đổi tên `completion_type` thứ ba từ `OWNER_APPROVAL` (tên cũ ở [ke-hoach-portal-onboarding.md §5.1](../portal/ke-hoach-portal-onboarding.md#51-ba-loại-xác-nhận-hoàn-thành)) thành **`HR_APPROVAL`** trong toàn bộ schema/code mới — tránh chữ "Owner" gợi ý một actor riêng ngoài 3 role đã chốt. Ba loại còn lại: `SELF_CONFIRM`, `EVIDENCE_REQUIRED`, `HR_APPROVAL`.
+**Bỏ hẳn khái niệm `completion_type` nhiều loại** (đã có ở [ke-hoach-portal-onboarding.md §5.1](../portal/ke-hoach-portal-onboarding.md#51-ba-loại-xác-nhận-hoàn-thành): `SELF_CONFIRM`/`EVIDENCE_REQUIRED`/`OWNER_APPROVAL`) — **quyết định mới: mọi task chỉ có một cách hoàn thành duy nhất là nhân viên tự bấm "Hoàn thành"** khi đọc xong hướng dẫn và tự thấy đã làm. Không có minh chứng, không có HR duyệt task. Lý do đổi: đơn giản hóa MVP, đúng hướng "task portal + kiểm tra AI/chatbot" hơn là quy trình phê duyệt nội bộ phức tạp. Khi nhân viên kẹt hoặc không hiểu, họ hỏi Viga; nếu Viga không đủ căn cứ, Viga đề nghị tạo ticket (có xác nhận) — HR chỉ xử lý qua ticket, không còn bước "duyệt task" riêng.
 
 **"Không phải role" khác với "không cần scope"**: HR vẫn là một role duy nhất, nhưng cần biết HR nào phụ trách nhân viên nào. Chốt cardinality rõ ràng:
 
 - 1 phòng ban (team) → **nhiều** HR, **nhiều** EMPLOYEE.
 - 1 HR → thuộc đúng **1** phòng ban. 1 EMPLOYEE → thuộc đúng **1** phòng ban.
-- Các HR cùng phòng ban có **quyền ngang nhau** trên dữ liệu của phòng ban đó: xem nhân viên/tiến độ, duyệt `HR_APPROVAL`, xử lý ticket, quản lý roadmap/task/tài liệu/đầu mối/link, xem phản hồi Viga.
+- Các HR cùng phòng ban có **quyền ngang nhau** trên dữ liệu của phòng ban đó: xem nhân viên/tiến độ, xử lý ticket, quản lý roadmap/task/tài liệu/đầu mối/link, xem phản hồi Viga.
 
 **Mô hình dữ liệu:** vì ràng buộc là 1 user – đúng 1 team (không phải nhiều-nhiều), dùng cột FK trực tiếp thay vì bảng join:
 
@@ -82,9 +82,9 @@ teams: id, code, name
 
 **Ticket — cơ chế "Nhận xử lý" để tránh trùng:** `tickets.assigned_hr_id` (nullable). Ticket mới vào hàng đợi chung của phòng ban, mọi HR trong team đều thấy; 1 HR bấm "Nhận xử lý" → hệ thống set `assigned_hr_id`; HR khác vẫn xem được nhưng không cùng cập nhật nếu chưa được chuyển giao; khi HR nghỉ, HR khác "Nhận lại" hoặc Admin chuyển người xử lý.
 
-**Task `HR_APPROVAL` — không cần phân công trước:** `employee_tasks.approved_by_hr_id` (nullable) + `approved_at`. Bất kỳ HR nào trong cùng phòng ban cũng duyệt được; hệ thống ghi lại chính xác ai đã duyệt để audit — không cần gán trước ai phải duyệt task nào.
+**Task: không còn bước HR duyệt.** Nhân viên tự bấm "Hoàn thành" (xem mục 3 bảng vai trò) — không có `approved_by_hr_id`/`approved_at` trên `employee_tasks` vì không còn ai duyệt task. Nếu sau này thực tế phát sinh nhu cầu cần HR xác nhận lại một số task nhạy cảm, thêm lại field này chứ không thiết kế sẵn ở MVP.
 
-Không cần 4 bảng assignment riêng (`hr_employee_assignments`, `task_approval_assignments`, `ticket_assignments`, `document_hr_owners`) — scope theo `team_id` + 2 cột audit (`assigned_hr_id`, `approved_by_hr_id`) là đủ cho MVP; chỉ thêm bảng riêng khi thực tế phát sinh nhu cầu gán đích danh phức tạp hơn.
+Không cần bảng assignment riêng (`hr_employee_assignments`, `ticket_assignments`, `document_hr_owners`) — scope theo `team_id` + cột audit `assigned_hr_id` (ticket) là đủ cho MVP; chỉ thêm bảng riêng khi thực tế phát sinh nhu cầu gán đích danh phức tạp hơn.
 
 Nguyên tắc bất biến giữ nguyên như chatbot: **workflow do code kiểm soát, AI chỉ đề xuất — không tự publish, không tự duyệt task nhạy cảm** ([dac-ta-tong-the-portal-onboarding-v14.md §5.3](../portal/dac-ta-tong-the-portal-onboarding-v14.md#53-quy-tắc-bất-biến)).
 
@@ -103,13 +103,13 @@ Khung tương tự cách chia phase của chatbot ([master-plan.md](../master-pl
 
 | Phase | Tên | Việc chính | Đầu ra / cổng hoàn thành | Phụ thuộc |
 |---|---|---|---|---|
-| **P0A** | Chốt domain/schema | Trả lời các câu hỏi **chặn schema** ở mục 7 (ai duyệt `HR_APPROVAL`, snapshot hay live-update, `task_evidence` gồm dạng gì, `NOT_APPLICABLE` theo điều kiện nào, ticket gán người hay team, ai đổi `BLOCKED`...) và nguyên tắc retention ở mục 8 | Đủ quyết định để thiết kế migration, không cần chờ duyệt nội dung task thật | Không |
+| **P0A** | Chốt domain/schema | Trả lời các câu hỏi **chặn schema** ở mục 7 (snapshot hay live-update, `NOT_APPLICABLE` theo điều kiện nào, ticket gán người hay team, ai đổi `BLOCKED`...) và nguyên tắc retention ở mục 8 | Đủ quyết định để thiết kế migration, không cần chờ duyệt nội dung task thật | Không |
 | **P0B** | Chốt dữ liệu seed thật | Xác nhận với mentor/HR: danh sách task Ngày 1 thật (mục 6, [ke-hoach-portal-onboarding.md](../portal/ke-hoach-portal-onboarding.md#6-ví-dụ-dữ-liệu-ngày-1-đầu-vào-seed-cần-hr-duyệt)), mã đầu mối/link nào đã duyệt | Bảng dữ liệu seed được HR xác nhận (không còn "ứng viên") | Không, chạy song song P0A; chỉ **P3/P4C và pilot** cần P0B xong, P1 không cần chờ |
 | **P1** | Data model + migration + **RBAC/scope nền tảng** | Tạo bảng theo §15 v14 + §4 ke-hoach: `journey_templates/stages/task_templates/task_dependencies`, `employee_journeys/tasks/events/evidence`, `contact_channels`, `approved_links`, `tickets/*`; **đồng thời** dựng RBAC 3 role, bảng team/phòng ban, gán role, cột/bảng assignment (`hr_assignee_id` hoặc `hr_employee_assignments` — mục 3), kiểm quyền server-side ở tầng dùng chung (không để dành tới P8, vì P3/P4 sẽ phải sửa lại API nếu thiếu) | Migration chạy được, `alembic check` xanh; seed giả lập nạp được; 1 API mẫu chặn được truy cập sai role/sai scope | P0A |
 | **P2** | API + state machine nhân viên | Implement state machine EmployeeTask (§5.2 ke-hoach), API `GET /me/journey`, `POST /me/tasks/{id}/start\|complete`, kiểm tiên quyết server-side | Test unit state machine + prerequisite; Postman/API test theo §17 v14 | P1 |
 | **P3** | Giao diện Nhân viên: roadmap + task detail | Nối UI roadmap và chi tiết task đã có trong prototype v15 vào API thật (không gồm ticket — xem P5), bỏ dữ liệu giả; UI tự hiển thị "việc tiếp theo"/"lý do khóa" từ state machine thật (§1.1) | Nhân viên demo đăng nhập → xem roadmap → hoàn thành 1 task thật, task phụ thuộc tự mở khóa | P2 |
 | **P4A** | HR: quản lý tài liệu | API + UI upload nhiều file, theo dõi trạng thái ingest từng file, xem Markdown liên tục kèm mục lục heading, tải file gốc, thay thế tài liệu, đánh dấu task nào đang dùng tài liệu, chặn xóa nếu còn task phụ thuộc. **Tái sử dụng component và API xem tài liệu hiện có của chatbot** (đọc nội dung, highlight citation) làm nền; cần kiểm tra thực tế component đó trước khi giả định dùng được thẳng, rồi **mở rộng thêm** mục lục heading, section focus rõ trong khung Portal, usage-mapping, delete-guard, review-gate — các phần mở rộng này là mới cho Portal | HR upload 1 tài liệu, thấy trạng thái ingest, xem được nội dung, không xóa được nếu đang có task dùng | P1 |
-| **P4B** | HR: quản lý roadmap/task thủ công | API + UI tạo/sửa/nhân bản JourneyTemplate/TaskTemplate (chưa AI), gắn prerequisite, `applies_when`, `completion_type` | HR tạo tay được 1 template đầy đủ task | P4A, P2 |
+| **P4B** | HR: quản lý roadmap/task thủ công | API + UI tạo/sửa/nhân bản JourneyTemplate/TaskTemplate (chưa AI), gắn prerequisite, `applies_when` (mọi task đều tự-hoàn-thành, không còn `completion_type`) | HR tạo tay được 1 template đầy đủ task | P4A, P2 |
 | **P4C** | Đầu mối, link, validation, publish | Quản lý `contact_channels`/`approved_links` (DRAFT→APPROVED theo §4.3 ke-hoach); validation khi publish (chặn dependency vòng, thiếu prerequisite, liên hệ/link chưa duyệt — §4.1 ke-hoach); publish tạo version bất biến | HR publish 1 template hợp lệ, nhân viên demo thấy đúng lộ trình; publish bị chặn nếu còn liên hệ DRAFT | P4B |
 | **P5** | Ticket end-to-end (thủ công) | API + UI tạo ticket **thủ công từ task** (chưa có Viga ở phase này), theo dõi "Ticket của tôi" (nhân viên), xử lý ticket theo team (HR) | Nhân viên tạo ticket từ 1 task → HR xử lý và đóng, có audit | P3, P4C |
 | **P6** | AI đề xuất task | Nối `task_source_mappings` với retrieval đã có; API `POST /ai/task-proposals`; UI đã có sẵn trong v15 (chấp nhận/sửa/nhân bản/xóa có xác nhận). **Cổng đúng luồng:** AI đề xuất có citation → HR xem nguồn → HR chấp nhận/sửa/bỏ → tạo **task DRAFT** trong màn "Quản lý task" (P4B) → qua validation (P4C) → HR publish → nhân viên **mới thấy sau publish**, không thấy thẳng từ đề xuất AI | HR chọn 1 tài liệu → AI ra đề xuất → HR duyệt tạo draft → publish → nhân viên demo thấy task đó | P4B, P4C, retrieval của chatbot ổn định (nên có số liệu Recall@5 trước khi bật) |
@@ -131,12 +131,12 @@ Khung tương tự cách chia phase của chatbot ([master-plan.md](../master-pl
 Danh sách gốc ở [dac-ta-tong-the-portal-onboarding-v14.md §25](../portal/dac-ta-tong-the-portal-onboarding-v14.md#25-điểm-cần-xác-nhận-trước-production). Một số câu hỏi **thực sự chặn** thiết kế state machine/schema, không thể để "hỏi sau":
 
 **Chặn domain/schema — nên có câu trả lời (dù tạm) trước P0A/P1, vì đổi sau sẽ phải sửa migration/state machine:**
-- Task nào cần HR duyệt (`HR_APPROVAL`), ai trong HR được quyền duyệt (mục 3 — assignment nào)?
 - Journey đang chạy (EmployeeJourney) có nhận cập nhật khi template publish version mới không, hay giữ snapshot cố định?
-- Minh chứng (`EVIDENCE_REQUIRED`) gồm những dạng gì: text, mã, file? Ảnh hưởng schema `task_evidence`.
 - Task có được đánh dấu `NOT_APPLICABLE` theo điều kiện nào (địa điểm, loại máy)?
 - Ticket được gán cho HR cụ thể hay cho cả nhóm/team?
 - Khi ticket đóng, task tự thoát `BLOCKED` hay phải HR chủ động đổi trạng thái?
+
+(Đã bỏ câu hỏi về HR duyệt task và minh chứng — quyết định mới: mọi task chỉ có 1 cách hoàn thành là nhân viên tự bấm "Hoàn thành", không có `HR_APPROVAL`/`EVIDENCE_REQUIRED` — xem mục 3.)
 - Nguyên tắc retention/soft-delete (xem mục 8) — ảnh hưởng schema ngay từ đầu, không thể để hoàn toàn sau.
 
 **Cần trước pilot (P9), không chặn code trước đó:**
