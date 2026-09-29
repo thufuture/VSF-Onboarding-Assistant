@@ -26,10 +26,10 @@ Với mỗi câu hỏi, phân loại:
 | D1 | Task hoàn thành theo cơ chế nào? | **Đã đổi quyết định** | ~~HR duyệt (`HR_APPROVAL`)~~ → **bỏ hẳn**. Chỉ còn 1 cách: **nhân viên tự bấm "Hoàn thành"** khi đọc xong hướng dẫn và tự thấy đã làm. Không có bước duyệt, không có minh chứng nộp lên hệ thống. Backend chỉ kiểm tra prerequisite (task tiên quyết phải `DONE`) trước khi cho bấm hoàn thành | Đơn giản hóa MVP theo yêu cầu — xem [ke-hoach-trien-khai-portal.md §3](../ke-hoach-trien-khai-portal.md) |
 | D2 | Journey đang chạy có nhận cập nhật khi template publish version mới, hay giữ snapshot? | Đã có sẵn | **Snapshot mặc định** — publish version mới **không** tự đổi journey đang chạy; HR **chủ động chọn** cho từng journey: giữ nguyên hoặc migrate (chỉ áp dụng task chưa bắt đầu, task `DONE` giữ nguyên) | [ke-hoach-portal-onboarding.md §4.1](../../portal/ke-hoach-portal-onboarding.md#41-tách-template-và-instance) |
 | D3 | Kẹt/không hiểu task thì xử lý sao? | **Đã đổi quyết định** | ~~Nộp minh chứng (`EVIDENCE_REQUIRED`)~~ → **bỏ hẳn bảng `task_evidence`**. Thay bằng: nhân viên hỏi Viga trong ngữ cảnh task; nếu Viga không đủ căn cứ trả lời, Viga đề nghị tạo ticket (có xác nhận của nhân viên) — HR xử lý qua ticket, không qua "duyệt minh chứng" | Đơn giản hóa MVP; khớp §1.1 (vai trò Viga) ở ke-hoach-trien-khai-portal.md |
-| D4 | Task `NOT_APPLICABLE` theo điều kiện nào? | Đã có sẵn | `applies_when` gồm **địa điểm làm việc** và **loại máy** (Windows/Ubuntu) — đúng 2 chiều này cho MVP, không mở rộng thêm điều kiện khác | [ke-hoach-portal-onboarding.md §4.2](../../portal/ke-hoach-portal-onboarding.md#42-tasktemplate) |
+| D4 | Task khác nhau theo địa điểm/loại máy thì xử lý sao? | **Đã đổi quyết định** | ~~Lọc bằng `applies_when` ở schema~~ → **bỏ hẳn**. Thông tin khác nhau theo địa điểm/loại máy (vd: tầng nào, tòa nào) là **dữ liệu tĩnh giống nhau cho mọi người ở cùng nơi đó**, không phải điều kiện cần lọc theo từng nhân viên — viết thẳng vào **nội dung hướng dẫn task** dạng rẽ nhánh bằng chữ: "Nếu bạn làm ở HCM: tầng 14, Vincom Đồng Khởi. Nếu ở HN: tầng 21, Technopark Gia Lâm." Task vẫn hiện cho mọi nhân viên như nhau, không có task nào bị ẩn/`NOT_APPLICABLE` vì lý do này | Đơn giản hóa MVP theo yêu cầu — không cần cơ chế lọc cho thông tin vốn tĩnh |
 | D5 | Ticket gán người hay team? | Đã có sẵn | Vào **hàng đợi chung của team**, HR "Nhận xử lý" mới gán `assigned_hr_id` | Mục 3, ke-hoach-trien-khai-portal.md |
 | D6 | Khi ticket đóng, task tự thoát `BLOCKED` hay HR quyết định? | Cần chốt (dễ đảo ngược) | **HR chủ động đổi trạng thái task**, hệ thống không tự suy luận. Lý do: đóng ticket không đồng nghĩa vấn đề gốc đã hết (vd: ticket đóng vì "đã hướng dẫn xong" nhưng nhân viên chưa thực sự thao tác xong) — tự động hóa dễ sai. Ticket có field `resolution_note`; UI gợi ý HR đổi trạng thái task liên quan nhưng không tự làm | Nguyên tắc "workflow do backend kiểm soát, không suy luận hộ" (v14 §5.3) |
-| D7 | 1 EmployeeTask thuộc `applies_when` nhiều điều kiện cùng lúc thì xử lý sao (vd vừa sai địa điểm vừa sai loại máy)? | Cần chốt (dễ đảo ngược) | Là phép **AND**: chỉ cần 1 điều kiện không khớp hồ sơ nhân viên → toàn bộ task chuyển `NOT_APPLICABLE` | Đơn giản nhất cho MVP, giống cách most feature-flag rule engine đơn giản hoạt động |
+| D7 | ~~1 EmployeeTask thuộc nhiều điều kiện applies_when cùng lúc thì xử lý sao?~~ | Không còn áp dụng | Câu hỏi này chỉ có ý nghĩa khi còn cơ chế lọc theo điều kiện (D4) — D4 đã bỏ, nên D7 **không còn cần quyết định** | Hệ quả của D4 |
 | D8 | `task_dependencies` (prerequisite) có cho phép OR không (hoàn tất 1-trong-N task trước là đủ), hay chỉ AND? | Cần chốt (khó đảo ngược — ảnh hưởng thuật toán tính `READY`) | **Chỉ AND** ở MVP: task chỉ `READY` khi **toàn bộ** task tiên quyết `DONE`. Không có OR. Nếu sau này cần OR, thêm bảng `task_dependency_groups` chứ không sửa bảng gốc | Khớp ví dụ Ngày 1 hiện có (chuỗi phụ thuộc đơn giản, không có nhánh OR) — [ke-hoach-portal-onboarding.md §6](../../portal/ke-hoach-portal-onboarding.md#6-ví-dụ-dữ-liệu-ngày-1-đầu-vào-seed-cần-hr-duyệt) |
 | D9 | `content_gaps` (Viga/HR phản hồi thiếu nguồn) có gắn với `team_id` không? | Cần chốt (dễ đảo ngược) | Có — `content_gaps.team_id` bắt buộc, để HR chỉ thấy gap của phòng ban mình, đúng nguyên tắc scope theo team đã chốt | Nhất quán với mục 3, ke-hoach-trien-khai-portal.md |
 | D10 | `journey_templates`/`task_templates` có `team_id = NULL` cho nội dung dùng chung không? | Đã có sẵn | Có — mục 3 đã chốt: dữ liệu dùng chung để `team_id = NULL`, chỉ ADMIN sửa được | Mục 3, ke-hoach-trien-khai-portal.md |
@@ -45,16 +45,17 @@ users.primary_team_id FK teams.id NOT NULL (khi role IN ('EMPLOYEE','HR'))
 
 -- KHÔNG còn completion_type / bảng task_evidence (D1, D3) — mọi task chỉ tự-hoàn-thành
 
--- trạng thái EmployeeTask (bỏ WAITING_APPROVAL vì không còn ai duyệt — D1)
+-- trạng thái EmployeeTask (bỏ WAITING_APPROVAL vì không còn ai duyệt — D1;
+--  bỏ NOT_APPLICABLE vì không còn cơ chế lọc theo điều kiện — D4)
 employee_tasks.status ENUM(
-  'NOT_APPLICABLE','LOCKED','READY','IN_PROGRESS',
+  'LOCKED','READY','IN_PROGRESS',
   'WAITING_EXTERNAL','BLOCKED','DONE','SKIPPED'
 )
 employee_tasks.team_id FK teams.id NOT NULL
 employee_tasks.completed_at TIMESTAMP NULLABLE  -- set khi nhân viên tự bấm "Hoàn thành"
 
--- applies_when (D4, D7)
-task_templates.applies_when JSONB  -- { "locations": [...], "device_types": [...] }, AND giữa các field
+-- KHÔNG còn task_templates.applies_when (D4, D7) — nội dung khác biệt theo
+-- địa điểm/loại máy viết trực tiếp trong hướng dẫn task (Markdown), không lọc ở schema
 
 -- prerequisite (D8) — chỉ AND, không cần bảng group ở MVP
 task_dependencies(task_template_id, depends_on_task_template_id)
@@ -98,5 +99,5 @@ Copy từ [ke-hoach-trien-khai-portal.md §8](../ke-hoach-trien-khai-portal.md#8
 
 ## 7. Bàn giao cho P0B / P1
 
-- **P0B** (chốt dữ liệu seed thật) chạy song song, không phụ thuộc P0A xong hết — nhưng cần D4/D8 ở đây để biết seed Ngày 1 phải khai báo đủ trường gì (applies_when, dependency).
+- **P0B** (chốt dữ liệu seed thật) chạy song song, không phụ thuộc P0A xong hết — nhưng cần D8 ở đây để biết seed Ngày 1 phải khai báo dependency thế nào, và cần viết hướng dẫn task theo đúng kiểu rẽ nhánh bằng chữ đã chốt ở D4 (vd: khai rõ theo địa điểm ngay trong nội dung, không tách task riêng).
 - **P1** (migration) dùng thẳng mục 4 làm cột schema; dùng mục 5 làm chính sách xóa; không cần quay lại hỏi domain nữa trừ khi mentor phản hồi khác với quyết định đã chốt ở đây.
