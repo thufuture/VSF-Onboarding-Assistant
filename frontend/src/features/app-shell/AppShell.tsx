@@ -2,9 +2,16 @@
 
 import {
   BookOpenText,
+  Building2,
+  Flag,
+  GitBranch,
+  History,
   LayoutDashboard,
   LifeBuoy,
+  Link2,
+  ListChecks,
   LogOut,
+  MailQuestion,
   Menu,
   MessageSquareText,
   ShieldCheck,
@@ -12,39 +19,53 @@ import {
   Moon,
   Sun,
   Users,
+  Workflow,
   X,
   type LucideIcon,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState, type ReactNode } from "react";
 
+import { PersonAvatar } from "@/components/avatar/PersonAvatar";
 import { VsfBrand } from "@/components/brand/VsfBrand";
 import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
 import { useSession } from "@/features/auth/SessionProvider";
 import { Link, usePathname } from "@/i18n/navigation";
 
 import styles from "./AppShell.module.scss";
+import { TasksSidebar } from "./TasksSidebar";
 import { useTheme } from "./useTheme";
 
 type NavItem = { key: string; icon: LucideIcon; href?: string };
 
 // Mục chưa có trang (không có `href`) hiện mờ kèm nhãn "Sắp có" thay vì liên kết chết.
 const MEMBER_NAV: NavItem[] = [
-  { key: "chat", icon: MessageSquareText, href: "/chat" },
+  { key: "roadmap", icon: MessageSquareText, href: "/chat" },
   { key: "documents", icon: BookOpenText },
   { key: "contacts", icon: Users },
   { key: "tickets", icon: LifeBuoy },
 ];
+// Đúng thứ tự nav HR trong prototype v15 (NAV.owner): Tổng quan, Nhân viên, Ticket sự cố, Phản hồi Viga,
+// Quản lý task, Tài liệu, Tạo task bằng AI, Đầu mối và đường dẫn. Chỉ mục đã có API thật mới có `href`.
 const STAFF_NAV: NavItem[] = [
   { key: "admin", icon: LayoutDashboard, href: "/admin" },
-  { key: "chat", icon: MessageSquareText, href: "/chat" },
+  { key: "employees", icon: Users, href: "/admin/employees" },
+  { key: "hrTickets", icon: Flag },
+  { key: "vigaFeedback", icon: MailQuestion },
+  { key: "taskManagement", icon: ListChecks, href: "/admin/tasks" },
+  { key: "documents", icon: BookOpenText, href: "/admin/documents" },
+  { key: "aiTasks", icon: Sparkles, href: "/admin/ai-tasks" },
+  { key: "registry", icon: Link2 },
 ];
-
-function initials(name: string): string {
-  const parts = name.trim().split(/\s+/).filter(Boolean);
-  const letters = parts.length > 1 ? [parts[0], parts[parts.length - 1]] : parts;
-  return letters.map((part) => part[0]).join("").slice(0, 2).toUpperCase();
-}
+// Đúng thứ tự nav Admin trong prototype v15 (NAV.admin): Tổng quan, Người dùng, Phòng ban, Thành viên, Lộ trình mẫu, Nhật ký.
+const ADMIN_NAV: NavItem[] = [
+  { key: "admin", icon: LayoutDashboard, href: "/admin" },
+  { key: "adminUsers", icon: Users, href: "/admin/users" },
+  { key: "adminTeams", icon: Building2, href: "/admin/teams" },
+  { key: "adminMembers", icon: Workflow, href: "/admin/members" },
+  { key: "adminTemplate", icon: GitBranch, href: "/admin/template" },
+  { key: "adminAudit", icon: History, href: "/admin/audit" },
+];
 
 /**
  * Khung của khu đã đăng nhập, theo bố cục portal của Ralion: thanh bên (logo, điều hướng theo vai trò, thẻ người dùng,
@@ -53,6 +74,7 @@ function initials(name: string): string {
 export function AppShell({ children }: { children: ReactNode }) {
   const t = useTranslations("app");
   const chatText = useTranslations("chat");
+  const brandText = useTranslations("landing.nav");
   const { user, logout } = useSession();
   const { theme, toggleTheme } = useTheme();
   const pathname = usePathname();
@@ -85,15 +107,32 @@ export function AppShell({ children }: { children: ReactNode }) {
     }
   }
 
-  const items = user.role === "USER" ? MEMBER_NAV : STAFF_NAV;
-  const onChat = pathname.startsWith("/chat");
+  const items = user.role === "USER" ? MEMBER_NAV : user.role === "ADMIN" ? ADMIN_NAV : STAFF_NAV;
+  const onChat = pathname.startsWith("/chat") && user.role !== "USER";
+  const onRoadmap = pathname.startsWith("/chat") && user.role === "USER";
   const home = user.role === "USER" ? "/chat" : "/admin";
+  const onTasksTree = user.role !== "USER" && pathname.startsWith("/admin/tasks");
+  // Mục nav khớp đường dẫn hiện tại (dài nhất trước, ví dụ /admin/documents thắng /admin) — dùng cho tiêu đề thanh trên.
+  // Quản lý task (cả khi ADMIN sửa lộ trình mẫu chung) luôn mang tiêu đề "Quản lý task" trên thanh trên.
+  const activeItem = onTasksTree
+    ? STAFF_NAV.find((i) => i.key === "taskManagement")
+    : !onChat
+    ? [...items].filter((i) => i.href).sort((a, b) => (b.href?.length ?? 0) - (a.href?.length ?? 0)).find((i) => i.href && pathname.startsWith(i.href))
+    : undefined;
 
   return (
     <div className={styles.shell} data-theme={theme}>
       <aside className={`${styles.sidebar} ${drawerOpen ? styles.sidebarOpen : ""}`} id="app-sidebar">
         <div className={styles.sidebarHead}>
-          <VsfBrand href={home} size={24} />
+          <Link aria-label={brandText("brand")} className={styles.brand} href={home}>
+            <span aria-hidden="true" className={styles.mark}>
+              V
+            </span>
+            <span aria-hidden="true" className={styles.brandText}>
+              <b>VSF Onboarding</b>
+              <small>{t("brandSub")}</small>
+            </span>
+          </Link>
           <button
             aria-label={t("closeMenu")}
             className={styles.iconButton}
@@ -105,9 +144,12 @@ export function AppShell({ children }: { children: ReactNode }) {
           </button>
         </div>
 
-        <nav aria-label={t("navigation")} className={styles.nav}>
+        {onTasksTree ? <TasksSidebar /> : null}
+        {!onTasksTree && user.role !== "USER" ? <p className={styles.roleBadge}>{t(`roles.${user.role}`)}</p> : null}
+
+        <nav aria-label={t("navigation")} className={styles.nav} hidden={onTasksTree}>
           {items.map(({ key, icon: Icon, href }) => {
-            const active = href !== undefined && pathname.startsWith(href);
+            const active = activeItem?.key === key;
             if (!href) {
               return (
                 <span aria-disabled="true" className={`${styles.navItem} ${styles.navSoon}`} key={key}>
@@ -133,9 +175,7 @@ export function AppShell({ children }: { children: ReactNode }) {
 
         <div className={styles.account}>
           <div className={styles.userCard}>
-            <span aria-hidden="true" className={styles.avatar}>
-              {initials(user.display_name)}
-            </span>
+            <PersonAvatar name={user.display_name} sizePx={36} />
             <span className={styles.userText}>
               <b>{user.display_name}</b>
               <small>{user.department ?? t(`roles.${user.role}`)}</small>
@@ -178,10 +218,15 @@ export function AppShell({ children }: { children: ReactNode }) {
                   {chatText("scope")}
                 </span>
               </>
+            ) : onRoadmap ? (
+              <b>
+                <MessageSquareText aria-hidden="true" size={18} />
+                {t("nav.roadmap")}
+              </b>
             ) : (
               <b>
-                <LayoutDashboard aria-hidden="true" size={18} />
-                {t("nav.admin")}
+                {activeItem ? <activeItem.icon aria-hidden="true" size={18} /> : <LayoutDashboard aria-hidden="true" size={18} />}
+                {t(`nav.${activeItem?.key ?? "admin"}`)}
               </b>
             )}
           </div>
@@ -202,6 +247,22 @@ export function AppShell({ children }: { children: ReactNode }) {
           </div>
         </header>
         <div className={styles.page}>{children}</div>
+        <footer className={styles.pageFoot}>
+          <div className={styles.pfLeft}>
+            <span className={styles.pfMark}>V</span>
+            <div>
+              <b>{t("footer.brand")}</b>
+              <small>{t("footer.note")}</small>
+            </div>
+          </div>
+          <nav aria-hidden="true" className={styles.pfLinks}>
+            <span>{t("footer.help")}</span>
+            <span>{t("footer.privacy")}</span>
+            <span>{t("footer.terms")}</span>
+            <span>{t("footer.contact")}</span>
+          </nav>
+          <div className={styles.pfRight}>{t("footer.copy")}</div>
+        </footer>
       </div>
     </div>
   );

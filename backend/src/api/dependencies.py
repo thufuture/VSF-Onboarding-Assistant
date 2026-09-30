@@ -5,12 +5,15 @@ from dataclasses import dataclass
 from typing import Annotated, Any
 
 from fastapi import Cookie, Depends, Request
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from src.config import Settings, get_settings
 from src.infrastructure.ai.chat_completion_port import ChatCompletionPort
 from src.infrastructure.ai.deepseek_adapter import DeepSeekChatCompletion
 from src.infrastructure.observability.langfuse_tracer import LangfuseTracer
+from src.model.enums import UserRole
+from src.model.team_member import TeamMember
 from src.model.user import User
 from src.services.auth.auth_service import load_session_user
 from src.services.auth.errors import AuthError
@@ -18,7 +21,8 @@ from src.services.auth.login_throttle import LoginThrottle
 from src.services.auth.sessions import SESSION_COOKIE_NAME, SessionError, SessionToken, read_token
 from src.services.chat.chat_throttle import ChatThrottle
 from src.services.ingest.embedding.port import EmbeddingPort
-from src.services.ingest.factory import build_embedding_port
+from src.services.ingest.factory import build_embedding_port, build_storage_port
+from src.services.ingest.storage import StoragePort
 from src.services.readiness_service import ReadinessService
 
 
@@ -88,8 +92,27 @@ def require_role(*roles: str) -> Callable[[User], Coroutine[Any, Any, User]]:
     return dependency
 
 
+async def require_team_scope(team_id: int, user: User, db: AsyncSession) -> None:
+    """Portal — plan-portal/P1/P1.md mục 3: 403 nếu `user` (role HR) không thuộc `team_id` đang truy cập.
+
+    `ADMIN` luôn qua (quản trị kỹ thuật, không giới hạn theo phòng ban). Dùng `team_members` có sẵn
+    (many-to-many, từ 0001_core) làm nguồn scope — không có cột `primary_team_id` riêng cho Portal.
+    """
+    if user.role == UserRole.ADMIN:
+        return
+    exists = await db.scalar(
+        select(TeamMember.team_id).where(TeamMember.team_id == team_id, TeamMember.user_id == user.id)
+    )
+    if exists is None:
+        raise AuthError(403, "FORBIDDEN_TEAM_SCOPE", "auth.forbidden_team_scope")
+
+
 def get_embedding_port(settings: Annotated[Settings, Depends(get_settings)]) -> EmbeddingPort:
     return build_embedding_port(settings)
+
+
+def get_storage_port(settings: Annotated[Settings, Depends(get_settings)]) -> StoragePort:
+    return build_storage_port(settings)
 
 
 def get_chat_completion_port(settings: Annotated[Settings, Depends(get_settings)]) -> ChatCompletionPort:

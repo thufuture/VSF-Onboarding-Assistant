@@ -71,14 +71,15 @@ Chốt **3 vai trò hệ thống, không hơn**: EMPLOYEE, HR, ADMIN. **MENTOR, 
 
 **Mô hình dữ liệu:** vì ràng buộc là 1 user – đúng 1 team (không phải nhiều-nhiều), dùng cột FK trực tiếp thay vì bảng join:
 
+> **Đã kiểm tra code thật (backend/src/model/), cập nhật lại:** `users.role` hiện có sẵn 3 giá trị `USER`/`HR`/`ADMIN` (Portal "EMPLOYEE" = giá trị `USER` trong DB, không thêm role mới). `teams`/`team_members` **đã tồn tại sẵn** (migration `0001_core.py`), dạng many-to-many, đang dùng cho `auth_service.department_name()`. **Không thêm cột `primary_team_id`** — Portal tái dùng thẳng `team_members`, scope kiểm bằng `EXISTS (SELECT 1 FROM team_members WHERE team_id=? AND user_id=?)`. Chi tiết kỹ thuật ở [P1/P1.md](P1/P1.md).
+
 ```
-users: id, role (EMPLOYEE|HR|ADMIN), primary_team_id (bắt buộc với HR và EMPLOYEE)
-teams: id, code, name
+users: id, role (USER|HR|ADMIN) -- đã có sẵn
+teams: id, code, name -- đã có sẵn
+team_members: team_id, user_id -- đã có sẵn, dùng làm nguồn scope, không tạo bảng/cột mới
 ```
 
-> Lưu ý cần kiểm tra trước khi code: `teams`/`team_members` có thể đã tồn tại sẵn ở chatbot với ngữ nghĩa khác (ví dụ cho phép 1 user thuộc nhiều team vì mục đích khác của chatbot). Nếu bảng đó là nhiều-nhiều, Portal **không tự ý bỏ `team_members`** — hoặc thêm ràng buộc unique riêng cho scope Portal, hoặc thêm cột `primary_team_id` mới trên `users` chỉ dùng cho Portal, tùy việc kiểm tra thực tế bảng hiện có.
-
-**Quy tắc quyền:** HR truy cập được đối tượng khi `current_hr.primary_team_id = object.team_id`. Mọi bảng nghiệp vụ cần scope đều lưu `team_id`: `journey_templates`, `employee_journeys`, `employee_tasks`, `documents`, `tickets`, `contact_channels`, `approved_links`, `content_gaps`. Dữ liệu dùng chung toàn công ty có thể để `team_id = NULL`, nhưng chỉ ADMIN hoặc quyền riêng mới được sửa.
+**Quy tắc quyền:** HR truy cập được đối tượng khi tồn tại dòng `team_members` khớp `(team_id, hr.user_id)`. Mọi bảng nghiệp vụ cần scope đều lưu `team_id`: `journey_templates`, `employee_journeys`, `employee_tasks`, `documents`, `tickets`, `contact_channels`, `approved_links`, `content_gaps`. Dữ liệu dùng chung toàn công ty có thể để `team_id = NULL`, nhưng chỉ ADMIN hoặc quyền riêng mới được sửa.
 
 **Ticket — cơ chế "Nhận xử lý" để tránh trùng:** `tickets.assigned_hr_id` (nullable). Ticket mới vào hàng đợi chung của phòng ban, mọi HR trong team đều thấy; 1 HR bấm "Nhận xử lý" → hệ thống set `assigned_hr_id`; HR khác vẫn xem được nhưng không cùng cập nhật nếu chưa được chuyển giao; khi HR nghỉ, HR khác "Nhận lại" hoặc Admin chuyển người xử lý.
 

@@ -60,7 +60,7 @@ export function LanguageSwitcher({ className = "" }: { className?: string }) {
   const currentLabel = locale === "vi" ? t("vietnamese") : t("english");
 
   return (
-    <details className={`${styles.switcher} ${className}`}>
+    <details className={`${styles.switcher} ${className}`} suppressHydrationWarning>
       <summary aria-label={`${t("language")}: ${currentLabel}`} className={styles.trigger}>
         <FlagIcon locale={locale} />
         <span className={styles.current}>{LANGUAGE_NAMES[locale]}</span>

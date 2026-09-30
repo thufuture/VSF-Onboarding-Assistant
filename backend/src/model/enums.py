@@ -16,6 +16,15 @@ class UserStatus(StrEnum):
     INACTIVE = "INACTIVE"
 
 
+class TaskGroup(StrEnum):
+    """Nhóm task hiển thị bằng màu mốc trên roadmap (v15: Hồ sơ / Đào tạo / Thiết bị / Văn phòng)."""
+
+    PROFILE = "PROFILE"
+    TRAINING = "TRAINING"
+    DEVICE = "DEVICE"
+    OFFICE = "OFFICE"
+
+
 class DocumentStatus(StrEnum):
     ACTIVE = "ACTIVE"
     ARCHIVED = "ARCHIVED"
@@ -53,6 +62,38 @@ class JobStatus(StrEnum):
     RUNNING = "RUNNING"
     SUCCEEDED = "SUCCEEDED"
     FAILED = "FAILED"
+
+
+class JourneyTemplateStatus(StrEnum):
+    DRAFT = "DRAFT"
+    PUBLISHED = "PUBLISHED"
+
+
+class EmployeeTaskStatus(StrEnum):
+    """Portal — plan-portal/P0A/P0A.md D1/D4: bỏ NOT_APPLICABLE (không lọc applies_when) và
+    WAITING_APPROVAL (không còn ai duyệt task, nhân viên tự bấm hoàn thành)."""
+
+    LOCKED = "LOCKED"
+    READY = "READY"
+    IN_PROGRESS = "IN_PROGRESS"
+    WAITING_EXTERNAL = "WAITING_EXTERNAL"
+    BLOCKED = "BLOCKED"
+    DONE = "DONE"
+    SKIPPED = "SKIPPED"
+
+
+class ReferenceStatus(StrEnum):
+    """Trạng thái duyệt cho contact_channels/approved_links (ke-hoach-portal-onboarding.md §4.3)."""
+
+    DRAFT = "DRAFT"
+    APPROVED = "APPROVED"
+
+
+class TicketStatus(StrEnum):
+    OPEN = "OPEN"
+    IN_PROGRESS = "IN_PROGRESS"
+    RESOLVED = "RESOLVED"
+    CLOSED = "CLOSED"
 
 
 def check_in(column: str, enum: type[StrEnum], name: str | None = None) -> CheckConstraint:

@@ -1,9 +1,14 @@
 # Runtime. Khoảng phiên bản có cận trên; khóa phiên bản cụ thể cho image ở Phase 1b.
 fastapi>=0.115,<1.0
 uvicorn[standard]>=0.34,<1.0
+# Cần cho FastAPI đọc multipart/form-data (upload file qua Portal — File()/Form()).
+python-multipart>=0.0.20,<1.0
 pydantic>=2.10,<3
 pydantic-settings>=2.7,<3
 sqlalchemy>=2.0.36,<3
+# SQLAlchemy asyncio cần greenlet; trước đây được kéo vào gián tiếp qua resolver, khai rõ để build image
+# không phụ thuộc vào việc gói khác có kéo theo greenlet hay không (đã gặp lỗi thiếu khi build lại image).
+greenlet>=3.0,<4
 asyncpg>=0.30,<1
 alembic>=1.14,<2
 # zoneinfo trên Windows/slim không có dữ liệu múi giờ; cần cho APP_TIMEZONE (Asia/Ho_Chi_Minh).

@@ -1,7 +1,7 @@
 @use "../../styles/tokens" as *;
 
 // Khung khu đã đăng nhập. Bộ biến màu dưới đây dùng chung cho mọi trang trong khung (chat, admin) và đổi theo data-theme.
-$sidebar-width: 268px;
+$sidebar-width: 248px;
 
 .shell {
   --app-bg: #f3f7fc;
@@ -60,14 +60,10 @@ $sidebar-width: 268px;
   height: 100dvh;
   flex: none;
   flex-direction: column;
-  gap: 8px;
-  padding: 18px 14px 16px;
+  gap: 4px;
+  padding: 14px 12px;
   border-right: 1px solid var(--app-border);
   background: var(--app-surface);
-
-  // Logo dùng chữ "Assistant" theo màu chữ của khung (sáng/tối).
-  --vsf-brand-accent: var(--app-ink);
-  --vsf-brand-primary: var(--app-accent-strong);
   color: var(--app-ink);
 
   @include tablet-down {
@@ -93,9 +89,10 @@ $sidebar-width: 268px;
 
 .sidebarHead {
   display: flex;
+  flex: none;
   align-items: center;
   justify-content: space-between;
-  padding: 2px 6px 14px;
+  padding: 2px 6px 12px;
 
   [data-mobile-only] {
     display: none;
@@ -106,22 +103,82 @@ $sidebar-width: 268px;
   }
 }
 
+.brand {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 10px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.mark {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  flex: none;
+  place-items: center;
+  border-radius: 5px;
+  background: var(--app-user-bubble);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.brandText {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  line-height: 1.25;
+
+  b {
+    overflow: hidden;
+    font-size: 14px;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  small {
+    color: var(--app-ink-3);
+    font-size: 11px;
+  }
+}
+
+.roleBadge {
+  flex: none;
+  margin: 0 6px 8px;
+  color: var(--app-ink-3);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
 .nav {
   display: flex;
+  min-height: 0;
+  flex: 1;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
+  overflow-y: auto;
+}
+
+.nav[hidden] {
+  display: none;
 }
 
 .navItem {
   display: flex;
-  min-height: 42px;
+  min-height: 34px;
+  flex: none;
   align-items: center;
-  gap: 12px;
-  padding: 0 12px;
-  border-radius: 10px;
+  gap: 10px;
+  padding: 0 10px;
+  border-radius: 5px;
   color: var(--app-ink-2);
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 13px;
+  font-weight: 500;
   text-decoration: none;
 
   > span {
@@ -133,11 +190,11 @@ $sidebar-width: 268px;
   }
 
   small {
-    padding: 2px 8px;
+    padding: 1px 7px;
     border-radius: 999px;
     background: var(--app-surface-2);
     color: var(--app-ink-3);
-    font-size: 11px;
+    font-size: 10.5px;
     font-weight: 600;
     white-space: nowrap;
   }
@@ -169,6 +226,7 @@ a.navActive:hover {
 // ── Thẻ người dùng và đăng xuất ──
 .account {
   display: flex;
+  flex: none;
   flex-direction: column;
   gap: 10px;
   margin-top: auto;
@@ -182,19 +240,6 @@ a.navActive:hover {
   align-items: center;
   gap: 10px;
   padding: 4px 6px;
-}
-
-.avatar {
-  display: grid;
-  width: 38px;
-  height: 38px;
-  flex: none;
-  place-items: center;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #ef4b55, #b3141f);
-  color: #fff;
-  font-size: 13px;
-  font-weight: 700;
 }
 
 .userText {
@@ -366,4 +411,65 @@ a.navActive:hover {
   flex: 1;
   flex-direction: column;
   overflow-y: auto;
+}
+
+// Chân trang cố định như v15 (.pagefoot): logo nhỏ, ghi chú, liên kết tĩnh, bản quyền.
+.pageFoot {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 8px 24px;
+  border-top: 1px solid var(--app-border);
+  background: var(--app-surface);
+
+  @include phone-down {
+    display: none;
+  }
+}
+
+.pfLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+
+  b {
+    display: block;
+    font-size: 13px;
+    color: var(--app-ink);
+  }
+  small {
+    display: block;
+    color: var(--app-ink-3);
+    font-size: 11.5px;
+  }
+}
+
+.pfMark {
+  display: grid;
+  width: 24px;
+  height: 24px;
+  flex: none;
+  place-items: center;
+  border-radius: 5px;
+  background: var(--app-user-bubble);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.pfLinks {
+  display: flex;
+  gap: 24px;
+  color: var(--app-ink-2);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.pfRight {
+  color: var(--app-ink-3);
+  font-size: 12px;
+  white-space: nowrap;
 }

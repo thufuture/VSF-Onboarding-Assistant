@@ -1,7 +1,7 @@
 {
   "metadata": {
     "title": "VSF Onboarding Assistant",
-    "description": "Onboarding assistant for new hires: answers from approved documents, with cited sources."
+    "description": "VSF Onboarding Portal: a roadmap of tasks for new hires, sourced documents and processes, and Viga to help when you're stuck."
   },
   "landing": {
     "skipLink": "Skip to content",
@@ -15,60 +15,60 @@
     },
     "hero": {
       "line1": "New to the company,",
-      "line2": "just ask and know the next step",
-      "description": "The assistant answers from approved documents and points you to the right process and contact. When something has no source, it says so instead of guessing.",
+      "line2": "get a roadmap, know what's next",
+      "description": "VSF Onboarding Portal gives you a roadmap of tasks in the right order, sourced guidance for each one, and Viga alongside you when you're stuck.",
       "primary": "Start asking",
       "secondary": "See how it works",
       "checkSources": "Answers come with sources",
-      "checkProcess": "Right process, contact and form",
+      "checkProcess": "Roadmap, tasks and tickets being built",
       "photoAlt": "Vincom Center Dong Khoi building seen from the park, Ho Chi Minh City"
     },
     "services": {
       "chat": {
-        "title": "Sourced answers",
+        "title": "Ask Viga, with sources",
         "sub": "With quotes from the exact passage"
       },
       "process": {
-        "title": "Step-by-step processes",
-        "sub": "With approved links, contacts and forms"
+        "title": "Onboarding roadmap",
+        "sub": "Being built — right order, mark done yourself"
       },
       "clarify": {
-        "title": "Asks when details are missing",
-        "sub": "Never guesses your unit or role"
+        "title": "Ask Viga when stuck",
+        "sub": "Being built — Viga knows which task you're on"
       },
       "ticket": {
-        "title": "Internal tickets",
-        "sub": "Drafts only, sent when you confirm"
+        "title": "Tickets when you need help",
+        "sub": "Being built — only sent when you confirm"
       }
     },
     "intro": {
-      "heading": "One place to ask when you are new here.",
-      "text": "The assistant brings approved documents, processes and contacts into a single place to ask: sourced, using the version in force, and honest when there is no basis."
+      "heading": "One place to know what to do when you're new here.",
+      "text": "The Portal brings the onboarding roadmap, approved documents and contacts into one place: tasks in the right order, sourced answers, and Viga saying so honestly when there is no basis instead of guessing."
     },
     "features": {
       "chat": {
-        "label": "Sourced answers",
-        "sub": "You ask, it answers from the documents",
+        "label": "Ask Viga, with sources",
+        "sub": "You ask, Viga answers from the documents",
         "titleStart": "Answers cite",
         "titleAccent": "real documents",
         "titleEnd": "in force on the day you ask.",
-        "body": "Ask about house rules, leave, benefits or security. The assistant only uses approved documents that are in force and answers with verbatim quotes so you can check for yourself. With no basis, it says so."
+        "body": "Ask about house rules, leave, benefits or security. Viga only uses approved documents that are in force and answers with verbatim quotes so you can check for yourself. With no basis, Viga says so."
       },
       "process": {
-        "label": "Processes and contacts",
-        "sub": "Step by step, right person, right form",
-        "titleStart": "Points you to the right",
-        "titleAccent": "process",
-        "titleEnd": "with approved links and contacts.",
-        "body": "For things you need to do, such as installing software, requesting access or registering a parking card, the assistant lists the steps from the owning team's process. Links, contacts and forms come from the approved catalogue, never invented by the assistant."
+        "label": "Onboarding roadmap",
+        "sub": "Being built alongside the Portal",
+        "titleStart": "Coming soon: tasks in the",
+        "titleAccent": "right order",
+        "titleEnd": ", marked done yourself.",
+        "body": "Each task in the roadmap has clear guidance, with contacts and related documents; mark it \"Done\" yourself when finished, and dependent tasks unlock automatically. No heavy approval process. This feature is being built alongside the VSF Onboarding Portal."
       },
       "ticket": {
-        "label": "Follow-up and tickets",
-        "sub": "You confirm before anything is sent",
-        "titleStart": "Missing details? It",
-        "titleAccent": "asks back",
-        "titleEnd": ", and drafts a ticket when action is needed.",
-        "body": "When the answer depends on your unit or role, the assistant asks instead of guessing. If another team must act, it drafts a ticket from the form; the ticket is sent only after you confirm."
+        "label": "Viga and tickets",
+        "sub": "Being built alongside the Portal",
+        "titleStart": "Coming soon: stuck? Just",
+        "titleAccent": "ask Viga",
+        "titleEnd": ", open a ticket if you need help.",
+        "body": "When you're stuck on a task in the roadmap, ask Viga right there in context. If Viga has no basis, it says so and offers to open a ticket to HR — only after you confirm. This feature is being built."
       }
     },
     "mock": {
@@ -78,7 +78,7 @@
         "badge": "Approved documents",
         "label": "SOURCED Q&A",
         "question": "How many days of annual leave do permanent employees get?",
-        "assistant": "Assistant",
+        "assistant": "Viga",
         "answer": "Permanent employees get 12 days of annual leave, according to the 2024 annual leave policy.",
         "cite": "Annual leave policy (2024)",
         "sources": "1 source checked and in force",
@@ -130,25 +130,25 @@
       }
     },
     "roles": {
-      "lead": "For everyone who shapes the onboarding experience.",
+      "lead": "For everyone who builds the VSF Onboarding Portal.",
       "flow": "From approved documents to answers for newcomers",
       "asker": {
         "tag": "01 · Q&A",
         "title": "New employee",
-        "body": "Ask in everyday language, get sourced answers, follow processes step by step and open a ticket when needed.",
+        "body": "Ask Viga in everyday language, get sourced answers. A day-by-day roadmap you mark done yourself, plus a ticket when you're stuck, is being built into the Portal.",
         "cta": "Sign in to ask"
       },
       "hr": {
         "tag": "02 · Content",
         "title": "HR",
-        "body": "Upload documents and approve new versions, review differences between versions, manage processes, links and contacts, and track questions with no document yet.",
+        "body": "Upload documents and approve new versions, manage contacts and links, and track questions Viga couldn't answer. Authoring the onboarding roadmap, tasks per team and handling tickets is being built into the Portal.",
         "cta": "Sign in to manage"
       },
       "team": {
-        "tag": "03 · Handling",
-        "title": "Ticket-handling teams",
-        "body": "Receive tickets the user has confirmed, see all details from the form and update the handling status.",
-        "cta": "Sign in to handle"
+        "tag": "03 · Roadmap",
+        "title": "Onboarding Portal",
+        "body": "A day-by-day roadmap with clear prerequisites, ask Viga right inside each task, and open a ticket when stuck — being built on top of this Q&A assistant.",
+        "cta": "Sign in to preview"
       },
       "admin": {
         "tag": "04 · System",
@@ -200,7 +200,7 @@
       "button": "Sign in"
     },
     "footer": {
-      "tagline": "Onboarding assistant for new hires. Internship demo, not an official product.",
+      "tagline": "VSF Onboarding Portal: a task roadmap and the Viga assistant for new hires. Internship demo, not an official product.",
       "email": "onboarding@vsf-demo.example",
       "aboutTitle": "About",
       "how": "How it works",
@@ -237,19 +237,19 @@
       "unavailable": "Sign-in is unavailable right now. Please try again later.",
       "inactive": "This account is locked. Please contact HR or Admin."
     },
-    "welcomeLine1": "Just ask and know the next step.",
+    "welcomeLine1": "Get a roadmap, don't lose your way.",
     "welcomeLine2": "Start with confidence.",
-    "welcomeDescription": "The assistant answers from approved documents, points you to the right process and contact, and says so when it has no basis.",
+    "welcomeDescription": "VSF Onboarding Portal gives you a roadmap of tasks, sourced documents and processes, and Viga to help when you're stuck.",
     "benefits": {
       "sources": "Answers come with cited sources",
-      "approved": "Approved processes, links and contacts",
+      "approved": "Only uses documents that are approved and in force",
       "noGuess": "It never guesses your personal data"
     },
     "firstTime": "Signing in for the first time?",
     "support": "Support",
     "showPassword": "Show password",
     "hidePassword": "Hide password",
-    "quote": "“Where there is no source, the assistant says so.”"
+    "quote": "“No source, no guess.”"
   },
   "common": {
     "language": "Language",
@@ -262,6 +262,7 @@
       "HR": "HR",
       "ADMIN": "Administrator"
     },
+    "brandSub": "New joiner portal",
     "signOut": "Sign out",
     "signingOut": "Signing out…",
     "signOutFailed": "Could not sign out right now. Please try again.",
@@ -272,11 +273,32 @@
     "darkMode": "Switch to dark theme",
     "nav": {
       "chat": "Q&A assistant",
+      "roadmap": "My roadmap",
       "documents": "Documents",
       "contacts": "Contacts",
       "tickets": "Support requests",
-      "admin": "Admin area",
-      "soon": "Soon"
+      "admin": "Overview",
+      "employees": "Employees",
+      "hrTickets": "Incident tickets",
+      "vigaFeedback": "Viga feedback",
+      "taskManagement": "Task management",
+      "aiTasks": "Create tasks with AI",
+      "registry": "Contacts and links",
+      "soon": "Soon",
+      "adminUsers": "Users",
+      "adminTeams": "Departments",
+      "adminMembers": "Members",
+      "adminTemplate": "Shared journey",
+      "adminAudit": "Audit log"
+    },
+    "footer": {
+      "brand": "VSF Onboarding Portal",
+      "note": "Content is shown to employees only after it is approved and published.",
+      "help": "Help",
+      "privacy": "Privacy policy",
+      "terms": "Terms of use",
+      "contact": "Contact IT",
+      "copy": "© 2026 VSF · v4.1"
     }
   },
   "chat": {
@@ -336,5 +358,621 @@
       "tickets": "Support requests from new joiners"
     },
     "openChat": "Open chat"
+  },
+  "portalTasks": {
+    "title": "Manage onboarding journey",
+    "description": "Create stages, add tasks and manage each task right on the roadmap.",
+    "defaultTemplateTitle": "Onboarding journey",
+    "createWithAi": "Create with AI",
+    "addStageShort": "Add stage",
+    "addStage": "Add stage",
+    "addTask": "Add task",
+    "loading": "Loading…",
+    "noStagesTitle": "No stages yet",
+    "noStages": "Create the first stage to start adding tasks.",
+    "emptyTitle": "No tasks",
+    "emptyTasks": "No tasks in this stage yet.",
+    "taskCount": "{count} tasks",
+    "taskNo": "Task {n}",
+    "prereq": "{count} prerequisites",
+    "statusPublished": "Published",
+    "statusDraft": "Draft",
+    "required": "Required",
+    "optional": "Optional",
+    "start": "Start",
+    "viewTask": "View content",
+    "finish": "Done",
+    "view": {
+      "stage": "Stage",
+      "completion": "Completion",
+      "kind": "Type",
+      "prereq": "Prerequisites",
+      "none": "None",
+      "steps": "Steps"
+    },
+    "edit": "Edit",
+    "duplicate": "Duplicate",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "editTitle": "Edit task",
+    "copySuffix": "(copy)",
+    "deleteConfirmTitle": "Delete task “{title}”?",
+    "deleteConfirmBody": "The task will be removed from the journey. Tasks that depend on it lose that prerequisite. This cannot be undone.",
+    "searchPlaceholder": "Search tasks in {stage}…",
+    "backToOverview": "HR overview",
+    "sideTitle": "Onboarding journey",
+    "sideHint": "Pick a stage to manage tasks",
+    "sideCount": "{total} tasks · {published} published",
+    "sideAdd": "Add a day or stage",
+    "kpi": {
+      "total": "Total tasks",
+      "totalSub": "In the current journey",
+      "draft": "Draft",
+      "draftSub": "Not shown to employees yet",
+      "published": "Published",
+      "publishedSub": "Shown to employees",
+      "missing": "Needs attention",
+      "missingSub": "Tasks missing instructions"
+    },
+    "legend": {
+      "title": "Milestone color by task group"
+    },
+    "form": {
+      "title": "Task title",
+      "body": "Instructions",
+      "required": "Required",
+      "submit": "Create task",
+      "save": "Save",
+      "stageTitle": "Stage title",
+      "createStage": "Create stage",
+      "saveDraft": "Save to draft",
+      "order": "Order in stage (1 to {max})",
+      "day": "Day / stage",
+      "completion": "How completion is confirmed",
+      "selfConfirm": "Self-complete",
+      "requiredLong": "Required, counts toward progress",
+      "why": "Why do it",
+      "done": "Completion condition",
+      "steps": "Steps (one per line)",
+      "prereqHint": "Pick the tasks that must be done before this one.",
+      "linksTitle": "Contacts and links",
+      "linksSoon": "Available once Contacts and links is built.",
+      "stageHint": "Create an empty stage, then add tasks manually or with AI.",
+      "stageNumber": "Day number",
+      "dayWord": "Day",
+      "group": "Task group (milestone color)"
+    },
+    "notice": {
+      "created": "Task created.",
+      "updated": "Changes saved.",
+      "deleted": "Task deleted.",
+      "duplicated": "Task duplicated.",
+      "stageCreated": "Stage created.",
+      "published": "Journey published."
+    },
+    "errors": {
+      "unauthorized": "Please sign in again.",
+      "forbidden": "You do not have permission for this action.",
+      "unavailable": "Something went wrong, try again later.",
+      "network": "Could not reach the server.",
+      "published": "The journey is published, so it cannot be edited.",
+      "empty": "Add at least one task before publishing.",
+      "cycle": "Prerequisites form a loop or point to the task itself.",
+      "stageOutOfTemplate": "You can only move to a stage of the same journey."
+    },
+    "close": "Close",
+    "closeButton": "Close",
+    "publish": "Publish",
+    "publishedReadonly": "Journey is published — view only",
+    "tabs": {
+      "info": "Info",
+      "guide": "Instructions",
+      "prereq": "Prerequisites",
+      "links": "Contacts and resources"
+    },
+    "deleteConfirmButton": "Delete task",
+    "duplicateConfirmTitle": "Duplicate task “{title}”?",
+    "duplicateConfirmBody": "Creates a copy right after this task in the same stage, keeping its content and prerequisites.",
+    "duplicateConfirmButton": "Duplicate",
+    "publishConfirmTitle": "Publish journey “{title}”?",
+    "publishConfirmBody": "Once published, employees in the team will see this journey and tasks can no longer be edited.",
+    "publishConfirmButton": "Publish",
+    "backToTemplate": "Shared journey",
+    "group": {
+      "PROFILE": "Documents",
+      "TRAINING": "Training",
+      "DEVICE": "Devices",
+      "OFFICE": "Office",
+      "none": "No group"
+    }
+  },
+  "portalEmployees": {
+    "viewTask": "View task",
+    "nudge": "Nudge",
+    "soon": "Coming soon",
+    "count": "{count} employees",
+    "title": "Employees",
+    "description": "All employees you're responsible for and their onboarding progress.",
+    "searchPlaceholder": "Search employees…",
+    "loading": "Loading…",
+    "empty": "No matching employees.",
+    "noCurrentTask": "Journey not started",
+    "filters": {
+      "all": "All",
+      "attn": "Needs attention",
+      "wait": "Waiting",
+      "ok": "Normal"
+    },
+    "table": {
+      "employee": "Employee",
+      "stage": "Stage",
+      "progress": "Progress",
+      "currentTask": "Current task",
+      "status": "Status"
+    },
+    "status": {
+      "NOT_STARTED": "Not started",
+      "DONE": "Done",
+      "READY": "In progress",
+      "IN_PROGRESS": "In progress",
+      "WAITING_EXTERNAL": "Waiting externally",
+      "BLOCKED": "Blocked"
+    },
+    "errors": {
+      "unauthorized": "Please sign in again.",
+      "forbidden": "You do not have permission for this action.",
+      "unavailable": "Something went wrong, try again later.",
+      "network": "Could not reach the server."
+    }
+  },
+  "hrDashboard": {
+    "greeting": "Hello, {name}",
+    "description": "No onboarding journey yet — start in Create tasks with AI.",
+    "journeyHint": "The onboarding journey is being built.",
+    "kpi": {
+      "templates": "Journeys",
+      "templatesSub": "Currently set up",
+      "stages": "Stages",
+      "stagesSub": "In the journey",
+      "tasks": "Tasks in journeys",
+      "tasksSub": "Visible to employees",
+      "documents": "Documents",
+      "documentsSub": "Ingested"
+    },
+    "actions": {
+      "documents": {
+        "title": "Upload documents"
+      },
+      "aiTasks": {
+        "title": "Add task"
+      }
+    },
+    "errors": {
+      "unauthorized": "Please sign in again.",
+      "forbidden": "You do not have permission for this action.",
+      "unavailable": "Something went wrong, try again later.",
+      "network": "Could not reach the server."
+    }
+  },
+  "portalRoadmap": {
+    "loading": "Loading roadmap…",
+    "greeting": "{name}'s tasks, in the right order.",
+    "taskOrdinal": "Task {n}",
+    "status": {
+      "DONE": "Done",
+      "READY": "Ready",
+      "IN_PROGRESS": "In progress",
+      "WAITING_EXTERNAL": "Waiting",
+      "LOCKED": "Locked",
+      "BLOCKED": "Overdue",
+      "SKIPPED": "Skipped"
+    },
+    "markDone": "Mark as done",
+    "completing": "Saving…",
+    "lockedHint": "This task is locked — finish the previous task to unlock it.",
+    "doneHint": "You already completed this task.",
+    "close": "Close",
+    "errors": {
+      "unauthorized": "Please sign in again.",
+      "forbidden": "You do not have permission for this action.",
+      "unavailable": "Something went wrong, try again later.",
+      "network": "Could not reach the server."
+    }
+  },
+  "portalDocuments": {
+    "title": "Source documents",
+    "description": "Manage original files, parsed content and ingest status.",
+    "addDocument": "Add document",
+    "loading": "Loading…",
+    "empty": "No documents yet.",
+    "viewOriginal": "View original file",
+    "archive": "Stop using",
+    "reactivate": "Reactivate",
+    "sectionCount": "{count} sections",
+    "searchPlaceholder": "Search by document title…",
+    "filterAllStatus": "All statuses",
+    "filterAllCategory": "All groups",
+    "pagerLabel": "Showing {from}-{to} of {total}",
+    "kpi": {
+      "total": "Total documents",
+      "ready": "Ready",
+      "pending": "Needs review",
+      "sections": "Total sections",
+      "used": "In use"
+    },
+    "table": {
+      "document": "Document",
+      "category": "Group",
+      "sections": "Content processing",
+      "status": "Status",
+      "updated": "Updated",
+      "tasks": "Used by tasks"
+    },
+    "status": {
+      "ACTIVE": "Ready",
+      "ARCHIVED": "Archived"
+    },
+    "upload": {
+      "file": "Choose a file (.docx, .pdf, .md)",
+      "title": "Upload document",
+      "category": "Category",
+      "sourceKey": "Source key",
+      "version": "Version label",
+      "effectiveFrom": "Effective from",
+      "submit": "Upload",
+      "success": "Ingested — {sections} sections, {chunks} chunks.",
+      "name": "Document name",
+      "drop": "Drag and drop or click to choose a file",
+      "dropHint": "docx, pdf, md, txt · up to 20 MB"
+    },
+    "errors": {
+      "unauthorized": "Please sign in again.",
+      "forbidden": "You don't have permission for this action.",
+      "unavailable": "Something went wrong, try again later.",
+      "network": "Could not reach the server.",
+      "ingestFailed": "Could not read this file (wrong format or too short).",
+      "categoryNotFound": "Document group does not exist."
+    },
+    "close": "Close",
+    "closeButton": "Close",
+    "cancel": "Cancel",
+    "save": "Save",
+    "view": "View content",
+    "edit": "Edit details",
+    "newVersion": "Upload new version",
+    "editTitle": "Edit document",
+    "viewFailed": "Could not load the document content.",
+    "toc": "Contents",
+    "archiveConfirmTitle": "Stop using document “{title}”?",
+    "archiveConfirmBody": "The document becomes Archived (not deleted): it is no longer used for AI task proposals but keeps its content and history. You can reactivate it any time.",
+    "archiveConfirmButton": "Stop using",
+    "reactivateConfirmTitle": "Reactivate document “{title}”?",
+    "reactivateConfirmBody": "The document goes back to Ready and can be used for AI task proposals.",
+    "reactivateConfirmButton": "Reactivate",
+    "notice": {
+      "updated": "Document details saved.",
+      "archived": "Document is no longer in use.",
+      "reactivated": "Document reactivated."
+    },
+    "parsedIngested": "Parsed · Ingested",
+    "noTasks": "No tasks yet",
+    "moreTasks": "+{count} tasks",
+    "filter": {
+      "status": "Status",
+      "statusAllHint": "Show everything",
+      "activeHint": "Parsed and ingested",
+      "archivedHint": "No longer in use",
+      "usage": "Usage",
+      "usageAll": "All sources",
+      "usageAllHint": "With and without tasks",
+      "usageUsed": "In use",
+      "usageUsedHint": "Linked to tasks",
+      "usageUnused": "Not linked",
+      "usageUnusedHint": "No task uses it",
+      "category": "Category"
+    }
+  },
+  "portalHr": {
+    "title": "Create tasks with AI",
+    "description": "Pick a document and target stage; AI proposes tasks linked to the exact source passage.",
+    "safeBadge": "AI never auto-publishes",
+    "sectionCount": "{count} sections",
+    "steps": {
+      "step1": "Pick source and target",
+      "step2": "AI builds the roadmap",
+      "step3": "HR accepts",
+      "step4": "Add to task management"
+    },
+    "template": {
+      "code": "Journey code",
+      "title": "Journey title"
+    },
+    "stage": {
+      "heading": "Target stage",
+      "hint": "Pick an existing stage or create one",
+      "title": "Stage title",
+      "create": "Create stage",
+      "addNew": "Create a new day or stage",
+      "addNewHint": "Use this when the journey needs another stage"
+    },
+    "document": {
+      "heading": "Source document",
+      "selectedCount": "{count} document selected",
+      "pick": "Pick a document",
+      "remove": "Remove",
+      "empty": "No document selected",
+      "loading": "Loading list…",
+      "noneAvailable": "No documents yet — upload one in Documents first.",
+      "collapse": "Collapse",
+      "pickerTitle": "Pick ready documents",
+      "pickerHint": "You can pick several sources for one analysis",
+      "pickedBadge": "{count} picked",
+      "searchPlaceholder": "Search by name, group or owner…",
+      "pickedFoot": "{count} documents picked",
+      "done": "Done picking"
+    },
+    "audience": {
+      "label": "Applies to",
+      "fallback": "No department assigned",
+      "sub": "Based on your department"
+    },
+    "run": {
+      "needDoc": "Pick at least one document",
+      "needStage": "Pick a target stage",
+      "loading": "Working…",
+      "submit": "AI propose tasks",
+      "footnote": "AI proposes tasks into the chosen stage; HR accepts each one.",
+      "submitCount": "Analyze {count} documents and propose a roadmap"
+    },
+    "propose": {
+      "heading": "AI task proposals",
+      "hint": "Calls the real language model — each click costs a small fee.",
+      "empty": "No proposal had enough basis to show.",
+      "confidence": "Confidence",
+      "sources": "Cited sources",
+      "accept": "Accept, create task",
+      "accepted": "Created task #{id} in the stage."
+    },
+    "errors": {
+      "unauthorized": "Please sign in again.",
+      "forbidden": "You don't have permission for this action.",
+      "unavailable": "Something went wrong, try again later.",
+      "network": "Could not reach the server."
+    }
+  },
+  "portalAdmin": {
+    "common": {
+      "loading": "Loading…",
+      "empty": "No data yet.",
+      "close": "Close",
+      "cancel": "Cancel",
+      "save": "Save",
+      "count": "{count} items"
+    },
+    "roles": {
+      "all": "All",
+      "USER": "Employee",
+      "HR": "HR",
+      "ADMIN": "Admin"
+    },
+    "errors": {
+      "unauthorized": "Please sign in again.",
+      "forbidden": "You are not allowed to do this.",
+      "unavailable": "Something went wrong, try again later.",
+      "network": "Cannot reach the server.",
+      "USER_NOT_FOUND": "User not found.",
+      "EMAIL_TAKEN": "This email already has an account.",
+      "CANNOT_DEMOTE_SELF": "You cannot lower your own role.",
+      "CANNOT_LOCK_SELF": "You cannot lock your own account.",
+      "TEAM_NOT_FOUND": "Department not found.",
+      "NOT_AN_HR_USER": "The selected person is not an HR user.",
+      "TEAM_CODE_TAKEN": "This department code already exists.",
+      "ADMIN_HAS_NO_TEAM": "Admin accounts do not belong to a department.",
+      "ALREADY_MEMBER": "This person is already in the department.",
+      "MEMBERSHIP_NOT_FOUND": "Membership not found.",
+      "NO_SHARED_TEMPLATE": "There is no published shared journey to copy yet.",
+      "TEAM_ALREADY_HAS_JOURNEY": "This department already has a journey."
+    },
+    "dashboard": {
+      "title": "System administration",
+      "description": "Departments, accounts and members. Journey content is managed by each department's HR.",
+      "byTeam": "New hires by department",
+      "byTeamSub": "New hires in each active department",
+      "recent": "Recent activity",
+      "viewAudit": "View audit log",
+      "kpi": {
+        "teams": "Departments",
+        "teamsSub": "{count} archived",
+        "hr": "HR",
+        "hrSub": "owning departments",
+        "employees": "New hires",
+        "employeesNoTeam": "{count} not in a department",
+        "employeesAllInTeam": "all assigned to a department",
+        "attention": "Needs attention",
+        "attentionSub": "{locked} locked accounts · {noTeam} without a department"
+      }
+    },
+    "users": {
+      "title": "Users",
+      "description": "Accounts and system roles (Admin, HR, Employee). Department membership is managed under Members.",
+      "add": "Add user",
+      "search": "Search by name or email…",
+      "empty": "No matching users.",
+      "noTeam": "Unassigned",
+      "active": "Active",
+      "inactive": "Locked",
+      "neverLoggedIn": "Never signed in",
+      "edit": "Edit",
+      "resetPassword": "Reset password",
+      "lock": "Lock account",
+      "unlock": "Unlock",
+      "editTitle": "Edit user",
+      "saved": "User saved.",
+      "locked": "Account locked.",
+      "unlocked": "Account unlocked.",
+      "table": {
+        "user": "User",
+        "role": "System role",
+        "team": "Department",
+        "status": "Status",
+        "lastLogin": "Last sign-in"
+      },
+      "form": {
+        "name": "Full name",
+        "email": "Email",
+        "role": "System role",
+        "team": "Department (optional)",
+        "noTeam": "Unassigned",
+        "tempHint": "A temporary password is created on save; the user must change it at first sign-in."
+      },
+      "resetTitle": "Reset {name}'s password?",
+      "resetBody": "A new temporary password is generated for {name} and shown once so you can pass it on.",
+      "resetWarning": "The old password and all current sessions stop working immediately.",
+      "resetConfirm": "Reset password",
+      "lockTitle": "Lock {name}'s account?",
+      "lockBody": "{name} will be signed out and cannot sign in until you unlock the account. Data and journey are kept.",
+      "unlockTitle": "Unlock {name}'s account?",
+      "unlockBody": "{name} can sign in again.",
+      "secretTitle": "Temporary password for {name}",
+      "secretLabel": "Temporary password:",
+      "secretHint": "Shown once and not stored in readable form. The user must change it at first sign-in."
+    },
+    "teams": {
+      "title": "Departments",
+      "description": "Each department has its own HR owner, new hires and journey. HR only sees the departments they own.",
+      "add": "Create department",
+      "search": "Search department name or code…",
+      "empty": "No matching departments.",
+      "active": "Active",
+      "archived": "Archived",
+      "noHr": "No HR yet",
+      "noJourney": "No journey yet",
+      "memberCount": "{employees} new hires · {hr} HR",
+      "detail": "Details and members",
+      "edit": "Edit",
+      "archive": "Archive",
+      "restore": "Restore",
+      "editTitle": "Edit department",
+      "saved": "Department saved.",
+      "created": "Department created.",
+      "filter": {
+        "all": "All",
+        "ACTIVE": "Active",
+        "ARCHIVED": "Archived"
+      },
+      "table": {
+        "team": "Department",
+        "status": "Status",
+        "hr": "HR owner",
+        "members": "Members",
+        "journey": "Journey"
+      },
+      "journeyStatus": {
+        "DRAFT": "draft",
+        "PUBLISHED": "published"
+      },
+      "form": {
+        "name": "Department name",
+        "code": "Code (uppercase)",
+        "hr": "Primary HR owner",
+        "noHr": "Not selected",
+        "copyShared": "Create the department's journey by copying the shared journey. The department's HR edits this copy."
+      },
+      "archiveTitle": "Archive department “{name}”?",
+      "archiveBody": "The department becomes Archived (not deleted): members lose department access but data is kept. You can restore it any time.",
+      "archiveWarning": "Access for every member of this department will be closed.",
+      "restoreTitle": "Restore department “{name}”?",
+      "restoreBody": "The department is active again and members regain access.",
+      "archivedDone": "Department archived.",
+      "restoredDone": "Department restored.",
+      "copyTitle": "Create a journey for “{name}”?",
+      "copyBody": "Copies the shared journey (stages, tasks, prerequisites) into a separate draft for “{name}”. The department's HR edits and publishes the copy; the shared journey is not affected.",
+      "copyConfirm": "Create copy from shared journey",
+      "copiedDone": "Journey copy created for the department.",
+      "detailSub": "Code {code} · created {date} · {state}"
+    },
+    "members": {
+      "title": "Members",
+      "pageTitle": "Department members",
+      "description": "Assign users to departments. Department role follows the system role (HR owner or new hire). Access closes when the account is locked or the department is archived.",
+      "search": "Search person or department…",
+      "empty": "No matching members.",
+      "add": "Add member",
+      "assign": "Assign",
+      "assignTitle": "Assign to department",
+      "user": "User",
+      "pickUser": "Choose a user…",
+      "roleHint": "The department role follows the user's system role.",
+      "remove": "Remove from department",
+      "removeTitle": "Remove {user} from the department?",
+      "removeBody": "{user} will no longer belong to “{team}” and loses access to this department's data. The account is kept.",
+      "removedDone": "Removed from department.",
+      "addedDone": "Assigned to department.",
+      "table": {
+        "team": "Department",
+        "teamRole": "Department role",
+        "access": "Access",
+        "joined": "Joined"
+      },
+      "teamRole": {
+        "HR": "HR owner",
+        "EMPLOYEE": "New hire"
+      },
+      "access": {
+        "ACTIVE": "Active",
+        "BLOCKED_USER": "Account locked",
+        "BLOCKED_TEAM": "Department archived"
+      }
+    },
+    "template": {
+      "title": "Shared journey",
+      "description": "The company's master copy. When a department is created the journey is copied for it; the department's HR only edits their own copy.",
+      "edit": "Edit shared journey",
+      "byTeam": "Journey by department",
+      "usingCopy": "Using its own copy",
+      "kpi": {
+        "shared": "Shared journey",
+        "noShared": "No published version yet",
+        "tasks": "Tasks",
+        "tasksSub": "in the shared journey",
+        "teams": "Departments with a copy",
+        "teamsSub": "of {total} active"
+      }
+    },
+    "audit": {
+      "title": "Audit log",
+      "description": "Who did what and when — recorded from real admin actions.",
+      "empty": "No activity yet.",
+      "system": "System",
+      "table": {
+        "time": "Time",
+        "actor": "Actor",
+        "action": "Action",
+        "target": "Target"
+      },
+      "actions": {
+        "CREATE_USER": "Add user",
+        "UPDATE_USER": "Edit user",
+        "RESET_PASSWORD": "Reset password",
+        "LOCK_USER": "Lock account",
+        "UNLOCK_USER": "Unlock account",
+        "CREATE_TEAM": "Create department",
+        "UPDATE_TEAM": "Edit department",
+        "ARCHIVE_TEAM": "Archive department",
+        "RESTORE_TEAM": "Restore department",
+        "ADD_MEMBER": "Add member to department",
+        "REMOVE_MEMBER": "Remove member from department",
+        "COPY_TEMPLATE": "Copy shared journey",
+        "PUBLISH_TEMPLATE": "Publish journey",
+        "INGEST_DOCUMENT": "Publish document"
+      },
+      "entities": {
+        "user": "User",
+        "team": "Department",
+        "document_version": "Document version",
+        "journey_template": "Journey",
+        "document": "Document"
+      }
+    }
   }
 }

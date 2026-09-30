@@ -39,9 +39,8 @@ Với mỗi câu hỏi, phân loại:
 Tổng hợp lại để copy thẳng khi viết migration (không lặp lại toàn bộ mô hình §15 v14, chỉ liệt kê phần có quyết định mới hoặc dễ quên):
 
 ```
--- role
-users.role ENUM('EMPLOYEE','HR','ADMIN')
-users.primary_team_id FK teams.id NOT NULL (khi role IN ('EMPLOYEE','HR'))
+-- role + team: ĐÃ CÓ SẴN trong code (users.role = USER|HR|ADMIN, bảng teams/team_members)
+-- không thêm cột/bảng mới — xem P1/P1.md mục 0 để biết chi tiết đã kiểm tra code thật
 
 -- KHÔNG còn completion_type / bảng task_evidence (D1, D3) — mọi task chỉ tự-hoàn-thành
 

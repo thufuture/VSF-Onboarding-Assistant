@@ -1,7 +1,7 @@
 {
   "metadata": {
     "title": "VSF Onboarding Assistant",
-    "description": "Trợ lý onboarding cho nhân sự mới: trả lời từ tài liệu đã được duyệt, có trích dẫn nguồn."
+    "description": "VSF Onboarding Portal: lộ trình việc cần làm cho nhân sự mới, tài liệu và quy trình có nguồn, trợ lý Viga hỗ trợ khi bạn kẹt."
   },
   "landing": {
     "skipLink": "Bỏ qua tới nội dung",
@@ -15,60 +15,60 @@
     },
     "hero": {
       "line1": "Mới vào công ty,",
-      "line2": "hỏi là biết bước tiếp theo",
-      "description": "Trợ lý trả lời từ tài liệu đã được duyệt, chỉ đúng quy trình và đúng đầu mối. Điều gì chưa có nguồn, trợ lý nói thẳng là chưa có, thay vì đoán.",
+      "line2": "có lộ trình, biết ngay cần làm gì",
+      "description": "VSF Onboarding Portal cho bạn lộ trình việc cần làm theo đúng thứ tự, hướng dẫn kèm nguồn cho từng việc, và Viga đồng hành khi bạn kẹt.",
       "primary": "Bắt đầu hỏi",
       "secondary": "Xem cách hoạt động",
       "checkSources": "Câu trả lời kèm nguồn",
-      "checkProcess": "Đúng quy trình, đầu mối, biểu mẫu",
+      "checkProcess": "Lộ trình, task và ticket đang được xây dựng",
       "photoAlt": "Tòa nhà Vincom Center Đồng Khởi nhìn từ công viên, TP.HCM"
     },
     "services": {
       "chat": {
-        "title": "Hỏi đáp có nguồn",
+        "title": "Hỏi Viga, có nguồn",
         "sub": "Kèm trích dẫn đúng đoạn tài liệu"
       },
       "process": {
-        "title": "Quy trình từng bước",
-        "sub": "Kèm link, đầu mối, biểu mẫu đã duyệt"
+        "title": "Lộ trình việc cần làm",
+        "sub": "Đang xây dựng — đúng thứ tự, tự đánh dấu hoàn thành"
       },
       "clarify": {
-        "title": "Hỏi lại khi thiếu điều kiện",
-        "sub": "Không đoán đơn vị hay vai trò của bạn"
+        "title": "Hỏi Viga khi kẹt",
+        "sub": "Đang xây dựng — Viga hiểu bạn đang ở việc nào"
       },
       "ticket": {
-        "title": "Ticket nội bộ",
-        "sub": "Bản nháp, chỉ gửi khi bạn xác nhận"
+        "title": "Ticket khi cần hỗ trợ",
+        "sub": "Đang xây dựng — chỉ tạo khi bạn xác nhận"
       }
     },
     "intro": {
-      "heading": "Một nơi để hỏi khi bạn mới vào công ty.",
-      "text": "Trợ lý gom tài liệu đã duyệt, quy trình và đầu mối thành một chỗ hỏi đáp duy nhất: có nguồn, đúng phiên bản còn hiệu lực, và nói thẳng khi chưa có căn cứ."
+      "heading": "Một nơi để biết việc cần làm khi bạn mới vào công ty.",
+      "text": "Portal gom lộ trình onboarding, tài liệu đã duyệt và đầu mối thành một chỗ duy nhất: việc cần làm đúng thứ tự, câu trả lời có nguồn, và Viga nói thẳng khi chưa có căn cứ thay vì đoán."
     },
     "features": {
       "chat": {
-        "label": "Hỏi đáp có nguồn",
-        "sub": "Bạn hỏi, trợ lý trả lời đúng tài liệu",
+        "label": "Hỏi Viga, có nguồn",
+        "sub": "Bạn hỏi, Viga trả lời đúng tài liệu",
         "titleStart": "Câu trả lời dẫn về",
         "titleAccent": "tài liệu thật",
         "titleEnd": "còn hiệu lực tại ngày bạn hỏi.",
-        "body": "Bạn có thể hỏi về nội quy, nghỉ phép, phúc lợi hay bảo mật. Trợ lý chỉ dùng tài liệu đã được duyệt và còn hiệu lực, trả lời kèm trích dẫn nguyên văn để bạn tự kiểm tra. Không có căn cứ thì trợ lý nói thẳng là chưa có."
+        "body": "Bạn có thể hỏi về nội quy, nghỉ phép, phúc lợi hay bảo mật. Viga chỉ dùng tài liệu đã được duyệt và còn hiệu lực, trả lời kèm trích dẫn nguyên văn để bạn tự kiểm tra. Không có căn cứ thì Viga nói thẳng là chưa có."
       },
       "process": {
-        "label": "Quy trình và đầu mối",
-        "sub": "Từng bước, đúng người, đúng biểu mẫu",
-        "titleStart": "Chỉ đúng",
-        "titleAccent": "quy trình",
-        "titleEnd": "kèm link và đầu mối đã duyệt.",
-        "body": "Với việc cần làm như cài phần mềm, xin cấp quyền hay đăng ký thẻ xe, trợ lý đưa các bước theo quy trình của bộ phận phụ trách. Link, đầu mối và biểu mẫu lấy từ danh mục đã duyệt, không do trợ lý tự nghĩ ra."
+        "label": "Lộ trình onboarding",
+        "sub": "Đang xây dựng cùng Portal",
+        "titleStart": "Sắp tới: việc cần làm",
+        "titleAccent": "đúng thứ tự",
+        "titleEnd": ", tự đánh dấu khi xong.",
+        "body": "Mỗi việc trong lộ trình có hướng dẫn rõ, kèm đầu mối và tài liệu liên quan; làm xong bạn tự bấm \"Hoàn thành\", việc phụ thuộc sẽ tự mở khóa. Không có quy trình duyệt rườm rà. Tính năng này đang được xây dựng cùng VSF Onboarding Portal."
       },
       "ticket": {
-        "label": "Hỏi lại và ticket",
-        "sub": "Bạn xác nhận trước khi gửi",
-        "titleStart": "Thiếu điều kiện thì",
-        "titleAccent": "hỏi lại",
-        "titleEnd": ", cần xử lý thì soạn ticket nháp.",
-        "body": "Khi câu trả lời phụ thuộc đơn vị hay vai trò của bạn, trợ lý hỏi lại thay vì đoán. Nếu cần bộ phận khác xử lý, trợ lý soạn sẵn ticket nháp từ biểu mẫu; ticket chỉ được gửi sau khi bạn xác nhận."
+        "label": "Viga và ticket",
+        "sub": "Đang xây dựng cùng Portal",
+        "titleStart": "Sắp tới: kẹt thì",
+        "titleAccent": "hỏi Viga",
+        "titleEnd": ", cần hỗ trợ thì tạo ticket.",
+        "body": "Khi kẹt hoặc không hiểu một việc trong lộ trình, bạn hỏi Viga ngay trong ngữ cảnh việc đó. Viga không có căn cứ thì nói thẳng và đề nghị tạo ticket gửi HR — ticket chỉ tạo sau khi bạn xác nhận. Tính năng này đang được xây dựng."
       }
     },
     "mock": {
@@ -78,7 +78,7 @@
         "badge": "Tài liệu đã duyệt",
         "label": "HỎI ĐÁP CÓ NGUỒN",
         "question": "Nhân viên chính thức được nghỉ phép năm bao nhiêu ngày?",
-        "assistant": "Trợ lý",
+        "assistant": "Viga",
         "answer": "Nhân viên chính thức được nghỉ 12 ngày phép năm, theo chính sách nghỉ phép năm bản 2024.",
         "cite": "Chính sách nghỉ phép năm (2024)",
         "sources": "1 nguồn đã được đối chiếu và còn hiệu lực",
@@ -130,25 +130,25 @@
       }
     },
     "roles": {
-      "lead": "Dành cho những người cùng làm nên trải nghiệm onboarding.",
+      "lead": "Dành cho những người cùng làm nên VSF Onboarding Portal.",
       "flow": "Từ tài liệu được duyệt đến câu trả lời cho người mới",
       "asker": {
         "tag": "01 · Hỏi đáp",
         "title": "Nhân sự mới",
-        "body": "Hỏi bằng ngôn ngữ thường ngày, nhận câu trả lời có nguồn, làm theo quy trình từng bước và tạo ticket khi cần.",
+        "body": "Hỏi Viga bằng ngôn ngữ thường ngày, nhận câu trả lời có nguồn. Lộ trình việc cần làm theo ngày, tự đánh dấu hoàn thành và ticket khi kẹt đang được xây dựng thêm trong Portal.",
         "cta": "Đăng nhập để hỏi"
       },
       "hr": {
         "tag": "02 · Nội dung",
         "title": "Nhân sự (HR)",
-        "body": "Nạp tài liệu và duyệt bản mới, xem khác biệt giữa các phiên bản, quản lý quy trình, link và đầu mối, theo dõi câu hỏi chưa có tài liệu.",
+        "body": "Nạp tài liệu và duyệt bản mới, quản lý đầu mối và link, theo dõi câu hỏi Viga chưa trả lời được. Soạn lộ trình, task cho từng phòng ban và xử lý ticket đang được xây dựng thêm trong Portal.",
         "cta": "Đăng nhập quản lý"
       },
       "team": {
-        "tag": "03 · Xử lý",
-        "title": "Đội xử lý ticket",
-        "body": "Nhận ticket đã được người dùng xác nhận, xem đủ thông tin theo biểu mẫu và cập nhật trạng thái xử lý.",
-        "cta": "Đăng nhập xử lý"
+        "tag": "03 · Lộ trình",
+        "title": "Portal onboarding",
+        "body": "Lộ trình việc cần làm theo ngày, điều kiện tiên quyết rõ ràng, hỏi Viga ngay trong từng việc và tạo ticket khi kẹt — phần đang được xây dựng tiếp trên nền trợ lý hỏi đáp này.",
+        "cta": "Đăng nhập xem trước"
       },
       "admin": {
         "tag": "04 · Hệ thống",
@@ -200,7 +200,7 @@
       "button": "Đăng nhập"
     },
     "footer": {
-      "tagline": "Trợ lý onboarding cho nhân sự mới. Bản demo thực tập, chưa phải sản phẩm chính thức.",
+      "tagline": "VSF Onboarding Portal: lộ trình việc cần làm và trợ lý Viga cho nhân sự mới. Bản demo thực tập, chưa phải sản phẩm chính thức.",
       "email": "onboarding@vsf-demo.example",
       "aboutTitle": "Về trợ lý",
       "how": "Cách hoạt động",
@@ -237,19 +237,19 @@
       "unavailable": "Không thể đăng nhập lúc này. Hãy thử lại sau.",
       "inactive": "Tài khoản này đã bị khóa. Hãy liên hệ HR hoặc Admin."
     },
-    "welcomeDescription": "Trợ lý trả lời từ tài liệu đã được duyệt, chỉ đúng quy trình và đầu mối, và nói thẳng khi chưa có căn cứ.",
+    "welcomeDescription": "VSF Onboarding Portal cho bạn lộ trình việc cần làm, tài liệu và quy trình có nguồn, và Viga hỗ trợ khi bạn kẹt.",
     "benefits": {
       "sources": "Câu trả lời kèm nguồn dẫn chứng",
-      "approved": "Quy trình, link và đầu mối đã được duyệt",
+      "approved": "Chỉ dùng tài liệu đã được duyệt và còn hiệu lực",
       "noGuess": "Không đoán dữ liệu cá nhân của bạn"
     },
-    "welcomeLine1": "Hỏi là biết bước tiếp theo.",
+    "welcomeLine1": "Có lộ trình, không lạc bước.",
     "welcomeLine2": "Bắt đầu tự tin hơn.",
     "firstTime": "Đăng nhập lần đầu?",
     "support": "Hỗ trợ",
     "showPassword": "Hiện mật khẩu",
     "hidePassword": "Ẩn mật khẩu",
-    "quote": "“Chỗ nào chưa có nguồn, trợ lý nói thẳng là chưa có.”"
+    "quote": "“Không có nguồn, Viga không đoán.”"
   },
   "common": {
     "language": "Ngôn ngữ",
@@ -262,6 +262,7 @@
       "HR": "Nhân sự (HR)",
       "ADMIN": "Quản trị viên"
     },
+    "brandSub": "Portal nhân viên mới",
     "signOut": "Đăng xuất",
     "signingOut": "Đang đăng xuất…",
     "signOutFailed": "Không đăng xuất được lúc này. Hãy thử lại.",
@@ -272,11 +273,32 @@
     "darkMode": "Chuyển sang giao diện tối",
     "nav": {
       "chat": "Trợ lý hỏi đáp",
+      "roadmap": "Lộ trình của tôi",
       "documents": "Tài liệu",
       "contacts": "Đầu mối",
       "tickets": "Yêu cầu hỗ trợ",
-      "admin": "Khu quản trị",
-      "soon": "Sắp có"
+      "admin": "Tổng quan",
+      "employees": "Nhân viên",
+      "hrTickets": "Ticket sự cố",
+      "vigaFeedback": "Phản hồi Viga",
+      "taskManagement": "Quản lý task",
+      "aiTasks": "Tạo task bằng AI",
+      "registry": "Đầu mối và đường dẫn",
+      "soon": "Sắp có",
+      "adminUsers": "Người dùng",
+      "adminTeams": "Phòng ban",
+      "adminMembers": "Thành viên",
+      "adminTemplate": "Lộ trình mẫu",
+      "adminAudit": "Nhật ký"
+    },
+    "footer": {
+      "brand": "VSF Onboarding Portal",
+      "note": "Nội dung chỉ hiển thị cho nhân viên sau khi được duyệt và publish.",
+      "help": "Trợ giúp",
+      "privacy": "Chính sách bảo mật",
+      "terms": "Điều khoản sử dụng",
+      "contact": "Liên hệ IT",
+      "copy": "© 2026 VSF · v4.1"
     }
   },
   "chat": {
@@ -336,5 +358,621 @@
       "tickets": "Yêu cầu hỗ trợ từ nhân sự mới"
     },
     "openChat": "Mở trang chat"
+  },
+  "portalTasks": {
+    "title": "Quản lý lộ trình onboarding",
+    "description": "Tạo giai đoạn, thêm task và quản lý từng task ngay trên roadmap.",
+    "defaultTemplateTitle": "Lộ trình onboarding",
+    "createWithAi": "Tạo bằng AI",
+    "addStageShort": "Thêm ngày",
+    "addStage": "Thêm giai đoạn",
+    "addTask": "Thêm task",
+    "loading": "Đang tải…",
+    "noStagesTitle": "Chưa có giai đoạn nào",
+    "noStages": "Tạo giai đoạn đầu tiên để bắt đầu thêm task.",
+    "emptyTitle": "Chưa có task",
+    "emptyTasks": "Chưa có task nào trong giai đoạn này.",
+    "taskCount": "{count} task",
+    "taskNo": "Task {n}",
+    "prereq": "{count} tiên quyết",
+    "statusPublished": "Đã xuất bản",
+    "statusDraft": "Bản nháp",
+    "required": "Bắt buộc",
+    "optional": "Tùy chọn",
+    "start": "Bắt đầu",
+    "viewTask": "Xem nội dung",
+    "finish": "Hoàn tất",
+    "view": {
+      "stage": "Giai đoạn",
+      "completion": "Cách hoàn thành",
+      "kind": "Loại",
+      "prereq": "Tiên quyết",
+      "none": "Không có",
+      "steps": "Các bước"
+    },
+    "edit": "Sửa",
+    "duplicate": "Nhân bản",
+    "delete": "Xóa",
+    "cancel": "Hủy",
+    "editTitle": "Sửa task",
+    "copySuffix": "(bản sao)",
+    "deleteConfirmTitle": "Xóa task “{title}”?",
+    "deleteConfirmBody": "Task sẽ bị xóa khỏi lộ trình. Các task phụ thuộc vào task này sẽ mất tiên quyết đó. Không hoàn tác được.",
+    "searchPlaceholder": "Tìm task trong {stage}…",
+    "backToOverview": "Tổng quan HR",
+    "sideTitle": "Lộ trình onboarding",
+    "sideHint": "Chọn ngày để quản lý task",
+    "sideCount": "{total} task · {published} đã xuất bản",
+    "sideAdd": "Thêm ngày hoặc giai đoạn",
+    "kpi": {
+      "total": "Tổng task",
+      "totalSub": "Trong lộ trình hiện tại",
+      "draft": "Bản nháp",
+      "draftSub": "Chưa hiển thị cho nhân viên",
+      "published": "Đã xuất bản",
+      "publishedSub": "Đang hiển thị cho nhân viên",
+      "missing": "Cần bổ sung",
+      "missingSub": "Task thiếu hướng dẫn"
+    },
+    "legend": {
+      "title": "Màu mốc theo nhóm task"
+    },
+    "form": {
+      "title": "Tên task",
+      "body": "Hướng dẫn",
+      "required": "Bắt buộc",
+      "submit": "Tạo task",
+      "save": "Lưu",
+      "stageTitle": "Tên giai đoạn",
+      "createStage": "Tạo giai đoạn",
+      "saveDraft": "Lưu vào bản nháp",
+      "order": "Thứ tự trong giai đoạn (1 đến {max})",
+      "day": "Ngày / giai đoạn",
+      "completion": "Cách xác nhận hoàn thành",
+      "selfConfirm": "Tự hoàn thành",
+      "requiredLong": "Bắt buộc, tính vào tiến độ",
+      "why": "Vì sao phải làm",
+      "done": "Điều kiện hoàn thành",
+      "steps": "Các bước (mỗi dòng một bước)",
+      "prereqHint": "Chọn các task phải xong trước task này.",
+      "linksTitle": "Đầu mối và đường dẫn",
+      "linksSoon": "Sẽ có khi làm mục Đầu mối và đường dẫn.",
+      "stageHint": "Tạo giai đoạn trống rồi thêm task thủ công hoặc bằng AI.",
+      "stageNumber": "Số ngày",
+      "dayWord": "Ngày",
+      "group": "Nhóm task (màu mốc)"
+    },
+    "notice": {
+      "created": "Đã tạo task.",
+      "updated": "Đã lưu thay đổi.",
+      "deleted": "Đã xóa task.",
+      "duplicated": "Đã nhân bản task.",
+      "stageCreated": "Đã tạo giai đoạn.",
+      "published": "Đã xuất bản lộ trình."
+    },
+    "errors": {
+      "unauthorized": "Bạn cần đăng nhập lại.",
+      "forbidden": "Bạn không có quyền cho hành động này.",
+      "unavailable": "Có lỗi xảy ra, thử lại sau.",
+      "network": "Không kết nối được server.",
+      "published": "Lộ trình đã xuất bản nên không sửa được.",
+      "empty": "Cần ít nhất một task trước khi xuất bản.",
+      "cycle": "Tiên quyết tạo vòng lặp hoặc trỏ vào chính task này.",
+      "stageOutOfTemplate": "Chỉ chuyển được sang giai đoạn cùng lộ trình."
+    },
+    "close": "Đóng",
+    "closeButton": "Đóng",
+    "publish": "Xuất bản",
+    "publishedReadonly": "Lộ trình đã xuất bản — chỉ xem",
+    "tabs": {
+      "info": "Thông tin",
+      "guide": "Hướng dẫn",
+      "prereq": "Tiên quyết",
+      "links": "Liên hệ và tài nguyên"
+    },
+    "deleteConfirmButton": "Xóa task",
+    "duplicateConfirmTitle": "Nhân bản task “{title}”?",
+    "duplicateConfirmBody": "Tạo một bản sao ngay sau task này trong cùng giai đoạn, giữ nguyên nội dung và tiên quyết.",
+    "duplicateConfirmButton": "Nhân bản",
+    "publishConfirmTitle": "Xuất bản lộ trình “{title}”?",
+    "publishConfirmBody": "Sau khi xuất bản, nhân viên trong nhóm sẽ thấy lộ trình này và bạn không sửa được task nữa.",
+    "publishConfirmButton": "Xuất bản",
+    "backToTemplate": "Lộ trình mẫu chung",
+    "group": {
+      "PROFILE": "Hồ sơ",
+      "TRAINING": "Đào tạo",
+      "DEVICE": "Thiết bị",
+      "OFFICE": "Văn phòng",
+      "none": "Chưa phân nhóm"
+    }
+  },
+  "portalEmployees": {
+    "viewTask": "Xem task",
+    "nudge": "Nhắn",
+    "soon": "Sắp có",
+    "count": "{count} nhân viên",
+    "title": "Nhân viên",
+    "description": "Toàn bộ nhân viên bạn phụ trách và tiến độ lộ trình onboarding của họ.",
+    "searchPlaceholder": "Tìm nhân viên…",
+    "loading": "Đang tải…",
+    "empty": "Không có nhân viên phù hợp.",
+    "noCurrentTask": "Chưa bắt đầu lộ trình",
+    "filters": {
+      "all": "Tất cả",
+      "attn": "Cần chú ý",
+      "wait": "Đang chờ",
+      "ok": "Bình thường"
+    },
+    "table": {
+      "employee": "Nhân viên",
+      "stage": "Giai đoạn",
+      "progress": "Tiến độ",
+      "currentTask": "Task hiện tại",
+      "status": "Trạng thái"
+    },
+    "status": {
+      "NOT_STARTED": "Chưa bắt đầu",
+      "DONE": "Hoàn tất",
+      "READY": "Đang làm",
+      "IN_PROGRESS": "Đang làm",
+      "WAITING_EXTERNAL": "Chờ bên ngoài",
+      "BLOCKED": "Đang kẹt"
+    },
+    "errors": {
+      "unauthorized": "Bạn cần đăng nhập lại.",
+      "forbidden": "Bạn không có quyền cho hành động này.",
+      "unavailable": "Có lỗi xảy ra, thử lại sau.",
+      "network": "Không kết nối được server."
+    }
+  },
+  "hrDashboard": {
+    "greeting": "Xin chào, {name}",
+    "description": "Chưa có lộ trình onboarding nào — bắt đầu ở mục Tạo task bằng AI.",
+    "journeyHint": "Lộ trình onboarding đang được xây dựng.",
+    "kpi": {
+      "templates": "Lộ trình",
+      "templatesSub": "Đang có",
+      "stages": "Giai đoạn",
+      "stagesSub": "Trong lộ trình",
+      "tasks": "Task trong lộ trình",
+      "tasksSub": "Đang hiển thị cho nhân viên",
+      "documents": "Tài liệu",
+      "documentsSub": "Đã ingest"
+    },
+    "actions": {
+      "documents": {
+        "title": "Tải tài liệu lên"
+      },
+      "aiTasks": {
+        "title": "Thêm task"
+      }
+    },
+    "errors": {
+      "unauthorized": "Bạn cần đăng nhập lại.",
+      "forbidden": "Bạn không có quyền cho hành động này.",
+      "unavailable": "Có lỗi xảy ra, thử lại sau.",
+      "network": "Không kết nối được server."
+    }
+  },
+  "portalRoadmap": {
+    "loading": "Đang tải lộ trình…",
+    "greeting": "Việc cần làm của {name} theo đúng thứ tự.",
+    "taskOrdinal": "Việc {n}",
+    "status": {
+      "DONE": "Hoàn thành",
+      "READY": "Sẵn sàng",
+      "IN_PROGRESS": "Đang làm",
+      "WAITING_EXTERNAL": "Đang chờ",
+      "LOCKED": "Đang khóa",
+      "BLOCKED": "Trễ hạn",
+      "SKIPPED": "Đã bỏ qua"
+    },
+    "markDone": "Đánh dấu hoàn thành",
+    "completing": "Đang lưu…",
+    "lockedHint": "Việc này đang khóa — hoàn thành việc trước để mở khóa.",
+    "doneHint": "Bạn đã hoàn thành việc này.",
+    "close": "Đóng",
+    "errors": {
+      "unauthorized": "Bạn cần đăng nhập lại.",
+      "forbidden": "Bạn không có quyền cho hành động này.",
+      "unavailable": "Có lỗi xảy ra, thử lại sau.",
+      "network": "Không kết nối được server."
+    }
+  },
+  "portalDocuments": {
+    "title": "Tài liệu nguồn",
+    "description": "Quản lý file gốc, nội dung đã parse và trạng thái ingest.",
+    "addDocument": "Thêm tài liệu",
+    "loading": "Đang tải…",
+    "empty": "Chưa có tài liệu nào.",
+    "viewOriginal": "Xem file gốc",
+    "archive": "Ngừng sử dụng",
+    "reactivate": "Kích hoạt lại",
+    "sectionCount": "{count} section",
+    "searchPlaceholder": "Tìm theo tên tài liệu…",
+    "filterAllStatus": "Mọi trạng thái",
+    "filterAllCategory": "Tất cả nhóm",
+    "pagerLabel": "Hiển thị {from}-{to} / {total}",
+    "kpi": {
+      "total": "Tổng tài liệu",
+      "ready": "Sẵn sàng",
+      "pending": "Cần kiểm tra",
+      "sections": "Tổng section",
+      "used": "Đang được dùng"
+    },
+    "table": {
+      "document": "Tài liệu",
+      "category": "Nhóm",
+      "sections": "Xử lý nội dung",
+      "status": "Trạng thái",
+      "updated": "Cập nhật",
+      "tasks": "Task sử dụng"
+    },
+    "status": {
+      "ACTIVE": "Sẵn sàng",
+      "ARCHIVED": "Đã lưu trữ"
+    },
+    "upload": {
+      "file": "Chọn file (.docx, .pdf, .md)",
+      "title": "Tải tài liệu lên",
+      "category": "Danh mục",
+      "sourceKey": "Mã nguồn (source_key)",
+      "version": "Phiên bản",
+      "effectiveFrom": "Hiệu lực từ",
+      "submit": "Tải lên",
+      "success": "Đã ingest — {sections} section, {chunks} chunk.",
+      "name": "Tên tài liệu",
+      "drop": "Kéo thả hoặc bấm để chọn tệp",
+      "dropHint": "docx, pdf, md, txt · tối đa 20 MB"
+    },
+    "errors": {
+      "unauthorized": "Bạn cần đăng nhập lại.",
+      "forbidden": "Bạn không có quyền cho hành động này.",
+      "unavailable": "Có lỗi xảy ra, thử lại sau.",
+      "network": "Không kết nối được server.",
+      "ingestFailed": "Không đọc được nội dung tệp này (sai định dạng hoặc quá ngắn).",
+      "categoryNotFound": "Nhóm tài liệu không tồn tại."
+    },
+    "close": "Đóng",
+    "closeButton": "Đóng",
+    "cancel": "Hủy",
+    "save": "Lưu",
+    "view": "Xem nội dung",
+    "edit": "Sửa thông tin",
+    "newVersion": "Tải phiên bản mới",
+    "editTitle": "Sửa tài liệu",
+    "viewFailed": "Không tải được nội dung tài liệu.",
+    "toc": "Mục lục",
+    "archiveConfirmTitle": "Ngừng sử dụng tài liệu “{title}”?",
+    "archiveConfirmBody": "Tài liệu chuyển sang trạng thái Đã ẩn (không xóa): không dùng để AI đề xuất task nữa nhưng vẫn giữ nguyên nội dung và lịch sử. Bạn có thể kích hoạt lại bất cứ lúc nào.",
+    "archiveConfirmButton": "Ngừng sử dụng",
+    "reactivateConfirmTitle": "Kích hoạt lại tài liệu “{title}”?",
+    "reactivateConfirmBody": "Tài liệu quay lại trạng thái Sẵn sàng và dùng được cho AI đề xuất task.",
+    "reactivateConfirmButton": "Kích hoạt lại",
+    "notice": {
+      "updated": "Đã lưu thông tin tài liệu.",
+      "archived": "Đã ngừng sử dụng tài liệu.",
+      "reactivated": "Đã kích hoạt lại tài liệu."
+    },
+    "parsedIngested": "Đã parse · Đã ingest",
+    "noTasks": "Chưa có task",
+    "moreTasks": "+{count} task",
+    "filter": {
+      "status": "Trạng thái",
+      "statusAllHint": "Hiển thị tất cả",
+      "activeHint": "Đã parse và ingest",
+      "archivedHint": "Đã ngừng sử dụng",
+      "usage": "Mức sử dụng",
+      "usageAll": "Tất cả nguồn",
+      "usageAllHint": "Có và chưa gắn task",
+      "usageUsed": "Đang được dùng",
+      "usageUsedHint": "Đã liên kết với task",
+      "usageUnused": "Chưa gắn task",
+      "usageUnusedHint": "Chưa có task sử dụng",
+      "category": "Nhóm tài liệu"
+    }
+  },
+  "portalHr": {
+    "title": "Tạo task bằng AI",
+    "description": "Chọn tài liệu và giai đoạn đích; AI đề xuất task có liên kết tới đúng đoạn nguồn.",
+    "safeBadge": "AI không tự xuất bản",
+    "sectionCount": "{count} section",
+    "steps": {
+      "step1": "Chọn nguồn và đích",
+      "step2": "AI dựng roadmap",
+      "step3": "HR chấp nhận",
+      "step4": "Thêm vào quản lý task"
+    },
+    "template": {
+      "code": "Mã lộ trình",
+      "title": "Tên lộ trình"
+    },
+    "stage": {
+      "heading": "Roadmap đích",
+      "hint": "Chọn giai đoạn đã có hoặc tạo mới",
+      "title": "Tên giai đoạn",
+      "create": "Tạo giai đoạn",
+      "addNew": "Tạo ngày hoặc giai đoạn mới",
+      "addNewHint": "Dùng khi cần thêm giai đoạn mới cho lộ trình"
+    },
+    "document": {
+      "heading": "Tài liệu nguồn",
+      "selectedCount": "{count} tài liệu đang được chọn",
+      "pick": "Chọn tài liệu",
+      "remove": "Bỏ chọn",
+      "empty": "Chưa chọn tài liệu nào",
+      "loading": "Đang tải danh sách…",
+      "noneAvailable": "Chưa có tài liệu nào — tải lên ở mục Tài liệu trước.",
+      "collapse": "Thu gọn",
+      "pickerTitle": "Chọn tài liệu đã sẵn sàng",
+      "pickerHint": "Có thể chọn nhiều nguồn cho cùng một lần phân tích",
+      "pickedBadge": "{count} đã chọn",
+      "searchPlaceholder": "Tìm theo tên, nhóm hoặc người phụ trách…",
+      "pickedFoot": "Đã chọn {count} tài liệu",
+      "done": "Hoàn tất chọn"
+    },
+    "audience": {
+      "label": "Đối tượng áp dụng",
+      "fallback": "Chưa gán phòng ban",
+      "sub": "Theo phòng ban của bạn"
+    },
+    "run": {
+      "needDoc": "Chọn ít nhất một tài liệu",
+      "needStage": "Chọn giai đoạn đích",
+      "loading": "Đang xử lý…",
+      "submit": "AI đề xuất task",
+      "footnote": "AI đề xuất task vào giai đoạn đã chọn; HR chấp nhận từng task.",
+      "submitCount": "Phân tích {count} tài liệu và đề xuất roadmap"
+    },
+    "propose": {
+      "heading": "AI đề xuất task",
+      "hint": "Gọi mô hình ngôn ngữ thật — mỗi lần bấm tốn một khoản phí nhỏ.",
+      "empty": "Chưa có đề xuất nào đủ căn cứ để hiển thị.",
+      "confidence": "Độ tin cậy",
+      "sources": "Nguồn trích dẫn",
+      "accept": "Chấp nhận, tạo task",
+      "accepted": "Đã tạo task #{id} trong giai đoạn."
+    },
+    "errors": {
+      "unauthorized": "Bạn cần đăng nhập lại.",
+      "forbidden": "Bạn không có quyền cho hành động này.",
+      "unavailable": "Có lỗi xảy ra, thử lại sau.",
+      "network": "Không kết nối được server."
+    }
+  },
+  "portalAdmin": {
+    "common": {
+      "loading": "Đang tải…",
+      "empty": "Chưa có dữ liệu.",
+      "close": "Đóng",
+      "cancel": "Hủy",
+      "save": "Lưu",
+      "count": "{count} mục"
+    },
+    "roles": {
+      "all": "Tất cả",
+      "USER": "Nhân viên",
+      "HR": "HR",
+      "ADMIN": "Admin"
+    },
+    "errors": {
+      "unauthorized": "Bạn cần đăng nhập lại.",
+      "forbidden": "Bạn không có quyền cho hành động này.",
+      "unavailable": "Có lỗi xảy ra, thử lại sau.",
+      "network": "Không kết nối được server.",
+      "USER_NOT_FOUND": "Không tìm thấy người dùng.",
+      "EMAIL_TAKEN": "Email này đã có tài khoản.",
+      "CANNOT_DEMOTE_SELF": "Không thể tự hạ vai trò của chính mình.",
+      "CANNOT_LOCK_SELF": "Không thể tự khóa tài khoản của chính mình.",
+      "TEAM_NOT_FOUND": "Không tìm thấy phòng ban.",
+      "NOT_AN_HR_USER": "Người được chọn không có vai trò HR.",
+      "TEAM_CODE_TAKEN": "Mã phòng ban đã tồn tại.",
+      "ADMIN_HAS_NO_TEAM": "Tài khoản Admin không thuộc phòng ban nào.",
+      "ALREADY_MEMBER": "Người này đã ở trong phòng ban.",
+      "MEMBERSHIP_NOT_FOUND": "Không tìm thấy thành viên này.",
+      "NO_SHARED_TEMPLATE": "Chưa có lộ trình mẫu chung đã xuất bản để sao chép.",
+      "TEAM_ALREADY_HAS_JOURNEY": "Phòng ban này đã có lộ trình."
+    },
+    "dashboard": {
+      "title": "Quản trị hệ thống",
+      "description": "Phòng ban, tài khoản và thành viên. Nội dung lộ trình do HR của từng phòng ban quản lý.",
+      "byTeam": "Nhân viên mới theo phòng ban",
+      "byTeamSub": "Số nhân viên mỗi phòng ban đang hoạt động",
+      "recent": "Hoạt động gần đây",
+      "viewAudit": "Xem nhật ký",
+      "kpi": {
+        "teams": "Phòng ban",
+        "teamsSub": "{count} đã lưu trữ",
+        "hr": "HR",
+        "hrSub": "phụ trách phòng ban",
+        "employees": "Nhân viên mới",
+        "employeesNoTeam": "{count} chưa vào phòng ban",
+        "employeesAllInTeam": "đều đã có phòng ban",
+        "attention": "Cần xử lý",
+        "attentionSub": "{locked} tài khoản khóa · {noTeam} chưa gán phòng ban"
+      }
+    },
+    "users": {
+      "title": "Người dùng",
+      "description": "Tài khoản và vai trò hệ thống (Admin, HR, Nhân viên). Việc vào phòng ban làm ở mục Thành viên.",
+      "add": "Thêm người dùng",
+      "search": "Tìm theo tên hoặc email…",
+      "empty": "Không có người dùng phù hợp.",
+      "noTeam": "Chưa gán",
+      "active": "Đang hoạt động",
+      "inactive": "Đã khóa",
+      "neverLoggedIn": "Chưa đăng nhập",
+      "edit": "Sửa",
+      "resetPassword": "Đặt lại mật khẩu",
+      "lock": "Khóa tài khoản",
+      "unlock": "Mở khóa",
+      "editTitle": "Sửa người dùng",
+      "saved": "Đã lưu người dùng.",
+      "locked": "Đã khóa tài khoản.",
+      "unlocked": "Đã mở khóa tài khoản.",
+      "table": {
+        "user": "Người dùng",
+        "role": "Vai trò hệ thống",
+        "team": "Phòng ban",
+        "status": "Trạng thái",
+        "lastLogin": "Đăng nhập gần nhất"
+      },
+      "form": {
+        "name": "Họ và tên",
+        "email": "Email",
+        "role": "Vai trò hệ thống",
+        "team": "Phòng ban (tùy chọn)",
+        "noTeam": "Chưa gán",
+        "tempHint": "Mật khẩu tạm được tạo khi lưu; người dùng phải đổi ở lần đăng nhập đầu."
+      },
+      "resetTitle": "Đặt lại mật khẩu của {name}?",
+      "resetBody": "Hệ thống tạo một mật khẩu tạm mới cho {name} và hiển thị một lần để bạn chuyển cho họ.",
+      "resetWarning": "Mật khẩu cũ và mọi phiên đăng nhập hiện tại sẽ mất hiệu lực ngay.",
+      "resetConfirm": "Đặt lại mật khẩu",
+      "lockTitle": "Khóa tài khoản {name}?",
+      "lockBody": "{name} sẽ bị đăng xuất và không đăng nhập được cho đến khi bạn mở khóa. Dữ liệu và lộ trình vẫn được giữ nguyên.",
+      "unlockTitle": "Mở khóa tài khoản {name}?",
+      "unlockBody": "{name} có thể đăng nhập lại bình thường.",
+      "secretTitle": "Mật khẩu tạm của {name}",
+      "secretLabel": "Mật khẩu tạm:",
+      "secretHint": "Chỉ hiển thị một lần và không được lưu ở dạng đọc được. Người dùng phải đổi mật khẩu ở lần đăng nhập đầu."
+    },
+    "teams": {
+      "title": "Phòng ban",
+      "description": "Mỗi phòng ban có HR phụ trách, danh sách nhân viên mới và một lộ trình riêng. HR chỉ thấy phòng ban mình phụ trách.",
+      "add": "Tạo phòng ban",
+      "search": "Tìm tên hoặc mã phòng ban…",
+      "empty": "Không có phòng ban phù hợp.",
+      "active": "Đang hoạt động",
+      "archived": "Đã lưu trữ",
+      "noHr": "Chưa có HR",
+      "noJourney": "Chưa có lộ trình",
+      "memberCount": "{employees} nhân viên · {hr} HR",
+      "detail": "Chi tiết và thành viên",
+      "edit": "Sửa",
+      "archive": "Lưu trữ",
+      "restore": "Khôi phục",
+      "editTitle": "Sửa phòng ban",
+      "saved": "Đã lưu phòng ban.",
+      "created": "Đã tạo phòng ban.",
+      "filter": {
+        "all": "Tất cả",
+        "ACTIVE": "Đang hoạt động",
+        "ARCHIVED": "Đã lưu trữ"
+      },
+      "table": {
+        "team": "Phòng ban",
+        "status": "Trạng thái",
+        "hr": "HR phụ trách",
+        "members": "Thành viên",
+        "journey": "Lộ trình"
+      },
+      "journeyStatus": {
+        "DRAFT": "bản nháp",
+        "PUBLISHED": "đã xuất bản"
+      },
+      "form": {
+        "name": "Tên phòng ban",
+        "code": "Mã (chữ hoa)",
+        "hr": "HR phụ trách chính",
+        "noHr": "Chưa chọn",
+        "copyShared": "Tạo lộ trình cho phòng ban bằng cách sao chép lộ trình mẫu chung. HR của phòng ban sẽ chỉnh sửa bản sao này."
+      },
+      "archiveTitle": "Lưu trữ phòng ban “{name}”?",
+      "archiveBody": "Phòng ban chuyển sang trạng thái Đã lưu trữ (không xóa): thành viên mất quyền truy cập theo phòng ban này nhưng dữ liệu vẫn được giữ. Bạn có thể khôi phục bất cứ lúc nào.",
+      "archiveWarning": "Truy cập của mọi thành viên trong phòng ban sẽ bị đóng.",
+      "restoreTitle": "Khôi phục phòng ban “{name}”?",
+      "restoreBody": "Phòng ban hoạt động trở lại và thành viên lấy lại quyền truy cập.",
+      "archivedDone": "Đã lưu trữ phòng ban.",
+      "restoredDone": "Đã khôi phục phòng ban.",
+      "copyTitle": "Tạo lộ trình cho “{name}”?",
+      "copyBody": "Sao chép lộ trình mẫu chung (giai đoạn, task, tiên quyết) thành một bản nháp riêng của phòng ban “{name}”. HR của phòng ban chỉnh sửa và xuất bản bản sao này; lộ trình mẫu chung không bị ảnh hưởng.",
+      "copyConfirm": "Tạo bản sao từ mẫu chung",
+      "copiedDone": "Đã tạo bản sao lộ trình cho phòng ban.",
+      "detailSub": "Mã {code} · tạo {date} · {state}"
+    },
+    "members": {
+      "title": "Thành viên",
+      "pageTitle": "Thành viên phòng ban",
+      "description": "Gán người dùng vào phòng ban. Vai trò trong phòng ban theo vai trò hệ thống (HR phụ trách hoặc Nhân viên mới). Truy cập đóng khi tài khoản bị khóa hoặc phòng ban lưu trữ.",
+      "search": "Tìm người hoặc phòng ban…",
+      "empty": "Không có thành viên phù hợp.",
+      "add": "Thêm thành viên",
+      "assign": "Gán",
+      "assignTitle": "Gán vào phòng ban",
+      "user": "Người dùng",
+      "pickUser": "Chọn người dùng…",
+      "roleHint": "Vai trò trong phòng ban lấy theo vai trò hệ thống của người dùng.",
+      "remove": "Gỡ khỏi phòng ban",
+      "removeTitle": "Gỡ {user} khỏi phòng ban?",
+      "removeBody": "{user} sẽ không còn thuộc “{team}” và mất quyền truy cập dữ liệu của phòng ban này. Tài khoản vẫn được giữ.",
+      "removedDone": "Đã gỡ khỏi phòng ban.",
+      "addedDone": "Đã gán vào phòng ban.",
+      "table": {
+        "team": "Phòng ban",
+        "teamRole": "Vai trò trong phòng ban",
+        "access": "Truy cập",
+        "joined": "Tham gia"
+      },
+      "teamRole": {
+        "HR": "HR phụ trách",
+        "EMPLOYEE": "Nhân viên mới"
+      },
+      "access": {
+        "ACTIVE": "Hoạt động",
+        "BLOCKED_USER": "Tài khoản khóa",
+        "BLOCKED_TEAM": "Phòng ban lưu trữ"
+      }
+    },
+    "template": {
+      "title": "Lộ trình mẫu chung",
+      "description": "Bản gốc của công ty. Khi tạo phòng ban, lộ trình được sao chép cho phòng ban đó; HR của phòng ban chỉ sửa bản sao của mình.",
+      "edit": "Chỉnh sửa lộ trình mẫu",
+      "byTeam": "Lộ trình theo phòng ban",
+      "usingCopy": "Đang dùng bản sao",
+      "kpi": {
+        "shared": "Bản mẫu chung",
+        "noShared": "Chưa có bản đã xuất bản",
+        "tasks": "Số task",
+        "tasksSub": "trong bản mẫu",
+        "teams": "Phòng ban đang dùng bản sao",
+        "teamsSub": "trên {total} đang hoạt động"
+      }
+    },
+    "audit": {
+      "title": "Nhật ký thay đổi",
+      "description": "Ai đã làm gì, khi nào — ghi từ các thao tác quản trị thật.",
+      "empty": "Chưa có hoạt động nào.",
+      "system": "Hệ thống",
+      "table": {
+        "time": "Thời điểm",
+        "actor": "Người thực hiện",
+        "action": "Hành động",
+        "target": "Đối tượng"
+      },
+      "actions": {
+        "CREATE_USER": "Thêm người dùng",
+        "UPDATE_USER": "Sửa người dùng",
+        "RESET_PASSWORD": "Đặt lại mật khẩu",
+        "LOCK_USER": "Khóa tài khoản",
+        "UNLOCK_USER": "Mở khóa tài khoản",
+        "CREATE_TEAM": "Tạo phòng ban",
+        "UPDATE_TEAM": "Sửa phòng ban",
+        "ARCHIVE_TEAM": "Lưu trữ phòng ban",
+        "RESTORE_TEAM": "Khôi phục phòng ban",
+        "ADD_MEMBER": "Thêm thành viên vào phòng ban",
+        "REMOVE_MEMBER": "Gỡ thành viên khỏi phòng ban",
+        "COPY_TEMPLATE": "Sao lộ trình mẫu chung",
+        "PUBLISH_TEMPLATE": "Publish lộ trình",
+        "INGEST_DOCUMENT": "Đăng tài liệu"
+      },
+      "entities": {
+        "user": "Người dùng",
+        "team": "Phòng ban",
+        "document_version": "Phiên bản tài liệu",
+        "journey_template": "Lộ trình",
+        "document": "Tài liệu"
+      }
+    }
   }
 }

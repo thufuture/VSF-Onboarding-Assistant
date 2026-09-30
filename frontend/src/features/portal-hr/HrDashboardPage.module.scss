@@ -1,0 +1,156 @@
+// Cổng đúng .pagehead.hero + kpi()/.kh/.kpi.k-* của prototype v15 (mục Tổng quan) — chỉ hiện số thật.
+$tn-blue: #0e7fb3;
+$tn-teal: #1f7f7a;
+$tn-indigo: #4f5bbf;
+$tn-amber: #a8681a;
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 22px 24px 48px;
+}
+
+.pageheadHero {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 20px;
+  background: linear-gradient(100deg, color-mix(in srgb, var(--app-accent) 11%, var(--app-surface)) 0%, var(--app-surface) 62%);
+  border: 1px solid var(--app-border);
+  border-radius: 5px;
+  flex-wrap: wrap;
+}
+
+.pageheadText {
+  flex: 1;
+  min-width: 220px;
+
+  h1 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--app-ink);
+  }
+  p {
+    margin: 2px 0 0;
+    color: var(--app-ink-2);
+    font-size: 13px;
+  }
+}
+
+.row {
+  display: flex;
+  gap: 8px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  height: 34px;
+  padding: 0 14px;
+  border-radius: 5px;
+  border: 1px solid var(--app-accent);
+  background: var(--app-accent);
+  color: var(--app-on-accent);
+  font-weight: 600;
+  font-size: 13px;
+  white-space: nowrap;
+  text-decoration: none;
+
+  &:hover {
+    background: var(--app-accent-strong);
+  }
+}
+
+.btnSec {
+  background: var(--app-surface);
+  color: var(--app-ink);
+  border-color: var(--app-border-strong);
+
+  &:hover {
+    background: var(--app-surface);
+    border-color: var(--app-accent);
+    color: var(--app-accent-strong);
+  }
+}
+
+.banner {
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 5px;
+  background: #fdecec;
+  color: #a3121f;
+  font-size: 14px;
+}
+
+.kpiGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+
+  @media (max-width: 760px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.kpi {
+  display: flex;
+  flex-direction: column;
+  padding: 14px 16px;
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-top: 2px solid var(--kbc, var(--app-border));
+  border-radius: 5px;
+}
+.toneBlue {
+  --kbc: #{$tn-blue};
+}
+.toneIndigo {
+  --kbc: #{$tn-indigo};
+}
+.toneTeal {
+  --kbc: #{$tn-teal};
+}
+.toneAmber {
+  --kbc: #{$tn-amber};
+}
+
+.kh {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+
+  small {
+    color: var(--app-ink-3);
+    font-size: 12px;
+    font-weight: 500;
+  }
+}
+
+.ichip {
+  display: grid;
+  width: 26px;
+  height: 26px;
+  flex: none;
+  place-items: center;
+  border-radius: 5px;
+  color: var(--kbc);
+  background: color-mix(in srgb, var(--kbc) 13%, var(--app-surface));
+}
+
+.kpi b {
+  margin: 2px 0;
+  font-size: 26px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--app-ink);
+}
+
+.s {
+  color: var(--app-ink-2);
+  font-size: 12px;
+}

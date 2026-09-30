@@ -1,14 +1,14 @@
 [
   {
     "email": "admin@vsf-demo.example",
-    "display_name": "Admin Demo",
+    "display_name": "Lê Minh Quân",
     "role": "ADMIN",
     "teams": [],
     "password_dev_only": "ChangeMe!123"
   },
   {
     "email": "hr1@vsf-demo.example",
-    "display_name": "HR Demo 1",
+    "display_name": "Phạm Thị Hồng",
     "role": "HR",
     "teams": [
       "HR_ONBOARDING"
@@ -17,7 +17,7 @@
   },
   {
     "email": "hr2@vsf-demo.example",
-    "display_name": "HR Demo 2",
+    "display_name": "Đỗ Thị Lan",
     "role": "HR",
     "teams": [
       "HR_ONBOARDING"
@@ -26,7 +26,7 @@
   },
   {
     "email": "it.staff@vsf-demo.example",
-    "display_name": "IT Staff Demo",
+    "display_name": "Nguyễn Văn Long",
     "role": "USER",
     "teams": [
       "IT"
@@ -35,7 +35,7 @@
   },
   {
     "email": "soc.staff@vsf-demo.example",
-    "display_name": "SOC Staff Demo",
+    "display_name": "Trần Văn Bảo",
     "role": "USER",
     "teams": [
       "VINSOC"
@@ -44,7 +44,7 @@
   },
   {
     "email": "fac.staff@vsf-demo.example",
-    "display_name": "Facilities Staff Demo",
+    "display_name": "Vũ Thị Mai",
     "role": "USER",
     "teams": [
       "FACILITIES"
@@ -53,23 +53,29 @@
   },
   {
     "email": "newhire1@vsf-demo.example",
-    "display_name": "Nhân sự mới 1",
+    "display_name": "Trần Anh Thư",
     "role": "USER",
-    "teams": [],
+    "teams": [
+      "HR_ONBOARDING"
+    ],
     "password_dev_only": "ChangeMe!123"
   },
   {
     "email": "newhire2@vsf-demo.example",
-    "display_name": "Nhân sự mới 2",
+    "display_name": "Lê Văn Khang",
     "role": "USER",
-    "teams": [],
+    "teams": [
+      "HR_ONBOARDING"
+    ],
     "password_dev_only": "ChangeMe!123"
   },
   {
     "email": "newhire3@vsf-demo.example",
-    "display_name": "Nhân sự mới 3",
+    "display_name": "Hoàng Thị Yến",
     "role": "USER",
-    "teams": [],
+    "teams": [
+      "HR_ONBOARDING"
+    ],
     "password_dev_only": "ChangeMe!123"
   }
 ]
