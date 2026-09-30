@@ -8,6 +8,6 @@ import type { Locale } from "@/i18n/routing";
 // HR/ADMIN thật (plan-portal/P4B) — chọn tài liệu đã ingest, AI đề xuất task, duyệt vào giai đoạn.
 export default async function AdminAiTasksPage() {
   const user = await getSessionUser();
-  if (user?.role === "USER") return redirect({ href: "/chat", locale: (await getLocale()) as Locale });
+  if (user?.role === "USER") return redirect({ href: "/me", locale: (await getLocale()) as Locale });
   return <AiTasksPage />;
 }

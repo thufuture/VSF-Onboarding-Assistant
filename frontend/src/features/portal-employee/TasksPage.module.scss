@@ -1,0 +1,283 @@
+@use "../../styles/tokens" as *;
+
+.heroProgress {
+  display: flex;
+  width: 220px;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px 18px;
+  border: 1px solid rgb(255 255 255 / 20%);
+  border-radius: 5px;
+  background: linear-gradient(160deg, rgb(9 31 58 / 78%), rgb(12 45 84 / 62%));
+
+  b {
+    font-size: 30px;
+    font-weight: 600;
+    line-height: 1;
+  }
+  span {
+    color: rgb(255 255 255 / 80%);
+    font-size: 12.5px;
+  }
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 268px minmax(0, 1fr);
+  overflow: hidden;
+  margin-top: var(--emp-gap);
+
+  @media (max-width: 980px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+// cột trái lúc đang tải
+.sideSkeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  border-right: 1px solid var(--app-border);
+  background: var(--app-surface-2);
+}
+
+// ── vùng nội dung của ngày ──
+.main {
+  min-width: 0;
+}
+.dayHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--app-border);
+}
+.dayRight {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+// chuyển giữa hai cách xem: lộ trình (roadmap) và danh sách
+.modes {
+  display: flex;
+  overflow: hidden;
+  border: 1px solid var(--app-border);
+  border-radius: 5px;
+
+  button {
+    display: inline-flex;
+    height: 34px;
+    align-items: center;
+    gap: 6px;
+    padding: 0 12px;
+    border: 0;
+    background: var(--app-surface);
+    color: var(--app-ink-2);
+    cursor: pointer;
+    font: 500 12.5px/1 $font;
+    transition:
+      background 0.15s ease,
+      color 0.15s ease;
+
+    &:hover {
+      background: var(--app-surface-2);
+      color: var(--app-ink);
+    }
+    & + button {
+      border-left: 1px solid var(--app-border);
+    }
+  }
+}
+.modeOn {
+  background: var(--app-accent-soft) !important;
+  color: var(--app-accent-strong) !important;
+}
+
+// ── danh sách việc (bản gọn của roadmap) ──
+.list {
+  margin: 0;
+  padding: 8px 0;
+  list-style: none;
+}
+.row {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 20px;
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: var(--app-surface-2);
+  }
+  &:hover .rowGo {
+    color: var(--app-accent);
+    transform: translateX(2px);
+  }
+}
+.row_done b {
+  color: var(--app-ink-2);
+}
+.row_locked {
+  opacity: 0.86;
+}
+.rowIcon {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  flex: none;
+  place-items: center;
+  border-radius: 5px;
+}
+.rowText {
+  min-width: 0;
+  flex: 1;
+
+  b {
+    display: block;
+    color: var(--app-ink);
+    font-size: 14px;
+    font-weight: 500;
+  }
+  small {
+    color: var(--app-ink-3);
+    font-size: 12px;
+  }
+}
+.rowHint {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 4px;
+  color: #8a6a1c;
+  font-size: 11.5px;
+}
+.rowGo {
+  flex: none;
+  color: var(--app-ink-3);
+  transition:
+    color 0.15s ease,
+    transform 0.15s ease;
+}
+.pill {
+  flex: none;
+  padding: 3px 9px;
+  border-radius: 5px;
+  font-size: 11.5px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.pill_done {
+  background: var(--app-success-soft);
+  color: var(--app-success);
+}
+.pill_ready {
+  background: var(--app-accent-soft);
+  color: var(--app-accent-strong);
+}
+.pill_locked {
+  background: var(--app-surface-2);
+  color: var(--app-ink-2);
+}
+.dayTitle {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+
+  h2 {
+    margin: 0;
+    color: var(--app-ink);
+    font-size: 17px;
+    font-weight: 600;
+  }
+  small {
+    display: block;
+    margin-top: 3px;
+    color: var(--app-ink-3);
+    font-size: 11.5px;
+  }
+}
+.dayIcon {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border-radius: 5px;
+  background: var(--app-surface-2);
+}
+
+.dayStats {
+  display: flex;
+  margin: 0;
+  gap: 5px;
+
+  > div {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 12px;
+    border: 1px solid var(--app-border);
+    border-radius: 5px;
+    background: var(--app-surface);
+    white-space: nowrap;
+    transition:
+      border-color 0.15s ease,
+      box-shadow 0.15s ease,
+      transform 0.15s ease;
+
+    &:hover {
+      border-color: var(--app-border-strong);
+      box-shadow: 0 3px 10px rgb(16 24 40 / 8%);
+      transform: translateY(-1px);
+    }
+  }
+  dt {
+    color: var(--app-ink-2);
+    font-size: 12px;
+  }
+  dd {
+    margin: 0;
+    color: var(--app-ink);
+    font-size: 15px;
+    font-weight: 600;
+  }
+}
+
+.legend {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 18px;
+  padding: 12px 20px;
+  border-top: 1px solid var(--app-border);
+  color: var(--app-ink-2);
+  font-size: 11.5px;
+
+  b {
+    font-size: 11.5px;
+    font-weight: 600;
+  }
+  span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+  }
+  i {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    box-shadow: 0 0 0 2px rgb(255 255 255 / 90%);
+  }
+}

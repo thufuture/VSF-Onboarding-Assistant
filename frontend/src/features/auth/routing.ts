@@ -5,6 +5,7 @@ export type UserRole = UserRoleDTO;
 
 const ORIGIN = "http://vsf.local";
 const ADMIN_AREA = "/admin";
+const EMPLOYEE_AREA = "/me";
 
 /**
  * Chỉ nhận đường dẫn nội bộ cho tham số `?next=` (chống chuyển hướng mở): loại `//evil.com`, `/\evil.com`,
@@ -26,9 +27,13 @@ function isAdminArea(pathname: string): boolean {
   return pathname === ADMIN_AREA || pathname.startsWith(`${ADMIN_AREA}/`);
 }
 
-/** Trang mặc định sau đăng nhập: nhân viên vào chat; HR và Admin vào khu quản trị. */
+function isEmployeeArea(pathname: string): boolean {
+  return pathname === EMPLOYEE_AREA || pathname.startsWith(`${EMPLOYEE_AREA}/`);
+}
+
+/** Trang mặc định sau đăng nhập: nhân viên vào khu của mình; HR và Admin vào khu quản trị. */
 export function defaultLandingPath(role: UserRole): string {
-  return role === "USER" ? "/chat" : ADMIN_AREA;
+  return role === "USER" ? EMPLOYEE_AREA : ADMIN_AREA;
 }
 
 /** Đích sau đăng nhập: `?next=` chỉ được nhận khi là đường dẫn nội bộ hợp lệ với vai trò. */
@@ -39,5 +44,7 @@ export function resolvePostLoginPath(role: UserRole, requested: string | null | 
   const pathname = new URL(candidate, ORIGIN).pathname;
   if (pathname === "/login") return defaultLandingPath(role);
   if (isAdminArea(pathname) && role === "USER") return defaultLandingPath(role);
+  // Khu `/me` chỉ dành cho nhân viên: HR/Admin bị đưa về khu quản trị.
+  if (isEmployeeArea(pathname) && role !== "USER") return defaultLandingPath(role);
   return candidate;
 }

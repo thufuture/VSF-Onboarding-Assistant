@@ -2,7 +2,7 @@
 
 from typing import Literal
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class CreateJourneyTemplateRequestDTO(BaseModel):
@@ -58,3 +58,12 @@ class UpdateDocumentRequestDTO(BaseModel):
 
 class SetDocumentStatusRequestDTO(BaseModel):
     status: Literal["ACTIVE", "ARCHIVED"]
+
+
+class UpdateMyProfileRequestDTO(BaseModel):
+    display_name: str = Field(min_length=1, max_length=120)
+
+
+class ChangeMyPasswordRequestDTO(BaseModel):
+    current_password: str = Field(min_length=1, max_length=1024)
+    new_password: str = Field(min_length=8, max_length=1024)

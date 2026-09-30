@@ -7,6 +7,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { PersonAvatar } from "@/components/avatar/PersonAvatar";
 import { FlatIcon, type FlatIconName } from "@/components/flat-icons/FlatIcon";
 import { VsfBrand } from "@/components/brand/VsfBrand";
+import { VsfMark } from "@/components/brand/VsfMark";
 import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
 import { useSession } from "@/features/auth/SessionProvider";
 import { Link, usePathname } from "@/i18n/navigation";
@@ -121,9 +122,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       <aside className={`${styles.sidebar} ${drawerOpen ? styles.sidebarOpen : ""}`} id="app-sidebar">
         <div className={styles.sidebarHead}>
           <Link aria-label={brandText("brand")} className={styles.brand} href={home}>
-            <span aria-hidden="true" className={styles.mark}>
-              V
-            </span>
+            <VsfMark className={styles.mark} size={40} />
             <span aria-hidden="true" className={styles.brandText}>
               <b>VSF Onboarding</b>
               <small>{t(`brandSubByRole.${user.role}`)}</small>

@@ -1,0 +1,199 @@
+@use "../../styles/tokens" as *;
+
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--emp-gap);
+  margin-top: var(--emp-gap);
+
+  @media (max-width: 980px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.kpi {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 16px 18px;
+
+  dt {
+    color: var(--app-ink-2);
+    font-size: 12.5px;
+  }
+  dd {
+    margin: 2px 0 0;
+    color: var(--app-ink);
+    font-size: 23px;
+    font-weight: 600;
+    line-height: 1.1;
+  }
+  small {
+    display: block;
+    margin-top: 2px;
+    color: var(--app-ink-3);
+    font-size: 11.5px;
+  }
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: var(--emp-gap);
+  margin-top: var(--emp-gap);
+
+  @media (max-width: 980px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.dayList {
+  margin: 0;
+  padding: 14px 20px 18px;
+  list-style: none;
+
+  li {
+    display: grid;
+    grid-template-columns: 110px minmax(0, 1fr) 46px;
+    align-items: center;
+    gap: 12px;
+    padding: 7px 0;
+  }
+}
+.dayName {
+  overflow: hidden;
+  color: var(--app-ink);
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.dayCount {
+  color: var(--app-ink-2);
+  font-size: 12.5px;
+  text-align: right;
+}
+
+.bars {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  gap: 12px;
+  height: 190px;
+  padding: 18px 20px 12px;
+}
+.bar {
+  display: flex;
+  height: 100%;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+}
+.barTrack {
+  position: relative;
+  display: flex;
+  width: 100%;
+  max-width: 54px;
+  min-height: 8px;
+  align-items: flex-end;
+  overflow: hidden;
+  border-radius: 5px 5px 0 0;
+  background: var(--app-surface-2);
+  box-shadow: inset 0 0 0 1px var(--app-border);
+
+  i {
+    width: 100%;
+    border-radius: 5px 5px 0 0;
+    transform-origin: bottom center;
+    animation: grow 0.8s 0.2s cubic-bezier(0.22, 0.8, 0.3, 1) both;
+  }
+}
+@keyframes grow {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+.barLabel {
+  order: 3;
+  color: var(--app-ink-2);
+  font-size: 11.5px;
+  text-align: center;
+}
+.barValue {
+  order: 1;
+  color: var(--app-ink);
+  font-size: 12px;
+  font-weight: 600;
+}
+.legendNote {
+  margin: 0;
+  padding: 0 20px 16px;
+  color: var(--app-ink-3);
+  font-size: 11.5px;
+}
+
+.recent {
+  margin-top: var(--emp-gap);
+}
+.timeline {
+  margin: 0;
+  padding: 14px 20px 18px 20px;
+  list-style: none;
+
+  li {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 9px 0 9px 4px;
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 22px;
+      bottom: -9px;
+      left: 9px;
+      width: 2px;
+      background: var(--app-border);
+    }
+    &:last-child::before {
+      display: none;
+    }
+  }
+  i {
+    z-index: 1;
+    width: 11px;
+    height: 11px;
+    flex: none;
+    margin-top: 5px;
+    border: 2px solid var(--app-surface);
+    border-radius: 50%;
+  }
+  b {
+    display: block;
+    color: var(--app-ink);
+    font-size: 13.5px;
+    font-weight: 500;
+  }
+  small {
+    color: var(--app-ink-3);
+    font-size: 12px;
+  }
+}
+
+.quiet {
+  margin: 0;
+  padding: 20px;
+  color: var(--app-ink-3);
+  font-size: 13px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .barTrack i {
+    animation: none;
+  }
+}

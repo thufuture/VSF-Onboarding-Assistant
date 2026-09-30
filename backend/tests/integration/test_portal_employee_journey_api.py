@@ -245,3 +245,95 @@ async def test_no_team_assigned_is_rejected(
     async with session_factory() as session:
         await session.execute(delete(User).where(User.email == email))
         await session.commit()
+
+
+async def test_journey_exposes_group_stage_and_prerequisites(
+    session_factory: async_sessionmaker[AsyncSession],
+    team: SimpleNamespace,
+    make_member: MakeMember,
+    published_template: SimpleNamespace,
+) -> None:
+    employee = await make_member("USER", team.id)
+    app = app_for(session_factory)
+
+    async with client_for(app) as client:
+        await login(client, employee)
+        tasks = (await client.get("/api/v1/portal/me/journey")).json()["tasks"]
+        second = next(t for t in tasks if t["task_template_id"] == published_template.task2_id)
+        first = next(t for t in tasks if t["task_template_id"] == published_template.task1_id)
+        assert second["prerequisites"] == [{"title": "Nhận laptop", "done": False}]
+        assert first["prerequisites"] == []
+        assert second["stage_title"] == "Ngày 1"
+        assert "task_group" in second
+
+        done = await client.post(f"/api/v1/portal/me/tasks/{first['id']}/complete")
+        assert done.status_code == 200
+        refreshed = (await client.get("/api/v1/portal/me/journey")).json()["tasks"]
+        second_after = next(t for t in refreshed if t["id"] == second["id"])
+        assert second_after["prerequisites"] == [{"title": "Nhận laptop", "done": True}]
+
+
+async def test_profile_progress_update_name_and_change_password(
+    session_factory: async_sessionmaker[AsyncSession],
+    team: SimpleNamespace,
+    make_member: MakeMember,
+    published_template: SimpleNamespace,
+) -> None:
+    employee = await make_member("USER", team.id)
+    app = app_for(session_factory)
+
+    async with client_for(app) as client:
+        await login(client, employee)
+        before = (await client.get("/api/v1/portal/me/profile")).json()
+        assert before["email"] == employee.email
+        assert before["department"] == "Team thử"
+        assert before["tasks_total"] == 0 and before["journey_started_at"] is None  # chưa mở lộ trình thì chưa tạo
+
+        await client.get("/api/v1/portal/me/journey")
+        after = (await client.get("/api/v1/portal/me/profile")).json()
+        assert after["tasks_total"] == 2 and after["tasks_done"] == 0
+
+        renamed = await client.patch("/api/v1/portal/me/profile", json={"display_name": "  Nguyễn   Văn A "})
+        assert renamed.status_code == 200
+        assert renamed.json()["display_name"] == "Nguyễn Văn A"
+        blank = await client.patch("/api/v1/portal/me/profile", json={"display_name": "   "})
+        assert blank.status_code == 422
+
+        wrong = await client.post(
+            "/api/v1/portal/me/password", json={"current_password": "sai-mat-khau", "new_password": "MatKhauMoi!456"}
+        )
+        assert wrong.status_code == 400 and wrong.json()["code"] == "CURRENT_PASSWORD_WRONG"
+        short = await client.post(
+            "/api/v1/portal/me/password", json={"current_password": PASSWORD, "new_password": "ngan"}
+        )
+        assert short.status_code == 422
+        changed = await client.post(
+            "/api/v1/portal/me/password", json={"current_password": PASSWORD, "new_password": "MatKhauMoi!456"}
+        )
+        assert changed.status_code == 204
+        # thiết bị đổi mật khẩu vẫn đăng nhập (nhận cookie mới)
+        assert (await client.get("/api/v1/portal/me/profile")).status_code == 200
+
+    async with client_for(app) as other:
+        old = await other.post("/api/v1/auth/login", json={"email": employee.email, "password": PASSWORD})
+        assert old.status_code == 401
+        new = await other.post("/api/v1/auth/login", json={"email": employee.email, "password": "MatKhauMoi!456"})
+        assert new.status_code == 200
+
+
+async def test_employee_document_list_needs_login(
+    session_factory: async_sessionmaker[AsyncSession],
+    team: SimpleNamespace,
+    make_member: MakeMember,
+) -> None:
+    employee = await make_member("USER", team.id)
+    app = app_for(session_factory)
+
+    async with client_for(app) as anonymous:
+        assert (await anonymous.get("/api/v1/portal/me/documents")).status_code == 401
+    async with client_for(app) as client:
+        await login(client, employee)
+        response = await client.get("/api/v1/portal/me/documents")
+        assert response.status_code == 200
+        for item in response.json():
+            assert item["latest_version_id"] > 0 and item["title"]

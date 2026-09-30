@@ -8,16 +8,25 @@ from pydantic import BaseModel
 EmployeeTaskStatusDTO = Literal["LOCKED", "READY", "IN_PROGRESS", "WAITING_EXTERNAL", "BLOCKED", "DONE", "SKIPPED"]
 
 
+class EmployeePrerequisiteDTO(BaseModel):
+    title: str
+    done: bool
+
+
 class EmployeeTaskResponseDTO(BaseModel):
     id: int
     task_template_id: int
     title: str
     body_markdown: str
     required: bool
+    stage_id: int
     stage_title: str
+    stage_sort_order: int
     sort_order: int
+    task_group: str | None
     status: EmployeeTaskStatusDTO
     completed_at: datetime | None
+    prerequisites: list[EmployeePrerequisiteDTO]
 
 
 class EmployeeJourneyResponseDTO(BaseModel):
@@ -154,3 +163,28 @@ class EmployeeSummaryResponseDTO(BaseModel):
     current_task_title: str | None
     current_stage_title: str | None
     current_status: EmployeeTaskStatusDTO | None
+
+
+class EmployeeProfileResponseDTO(BaseModel):
+    id: int
+    email: str
+    display_name: str
+    role: str
+    department: str | None
+    joined_at: datetime
+    last_login_at: datetime | None
+    journey_started_at: datetime | None
+    tasks_total: int
+    tasks_done: int
+    required_total: int
+    required_done: int
+
+
+class EmployeeDocumentResponseDTO(BaseModel):
+    id: int
+    title: str
+    category_name: str
+    category_slug: str
+    updated_at: datetime
+    latest_version_id: int
+    section_count: int

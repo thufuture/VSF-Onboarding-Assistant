@@ -8,6 +8,6 @@ import type { Locale } from "@/i18n/routing";
 // "Nhân viên" thật (plan-portal) — danh sách + tiến độ lộ trình, GET /portal/employees.
 export default async function AdminEmployeesPage() {
   const user = await getSessionUser();
-  if (user?.role === "USER") return redirect({ href: "/chat", locale: (await getLocale()) as Locale });
+  if (user?.role === "USER") return redirect({ href: "/me", locale: (await getLocale()) as Locale });
   return <EmployeesPage />;
 }

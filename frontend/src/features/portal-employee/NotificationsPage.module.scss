@@ -1,0 +1,144 @@
+@use "../../styles/tokens" as *;
+
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: var(--emp-gap) 0;
+}
+.chips {
+  display: flex;
+  gap: 6px;
+}
+.chip {
+  height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--app-border);
+  border-radius: 5px;
+  background: var(--app-surface);
+  color: var(--app-ink-2);
+  cursor: pointer;
+  font: 500 12.5px/1 $font;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+
+  &:hover {
+    border-color: var(--app-accent);
+    color: var(--app-accent-strong);
+  }
+}
+.chipOn {
+  border-color: var(--app-accent);
+  background: var(--app-accent-soft);
+  color: var(--app-accent-strong);
+}
+
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  li + li .item {
+    border-top: 1px solid var(--app-border);
+  }
+}
+
+.item {
+  display: flex;
+  width: 100%;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 18px;
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: var(--app-surface-2);
+  }
+  &:hover .go {
+    color: var(--app-accent);
+    transform: translateX(2px);
+  }
+}
+.unread {
+  background: color-mix(in srgb, var(--app-accent) 4%, transparent);
+}
+
+.icon {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  flex: none;
+  place-items: center;
+  border-radius: 5px;
+}
+.unlocked {
+  background: var(--app-accent-soft);
+  color: var(--app-accent-strong);
+}
+.done {
+  background: var(--app-success-soft);
+  color: var(--app-success);
+}
+.reminder {
+  background: #fdf3e0;
+  color: #8a6a1c;
+}
+.welcome {
+  background: var(--app-surface-2);
+  color: var(--app-ink-2);
+}
+
+.text {
+  min-width: 0;
+  flex: 1;
+}
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--app-ink-3);
+  font-size: 11.5px;
+
+  b {
+    color: var(--app-ink-2);
+    font-weight: 600;
+  }
+}
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--app-accent);
+}
+.itemTitle {
+  display: block;
+  margin-top: 3px;
+  color: var(--app-ink);
+  font-size: 14px;
+  font-weight: 500;
+}
+.itemBody {
+  display: block;
+  margin-top: 2px;
+  color: var(--app-ink-2);
+  font-size: 12.5px;
+  line-height: 1.55;
+}
+.go {
+  flex: none;
+  align-self: center;
+  color: var(--app-ink-3);
+  transition:
+    color 0.15s ease,
+    transform 0.15s ease;
+}

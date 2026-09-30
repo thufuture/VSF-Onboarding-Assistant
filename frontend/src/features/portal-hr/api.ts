@@ -13,7 +13,9 @@ import type {
   DocumentCategoryResponseDTO,
   DocumentListItemResponseDTO,
   DocumentUploadResponseDTO,
+  EmployeeDocumentResponseDTO,
   EmployeeJourneyResponseDTO,
+  EmployeeProfileResponseDTO,
   EmployeeSummaryResponseDTO,
   EmployeeTaskResponseDTO,
   HrDashboardResponseDTO,
@@ -115,6 +117,38 @@ function completeTask(employeeTaskId: number): Promise<EmployeeTaskResponseDTO> 
   return request(`/api/v1/portal/me/tasks/${employeeTaskId}/complete`, { method: "POST" });
 }
 
+function getMyProfile(): Promise<EmployeeProfileResponseDTO> {
+  return request("/api/v1/portal/me/profile");
+}
+
+function updateMyProfile(displayName: string): Promise<EmployeeProfileResponseDTO> {
+  return request("/api/v1/portal/me/profile", {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ display_name: displayName }),
+  });
+}
+
+async function changeMyPassword(currentPassword: string, newPassword: string): Promise<void> {
+  let response: Response;
+  try {
+    response = await fetch("/api/v1/portal/me/password", {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ current_password: currentPassword, new_password: newPassword }),
+    });
+  } catch {
+    throw new PortalError("network");
+  }
+  if (response.status === 401) throw new PortalError("unauthorized");
+  if (!response.ok) throw new PortalError("unavailable", await readErrorCode(response));
+}
+
+function listMyDocuments(): Promise<EmployeeDocumentResponseDTO[]> {
+  return request("/api/v1/portal/me/documents");
+}
+
 function getDashboard(): Promise<HrDashboardResponseDTO> {
   return request("/api/v1/portal/dashboard");
 }
@@ -198,6 +232,10 @@ export const portalHrApi = {
   acceptAiTaskProposal,
   originalDocumentUrl,
   getMyJourney,
+  getMyProfile,
+  updateMyProfile,
+  changeMyPassword,
+  listMyDocuments,
   completeTask,
   getDashboard,
   listDocuments,

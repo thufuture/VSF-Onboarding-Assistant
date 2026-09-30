@@ -117,16 +117,7 @@ $sidebar-width: 248px;
 
 // Logo: ô vuông hai màu chia chéo (xanh dương / xanh ngọc), chữ V trắng — phẳng, không chuyển sắc.
 .mark {
-  display: grid;
-  width: 40px;
-  height: 40px;
   flex: none;
-  place-items: center;
-  border-radius: 5px;
-  background: linear-gradient(135deg, #1a6fc0 0 54%, #d9343f 54% 100%);
-  color: #fff;
-  font-size: 20px;
-  font-weight: 600;
 }
 
 .brandText {

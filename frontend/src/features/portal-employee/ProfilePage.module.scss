@@ -1,0 +1,190 @@
+@use "../../styles/tokens" as *;
+
+.columns {
+  display: grid;
+  grid-template-columns: 330px minmax(0, 1fr);
+  align-items: start;
+  gap: var(--emp-gap);
+  margin-top: var(--emp-gap);
+
+  @media (max-width: 980px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.identity {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 20px;
+  text-align: center;
+
+  h2 {
+    margin: 12px 0 2px;
+    color: var(--app-ink);
+    font-size: 18px;
+    font-weight: 600;
+  }
+  p {
+    margin: 0;
+    color: var(--app-ink-2);
+    font-size: 13px;
+  }
+}
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.facts {
+  width: 100%;
+  margin: 18px 0 0;
+  padding-top: 14px;
+  border-top: 1px solid var(--app-border);
+  text-align: left;
+
+  > div {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 5px 0;
+  }
+  dt {
+    color: var(--app-ink-3);
+    font-size: 12.5px;
+  }
+  dd {
+    margin: 0;
+    color: var(--app-ink);
+    font-size: 12.5px;
+    font-weight: 500;
+    text-align: right;
+  }
+}
+
+.progress {
+  width: 100%;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--app-border);
+  text-align: left;
+
+  small {
+    display: block;
+    margin-top: 7px;
+    color: var(--app-ink-3);
+    font-size: 11.5px;
+    line-height: 1.5;
+  }
+}
+.progressHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 7px;
+
+  span {
+    color: var(--app-ink-2);
+    font-size: 12.5px;
+  }
+  b {
+    color: var(--app-ink);
+    font-size: 18px;
+    font-weight: 600;
+  }
+}
+
+.forms {
+  display: flex;
+  flex-direction: column;
+  gap: var(--emp-gap);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 18px 20px 20px;
+
+  label {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+
+    span {
+      color: var(--app-ink-2);
+      font-size: 12.5px;
+    }
+  }
+  input {
+    height: 38px;
+    padding: 0 12px;
+    border: 1px solid var(--app-border-strong);
+    border-radius: 5px;
+    background: var(--app-surface);
+    color: var(--app-ink);
+    font: 400 13.5px/1 $font;
+    outline: none;
+    transition:
+      border-color 0.15s ease,
+      box-shadow 0.15s ease;
+
+    &:focus {
+      border-color: var(--app-accent);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--app-accent) 16%, transparent);
+    }
+  }
+}
+.pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+
+  @include phone-down {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.formFoot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+
+  small {
+    max-width: 380px;
+    color: var(--app-ink-3);
+    font-size: 11.5px;
+    line-height: 1.5;
+  }
+  button {
+    margin-left: auto;
+  }
+}
+.error {
+  margin: 0;
+  padding: 9px 12px;
+  border: 1px solid #e3b1b1;
+  border-radius: 5px;
+  background: #fdf1f1;
+  color: #8f2f2f;
+  font-size: 12.5px;
+}
+
+.spin {
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.headIcon {
+  flex: none;
+  color: var(--app-ink-3);
+}

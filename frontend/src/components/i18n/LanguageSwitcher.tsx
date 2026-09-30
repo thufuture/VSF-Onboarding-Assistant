@@ -11,7 +11,7 @@ import styles from "./LanguageSwitcher.module.scss";
 // Tên ngôn ngữ luôn hiển thị bằng chính ngôn ngữ đó nên không dịch.
 const LANGUAGE_NAMES: Record<Locale, string> = { vi: "Việt Nam", en: "English" };
 
-function FlagIcon({ locale }: { locale: Locale }) {
+export function FlagIcon({ locale }: { locale: Locale }) {
   const clipId = useId();
 
   if (locale === "vi") {

@@ -183,3 +183,32 @@ async def list_task_details(session: AsyncSession, journey_id: int) -> list[Task
         .order_by(JourneyStage.sort_order, TaskTemplate.sort_order, EmployeeTask.id)
     )
     return [TaskDetail(task, template, stage) for task, template, stage in rows.all()]
+
+
+async def list_prerequisites(session: AsyncSession, journey_id: int) -> dict[int, list[tuple[str, bool]]]:
+    """Tiên quyết của từng task trong journey: `employee_task.id -> [(tên task tiên quyết, đã xong?)]`."""
+    tasks = (await session.scalars(select(EmployeeTask).where(EmployeeTask.employee_journey_id == journey_id))).all()
+    by_template = {t.task_template_id: t for t in tasks}
+    if not by_template:
+        return {}
+    title_rows = (
+        await session.execute(select(TaskTemplate.id, TaskTemplate.title).where(TaskTemplate.id.in_(by_template)))
+    ).all()
+    titles = {template_id: title for template_id, title in title_rows}
+    rows = (
+        await session.execute(
+            select(TaskDependency.task_template_id, TaskDependency.depends_on_task_template_id).where(
+                TaskDependency.task_template_id.in_(by_template)
+            )
+        )
+    ).all()
+    result: dict[int, list[tuple[str, bool]]] = {}
+    for template_id, depends_on_id in rows:
+        target = by_template.get(template_id)
+        source = by_template.get(depends_on_id)
+        if target is None or source is None:
+            continue
+        result.setdefault(target.id, []).append(
+            (titles.get(depends_on_id, ""), source.status == EmployeeTaskStatus.DONE)
+        )
+    return result

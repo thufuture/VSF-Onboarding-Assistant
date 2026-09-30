@@ -563,31 +563,6 @@
       "network": "Không kết nối được server."
     }
   },
-  "portalRoadmap": {
-    "loading": "Đang tải lộ trình…",
-    "greeting": "Việc cần làm của {name} theo đúng thứ tự.",
-    "taskOrdinal": "Việc {n}",
-    "status": {
-      "DONE": "Hoàn thành",
-      "READY": "Sẵn sàng",
-      "IN_PROGRESS": "Đang làm",
-      "WAITING_EXTERNAL": "Đang chờ",
-      "LOCKED": "Đang khóa",
-      "BLOCKED": "Trễ hạn",
-      "SKIPPED": "Đã bỏ qua"
-    },
-    "markDone": "Đánh dấu hoàn thành",
-    "completing": "Đang lưu…",
-    "lockedHint": "Việc này đang khóa — hoàn thành việc trước để mở khóa.",
-    "doneHint": "Bạn đã hoàn thành việc này.",
-    "close": "Đóng",
-    "errors": {
-      "unauthorized": "Bạn cần đăng nhập lại.",
-      "forbidden": "Bạn không có quyền cho hành động này.",
-      "unavailable": "Có lỗi xảy ra, thử lại sau.",
-      "network": "Không kết nối được server."
-    }
-  },
   "portalDocuments": {
     "title": "Tài liệu nguồn",
     "description": "Quản lý file gốc, nội dung đã parse và trạng thái ingest.",
@@ -983,6 +958,329 @@
         "journey_template": "Lộ trình",
         "document": "Tài liệu"
       }
+    }
+  },
+  "employee": {
+    "brand": "VSF Onboarding",
+    "brandSub": "Portal nhân viên mới",
+    "navLabel": "Điều hướng chính",
+    "accountMenu": "Tài khoản của tôi",
+    "darkMode": "Chuyển sang giao diện tối",
+    "lightMode": "Chuyển sang giao diện sáng",
+    "askViga": "Hỏi Viga",
+    "nav": {
+      "overview": "Tổng quan",
+      "tasks": "Nhiệm vụ",
+      "progress": "Theo dõi",
+      "documents": "Tài liệu",
+      "notifications": "Thông báo"
+    },
+    "menu": {
+      "profile": "Hồ sơ của tôi",
+      "logout": "Đăng xuất",
+      "appearance": "Giao diện"
+    },
+    "footer": {
+      "product": "VSF Onboarding Portal — lộ trình, tài liệu và trợ lý Viga cho nhân viên mới.",
+      "credit": "Ảnh minh họa tòa nhà lấy từ Wikimedia Commons (CC BY 3.0 và CC BY-SA 4.0), ghi công đầy đủ trong kho mã."
+    },
+    "task": {
+      "close": "Đóng",
+      "markDone": "Tôi đã hoàn thành",
+      "alreadyDone": "Bạn đã hoàn thành việc này",
+      "required": "Bắt buộc",
+      "optional": "Tùy chọn",
+      "view": "Xem chi tiết",
+      "noBody": "Việc này chưa có hướng dẫn chi tiết.",
+      "lockedTitle": "Cần hoàn thành trước:",
+      "prereqTitle": "Việc tiên quyết",
+      "state": {
+        "done": "Đã xong",
+        "ready": "Làm được ngay",
+        "locked": "Đang khóa"
+      },
+      "group": {
+        "PROFILE": "Hồ sơ",
+        "TRAINING": "Đào tạo",
+        "DEVICE": "Thiết bị",
+        "OFFICE": "Văn phòng",
+        "NONE": "Chưa phân nhóm"
+      }
+    },
+    "overview": {
+      "greeting": "Xin chào, {name}",
+      "subtitle": "Đây là những việc bạn cần làm, theo đúng thứ tự. Việc bị khóa sẽ tự mở khi bạn xong việc tiên quyết.",
+      "heroProgressLabel": "Tiến độ của bạn",
+      "heroProgressHint": "{done}/{total} việc đã xong",
+      "openRoadmap": "Mở lộ trình",
+      "kpi": {
+        "done": "Đã xong",
+        "doneHint": "trên tổng {total} việc",
+        "ready": "Làm được ngay",
+        "readyHint": "không còn vướng việc nào",
+        "locked": "Đang khóa",
+        "lockedHint": "chờ xong việc tiên quyết",
+        "required": "Việc bắt buộc",
+        "requiredHint": "trên tổng {total} việc bắt buộc"
+      },
+      "next": {
+        "title": "Việc làm được ngay",
+        "hint": "Bấm vào một việc để xem hướng dẫn và tự xác nhận hoàn thành",
+        "all": "Xem tất cả",
+        "emptyTitle": "Không còn việc nào đang mở",
+        "emptyBody": "Các việc còn lại đang chờ bạn hoàn thành việc tiên quyết, hoặc bạn đã xong toàn bộ lộ trình."
+      },
+      "recent": {
+        "title": "Bạn vừa hoàn thành",
+        "empty": "Chưa có việc nào được đánh dấu hoàn thành.",
+        "locked": "Còn {count} việc đang khóa, sẽ tự mở khi xong việc tiên quyết."
+      },
+      "shortcuts": {
+        "title": "Lối tắt",
+        "tasks": "Nhiệm vụ",
+        "tasksHint": "Xem theo từng ngày",
+        "documents": "Tài liệu",
+        "documentsHint": "Đọc ngay trong portal",
+        "progress": "Theo dõi",
+        "progressHint": "Tiến độ chi tiết",
+        "profile": "Hồ sơ",
+        "profileHint": "Thông tin và mật khẩu"
+      },
+      "completed": "Đã hoàn thành: {title}",
+      "completeFailed": "Chưa ghi nhận được. Bạn thử lại giúp nhé.",
+      "problem": {
+        "noJourney": "Bạn chưa được gán lộ trình onboarding. Hãy liên hệ HR phụ trách để được thêm vào phòng ban và lộ trình.",
+        "unavailable": "Chưa tải được lộ trình. Bạn thử tải lại trang giúp nhé."
+      },
+      "currentDay": "Đang ở {day}",
+      "chart": {
+        "title": "Tiến độ của bạn",
+        "hint": "Theo trạng thái từng việc",
+        "center": "đã xong"
+      }
+    },
+    "tasks": {
+      "title": "Lộ trình theo từng ngày",
+      "subtitle": "Chọn một ngày ở bên trái để xem việc của ngày đó. Làm lần lượt, việc bị khóa sẽ tự mở khi xong việc tiên quyết.",
+      "heroProgress": "{done}/{total} việc đã xong",
+      "sideTitle": "Các ngày",
+      "sideHint": "Chọn ngày để xem việc",
+      "start": "Bắt đầu",
+      "finish": "Kết thúc",
+      "dayCount": "{done}/{total} việc đã xong",
+      "stat": {
+        "done": "Đã xong",
+        "ready": "Làm ngay",
+        "locked": "Đang khóa"
+      },
+      "modeRoad": "Lộ trình",
+      "modeList": "Danh sách",
+      "taskNo": "Việc {n}",
+      "prereq": "{count} tiên quyết",
+      "needFirst": "Cần xong: {titles}",
+      "legendTitle": "Màu mốc theo nhóm việc",
+      "emptyTitle": "Chưa có lộ trình",
+      "emptyBody": "HR chưa xuất bản lộ trình cho phòng ban của bạn. Khi có, các việc sẽ hiện ở đây.",
+      "emptyDayTitle": "Ngày này chưa có việc nào",
+      "emptyDayBody": "Hãy chọn một ngày khác ở cột bên trái.",
+      "completed": "Đã hoàn thành: {title}",
+      "completeFailed": "Chưa ghi nhận được. Bạn thử lại giúp nhé.",
+      "problem": {
+        "noJourney": "Bạn chưa được gán lộ trình onboarding. Hãy liên hệ HR phụ trách để được thêm vào phòng ban và lộ trình.",
+        "unavailable": "Chưa tải được lộ trình. Bạn thử tải lại trang giúp nhé."
+      }
+    },
+    "progress": {
+      "title": "Tiến độ chi tiết",
+      "subtitle": "Tổng hợp việc theo ngày và theo nhóm, cùng những việc bạn vừa hoàn thành.",
+      "kpi": {
+        "overall": "Tiến độ chung",
+        "overallHint": "{done}/{total} việc đã xong",
+        "required": "Việc bắt buộc",
+        "requiredHint": "đã xong trên tổng số",
+        "ready": "Làm được ngay",
+        "readyHint": "không còn vướng việc nào",
+        "locked": "Đang khóa",
+        "lockedHint": "chờ xong việc tiên quyết"
+      },
+      "byDay": {
+        "title": "Theo từng ngày",
+        "hint": "Số việc đã xong trên tổng số việc của ngày"
+      },
+      "byGroup": {
+        "title": "Theo nhóm việc",
+        "hint": "Chiều cao cột là tổng số việc của nhóm",
+        "legend": "Phần tô màu là số việc đã xong trong nhóm."
+      },
+      "recent": {
+        "title": "Hoạt động gần đây",
+        "empty": "Chưa có việc nào được đánh dấu hoàn thành."
+      },
+      "noData": "Chưa có dữ liệu để hiển thị.",
+      "problem": {
+        "noJourney": "Bạn chưa được gán lộ trình onboarding. Hãy liên hệ HR phụ trách.",
+        "unavailable": "Chưa tải được lộ trình. Bạn thử tải lại trang giúp nhé."
+      }
+    },
+    "documents": {
+      "title": "Tài liệu",
+      "subtitle": "Tài liệu do HR và các phòng ban đăng trong portal. Đọc được ngay tại đây, không cần tải về.",
+      "searchPlaceholder": "Tìm tài liệu…",
+      "allCategories": "Mọi nhóm",
+      "sections": "{count} mục",
+      "read": "Đọc tài liệu",
+      "emptyTitle": "Không có tài liệu phù hợp",
+      "emptyBody": "Thử bỏ bớt bộ lọc hoặc tìm bằng từ khóa khác.",
+      "failed": "Chưa tải được danh sách tài liệu. Bạn thử tải lại trang giúp nhé."
+    },
+    "notifications": {
+      "title": "Thông báo",
+      "subtitle": "Nhắc việc chỉ hiển thị trong portal, dựa trên chính lộ trình của bạn. Trạng thái đã đọc lưu trên máy bạn.",
+      "filterAll": "Tất cả ({count})",
+      "filterUnread": "Chưa đọc ({count})",
+      "markAll": "Đánh dấu tất cả đã đọc",
+      "emptyTitle": "Không có thông báo nào",
+      "emptyBody": "Khi có việc mới mở khóa hoặc việc cần làm, thông báo sẽ hiện ở đây.",
+      "kind": {
+        "unlocked": "Việc mới mở",
+        "done": "Đã hoàn thành",
+        "reminder": "Nhắc việc",
+        "welcome": "Hệ thống"
+      },
+      "welcomeTitle": "Chào mừng bạn đến VSF!",
+      "welcomeBody": "Bắt đầu từ trang Tổng quan; bạn có thể hỏi Viga bất cứ lúc nào.",
+      "unlockedTitle": "Bạn làm được ngay: {title}",
+      "unlockedBody": "Việc này không còn vướng việc tiên quyết nào.",
+      "doneTitle": "Đã hoàn thành: {title}",
+      "doneBody": "Việc này đã được ghi nhận trong lộ trình của bạn.",
+      "reminderTitle": "{day} còn việc chưa xong",
+      "reminderBody": "Còn {count} việc bắt buộc trong ngày này.",
+      "seeAll": "Xem tất cả thông báo"
+    },
+    "profile": {
+      "title": "Hồ sơ của tôi",
+      "subtitle": "Thông tin tài khoản, tiến độ lộ trình và mật khẩu đăng nhập.",
+      "failed": "Chưa tải được hồ sơ. Bạn thử tải lại trang giúp nhé.",
+      "role": {
+        "USER": "Nhân viên mới",
+        "HR": "Nhân sự (HR)",
+        "ADMIN": "Quản trị hệ thống"
+      },
+      "facts": {
+        "joined": "Ngày tạo tài khoản",
+        "started": "Bắt đầu lộ trình",
+        "notStarted": "Chưa bắt đầu",
+        "lastLogin": "Đăng nhập gần nhất"
+      },
+      "progressLabel": "Tiến độ lộ trình",
+      "progressHint": "{done}/{total} việc đã xong, trong đó {requiredDone}/{requiredTotal} việc bắt buộc.",
+      "nameTitle": "Tên hiển thị",
+      "nameHint": "Tên này hiện trên portal và trong danh sách của HR.",
+      "nameLabel": "Tên hiển thị",
+      "save": "Lưu",
+      "nameSaved": "Đã lưu tên hiển thị.",
+      "nameFailed": "Chưa lưu được tên hiển thị. Bạn thử lại giúp nhé.",
+      "password": {
+        "title": "Đổi mật khẩu",
+        "hint": "Nhập mật khẩu hiện tại rồi đặt mật khẩu mới, tối thiểu 8 ký tự.",
+        "current": "Mật khẩu hiện tại",
+        "new": "Mật khẩu mới",
+        "confirm": "Nhập lại mật khẩu mới",
+        "submit": "Đổi mật khẩu",
+        "note": "Sau khi đổi, các thiết bị khác sẽ phải đăng nhập lại; thiết bị này vẫn giữ phiên.",
+        "saved": "Đã đổi mật khẩu.",
+        "mismatch": "Hai lần nhập mật khẩu mới chưa khớp nhau.",
+        "tooShort": "Mật khẩu mới cần ít nhất 8 ký tự.",
+        "wrongCurrent": "Mật khẩu hiện tại chưa đúng.",
+        "unchanged": "Mật khẩu mới trùng mật khẩu cũ.",
+        "failed": "Chưa đổi được mật khẩu. Bạn thử lại giúp nhé."
+      }
+    },
+    "viga": {
+      "title": "Viga",
+      "subtitle": "Vin Intelligent Guidance Assistant",
+      "close": "Đóng",
+      "mockNote": "Bản dựng giao diện: câu trả lời được suy ra từ chính lộ trình của bạn, chưa nối với trợ lý thật.",
+      "inputLabel": "Câu hỏi cho Viga",
+      "placeholder": "Hỏi về việc cần làm…",
+      "send": "Gửi",
+      "sourcesLabel": "Nguồn:",
+      "quick": {
+        "q1": "Hôm nay mình cần làm gì?",
+        "q2": "Việc nào đang bị khóa?",
+        "q3": "Nhận laptop thế nào?",
+        "q4": "Hồ sơ cần nộp gồm những gì?"
+      },
+      "type": {
+        "NEXT_STEP": "Bước kế tiếp",
+        "PREREQUISITE_REQUIRED": "Cần làm trước",
+        "DAY_PLAN": "Kế hoạch ngày",
+        "INFO": "Thông tin",
+        "NOT_IN_JOURNEY": "Chưa có căn cứ"
+      },
+      "reply": {
+        "notInJourney": "Nội dung này chưa có trong lộ trình onboarding của bạn nên mình không đoán. Bạn hỏi HR phụ trách giúp nhé.",
+        "allDone": "Việc này bạn đã hoàn thành rồi.",
+        "nextStep": "Bạn làm được ngay việc “{title}”. Mở việc để xem hướng dẫn từng bước.",
+        "locked": "Bạn chưa làm được “{title}” vì cần hoàn thành “{blocker}” trước.",
+        "dayPlan": "{day}: bạn làm được ngay {ready} việc trên tổng {total} việc của ngày.",
+        "dayPlanEmpty": "{day}: hiện chưa có việc nào làm được ngay, các việc còn lại đang chờ việc tiên quyết."
+      },
+      "action": {
+        "openTask": "Mở: {title}",
+        "openDay": "Xem {day}"
+      },
+      "source": {
+        "task": "việc “{title}” trong lộ trình",
+        "day": "{day} trong lộ trình"
+      },
+      "hello": "Xin chào {name}, mình là Viga. Việc thường ngày cứ làm theo lộ trình. Hỏi mình khi bạn không biết bắt đầu từ đâu, khi một việc đang bị khóa, hoặc khi cần tra trong tài liệu HR đã đăng.",
+      "infoLabel": "Viga hoạt động thế nào",
+      "infoLink": "Viga làm được gì, không làm gì?",
+      "infoTitle": "Viga — trợ lý dẫn đường",
+      "infoIntro": "Viga dựa trên lộ trình onboarding của chính bạn và tài liệu HR đã đăng trong portal. Viga chỉ dẫn đường, không thay bạn quyết định và không tự đổi trạng thái việc.",
+      "canTitle": "Viga làm được",
+      "can": {
+        "a1": "Nói việc kế tiếp nên làm là việc nào",
+        "a2": "Giải thích vì sao một việc đang bị khóa và cần xong việc nào trước",
+        "a3": "Tóm tắt kế hoạch của ngày bạn đang làm"
+      },
+      "cannotTitle": "Viga không làm",
+      "cannot": {
+        "b1": "Không tự đánh dấu hoàn thành thay bạn",
+        "b2": "Không đoán khi tài liệu chưa có căn cứ — sẽ nói thẳng là chưa có",
+        "b3": "Không cấp quyền, không duyệt và không thay HR quyết định"
+      }
+    },
+    "taskPage": {
+      "breadcrumb": "Đường dẫn",
+      "allTasks": "Nhiệm vụ",
+      "backToTasks": "Về danh sách nhiệm vụ",
+      "notFoundTitle": "Không tìm thấy việc này",
+      "notFoundBody": "Việc này không nằm trong lộ trình của bạn, hoặc đã bị HR gỡ khỏi lộ trình.",
+      "lockedTitle": "Việc này đang khóa",
+      "lockedBody": "Bạn cần hoàn thành việc tiên quyết ở cột bên phải trước; xong là việc này tự mở.",
+      "why": "Vì sao phải làm",
+      "steps": "Các bước thực hiện",
+      "stepsHint": "Làm lần lượt từ trên xuống",
+      "doneWhen": "Điều kiện hoàn thành",
+      "guide": "Hướng dẫn",
+      "noBody": "Việc này chưa có hướng dẫn chi tiết.",
+      "statusTitle": "Thực hiện việc này",
+      "readyHint": "Bạn làm được ngay. Làm xong thì bấm nút bên dưới để ghi nhận.",
+      "lockedHint": "Chưa bấm hoàn thành được vì còn việc tiên quyết chưa xong.",
+      "doneAt": "Đã hoàn thành lúc {at}",
+      "unlockedAfter": "Đã mở khóa {count} việc tiếp theo.",
+      "askViga": "Hỏi Viga về việc này",
+      "askVigaQuestion": "{title} làm thế nào?",
+      "prereqTitle": "Cần xong trước",
+      "unlocksTitle": "Sau việc này",
+      "unlocksHint": "Những việc sẽ mở khi bạn xong việc này",
+      "completed": "Đã hoàn thành: {title}",
+      "completeFailed": "Chưa ghi nhận được. Bạn thử lại giúp nhé.",
+      "heroSubtitle": "{group} · {required} · {day}",
+      "railTitle": "Việc trong {day}",
+      "railHint": "{done}/{total} việc đã xong"
     }
   }
 }

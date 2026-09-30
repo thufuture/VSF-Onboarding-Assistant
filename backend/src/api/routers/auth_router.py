@@ -38,7 +38,7 @@ _ERRORS: dict[int | str, dict[str, object]] = {
 }
 
 
-def _set_session_cookie(response: Response, token: str, settings: Settings) -> None:
+def set_session_cookie(response: Response, token: str, settings: Settings) -> None:
     response.set_cookie(
         SESSION_COOKIE_NAME,
         token,
@@ -76,7 +76,7 @@ async def login(
     client_ip = request.client.host if request.client else "unknown"
     user = await authenticate(db, email=body.email, password=body.password, client_ip=client_ip, throttle=throttle)
     token, expires_at = start_session(user, session_secret(settings), settings.session_ttl_seconds)
-    _set_session_cookie(response, token, settings)
+    set_session_cookie(response, token, settings)
     return await _profile(db, user, expires_at)
 
 
@@ -99,7 +99,7 @@ async def refresh(
     if not should_refresh(current.token, settings.session_ttl_seconds):
         return await _profile(db, current.user, current.token.expires_at)
     token, expires_at = start_session(current.user, session_secret(settings), settings.session_ttl_seconds)
-    _set_session_cookie(response, token, settings)
+    set_session_cookie(response, token, settings)
     return await _profile(db, current.user, expires_at)
 
 

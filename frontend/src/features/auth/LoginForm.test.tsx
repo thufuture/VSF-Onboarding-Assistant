@@ -78,7 +78,7 @@ describe("LoginForm", () => {
     fill("a@b.co", "pw");
     submit();
 
-    await waitFor(() => expect(replace).toHaveBeenCalledWith("/chat"));
+    await waitFor(() => expect(replace).toHaveBeenCalledWith("/me"));
   });
 
   it("thành công: nhận ?next= nội bộ, bỏ ?next= độc hại", async () => {

@@ -19,16 +19,20 @@ from src.api.dependencies import (
     get_storage_port,
     require_role,
     require_team_scope,
+    session_secret,
 )
+from src.api.routers.auth_router import set_session_cookie
 from src.config import Settings, get_settings
 from src.dto.request.portal_request_dto import (
     AcceptAiTaskProposalRequestDTO,
+    ChangeMyPasswordRequestDTO,
     CreateAiTaskProposalRequestDTO,
     CreateJourneyStageRequestDTO,
     CreateJourneyTemplateRequestDTO,
     CreateTaskManualRequestDTO,
     SetDocumentStatusRequestDTO,
     UpdateDocumentRequestDTO,
+    UpdateMyProfileRequestDTO,
     UpdateTaskTemplateRequestDTO,
 )
 from src.dto.response.portal_response_dto import (
@@ -36,7 +40,10 @@ from src.dto.response.portal_response_dto import (
     DocumentCategoryResponseDTO,
     DocumentListItemResponseDTO,
     DocumentUploadResponseDTO,
+    EmployeeDocumentResponseDTO,
     EmployeeJourneyResponseDTO,
+    EmployeePrerequisiteDTO,
+    EmployeeProfileResponseDTO,
     EmployeeSummaryResponseDTO,
     EmployeeTaskResponseDTO,
     HrDashboardResponseDTO,
@@ -54,11 +61,18 @@ from src.model.journey_stage import JourneyStage
 from src.model.journey_template import JourneyTemplate
 from src.model.task_template import TaskTemplate
 from src.model.user import User
+from src.services.auth.auth_service import start_session
 from src.services.auth.errors import AuthError
 from src.services.ingest.embedding.port import EmbeddingPort
 from src.services.ingest.ingest_service import IngestError
 from src.services.ingest.storage import StoragePort
-from src.services.portal import ai_task_service, employee_service, journey_service, template_service
+from src.services.portal import (
+    ai_task_service,
+    employee_service,
+    journey_service,
+    profile_service,
+    template_service,
+)
 from src.services.portal.errors import PortalError
 from src.services.portal.ingest_bridge import ingest_uploaded_document, resolve_original_document
 
@@ -96,6 +110,28 @@ async def _check_template_scope(db: AsyncSession, user: User, template: JourneyT
         await require_team_scope(template.team_id, user, db)
 
 
+def _employee_task_dto(
+    details: journey_service.TaskDetail, prerequisites: dict[int, list[tuple[str, bool]]]
+) -> EmployeeTaskResponseDTO:
+    return EmployeeTaskResponseDTO(
+        id=details.task.id,
+        task_template_id=details.template.id,
+        title=details.template.title,
+        body_markdown=details.template.body_markdown,
+        required=details.template.required,
+        stage_id=details.stage.id,
+        stage_title=details.stage.title,
+        stage_sort_order=details.stage.sort_order,
+        sort_order=details.template.sort_order,
+        task_group=details.template.task_group,
+        status=details.task.status,
+        completed_at=details.task.completed_at,
+        prerequisites=[
+            EmployeePrerequisiteDTO(title=title, done=done) for title, done in prerequisites.get(details.task.id, [])
+        ],
+    )
+
+
 @router.get("/me/journey", response_model=EmployeeJourneyResponseDTO)
 async def get_my_journey(
     user: Annotated[User, Depends(get_current_user)],
@@ -105,25 +141,13 @@ async def get_my_journey(
     journey = await journey_service.get_or_start_journey(db, user)
     template = await db.get(JourneyTemplate, journey.journey_template_id)
     details = await journey_service.list_task_details(db, journey.id)
+    prerequisites = await journey_service.list_prerequisites(db, journey.id)
     return EmployeeJourneyResponseDTO(
         id=journey.id,
         journey_template_id=journey.journey_template_id,
         journey_title=template.title if template else "",
         started_at=journey.started_at,
-        tasks=[
-            EmployeeTaskResponseDTO(
-                id=d.task.id,
-                task_template_id=d.template.id,
-                title=d.template.title,
-                body_markdown=d.template.body_markdown,
-                required=d.template.required,
-                stage_title=d.stage.title,
-                sort_order=d.template.sort_order,
-                status=d.task.status,
-                completed_at=d.task.completed_at,
-            )
-            for d in details
-        ],
+        tasks=[_employee_task_dto(d, prerequisites) for d in details],
     )
 
 
@@ -135,21 +159,68 @@ async def complete_my_task(
 ) -> EmployeeTaskResponseDTO:
     """Nhân viên tự bấm "Hoàn thành" — 1 hành động duy nhất cho cả task (P0A D1), idempotent nếu đã DONE."""
     task = await journey_service.complete_task(db, user, employee_task_id)
-    template = await db.get(TaskTemplate, task.task_template_id)
-    assert template is not None
-    stage = await db.get(JourneyStage, template.journey_stage_id)
-    assert stage is not None
-    return EmployeeTaskResponseDTO(
-        id=task.id,
-        task_template_id=task.task_template_id,
-        title=template.title,
-        body_markdown=template.body_markdown,
-        required=template.required,
-        stage_title=stage.title,
-        sort_order=template.sort_order,
-        status=task.status,
-        completed_at=task.completed_at,
+    details = await journey_service.list_task_details(db, task.employee_journey_id)
+    prerequisites = await journey_service.list_prerequisites(db, task.employee_journey_id)
+    current = next(d for d in details if d.task.id == task.id)
+    return _employee_task_dto(current, prerequisites)
+
+
+def _profile_dto(profile: profile_service.Profile) -> EmployeeProfileResponseDTO:
+    return EmployeeProfileResponseDTO(
+        id=profile.user.id,
+        email=profile.user.email,
+        display_name=profile.user.display_name,
+        role=profile.user.role,
+        department=profile.department,
+        joined_at=profile.user.created_at,
+        last_login_at=profile.user.last_login_at,
+        journey_started_at=profile.journey_started_at,
+        tasks_total=profile.tasks_total,
+        tasks_done=profile.tasks_done,
+        required_total=profile.required_total,
+        required_done=profile.required_done,
     )
+
+
+@router.get("/me/profile", response_model=EmployeeProfileResponseDTO)
+async def get_my_profile(
+    user: Annotated[User, Depends(get_current_user)],
+    db: Annotated[AsyncSession, Depends(get_db)],
+) -> EmployeeProfileResponseDTO:
+    return _profile_dto(await profile_service.get_profile(db, user))
+
+
+@router.patch("/me/profile", response_model=EmployeeProfileResponseDTO)
+async def update_my_profile(
+    body: UpdateMyProfileRequestDTO,
+    user: Annotated[User, Depends(get_current_user)],
+    db: Annotated[AsyncSession, Depends(get_db)],
+) -> EmployeeProfileResponseDTO:
+    await profile_service.update_display_name(db, user, body.display_name)
+    return _profile_dto(await profile_service.get_profile(db, user))
+
+
+@router.post("/me/password", status_code=204)
+async def change_my_password(
+    body: ChangeMyPasswordRequestDTO,
+    response: Response,
+    user: Annotated[User, Depends(get_current_user)],
+    db: Annotated[AsyncSession, Depends(get_db)],
+    settings: Annotated[Settings, Depends(get_settings)],
+) -> None:
+    """Đổi mật khẩu: mọi phiên cũ bị thu hồi, riêng thiết bị đang dùng nhận cookie mới để không bị đăng xuất."""
+    await profile_service.change_password(db, user, body.current_password, body.new_password)
+    token, _ = start_session(user, session_secret(settings), settings.session_ttl_seconds)
+    set_session_cookie(response, token, settings)
+
+
+@router.get("/me/documents", response_model=list[EmployeeDocumentResponseDTO])
+async def list_my_documents(
+    _user: Annotated[User, Depends(get_current_user)],
+    db: Annotated[AsyncSession, Depends(get_db)],
+) -> list[EmployeeDocumentResponseDTO]:
+    """Thư viện tài liệu cho nhân viên: chỉ tài liệu đang hiệu lực; xem nội dung qua `/chat/documents/{version_id}`."""
+    return [EmployeeDocumentResponseDTO(**vars(item)) for item in await profile_service.list_employee_documents(db)]
 
 
 @router.get("/dashboard", response_model=HrDashboardResponseDTO)

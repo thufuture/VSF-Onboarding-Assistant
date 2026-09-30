@@ -1,10 +1,13 @@
+import { getLocale } from "next-intl/server";
+
 import { getSessionUser } from "@/features/auth/server";
 import { ChatShell } from "@/features/chat/ChatShell";
-import { RoadmapPage } from "@/features/portal-roadmap/RoadmapPage";
+import { redirect } from "@/i18n/navigation";
+import type { Locale } from "@/i18n/routing";
 
-// Nhân viên (USER) thấy lộ trình onboarding (roadmap) ngay khi đăng nhập; HR/ADMIN vẫn thấy chat thật.
+// Nhân viên (USER) có khu riêng ở `/me`; chat thật chỉ dành cho HR/Admin.
 export default async function ChatPage() {
   const user = await getSessionUser();
-  if (user?.role === "USER") return <RoadmapPage />;
+  if (user?.role === "USER") return redirect({ href: "/me", locale: (await getLocale()) as Locale });
   return <ChatShell />;
 }

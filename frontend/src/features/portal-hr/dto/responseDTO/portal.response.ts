@@ -56,16 +56,47 @@ export type EmployeeTaskStatusDTO =
   | "DONE"
   | "SKIPPED";
 
+export type EmployeePrerequisiteDTO = { title: string; done: boolean };
+
 export type EmployeeTaskResponseDTO = {
   id: number;
   task_template_id: number;
   title: string;
   body_markdown: string;
   required: boolean;
+  stage_id: number;
   stage_title: string;
+  stage_sort_order: number;
   sort_order: number;
+  task_group: TaskGroupDTO | null;
   status: EmployeeTaskStatusDTO;
   completed_at: string | null;
+  prerequisites: EmployeePrerequisiteDTO[];
+};
+
+export type EmployeeProfileResponseDTO = {
+  id: number;
+  email: string;
+  display_name: string;
+  role: string;
+  department: string | null;
+  joined_at: string;
+  last_login_at: string | null;
+  journey_started_at: string | null;
+  tasks_total: number;
+  tasks_done: number;
+  required_total: number;
+  required_done: number;
+};
+
+export type EmployeeDocumentResponseDTO = {
+  id: number;
+  title: string;
+  category_name: string;
+  category_slug: string;
+  updated_at: string;
+  latest_version_id: number;
+  section_count: number;
 };
 
 export type EmployeeJourneyResponseDTO = {

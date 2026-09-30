@@ -30,8 +30,8 @@ describe("internalPath (chống chuyển hướng mở)", () => {
 
 describe("resolvePostLoginPath", () => {
   it("nhân viên vào chat, HR và Admin vào khu quản trị khi không có ?next=", () => {
-    expect(defaultLandingPath("USER")).toBe("/chat");
-    expect(resolvePostLoginPath("USER", null)).toBe("/chat");
+    expect(defaultLandingPath("USER")).toBe("/me");
+    expect(resolvePostLoginPath("USER", null)).toBe("/me");
     expect(resolvePostLoginPath("HR", null)).toBe("/admin");
     expect(resolvePostLoginPath("ADMIN", null)).toBe("/admin");
   });
@@ -42,19 +42,19 @@ describe("resolvePostLoginPath", () => {
   });
 
   it("nhân viên không được đưa vào khu quản trị bằng ?next=", () => {
-    expect(resolvePostLoginPath("USER", "/admin")).toBe("/chat");
-    expect(resolvePostLoginPath("USER", "/admin/users")).toBe("/chat");
+    expect(resolvePostLoginPath("USER", "/admin")).toBe("/me");
+    expect(resolvePostLoginPath("USER", "/admin/users")).toBe("/me");
   });
 
   it("không quay lại trang đăng nhập", () => {
-    expect(resolvePostLoginPath("USER", "/login")).toBe("/chat");
+    expect(resolvePostLoginPath("USER", "/login")).toBe("/me");
     expect(resolvePostLoginPath("HR", "/vi/login")).toBe("/admin");
   });
 
   it.each(["//evil.com", "/\\evil.com", "https://evil.com", "javascript:alert(1)"])(
     "?next= độc hại %s rơi về trang mặc định theo vai trò",
     (value) => {
-      expect(resolvePostLoginPath("USER", value)).toBe("/chat");
+      expect(resolvePostLoginPath("USER", value)).toBe("/me");
       expect(resolvePostLoginPath("HR", value)).toBe("/admin");
     },
   );

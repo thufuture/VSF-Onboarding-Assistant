@@ -563,31 +563,6 @@
       "network": "Could not reach the server."
     }
   },
-  "portalRoadmap": {
-    "loading": "Loading roadmap…",
-    "greeting": "{name}'s tasks, in the right order.",
-    "taskOrdinal": "Task {n}",
-    "status": {
-      "DONE": "Done",
-      "READY": "Ready",
-      "IN_PROGRESS": "In progress",
-      "WAITING_EXTERNAL": "Waiting",
-      "LOCKED": "Locked",
-      "BLOCKED": "Overdue",
-      "SKIPPED": "Skipped"
-    },
-    "markDone": "Mark as done",
-    "completing": "Saving…",
-    "lockedHint": "This task is locked — finish the previous task to unlock it.",
-    "doneHint": "You already completed this task.",
-    "close": "Close",
-    "errors": {
-      "unauthorized": "Please sign in again.",
-      "forbidden": "You do not have permission for this action.",
-      "unavailable": "Something went wrong, try again later.",
-      "network": "Could not reach the server."
-    }
-  },
   "portalDocuments": {
     "title": "Source documents",
     "description": "Manage original files, parsed content and ingest status.",
@@ -983,6 +958,329 @@
         "journey_template": "Journey",
         "document": "Document"
       }
+    }
+  },
+  "employee": {
+    "brand": "VSF Onboarding",
+    "brandSub": "New joiner portal",
+    "navLabel": "Main navigation",
+    "accountMenu": "My account",
+    "darkMode": "Switch to dark theme",
+    "lightMode": "Switch to light theme",
+    "askViga": "Ask Viga",
+    "nav": {
+      "overview": "Overview",
+      "tasks": "Tasks",
+      "progress": "Progress",
+      "documents": "Documents",
+      "notifications": "Notifications"
+    },
+    "menu": {
+      "profile": "My profile",
+      "logout": "Sign out",
+      "appearance": "Appearance"
+    },
+    "footer": {
+      "product": "VSF Onboarding Portal — journey, documents and the Viga assistant for new joiners.",
+      "credit": "Building photos from Wikimedia Commons (CC BY 3.0 and CC BY-SA 4.0); full credits in the repository."
+    },
+    "task": {
+      "close": "Close",
+      "markDone": "Mark as done",
+      "alreadyDone": "You have completed this task",
+      "required": "Required",
+      "optional": "Optional",
+      "view": "View details",
+      "noBody": "This task has no detailed guidance yet.",
+      "lockedTitle": "Finish these first:",
+      "prereqTitle": "Prerequisites",
+      "state": {
+        "done": "Done",
+        "ready": "Ready",
+        "locked": "Locked"
+      },
+      "group": {
+        "PROFILE": "Paperwork",
+        "TRAINING": "Training",
+        "DEVICE": "Devices",
+        "OFFICE": "Office",
+        "NONE": "Ungrouped"
+      }
+    },
+    "overview": {
+      "greeting": "Hello, {name}",
+      "subtitle": "These are your tasks, in order. Locked tasks open automatically once their prerequisites are done.",
+      "heroProgressLabel": "Your progress",
+      "heroProgressHint": "{done}/{total} tasks done",
+      "openRoadmap": "Open journey",
+      "kpi": {
+        "done": "Done",
+        "doneHint": "of {total} tasks",
+        "ready": "Ready now",
+        "readyHint": "nothing blocking them",
+        "locked": "Locked",
+        "lockedHint": "waiting on prerequisites",
+        "required": "Required tasks",
+        "requiredHint": "of {total} required tasks"
+      },
+      "next": {
+        "title": "Ready to do now",
+        "hint": "Open a task to read the guidance and mark it done",
+        "all": "See all",
+        "emptyTitle": "Nothing is open right now",
+        "emptyBody": "The remaining tasks wait on prerequisites, or you have finished the whole journey."
+      },
+      "recent": {
+        "title": "Recently completed",
+        "empty": "No task has been marked done yet.",
+        "locked": "{count} tasks are locked and open once their prerequisites are done."
+      },
+      "shortcuts": {
+        "title": "Shortcuts",
+        "tasks": "Tasks",
+        "tasksHint": "Browse day by day",
+        "documents": "Documents",
+        "documentsHint": "Read inside the portal",
+        "progress": "Progress",
+        "progressHint": "Detailed breakdown",
+        "profile": "Profile",
+        "profileHint": "Details and password"
+      },
+      "completed": "Completed: {title}",
+      "completeFailed": "Could not save that. Please try again.",
+      "problem": {
+        "noJourney": "You have no onboarding journey yet. Ask your HR contact to add you to a team and a journey.",
+        "unavailable": "Could not load your journey. Please reload the page."
+      },
+      "currentDay": "On {day}",
+      "chart": {
+        "title": "Your progress",
+        "hint": "By task status",
+        "center": "done"
+      }
+    },
+    "tasks": {
+      "title": "Journey, day by day",
+      "subtitle": "Pick a day on the left to see its tasks. Work through them in order; locked tasks open once prerequisites are done.",
+      "heroProgress": "{done}/{total} tasks done",
+      "sideTitle": "Days",
+      "sideHint": "Pick a day to see its tasks",
+      "start": "Start",
+      "finish": "Finish",
+      "dayCount": "{done}/{total} tasks done",
+      "stat": {
+        "done": "Done",
+        "ready": "Ready",
+        "locked": "Locked"
+      },
+      "modeRoad": "Journey",
+      "modeList": "List",
+      "taskNo": "Task {n}",
+      "prereq": "{count} prerequisites",
+      "needFirst": "Finish first: {titles}",
+      "legendTitle": "Milestone colour by task group",
+      "emptyTitle": "No journey yet",
+      "emptyBody": "HR has not published a journey for your team. Tasks will appear here once they do.",
+      "emptyDayTitle": "No tasks on this day",
+      "emptyDayBody": "Pick another day in the left column.",
+      "completed": "Completed: {title}",
+      "completeFailed": "Could not save that. Please try again.",
+      "problem": {
+        "noJourney": "You have no onboarding journey yet. Ask your HR contact to add you to a team and a journey.",
+        "unavailable": "Could not load your journey. Please reload the page."
+      }
+    },
+    "progress": {
+      "title": "Detailed progress",
+      "subtitle": "Tasks by day and by group, plus what you have just completed.",
+      "kpi": {
+        "overall": "Overall",
+        "overallHint": "{done}/{total} tasks done",
+        "required": "Required tasks",
+        "requiredHint": "done out of total",
+        "ready": "Ready now",
+        "readyHint": "nothing blocking them",
+        "locked": "Locked",
+        "lockedHint": "waiting on prerequisites"
+      },
+      "byDay": {
+        "title": "By day",
+        "hint": "Tasks done out of the day's total"
+      },
+      "byGroup": {
+        "title": "By task group",
+        "hint": "Bar height is the group's total",
+        "legend": "The filled part is how many tasks in the group are done."
+      },
+      "recent": {
+        "title": "Recent activity",
+        "empty": "No task has been marked done yet."
+      },
+      "noData": "Nothing to show yet.",
+      "problem": {
+        "noJourney": "You have no onboarding journey yet. Ask your HR contact.",
+        "unavailable": "Could not load your journey. Please reload the page."
+      }
+    },
+    "documents": {
+      "title": "Documents",
+      "subtitle": "Documents published by HR and other departments. Read them here, no download needed.",
+      "searchPlaceholder": "Search documents…",
+      "allCategories": "All groups",
+      "sections": "{count} sections",
+      "read": "Read document",
+      "emptyTitle": "No matching documents",
+      "emptyBody": "Try clearing a filter or searching for something else.",
+      "failed": "Could not load the document list. Please reload the page."
+    },
+    "notifications": {
+      "title": "Notifications",
+      "subtitle": "Reminders live in the portal and come from your own journey. Read state is kept on this device.",
+      "filterAll": "All ({count})",
+      "filterUnread": "Unread ({count})",
+      "markAll": "Mark all as read",
+      "emptyTitle": "No notifications",
+      "emptyBody": "When a task unlocks or needs attention, it shows up here.",
+      "kind": {
+        "unlocked": "Task unlocked",
+        "done": "Completed",
+        "reminder": "Reminder",
+        "welcome": "System"
+      },
+      "welcomeTitle": "Welcome to VSF!",
+      "welcomeBody": "Start from the Overview page; you can ask Viga at any time.",
+      "unlockedTitle": "Ready now: {title}",
+      "unlockedBody": "Nothing is blocking this task any more.",
+      "doneTitle": "Completed: {title}",
+      "doneBody": "This task is recorded in your journey.",
+      "reminderTitle": "{day} still has open tasks",
+      "reminderBody": "{count} required tasks left on this day.",
+      "seeAll": "See all notifications"
+    },
+    "profile": {
+      "title": "My profile",
+      "subtitle": "Account details, journey progress and your sign-in password.",
+      "failed": "Could not load your profile. Please reload the page.",
+      "role": {
+        "USER": "New joiner",
+        "HR": "People team (HR)",
+        "ADMIN": "System administrator"
+      },
+      "facts": {
+        "joined": "Account created",
+        "started": "Journey started",
+        "notStarted": "Not started",
+        "lastLogin": "Last sign-in"
+      },
+      "progressLabel": "Journey progress",
+      "progressHint": "{done}/{total} tasks done, including {requiredDone}/{requiredTotal} required ones.",
+      "nameTitle": "Display name",
+      "nameHint": "This name appears in the portal and in HR's lists.",
+      "nameLabel": "Display name",
+      "save": "Save",
+      "nameSaved": "Display name saved.",
+      "nameFailed": "Could not save the display name. Please try again.",
+      "password": {
+        "title": "Change password",
+        "hint": "Enter your current password, then a new one of at least 8 characters.",
+        "current": "Current password",
+        "new": "New password",
+        "confirm": "Repeat new password",
+        "submit": "Change password",
+        "note": "Other devices will have to sign in again; this device stays signed in.",
+        "saved": "Password changed.",
+        "mismatch": "The two new passwords do not match.",
+        "tooShort": "The new password needs at least 8 characters.",
+        "wrongCurrent": "That current password is not right.",
+        "unchanged": "The new password is the same as the old one.",
+        "failed": "Could not change the password. Please try again."
+      }
+    },
+    "viga": {
+      "title": "Viga",
+      "subtitle": "Vin Intelligent Guidance Assistant",
+      "close": "Close",
+      "mockNote": "Interface preview: answers come from your own journey data and are not wired to the real assistant yet.",
+      "inputLabel": "Question for Viga",
+      "placeholder": "Ask about your tasks…",
+      "send": "Send",
+      "sourcesLabel": "Source:",
+      "quick": {
+        "q1": "What should I do today?",
+        "q2": "Which tasks are locked?",
+        "q3": "How do I collect my laptop?",
+        "q4": "Which documents must I hand in?"
+      },
+      "type": {
+        "NEXT_STEP": "Next step",
+        "PREREQUISITE_REQUIRED": "Do this first",
+        "DAY_PLAN": "Day plan",
+        "INFO": "Info",
+        "NOT_IN_JOURNEY": "No source"
+      },
+      "reply": {
+        "notInJourney": "That is not part of your onboarding journey, so I will not guess. Please ask your HR contact.",
+        "allDone": "You have already completed this task.",
+        "nextStep": "You can do “{title}” right now. Open it for step-by-step guidance.",
+        "locked": "You cannot do “{title}” yet: finish “{blocker}” first.",
+        "dayPlan": "{day}: {ready} of {total} tasks are ready for you right now.",
+        "dayPlanEmpty": "{day}: nothing is ready right now; the remaining tasks wait on prerequisites."
+      },
+      "action": {
+        "openTask": "Open: {title}",
+        "openDay": "View {day}"
+      },
+      "source": {
+        "task": "task “{title}” in your journey",
+        "day": "{day} in your journey"
+      },
+      "hello": "Hello {name}, I am Viga. Day to day, just follow your journey. Ask me when you are unsure where to start, when a task is locked, or when you need something from the documents HR published.",
+      "infoLabel": "How Viga works",
+      "infoLink": "What can Viga do, and not do?",
+      "infoTitle": "Viga — your guide assistant",
+      "infoIntro": "Viga works from your own onboarding journey and the documents HR published in the portal. Viga only guides you: it never decides for you and never changes a task's status.",
+      "canTitle": "Viga can",
+      "can": {
+        "a1": "Tell you which task to do next",
+        "a2": "Explain why a task is locked and what to finish first",
+        "a3": "Summarise the plan for the day you are on"
+      },
+      "cannotTitle": "Viga cannot",
+      "cannot": {
+        "b1": "Mark a task done on your behalf",
+        "b2": "Guess when there is no source — it says so plainly instead",
+        "b3": "Grant access, approve anything, or decide in HR's place"
+      }
+    },
+    "taskPage": {
+      "breadcrumb": "Breadcrumb",
+      "allTasks": "Tasks",
+      "backToTasks": "Back to tasks",
+      "notFoundTitle": "Task not found",
+      "notFoundBody": "This task is not in your journey, or HR removed it from the journey.",
+      "lockedTitle": "This task is locked",
+      "lockedBody": "Finish the prerequisite on the right first; this task then opens by itself.",
+      "why": "Why it matters",
+      "steps": "Steps",
+      "stepsHint": "Work through them top to bottom",
+      "doneWhen": "Done when",
+      "guide": "Guidance",
+      "noBody": "This task has no detailed guidance yet.",
+      "statusTitle": "Do this task",
+      "readyHint": "You can do this now. Once finished, use the button below to record it.",
+      "lockedHint": "You cannot mark this done yet: a prerequisite is still open.",
+      "doneAt": "Completed at {at}",
+      "unlockedAfter": "{count} further tasks are now open.",
+      "askViga": "Ask Viga about this task",
+      "askVigaQuestion": "How do I do {title}?",
+      "prereqTitle": "Finish first",
+      "unlocksTitle": "Opens next",
+      "unlocksHint": "Tasks that open once this one is done",
+      "completed": "Completed: {title}",
+      "completeFailed": "Could not save that. Please try again.",
+      "heroSubtitle": "{group} · {required} · {day}",
+      "railTitle": "Tasks in {day}",
+      "railHint": "{done}/{total} tasks done"
     }
   }
 }
