@@ -1,32 +1,11 @@
 "use client";
 
-import {
-  BookOpenText,
-  Building2,
-  Flag,
-  GitBranch,
-  History,
-  LayoutDashboard,
-  LifeBuoy,
-  Link2,
-  ListChecks,
-  LogOut,
-  MailQuestion,
-  Menu,
-  MessageSquareText,
-  ShieldCheck,
-  Sparkles,
-  Moon,
-  Sun,
-  Users,
-  Workflow,
-  X,
-  type LucideIcon,
-} from "lucide-react";
+import { LogOut, Menu, MessageSquareText, ShieldCheck, Sparkles, Moon, Sun, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState, type ReactNode } from "react";
 
 import { PersonAvatar } from "@/components/avatar/PersonAvatar";
+import { FlatIcon, type FlatIconName } from "@/components/flat-icons/FlatIcon";
 import { VsfBrand } from "@/components/brand/VsfBrand";
 import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
 import { useSession } from "@/features/auth/SessionProvider";
@@ -37,35 +16,35 @@ import { TasksSidebar } from "./TasksSidebar";
 import { useTheme } from "./useTheme";
 
 type NavTone = "blue" | "teal" | "indigo" | "amber" | "rose" | "slate";
-type NavItem = { key: string; icon: LucideIcon; href?: string; tone: NavTone };
+type NavItem = { key: string; flat: FlatIconName; href?: string; tone: NavTone };
 
 // Mục chưa có trang (không có `href`) hiện mờ kèm nhãn "Sắp có" thay vì liên kết chết.
 const MEMBER_NAV: NavItem[] = [
-  { key: "roadmap", icon: MessageSquareText, href: "/chat", tone: "blue" },
-  { key: "documents", icon: BookOpenText, tone: "indigo" },
-  { key: "contacts", icon: Users, tone: "teal" },
-  { key: "tickets", icon: LifeBuoy, tone: "amber" },
+  { key: "roadmap", flat: "chat", href: "/chat", tone: "blue" },
+  { key: "documents", flat: "book", tone: "blue" },
+  { key: "contacts", flat: "users", tone: "blue" },
+  { key: "tickets", flat: "lifebuoy", tone: "blue" },
 ];
 // Đúng thứ tự nav HR trong prototype v15 (NAV.owner): Tổng quan, Nhân viên, Ticket sự cố, Phản hồi Viga,
 // Quản lý task, Tài liệu, Tạo task bằng AI, Đầu mối và đường dẫn. Chỉ mục đã có API thật mới có `href`.
 const STAFF_NAV: NavItem[] = [
-  { key: "admin", icon: LayoutDashboard, href: "/admin", tone: "blue" },
-  { key: "employees", icon: Users, href: "/admin/employees", tone: "teal" },
-  { key: "hrTickets", icon: Flag, tone: "rose" },
-  { key: "vigaFeedback", icon: MailQuestion, tone: "indigo" },
-  { key: "taskManagement", icon: ListChecks, href: "/admin/tasks", tone: "blue" },
-  { key: "documents", icon: BookOpenText, href: "/admin/documents", tone: "indigo" },
-  { key: "aiTasks", icon: Sparkles, href: "/admin/ai-tasks", tone: "amber" },
-  { key: "registry", icon: Link2, tone: "teal" },
+  { key: "admin", flat: "dashboard", href: "/admin", tone: "blue" },
+  { key: "employees", flat: "users", href: "/admin/employees", tone: "blue" },
+  { key: "hrTickets", flat: "flag", tone: "blue" },
+  { key: "vigaFeedback", flat: "mail", tone: "blue" },
+  { key: "taskManagement", flat: "tasks", href: "/admin/tasks", tone: "blue" },
+  { key: "documents", flat: "book", href: "/admin/documents", tone: "blue" },
+  { key: "aiTasks", flat: "sparkle", href: "/admin/ai-tasks", tone: "blue" },
+  { key: "registry", flat: "link", tone: "blue" },
 ];
 // Đúng thứ tự nav Admin trong prototype v15 (NAV.admin): Tổng quan, Người dùng, Phòng ban, Thành viên, Lộ trình mẫu, Nhật ký.
 const ADMIN_NAV: NavItem[] = [
-  { key: "admin", icon: LayoutDashboard, href: "/admin", tone: "blue" },
-  { key: "adminUsers", icon: Users, href: "/admin/users", tone: "teal" },
-  { key: "adminTeams", icon: Building2, href: "/admin/teams", tone: "indigo" },
-  { key: "adminMembers", icon: Workflow, href: "/admin/members", tone: "amber" },
-  { key: "adminTemplate", icon: GitBranch, href: "/admin/template", tone: "rose" },
-  { key: "adminAudit", icon: History, href: "/admin/audit", tone: "slate" },
+  { key: "admin", flat: "dashboard", href: "/admin", tone: "blue" },
+  { key: "adminUsers", flat: "user", href: "/admin/users", tone: "blue" },
+  { key: "adminTeams", flat: "building", href: "/admin/teams", tone: "blue" },
+  { key: "adminMembers", flat: "network", href: "/admin/members", tone: "blue" },
+  { key: "adminTemplate", flat: "route", href: "/admin/template", tone: "blue" },
+  { key: "adminAudit", flat: "clock", href: "/admin/audit", tone: "blue" },
 ];
 
 /**
@@ -149,7 +128,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         {!onTasksTree && user.role !== "USER" ? <p className={styles.roleBadge}>{t(`roles.${user.role}`)}</p> : null}
 
         <nav aria-label={t("navigation")} className={styles.nav} hidden={onTasksTree}>
-          {items.map(({ key, icon: Icon, href, tone }) => {
+          {items.map(({ key, flat, href, tone }) => {
             const active = activeItem?.key === key;
             if (!href) {
               return (
@@ -159,7 +138,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                   key={key}
                 >
                   <i className={styles.navIcon}>
-                    <Icon aria-hidden="true" size={17} />
+                    <FlatIcon name={flat} size={26} tone={tone} />
                   </i>
                   <span>{t(`nav.${key}`)}</span>
                   <small>{t("nav.soon")}</small>
@@ -174,7 +153,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                 key={key}
               >
                 <i className={styles.navIcon}>
-                  <Icon aria-hidden="true" size={17} />
+                  <FlatIcon name={flat} size={26} tone={tone} />
                 </i>
                 <span>{t(`nav.${key}`)}</span>
               </Link>
@@ -234,7 +213,7 @@ export function AppShell({ children }: { children: ReactNode }) {
               </b>
             ) : (
               <b>
-                {activeItem ? <activeItem.icon aria-hidden="true" size={18} /> : <LayoutDashboard aria-hidden="true" size={18} />}
+                <FlatIcon name={activeItem?.flat ?? "dashboard"} size={22} tone={activeItem?.tone ?? "blue"} />
                 {t(`nav.${activeItem?.key ?? "admin"}`)}
               </b>
             )}

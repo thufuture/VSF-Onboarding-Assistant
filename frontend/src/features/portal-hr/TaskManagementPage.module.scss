@@ -34,7 +34,7 @@
   h1 {
     margin: 4px 0 3px;
     font-size: 26px;
-    font-weight: 700;
+    font-weight: 600;
     letter-spacing: -0.02em;
   }
   p {
@@ -248,7 +248,7 @@
   h2 {
     margin: 2px 0 0;
     font-size: 17px;
-    font-weight: 700;
+    font-weight: 600;
     color: var(--app-ink);
   }
   small {
@@ -278,13 +278,12 @@
     margin: 0 0 3px;
     color: #4a90b6;
     font-size: 9.5px;
-    font-weight: 700;
+    font-weight: 600;
     letter-spacing: 0.06em;
-    text-transform: uppercase;
   }
   b {
     font-size: 24px;
-    font-weight: 800;
+    font-weight: 600;
   }
 }
 
@@ -320,10 +319,7 @@
   overflow-x: auto;
   overflow-y: hidden;
   padding: 10px 18px 4px;
-  background:
-    radial-gradient(circle at 12% 0%, rgb(16 144 203 / 7%) 0%, transparent 42%),
-    radial-gradient(circle at 92% 100%, rgb(201 135 32 / 7%) 0%, transparent 40%),
-    var(--app-surface);
+  background: var(--app-surface);
 }
 
 .canvas {
@@ -348,11 +344,11 @@
 }
 // nền đường (lề sáng) → mặt đường navy → vạch trắng đứt ở giữa
 .roadBed {
-  stroke: #e2eaf3;
+  stroke: #e6ebf1;
   stroke-width: 30;
 }
 .roadLine {
-  stroke: #1c3a5e;
+  stroke: #2b4462;
   stroke-width: 18;
 }
 .roadDash {
@@ -361,53 +357,39 @@
   stroke-width: 2;
 }
 
-.roadStart,
-.roadFinish {
+// Nút đầu và cuối nằm trên đường như mọi nút khác: vòng tròn trắng viền màu, nhãn nhỏ bên dưới.
+.endNode {
   position: absolute;
-  z-index: 6;
-  display: flex;
-  width: 46px;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
+  inset: 0;
+  pointer-events: none;
 
-  > b {
-    display: grid;
-    width: 38px;
-    height: 38px;
-    place-items: center;
-    border-radius: 50%;
-    background: #fff;
-    box-shadow: 0 4px 12px rgb(22 49 78 / 14%);
-  }
-  > em {
+  em {
     position: absolute;
-    top: 44px;
-    left: 50%;
-    min-width: 52px;
-    padding: 2px 6px;
-    transform: translateX(-50%);
-    font-size: 10px;
+    width: 80px;
+    color: var(--app-ink-2);
+    font-size: 12px;
     font-style: normal;
-    font-weight: 700;
-    white-space: nowrap;
+    font-weight: 500;
+    text-align: center;
   }
 }
-.roadStart {
-  > b {
-    color: #c94b4b;
-  }
-  > em {
-    color: #a83636;
-  }
+.endCircle {
+  position: absolute;
+  z-index: 5;
+  display: grid;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  border: 4px solid var(--end, #3a8567);
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 4px rgb(16 24 40 / 16%);
 }
-.roadFinish {
-  > b {
-    color: #d5a126;
-  }
-  > em {
-    color: #9a7012;
-  }
+.end_start {
+  --end: #3a8567;
+}
+.end_finish {
+  --end: #b98330;
 }
 
 .roadItem {
@@ -423,7 +405,7 @@
   width: 2px;
   margin-left: -1px;
   border-radius: 5px;
-  background: color-mix(in srgb, var(--node, #168dc4) 45%, #fff);
+  background: color-mix(in srgb, var(--node, #2f6fa8) 40%, #fff);
 
   &::before {
     content: "";
@@ -454,24 +436,19 @@
   display: grid;
   place-items: center;
   padding: 0;
-  border: 5px solid #fff;
+  border: 4px solid var(--node, #2f6fa8);
   border-radius: 50%;
-  background: var(--node, #168dc4);
-  color: #fff;
-  box-shadow:
-    0 0 0 2px color-mix(in srgb, var(--node, #168dc4) 55%, #fff),
-    0 8px 18px rgb(22 49 78 / 20%);
+  background: #fff;
+  box-shadow: 0 1px 4px rgb(16 24 40 / 16%);
   pointer-events: auto;
   cursor: pointer;
   transition:
-    transform 0.18s ease,
-    box-shadow 0.18s ease;
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
 
   &:hover {
-    transform: translateY(-2px) scale(1.07);
-    box-shadow:
-      0 0 0 3px color-mix(in srgb, var(--node, #168dc4) 60%, #fff),
-      0 12px 22px rgb(22 49 78 / 26%);
+    transform: translateY(-1px) scale(1.05);
+    box-shadow: 0 3px 8px rgb(16 24 40 / 22%);
   }
 }
 
@@ -485,42 +462,34 @@
   place-items: center;
   border: 2px solid #fff;
   border-radius: 50%;
-  background: var(--node-dark, #0877ac);
-  box-shadow: 0 2px 6px rgb(22 49 78 / 25%);
+  background: var(--node, #2f6fa8);
   color: #fff;
   font-size: 11px;
   font-style: normal;
-  font-weight: 800;
+  font-weight: 600;
 }
 
 // Bảng màu mốc theo nhóm task (Hồ sơ lục, Đào tạo lam, Thiết bị tím, Văn phòng vàng, chưa phân nhóm xám).
 .catC1 {
-  --node: #299b73;
-  --node-dark: #1f7d5c;
+  --node: #3a8567;
 }
 .catC2 {
-  --node: #168dc4;
-  --node-dark: #0e6f9c;
+  --node: #2f6fa8;
 }
 .catC3 {
-  --node: #6377b5;
-  --node-dark: #4b5e9a;
+  --node: #5766a3;
 }
 .catC4 {
-  --node: #d0902a;
-  --node-dark: #a96c12;
+  --node: #b98330;
 }
 .catC5 {
-  --node: #95698f;
-  --node-dark: #7d5578;
+  --node: #8b6285;
 }
 .catC6 {
-  --node: #258f8a;
-  --node-dark: #187873;
+  --node: #2f8c86;
 }
 .catC7 {
-  --node: #718096;
-  --node-dark: #5d6b7e;
+  --node: #7a8797;
 }
 
 // thẻ: dải màu nhóm ở đầu (như thẻ roadmap trong ảnh mẫu), thân trắng, nhãn dạng viên thuốc
@@ -532,18 +501,17 @@
   height: 138px;
   flex-direction: column;
   overflow: hidden;
-  border: 1px solid color-mix(in srgb, var(--node, #168dc4) 22%, var(--app-border));
+  border: 1px solid var(--app-border);
   border-radius: 5px;
   background: var(--app-surface);
-  box-shadow: 0 8px 22px rgb(24 50 78 / 10%);
+  box-shadow: 0 1px 3px rgb(16 24 40 / 8%);
   pointer-events: auto;
   transition:
     transform 0.18s ease,
     box-shadow 0.18s ease;
 
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 26px rgb(24 50 78 / 15%);
+    box-shadow: 0 3px 10px rgb(16 24 40 / 12%);
   }
 }
 
@@ -555,7 +523,7 @@
   justify-content: space-between;
   gap: 6px;
   padding: 0 10px;
-  background: linear-gradient(90deg, var(--node, #168dc4), color-mix(in srgb, var(--node, #168dc4) 78%, #fff));
+  background: var(--node, #2f6fa8);
   color: #fff;
 
   small {
@@ -563,7 +531,7 @@
     align-items: center;
     gap: 5px;
     font-size: 10.5px;
-    font-weight: 700;
+    font-weight: 600;
     letter-spacing: 0.02em;
     white-space: nowrap;
   }
@@ -575,7 +543,7 @@
   background: rgb(255 255 255 / 24%);
   color: #fff;
   font-size: 9.5px;
-  font-weight: 700;
+  font-weight: 600;
   white-space: nowrap;
 }
 
@@ -590,7 +558,7 @@
     overflow: hidden;
     color: var(--app-ink);
     font-size: 12.5px;
-    font-weight: 700;
+    font-weight: 600;
     line-height: 1.35;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
@@ -609,10 +577,10 @@
     gap: 4px;
     padding: 2px 7px;
     border-radius: 5px;
-    background: color-mix(in srgb, var(--node, #168dc4) 10%, var(--app-surface));
-    color: color-mix(in srgb, var(--node-dark, #0877ac) 85%, var(--app-ink));
+    background: var(--app-surface-2);
+    color: var(--app-ink-2);
     font-size: 10px;
-    font-weight: 600;
+    font-weight: 500;
     white-space: nowrap;
   }
 }
@@ -636,9 +604,9 @@
     cursor: pointer;
 
     &:hover:not(:disabled) {
-      border-color: var(--node, #168dc4);
-      background: color-mix(in srgb, var(--node, #168dc4) 10%, var(--app-surface));
-      color: var(--node-dark, #0877ac);
+      border-color: var(--node, #2f6fa8);
+      background: var(--app-surface-2);
+      color: var(--node, #2f6fa8);
     }
     &:disabled {
       opacity: 0.45;
@@ -792,7 +760,6 @@
     font-size: 10.5px;
     font-weight: 600;
     letter-spacing: 0.04em;
-    text-transform: uppercase;
   }
   b {
     display: block;

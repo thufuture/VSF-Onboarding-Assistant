@@ -1,4 +1,4 @@
-// Cổng .tree-back và .hr14-side-* từ CSS đã render của v15.
+// Thanh bên Quản lý task: lộ trình dọc — Bắt đầu, các ngày nối nhau bằng một đường dọc, Kết thúc.
 .treeBack {
   display: flex;
   flex: none;
@@ -6,7 +6,7 @@
   gap: 6px;
   padding: 2px 6px;
   color: var(--app-ink-2);
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 500;
   text-decoration: none;
 
@@ -16,73 +16,154 @@
 }
 
 .sideHead {
-  padding: 13px 20px 8px;
+  padding: 14px 8px 8px;
 
   b {
     display: block;
     color: var(--app-ink);
-    font-size: 13px;
-    letter-spacing: 0.3px;
-    text-transform: uppercase;
+    font-size: 14px;
+    font-weight: 600;
   }
   small {
     display: block;
     margin-top: 3px;
     color: var(--app-ink-3);
-    font-size: 10px;
+    font-size: 12px;
   }
 }
 
-.days {
+.timeline {
+  position: relative;
   display: flex;
   min-height: 0;
   flex: 1;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
   overflow-y: auto;
-  padding: 4px 0 14px;
+  padding: 6px 6px 14px 2px;
 }
 
-.day {
-  display: grid;
-  grid-template-columns: 38px minmax(0, 1fr) 34px;
-  gap: 10px;
+.tlEnd {
+  position: relative;
+  display: flex;
   align-items: center;
-  padding: 11px 10px;
-  border: 1px solid transparent;
-  border-radius: 5px;
+  gap: 12px;
+  padding: 0 6px 0 0;
+
+  b {
+    color: var(--app-ink-2);
+    font-size: 12.5px;
+    font-weight: 500;
+  }
+}
+
+// Mỗi mục tự vẽ đoạn đường dọc của mình (nút rộng 30px, cách lề trái 0 → tâm ở 15px); đoạn phủ cả khoảng cách tới mục kế.
+.tlEnd::before,
+.tlItem::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  bottom: -10px;
+  left: 14px;
+  width: 2px;
+  background: var(--app-border-strong);
+}
+.tlEnd:first-child::before {
+  top: 50%;
+}
+.tlEnd.tlLast::before {
+  bottom: 50%;
+}
+
+.tlNode {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  width: 30px;
+  height: 30px;
+  flex: none;
+  place-items: center;
+  border: 2px solid var(--tl, var(--app-border-strong));
+  border-radius: 50%;
   background: var(--app-surface);
+  color: var(--tl, var(--app-ink-2));
+  font-size: 13px;
+  font-weight: 600;
+}
+.tlStart {
+  --tl: #3a8567;
+}
+.tlFinish {
+  --tl: #b98330;
+}
+
+.tlItem {
+  position: relative;
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 8px 8px 0;
+  border-radius: 5px;
   color: var(--app-ink);
-  text-align: left;
   text-decoration: none;
 
   &:hover {
     background: var(--app-surface-2);
-    border-color: var(--app-border);
   }
+}
+.tlLive {
+  --tl: #2f6fa8;
 
-  > span {
-    display: grid;
-    width: 36px;
-    height: 36px;
-    place-items: center;
-    border-radius: 5px;
-    background: #e8f3fa;
-    color: #168dc4;
+  .tlNode {
+    background: var(--tl);
+    color: #fff;
   }
-  > div {
-    min-width: 0;
+}
+.tlDraft {
+  --tl: #b98330;
+}
+.tlOn {
+  background: var(--app-accent-soft);
+
+  .tlNode {
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--tl) 18%, transparent);
   }
+}
+
+.tlBody {
+  min-width: 0;
+
   b {
-    display: block;
-    font-size: 12.5px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--app-ink);
+    font-size: 13.5px;
+    font-weight: 600;
+    white-space: nowrap;
+
+    > span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+  u {
+    flex: none;
+    padding: 1px 6px;
+    border-radius: 5px;
+    background: color-mix(in srgb, var(--tl) 12%, var(--app-surface));
+    color: var(--tl);
+    font-size: 11px;
+    font-weight: 500;
+    text-decoration: none;
   }
   small {
     display: block;
-    margin: 2px 0 7px;
+    margin: 3px 0 6px;
     overflow: hidden;
     color: var(--app-ink-3);
-    font-size: 9.5px;
+    font-size: 11.5px;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
@@ -97,47 +178,16 @@
     display: block;
     height: 100%;
     border-radius: 5px;
-    background: #168dc4;
+    background: var(--tl);
   }
-  strong {
-    color: var(--app-ink-3);
-    font-size: 10px;
-    text-align: right;
-  }
-}
-.on {
-  background: #eaf5fb !important;
-  border-color: #83c3e3 !important;
-
-  strong {
-    color: #0877ac;
-  }
-}
-:global([data-theme="dark"]) .on {
-  background: var(--app-accent-soft) !important;
 }
 
-.day1 > span {
-  background: #e7f4ef;
-  color: #299b73;
+.tlItem > strong {
+  color: var(--app-ink-3);
+  font-size: 12px;
+  font-weight: 500;
 }
-.day1 em {
-  background: #299b73;
-}
-.day2 > span {
-  background: #fbf1df;
-  color: #bf7b14;
-}
-.day2 em {
-  background: #bf7b14;
-}
-.day3 > span {
-  background: #eef0f7;
-  color: #6678a7;
-}
-.day3 em {
-  background: #6678a7;
-}
+
 .addDay {
   display: flex;
   width: 100%;
@@ -145,55 +195,17 @@
   align-items: center;
   justify-content: center;
   gap: 7px;
-  margin-top: 3px;
-  border: 1px dashed #9eb2c4;
+  margin-top: 6px;
+  border: 1px dashed var(--app-border-strong);
   border-radius: 5px;
-  background: var(--app-surface-2);
+  background: var(--app-surface);
   color: var(--app-ink-2);
-  font-size: 11px;
-  font-weight: 700;
+  font-size: 12.5px;
+  font-weight: 500;
   cursor: pointer;
 
   &:hover {
-    border-color: #168dc4;
-    color: #0877ac;
+    border-color: var(--app-accent);
+    color: var(--app-accent-strong);
   }
-}
-
-// Ô số ngày: số là điểm nhấn đầu tiên của mỗi mục (thay cho icon), tông màu theo thứ tự ngày.
-.day > .num .numText {
-  font-size: 17px;
-  font-weight: 800;
-  line-height: 1;
-}
-
-.day b.dayTitle {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  white-space: nowrap;
-
-  > span {
-    flex: none;
-  }
-}
-
-.pubTag,
-.draftTag {
-  flex: none;
-  padding: 1px 5px;
-  border-radius: 5px;
-  font-size: 8.5px;
-  font-weight: 700;
-  text-decoration: none;
-  vertical-align: 1px;
-  white-space: nowrap;
-}
-.pubTag {
-  background: #e3f3ec;
-  color: #237d5c;
-}
-.draftTag {
-  background: #f7efdc;
-  color: #946512;
 }

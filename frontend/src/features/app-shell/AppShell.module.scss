@@ -4,22 +4,22 @@
 $sidebar-width: 248px;
 
 .shell {
-  --app-bg: #f3f7fc;
+  --app-bg: #f4f6f9;
   --app-surface: #fff;
-  --app-surface-2: #eaf1f9;
-  --app-border: #dbe6f2;
-  --app-border-strong: #c3d4e8;
-  --app-ink: #0b1f3a;
-  --app-ink-2: #4b5b70;
-  --app-ink-3: #7a8aa0;
-  --app-accent: #1090cb;
-  --app-accent-strong: #0877ac;
-  --app-accent-soft: #e5f3fb;
+  --app-surface-2: #f1f4f8;
+  --app-border: #e0e6ee;
+  --app-border-strong: #c9d2de;
+  --app-ink: #2a3646;
+  --app-ink-2: #566275;
+  --app-ink-3: #8592a4;
+  --app-accent: #1f74b5;
+  --app-accent-strong: #185f95;
+  --app-accent-soft: #e8f1f9;
   --app-on-accent: #fff;
   --app-user-bubble: #0c2d5b;
-  --app-success: #157f53;
-  --app-success-soft: #e1f5ec;
-  --app-shadow: 0 10px 30px rgb(15 48 86 / 10%);
+  --app-success: #2f7d5b;
+  --app-success-soft: #e4f2ea;
+  --app-shadow: 0 6px 20px rgb(15 30 55 / 8%);
 
   display: flex;
   min-height: 100dvh;
@@ -130,7 +130,7 @@ $sidebar-width: 248px;
     inset 0 1px 0 rgb(255 255 255 / 22%);
   color: #fff;
   font-size: 19px;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: -0.02em;
 
   &::after {
@@ -155,7 +155,7 @@ $sidebar-width: 248px;
   b {
     overflow: hidden;
     font-size: 15.5px;
-    font-weight: 800;
+    font-weight: 600;
     letter-spacing: -0.01em;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -172,9 +172,8 @@ $sidebar-width: 248px;
   margin: 8px 8px 6px;
   color: var(--app-ink-3);
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 0.08em;
-  text-transform: uppercase;
 }
 
 .nav {
@@ -194,7 +193,7 @@ $sidebar-width: 248px;
 
 // Mỗi mục có một tông màu riêng cho ô icon; mục đang mở tô đặc ô icon và có vạch dọc bên trái.
 .tone_blue {
-  --nav-tone: #1090cb;
+  --nav-tone: #1f74b5;
 }
 .tone_teal {
   --nav-tone: #1f8f86;
@@ -223,7 +222,7 @@ $sidebar-width: 248px;
   border-radius: 5px;
   color: var(--app-ink-2);
   font-size: 13.5px;
-  font-weight: 600;
+  font-weight: 500;
   text-decoration: none;
   transition:
     background 0.15s ease,
@@ -253,13 +252,7 @@ $sidebar-width: 248px;
   height: 32px;
   flex: none;
   place-items: center;
-  border-radius: 5px;
-  background: color-mix(in srgb, var(--nav-tone, var(--app-accent)) 13%, var(--app-surface));
-  color: var(--nav-tone, var(--app-accent));
-  transition:
-    background 0.15s ease,
-    color 0.15s ease,
-    transform 0.15s ease;
+  transition: transform 0.15s ease;
 }
 
 a.navItem:hover {
@@ -285,12 +278,6 @@ a.navActive:hover {
     width: 4px;
     border-radius: 0 5px 5px 0;
     background: var(--nav-tone, var(--app-accent));
-  }
-
-  .navIcon {
-    background: var(--nav-tone, var(--app-accent));
-    box-shadow: 0 5px 12px color-mix(in srgb, var(--nav-tone, var(--app-accent)) 38%, transparent);
-    color: #fff;
   }
 }
 
@@ -472,7 +459,7 @@ a.navActive:hover {
   background: var(--app-success-soft);
   color: var(--app-success);
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
   white-space: nowrap;
 }
 
@@ -547,7 +534,7 @@ a.navActive:hover {
   background: var(--app-user-bubble);
   color: #fff;
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .pfLinks {

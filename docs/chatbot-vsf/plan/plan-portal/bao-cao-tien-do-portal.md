@@ -150,3 +150,15 @@ Test tích hợp Admin kiểm: HR bị chặn khỏi mọi endpoint admin; tạo
 | Tiêu đề ngày | Ô "NGÀY 1" với số ngày là điểm nhấn đầu tiên; thanh bên dùng ô số thay icon và nhãn Xuất bản / Nháp để phân biệt hai lộ trình |
 | Thanh bên | Logo chuyển sắc, khoảng cách rộng hơn, mỗi mục một ô icon màu riêng; mục đang mở tô đặc icon và có vạch bên trái; thẻ người dùng có nền riêng |
 | Tạo task bằng AI | Bảng màu dịu hơn: đầu thẻ trắng có vạch màu, nút chạy xanh lam trầm, khối "chưa chọn tài liệu" ở giữa thẻ có icon và gợi ý, hai cột cao bằng nhau |
+
+## 9. Cập nhật 30/09/2026 (tối): chuẩn hóa giao diện kiểu doanh nghiệp
+
+| Việc | Chi tiết |
+|---|---|
+| Bảng màu | Nền xám lạnh, xanh navy làm màu chính, chữ đen làm dịu (`#2a3646`, `#566275`, `#8592a4`); màu nhóm task dịu lại (lục, lam, chàm, vàng đất) |
+| Đậm nhạt | Chỉ còn ba mức chữ: 400 thường, 500 nhãn/menu, 600 tiêu đề; bỏ 700 và 800 ở toàn bộ giao diện portal |
+| Chữ in hoa | Bỏ toàn bộ chữ in hoa ở menu, thanh bên, tiêu đề, nhãn |
+| Icon | Bộ icon phẳng hai tông tự vẽ (`components/flat-icons/FlatIcon.tsx`) thay icon nét mảnh ở menu, thanh trên, nút roadmap; menu dùng chung một tông xanh |
+| Roadmap ngang | "Bắt đầu" và "Kết thúc" là nút nằm trên đường như các task; nút trắng viền màu nhóm; thẻ phẳng, dải màu đặc, chip trung tính |
+| Thanh bên Quản lý task | Lộ trình dọc: Bắt đầu, các ngày nối nhau bằng đường dọc (nút đặc là bản đã xuất bản, viền vàng là bản nháp), Kết thúc |
+| Tiêu đề ngày | Bỏ ô số ngày nổi, để tiêu đề trơn |

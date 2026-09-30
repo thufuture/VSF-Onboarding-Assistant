@@ -71,7 +71,7 @@ $tn-amber: #a8681a;
   background: #f0f9f5;
   color: #237d5c;
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
   white-space: nowrap;
 }
 
@@ -93,7 +93,7 @@ $tn-amber: #a8681a;
     gap: 7px;
     color: var(--app-ink-3);
     font-size: 12px;
-    font-weight: 700;
+    font-weight: 600;
     white-space: nowrap;
 
     b {
@@ -189,7 +189,7 @@ $tn-amber: #a8681a;
   h2 {
     margin: 0;
     font-size: 15px;
-    font-weight: 700;
+    font-weight: 600;
     color: var(--app-ink);
   }
   small {
@@ -313,7 +313,7 @@ $tn-amber: #a8681a;
   background: #fff;
   color: #315c78;
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
 
   button {
     display: grid;
@@ -371,7 +371,7 @@ $tn-amber: #a8681a;
     background: #168dc4;
     color: #fff;
     font-size: 11px;
-    font-weight: 700;
+    font-weight: 600;
   }
 }
 :global([data-theme="dark"]) .pickerTitle {
@@ -526,7 +526,7 @@ $tn-amber: #a8681a;
       margin-right: 5px;
       color: var(--app-ink-2);
       font-style: normal;
-      font-weight: 700;
+      font-weight: 600;
     }
   }
   p {
@@ -736,7 +736,7 @@ $tn-amber: #a8681a;
   border-radius: 5px;
   background: #2f6fa3;
   color: #fff;
-  font-weight: 700;
+  font-weight: 600;
   font-size: 13.5px;
   box-shadow: 0 4px 10px rgba(47, 111, 163, 0.18);
   cursor: pointer;
@@ -808,7 +808,7 @@ $tn-amber: #a8681a;
 
 .confidence {
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 600;
   padding: 2px 8px;
   border-radius: 5px;
   background: var(--app-accent-soft);

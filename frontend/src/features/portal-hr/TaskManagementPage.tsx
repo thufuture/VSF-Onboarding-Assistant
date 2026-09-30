@@ -2,18 +2,13 @@
 
 import {
   AlertTriangle,
-  Award,
   CheckCircle2,
-  BookOpen,
-  Building2,
   ClipboardList,
   Clock,
   Copy,
   Eye,
-  FileText,
   Flag,
   Info,
-  Laptop,
   Link2,
   ListChecks,
   Pencil,
@@ -28,6 +23,7 @@ import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useMemo, useState } from "react";
 
+import { FlatIcon, type FlatIconName, type FlatTone } from "@/components/flat-icons/FlatIcon";
 import { ConfirmModal, modalStyles as m, PortalModal, useToast } from "@/components/portal-modal/PortalModal";
 import { portalHrApi, PortalError } from "@/features/portal-hr/api";
 import type {
@@ -50,20 +46,14 @@ const CARD_BOTTOM = 298;
 const CENTERS = [232, 210, 240, 214, 236, 208, 238, 216, 234, 212, 240, 218];
 const SIZES = [50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50];
 
-// Nhóm task cố định như v15 (hrcat-c1..c4) — mỗi nhóm một màu và một icon; task chưa phân nhóm dùng tông xám.
-const GROUPS: { key: TaskGroupDTO; cls: string; color: string; icon: typeof FileText }[] = [
-  { key: "PROFILE", cls: "catC1", color: "#299b73", icon: FileText },
-  { key: "TRAINING", cls: "catC2", color: "#168dc4", icon: BookOpen },
-  { key: "DEVICE", cls: "catC3", color: "#6377b5", icon: Laptop },
-  { key: "OFFICE", cls: "catC4", color: "#c98720", icon: Building2 },
+// Nhóm task cố định (Hồ sơ / Đào tạo / Thiết bị / Văn phòng) — mỗi nhóm một màu dịu và một icon phẳng; chưa phân nhóm dùng xám.
+const GROUPS: { key: TaskGroupDTO; cls: string; color: string; flat: FlatIconName; tone: FlatTone }[] = [
+  { key: "PROFILE", cls: "catC1", color: "#3a8567", flat: "file", tone: "green" },
+  { key: "TRAINING", cls: "catC2", color: "#2f6fa8", flat: "book", tone: "blue" },
+  { key: "DEVICE", cls: "catC3", color: "#5766a3", flat: "laptop", tone: "indigo" },
+  { key: "OFFICE", cls: "catC4", color: "#b98330", flat: "building", tone: "amber" },
 ];
-const NO_GROUP = { key: null, cls: "catC7", color: "#718096", icon: ClipboardList };
-
-/** "Ngày 1" → 1; tên không có số thì dùng thứ tự giai đoạn. Số này là điểm nhấn đầu tiên của tiêu đề. */
-function dayNumberOf(title: string, index: number): number {
-  const match = /(\d+)/.exec(title);
-  return match ? Number(match[1]) : index + 1;
-}
+const NO_GROUP = { key: null, cls: "catC7", color: "#7a8797", flat: "tasks" as FlatIconName, tone: "slate" as FlatTone };
 
 export const TASKS_CHANGED_EVENT = "portal-tasks-changed";
 export const ADD_STAGE_EVENT = "portal-add-stage";
@@ -171,14 +161,16 @@ export function TaskManagementPage() {
   const count = stageTasks.length;
   // Task cùng lộ trình (để chọn tiên quyết) và các giai đoạn cùng lộ trình (để chọn "Ngày").
   const templateStages = selectedTemplate?.stages ?? [];
-  const layout = stageTasks.map((_, i) => {
-    const x = count <= 1 ? 50 : 7 + (i * 86) / (count - 1);
-    const size = SIZES[i % SIZES.length];
-    const center = CENTERS[i % CENTERS.length];
-    return { x, size, center, top: center - size / 2, onTop: i % 2 === 0 };
+  // Điểm 0 = "Bắt đầu", điểm 1..n = task, điểm n+1 = "Kết thúc": cả ba loại đều là nút nằm trên đường.
+  const total = count + 2;
+  const layout = Array.from({ length: total }, (_, j) => {
+    const x = 6 + (j * 88) / (total - 1);
+    const size = SIZES[j % SIZES.length];
+    const center = CENTERS[j % CENTERS.length];
+    return { x, size, center, top: center - size / 2, onTop: (j - 1) % 2 === 0 };
   });
-  // Đúng công thức v15 (hrTasksRoadmap14): điểm ở toạ độ 70→930 trên viewBox 1000, nối bằng Catmull-Rom.
-  const pts = layout.map((p, i) => ({ x: count > 1 ? 70 + (i * 860) / (count - 1) : 500, y: p.center }));
+  // Đường cong Catmull-Rom qua mọi điểm (toạ độ viewBox 1000 = phần trăm × 10).
+  const pts = layout.map((p) => ({ x: p.x * 10, y: p.center }));
   const path = pts
     .map((q, i) => {
       if (i === 0) return `M ${q.x} ${q.y}`;
@@ -487,10 +479,6 @@ export function TaskManagementPage() {
         <section className={styles.journey}>
           <div className={styles.journeyHead}>
             <div className={styles.journeyTitle}>
-              <span className={styles.dayNum}>
-                <small>{t("form.dayWord")}</small>
-                <b>{dayNumberOf(selectedStage.title, allStages.findIndex((st) => st.id === selectedStage.id))}</b>
-              </span>
               <div>
                 <h2>{selectedStage.title}</h2>
                 <small>
@@ -523,32 +511,24 @@ export function TaskManagementPage() {
                   <path className={styles.roadDash} d={path} vectorEffect="non-scaling-stroke" />
                 </svg>
 
-                <span
-                  className={styles.roadStart}
-                  style={{ left: `calc(${layout[0].x}% - 70px)`, top: layout[0].center - 16 }}
-                >
-                  <b>
-                    <Flag aria-hidden="true" size={30} />
-                  </b>
-                  <em>{t("start")}</em>
-                </span>
-                <span
-                  className={styles.roadFinish}
-                  style={{
-                    left: `calc(${layout[layout.length - 1].x}% + 36px)`,
-                    top: layout[layout.length - 1].center - 16,
-                  }}
-                >
-                  <b>
-                    <Award aria-hidden="true" size={30} />
-                  </b>
-                  <em>{t("finish")}</em>
-                </span>
+                {[
+                  { p: layout[0], kind: "start", flat: "flag" as FlatIconName, tone: "green" as FlatTone, label: t("start") },
+                  { p: layout[total - 1], kind: "finish", flat: "award" as FlatIconName, tone: "amber" as FlatTone, label: t("finish") },
+                ].map((end) => (
+                  <div className={`${styles.endNode} ${styles[`end_${end.kind}`]}`} key={end.kind}>
+                    <span
+                      className={styles.endCircle}
+                      style={{ left: `calc(${end.p.x}% - 24px)`, top: end.p.center - 24 }}
+                    >
+                      <FlatIcon name={end.flat} size={24} tone={end.tone} />
+                    </span>
+                    <em style={{ left: `calc(${end.p.x}% - 40px)`, top: end.p.center + 30 }}>{end.label}</em>
+                  </div>
+                ))}
 
                 {stageTasks.map((task, i) => {
-                  const p = layout[i];
+                  const p = layout[i + 1];
                   const tone = toneOf(task.task_group);
-                  const TaskIcon = tone.icon;
                   const tetherTop = p.onTop ? CARD_TOP + CARD_H : p.top + p.size;
                   const tetherHeight = p.onTop ? p.top - (CARD_TOP + CARD_H) : CARD_BOTTOM - (p.top + p.size);
                   return (
@@ -561,7 +541,7 @@ export function TaskManagementPage() {
                         style={{ left: `calc(${p.x}% - ${p.size / 2}px)`, top: p.top, width: p.size, height: p.size }}
                         type="button"
                       >
-                        <TaskIcon aria-hidden="true" size={21} />
+                        <FlatIcon name={tone.flat} size={24} tone={tone.tone} />
                         <i className={styles.nodeNum}>{i + 1}</i>
                       </button>
                       <div
@@ -574,7 +554,7 @@ export function TaskManagementPage() {
                       >
                         <div className={styles.cardBand}>
                           <small>
-                            <TaskIcon aria-hidden="true" size={12} /> {t("taskNo", { n: String(i + 1).padStart(2, "0") })}
+                            {t("taskNo", { n: String(i + 1).padStart(2, "0") })}
                           </small>
                           <span className={styles.bandPill}>{isPublished ? t("statusPublished") : t("statusDraft")}</span>
                         </div>

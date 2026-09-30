@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
+import { FlatIcon } from "@/components/flat-icons/FlatIcon";
 import { useSession } from "@/features/auth/SessionProvider";
 import { portalHrApi } from "@/features/portal-hr/api";
 import type { TemplateNodeResponseDTO } from "@/features/portal-hr/dto/responseDTO/portal.response";
@@ -53,25 +54,29 @@ export function TasksSidebar() {
         <b>{t("sideTitle")}</b>
         <small>{t("sideHint")}</small>
       </div>
-      <nav className={styles.days}>
+      <nav aria-label={t("sideTitle")} className={styles.timeline}>
+        <div className={styles.tlEnd}>
+          <span className={`${styles.tlNode} ${styles.tlStart}`}>
+            <FlatIcon name="flag" size={16} tone="green" />
+          </span>
+          <b>{t("start")}</b>
+        </div>
         {stages.map((stage, i) => {
           const publishedCount = stage.published ? stage.tasks.length : 0;
           const pct = stage.tasks.length > 0 ? Math.round((publishedCount / stage.tasks.length) * 100) : 0;
+          const active = stage.id === selectedId;
           return (
             <Link
-              className={`${styles.day} ${i % 4 === 0 ? "" : styles[`day${i % 4}`]} ${stage.id === selectedId ? styles.on : ""}`}
+              aria-current={active ? "step" : undefined}
+              className={`${styles.tlItem} ${active ? styles.tlOn : ""} ${stage.published ? styles.tlLive : styles.tlDraft}`}
               href={{ pathname: "/admin/tasks", query: { stage: stage.id } }}
               key={stage.id}
             >
-              <span className={styles.num}>
-                <span className={styles.numText}>{/(\d+)/.exec(stage.title)?.[1] ?? i + 1}</span>
-              </span>
-              <div>
-                <b className={styles.dayTitle}>
+              <span className={styles.tlNode}>{/(\d+)/.exec(stage.title)?.[1] ?? i + 1}</span>
+              <div className={styles.tlBody}>
+                <b>
                   <span>{stage.title}</span>
-                  <u className={stage.published ? styles.pubTag : styles.draftTag}>
-                    {stage.published ? t("tagPublished") : t("tagDraft")}
-                  </u>
+                  <u>{stage.published ? t("tagPublished") : t("tagDraft")}</u>
                 </b>
                 <small>{t("sideCount", { total: stage.tasks.length, published: publishedCount })}</small>
                 <i>
@@ -82,6 +87,12 @@ export function TasksSidebar() {
             </Link>
           );
         })}
+        <div className={`${styles.tlEnd} ${styles.tlLast}`}>
+          <span className={`${styles.tlNode} ${styles.tlFinish}`}>
+            <FlatIcon name="award" size={16} tone="amber" />
+          </span>
+          <b>{t("finish")}</b>
+        </div>
         <button className={styles.addDay} onClick={() => window.dispatchEvent(new Event(ADD_STAGE_EVENT))} type="button">
           <Plus aria-hidden="true" size={14} /> {t("sideAdd")}
         </button>
