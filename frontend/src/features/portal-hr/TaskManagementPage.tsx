@@ -40,15 +40,16 @@ import { Link } from "@/i18n/navigation";
 
 import styles from "./TaskManagementPage.module.scss";
 
-// Hình học lấy từ view h-tasks của v15: canvas cao 430, nút rải đều 7%→93%, độ cao/kích thước nút lệch nhau tạo sóng,
-// thẻ xen kẽ trên (top 22) / dưới (top 304), cao 110, rộng 158.
-const CANVAS_H = 430;
-const CARD_W = 158;
-const CARD_H = 110;
-const CARD_TOP = 22;
-const CARD_BOTTOM = 304;
-const CENTERS = [230, 178, 218, 166, 208, 248, 196, 158, 202, 236, 184, 222];
-const SIZES = [44, 50, 42, 47, 43, 51, 44, 48, 42, 49, 45, 43];
+// Hình học roadmap: canvas cao 470, nút rải đều 7%→93%; độ cao lệch nhẹ (±17px) để đường cong mềm như sóng thoải,
+// thẻ xen kẽ trên (top 16) / dưới (top 298), rộng 176 và cao 138 (dải màu đầu thẻ + thân + nút thao tác).
+const CANVAS_H = 470;
+const CARD_W = 196;
+const CARD_H = 138;
+const CARD_TOP = 16;
+const CARD_BOTTOM = 298;
+const CENTERS = [232, 210, 240, 214, 236, 208, 238, 216, 234, 212, 240, 218];
+const SIZES = [50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50];
+
 // Nhóm task cố định như v15 (hrcat-c1..c4) — mỗi nhóm một màu và một icon; task chưa phân nhóm dùng tông xám.
 const GROUPS: { key: TaskGroupDTO; cls: string; color: string; icon: typeof FileText }[] = [
   { key: "PROFILE", cls: "catC1", color: "#299b73", icon: FileText },
@@ -57,6 +58,12 @@ const GROUPS: { key: TaskGroupDTO; cls: string; color: string; icon: typeof File
   { key: "OFFICE", cls: "catC4", color: "#c98720", icon: Building2 },
 ];
 const NO_GROUP = { key: null, cls: "catC7", color: "#718096", icon: ClipboardList };
+
+/** "Ngày 1" → 1; tên không có số thì dùng thứ tự giai đoạn. Số này là điểm nhấn đầu tiên của tiêu đề. */
+function dayNumberOf(title: string, index: number): number {
+  const match = /(\d+)/.exec(title);
+  return match ? Number(match[1]) : index + 1;
+}
 
 export const TASKS_CHANGED_EVENT = "portal-tasks-changed";
 export const ADD_STAGE_EVENT = "portal-add-stage";
@@ -480,8 +487,9 @@ export function TaskManagementPage() {
         <section className={styles.journey}>
           <div className={styles.journeyHead}>
             <div className={styles.journeyTitle}>
-              <span className={styles.journeyIcon}>
-                <Flag aria-hidden="true" size={18} />
+              <span className={styles.dayNum}>
+                <small>{t("form.dayWord")}</small>
+                <b>{dayNumberOf(selectedStage.title, allStages.findIndex((st) => st.id === selectedStage.id))}</b>
               </span>
               <div>
                 <h2>{selectedStage.title}</h2>
@@ -503,7 +511,7 @@ export function TaskManagementPage() {
             </div>
           ) : (
             <div className={styles.roadScroll}>
-              <div className={styles.canvas} style={{ height: CANVAS_H }}>
+              <div className={styles.canvas} style={{ height: CANVAS_H, minWidth: Math.max(820, count * 124) }}>
                 <svg
                   aria-hidden="true"
                   className={styles.roadSvg}
@@ -512,6 +520,7 @@ export function TaskManagementPage() {
                 >
                   <path className={styles.roadBed} d={path} vectorEffect="non-scaling-stroke" />
                   <path className={styles.roadLine} d={path} vectorEffect="non-scaling-stroke" />
+                  <path className={styles.roadDash} d={path} vectorEffect="non-scaling-stroke" />
                 </svg>
 
                 <span
@@ -544,7 +553,7 @@ export function TaskManagementPage() {
                   const tetherHeight = p.onTop ? p.top - (CARD_TOP + CARD_H) : CARD_BOTTOM - (p.top + p.size);
                   return (
                     <article className={`${styles.roadItem} ${styles[tone.cls]}`} key={task.id}>
-                      <i className={styles.tether} style={{ left: `${p.x}%`, top: tetherTop, height: Math.max(tetherHeight, 0) }} />
+                      <i className={`${styles.tether} ${p.onTop ? styles.tetherTop : styles.tetherBottom}`} style={{ left: `${p.x}%`, top: tetherTop, height: Math.max(tetherHeight, 0) }} />
                       <button
                         aria-label={task.title}
                         className={styles.node}
@@ -552,10 +561,8 @@ export function TaskManagementPage() {
                         style={{ left: `calc(${p.x}% - ${p.size / 2}px)`, top: p.top, width: p.size, height: p.size }}
                         type="button"
                       >
-                        <span>{i + 1}</span>
-                        <i className={styles.nodeBadge}>
-                          <TaskIcon aria-hidden="true" size={11} />
-                        </i>
+                        <TaskIcon aria-hidden="true" size={21} />
+                        <i className={styles.nodeNum}>{i + 1}</i>
                       </button>
                       <div
                         className={styles.card}
@@ -565,23 +572,22 @@ export function TaskManagementPage() {
                           top: p.onTop ? CARD_TOP : CARD_BOTTOM,
                         }}
                       >
-                        <div className={styles.cardHead}>
+                        <div className={styles.cardBand}>
                           <small>
-                            <TaskIcon aria-hidden="true" size={10} /> {t("taskNo", { n: String(i + 1).padStart(2, "0") })}
+                            <TaskIcon aria-hidden="true" size={12} /> {t("taskNo", { n: String(i + 1).padStart(2, "0") })}
                           </small>
-                          <span className={isPublished ? styles.pillDone : styles.pillDraft}>
-                            <i />
-                            {isPublished ? t("statusPublished") : t("statusDraft")}
-                          </span>
+                          <span className={styles.bandPill}>{isPublished ? t("statusPublished") : t("statusDraft")}</span>
                         </div>
-                        <h3 title={task.title}>{task.title}</h3>
-                        <div className={styles.meta}>
-                          <span>
-                            <Clock aria-hidden="true" size={9} /> {task.required ? t("required") : t("optional")}
-                          </span>
-                          <span>
-                            <ListChecks aria-hidden="true" size={9} /> {t("prereq", { count: task.depends_on.length })}
-                          </span>
+                        <div className={styles.cardBody}>
+                          <h3 title={task.title}>{task.title}</h3>
+                          <div className={styles.chips}>
+                            <span>
+                              <Clock aria-hidden="true" size={10} /> {task.required ? t("required") : t("optional")}
+                            </span>
+                            <span>
+                              <ListChecks aria-hidden="true" size={10} /> {t("prereq", { count: task.depends_on.length })}
+                            </span>
+                          </div>
                         </div>
                         <div className={styles.actions}>
                           <button onClick={() => setViewingTask(task)} title={t("viewTask")} type="button">

@@ -484,7 +484,9 @@
       "DEVICE": "Devices",
       "OFFICE": "Office",
       "none": "No group"
-    }
+    },
+    "tagPublished": "Live",
+    "tagDraft": "Draft"
   },
   "portalEmployees": {
     "viewTask": "View task",
@@ -709,7 +711,8 @@
       "pickedBadge": "{count} picked",
       "searchPlaceholder": "Search by name, group or owner…",
       "pickedFoot": "{count} documents picked",
-      "done": "Done picking"
+      "done": "Done picking",
+      "emptyHint": "Press “Pick documents” to choose one or more ready documents; AI proposes tasks with source passages for you to review."
     },
     "audience": {
       "label": "Applies to",

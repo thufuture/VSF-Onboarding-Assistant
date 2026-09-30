@@ -138,3 +138,15 @@ Test tích hợp Admin kiểm: HR bị chặn khỏi mọi endpoint admin; tạo
 | Kiểm chứng | 27 test tích hợp portal/admin pass (thêm test nhóm task: tạo, sửa, nhóm sai bị chặn 422); vitest 149 pass; tsc, eslint, ruff, mypy sạch |
 
 **Còn lại thêm:** task do AI chấp nhận vào lộ trình chưa tự gán nhóm (đang để trống, HR chọn sau khi sửa task).
+
+## 8. Cập nhật 30/09/2026 (chiều tối): làm lại giao diện theo góp ý
+
+| Việc | Chi tiết |
+|---|---|
+| Bo góc | Mọi khung, thẻ, nút, nhãn, ô lọc thống nhất `border-radius: 5px` (chỉ giữ hình tròn thật như nút mốc và avatar) |
+| Ô lọc ở Tài liệu | Ba ô mang ba tông màu riêng (trạng thái lam, mức sử dụng chàm, nhóm tài liệu lục); menu thả xuống có icon màu theo ý nghĩa từng lựa chọn, dấu tích ở mục đang chọn |
+| Xem tài liệu | Bố cục như Word: ngăn mục lục đứng yên bên trái (thụt lề theo cấp tiêu đề, tô mục đang đọc khi cuộn), trang giấy trắng trên nền xám, chữ có chân, tiêu đề xanh đậm; bảng markdown có dòng tiêu đề rỗng thì ẩn dòng đó |
+| Roadmap Quản lý task | Đường nhựa mềm (lề sáng, mặt đường navy, vạch trắng đứt), nút tròn có icon nhóm và huy hiệu số thứ tự; thẻ có dải màu nhóm ở đầu, nhãn dạng viên, nút thao tác; đường nối có chấm; khung rộng tự co giãn theo số task |
+| Tiêu đề ngày | Ô "NGÀY 1" với số ngày là điểm nhấn đầu tiên; thanh bên dùng ô số thay icon và nhãn Xuất bản / Nháp để phân biệt hai lộ trình |
+| Thanh bên | Logo chuyển sắc, khoảng cách rộng hơn, mỗi mục một ô icon màu riêng; mục đang mở tô đặc icon và có vạch bên trái; thẻ người dùng có nền riêng |
+| Tạo task bằng AI | Bảng màu dịu hơn: đầu thẻ trắng có vạch màu, nút chạy xanh lam trầm, khối "chưa chọn tài liệu" ở giữa thẻ có icon và gợi ý, hai cột cao bằng nhau |

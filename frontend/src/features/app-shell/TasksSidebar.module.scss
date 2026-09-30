@@ -90,13 +90,13 @@
     display: block;
     height: 3px;
     overflow: hidden;
-    border-radius: 3px;
+    border-radius: 5px;
     background: var(--app-border);
   }
   em {
     display: block;
     height: 100%;
-    border-radius: 3px;
+    border-radius: 5px;
     background: #168dc4;
   }
   strong {
@@ -158,4 +158,42 @@
     border-color: #168dc4;
     color: #0877ac;
   }
+}
+
+// Ô số ngày: số là điểm nhấn đầu tiên của mỗi mục (thay cho icon), tông màu theo thứ tự ngày.
+.day > .num .numText {
+  font-size: 17px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.day b.dayTitle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+
+  > span {
+    flex: none;
+  }
+}
+
+.pubTag,
+.draftTag {
+  flex: none;
+  padding: 1px 5px;
+  border-radius: 5px;
+  font-size: 8.5px;
+  font-weight: 700;
+  text-decoration: none;
+  vertical-align: 1px;
+  white-space: nowrap;
+}
+.pubTag {
+  background: #e3f3ec;
+  color: #237d5c;
+}
+.draftTag {
+  background: #f7efdc;
+  color: #946512;
 }

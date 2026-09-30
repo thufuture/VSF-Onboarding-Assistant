@@ -36,35 +36,36 @@ import styles from "./AppShell.module.scss";
 import { TasksSidebar } from "./TasksSidebar";
 import { useTheme } from "./useTheme";
 
-type NavItem = { key: string; icon: LucideIcon; href?: string };
+type NavTone = "blue" | "teal" | "indigo" | "amber" | "rose" | "slate";
+type NavItem = { key: string; icon: LucideIcon; href?: string; tone: NavTone };
 
 // Mục chưa có trang (không có `href`) hiện mờ kèm nhãn "Sắp có" thay vì liên kết chết.
 const MEMBER_NAV: NavItem[] = [
-  { key: "roadmap", icon: MessageSquareText, href: "/chat" },
-  { key: "documents", icon: BookOpenText },
-  { key: "contacts", icon: Users },
-  { key: "tickets", icon: LifeBuoy },
+  { key: "roadmap", icon: MessageSquareText, href: "/chat", tone: "blue" },
+  { key: "documents", icon: BookOpenText, tone: "indigo" },
+  { key: "contacts", icon: Users, tone: "teal" },
+  { key: "tickets", icon: LifeBuoy, tone: "amber" },
 ];
 // Đúng thứ tự nav HR trong prototype v15 (NAV.owner): Tổng quan, Nhân viên, Ticket sự cố, Phản hồi Viga,
 // Quản lý task, Tài liệu, Tạo task bằng AI, Đầu mối và đường dẫn. Chỉ mục đã có API thật mới có `href`.
 const STAFF_NAV: NavItem[] = [
-  { key: "admin", icon: LayoutDashboard, href: "/admin" },
-  { key: "employees", icon: Users, href: "/admin/employees" },
-  { key: "hrTickets", icon: Flag },
-  { key: "vigaFeedback", icon: MailQuestion },
-  { key: "taskManagement", icon: ListChecks, href: "/admin/tasks" },
-  { key: "documents", icon: BookOpenText, href: "/admin/documents" },
-  { key: "aiTasks", icon: Sparkles, href: "/admin/ai-tasks" },
-  { key: "registry", icon: Link2 },
+  { key: "admin", icon: LayoutDashboard, href: "/admin", tone: "blue" },
+  { key: "employees", icon: Users, href: "/admin/employees", tone: "teal" },
+  { key: "hrTickets", icon: Flag, tone: "rose" },
+  { key: "vigaFeedback", icon: MailQuestion, tone: "indigo" },
+  { key: "taskManagement", icon: ListChecks, href: "/admin/tasks", tone: "blue" },
+  { key: "documents", icon: BookOpenText, href: "/admin/documents", tone: "indigo" },
+  { key: "aiTasks", icon: Sparkles, href: "/admin/ai-tasks", tone: "amber" },
+  { key: "registry", icon: Link2, tone: "teal" },
 ];
 // Đúng thứ tự nav Admin trong prototype v15 (NAV.admin): Tổng quan, Người dùng, Phòng ban, Thành viên, Lộ trình mẫu, Nhật ký.
 const ADMIN_NAV: NavItem[] = [
-  { key: "admin", icon: LayoutDashboard, href: "/admin" },
-  { key: "adminUsers", icon: Users, href: "/admin/users" },
-  { key: "adminTeams", icon: Building2, href: "/admin/teams" },
-  { key: "adminMembers", icon: Workflow, href: "/admin/members" },
-  { key: "adminTemplate", icon: GitBranch, href: "/admin/template" },
-  { key: "adminAudit", icon: History, href: "/admin/audit" },
+  { key: "admin", icon: LayoutDashboard, href: "/admin", tone: "blue" },
+  { key: "adminUsers", icon: Users, href: "/admin/users", tone: "teal" },
+  { key: "adminTeams", icon: Building2, href: "/admin/teams", tone: "indigo" },
+  { key: "adminMembers", icon: Workflow, href: "/admin/members", tone: "amber" },
+  { key: "adminTemplate", icon: GitBranch, href: "/admin/template", tone: "rose" },
+  { key: "adminAudit", icon: History, href: "/admin/audit", tone: "slate" },
 ];
 
 /**
@@ -148,12 +149,18 @@ export function AppShell({ children }: { children: ReactNode }) {
         {!onTasksTree && user.role !== "USER" ? <p className={styles.roleBadge}>{t(`roles.${user.role}`)}</p> : null}
 
         <nav aria-label={t("navigation")} className={styles.nav} hidden={onTasksTree}>
-          {items.map(({ key, icon: Icon, href }) => {
+          {items.map(({ key, icon: Icon, href, tone }) => {
             const active = activeItem?.key === key;
             if (!href) {
               return (
-                <span aria-disabled="true" className={`${styles.navItem} ${styles.navSoon}`} key={key}>
-                  <Icon aria-hidden="true" size={18} />
+                <span
+                  aria-disabled="true"
+                  className={`${styles.navItem} ${styles.navSoon} ${styles[`tone_${tone}`]}`}
+                  key={key}
+                >
+                  <i className={styles.navIcon}>
+                    <Icon aria-hidden="true" size={17} />
+                  </i>
                   <span>{t(`nav.${key}`)}</span>
                   <small>{t("nav.soon")}</small>
                 </span>
@@ -162,11 +169,13 @@ export function AppShell({ children }: { children: ReactNode }) {
             return (
               <Link
                 aria-current={active ? "page" : undefined}
-                className={`${styles.navItem} ${active ? styles.navActive : ""}`}
+                className={`${styles.navItem} ${styles[`tone_${tone}`]} ${active ? styles.navActive : ""}`}
                 href={href}
                 key={key}
               >
-                <Icon aria-hidden="true" size={18} />
+                <i className={styles.navIcon}>
+                  <Icon aria-hidden="true" size={17} />
+                </i>
                 <span>{t(`nav.${key}`)}</span>
               </Link>
             );

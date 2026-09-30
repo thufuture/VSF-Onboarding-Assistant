@@ -484,7 +484,9 @@
       "DEVICE": "Thiết bị",
       "OFFICE": "Văn phòng",
       "none": "Chưa phân nhóm"
-    }
+    },
+    "tagPublished": "Xuất bản",
+    "tagDraft": "Nháp"
   },
   "portalEmployees": {
     "viewTask": "Xem task",
@@ -709,7 +711,8 @@
       "pickedBadge": "{count} đã chọn",
       "searchPlaceholder": "Tìm theo tên, nhóm hoặc người phụ trách…",
       "pickedFoot": "Đã chọn {count} tài liệu",
-      "done": "Hoàn tất chọn"
+      "done": "Hoàn tất chọn",
+      "emptyHint": "Bấm “Chọn tài liệu” để chọn một hoặc nhiều tài liệu đã sẵn sàng; AI sẽ đề xuất task kèm đoạn nguồn để bạn kiểm tra."
     },
     "audience": {
       "label": "Đối tượng áp dụng",

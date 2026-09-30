@@ -20,8 +20,8 @@ $tn-amber: #a8681a;
   justify-content: space-between;
   gap: 14px;
   padding: 16px 20px;
-  background: linear-gradient(135deg, #fff 58%, #f0f8fc);
-  border: 1px solid #d8e6ef;
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
   border-radius: 5px;
   flex-wrap: wrap;
 }
@@ -148,7 +148,7 @@ $tn-amber: #a8681a;
   gap: 14px;
 }
 .layout {
-  align-items: start;
+  align-items: stretch;
 
   @media (max-width: 900px) {
     grid-template-columns: 1fr;
@@ -168,9 +168,16 @@ $tn-amber: #a8681a;
   align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
-  padding: 14px 16px 10px;
-  background: var(--app-surface-2);
+  padding: 15px 18px 12px;
+  border-bottom: 1px solid var(--app-border);
+  background: var(--app-surface);
   border-radius: 5px 5px 0 0;
+}
+.sourceCard {
+  border-top: 3px solid #3b82b8;
+}
+.configCard {
+  border-top: 3px solid #6f78c4;
 }
 
 .chh {
@@ -252,7 +259,39 @@ $tn-amber: #a8681a;
   padding: 13px;
   border: 1px dashed var(--app-border-strong);
   border-radius: 5px;
-  background: var(--app-surface-2);
+  background: color-mix(in srgb, var(--app-surface-2) 40%, var(--app-surface));
+}
+// Trạng thái chưa chọn: khối giữa thẻ có icon, tiêu đề và gợi ý — để cột trái không bị trống.
+.emptyDocs {
+  display: flex;
+  width: 100%;
+  min-height: 190px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  text-align: center;
+
+  i {
+    display: grid;
+    width: 46px;
+    height: 46px;
+    margin-bottom: 4px;
+    place-items: center;
+    border-radius: 5px;
+    background: color-mix(in srgb, #3b82b8 12%, var(--app-surface));
+    color: #3b82b8;
+  }
+  b {
+    color: var(--app-ink);
+    font-size: 13.5px;
+  }
+  small {
+    max-width: 320px;
+    color: var(--app-ink-3);
+    font-size: 12px;
+    line-height: 1.5;
+  }
 }
 .has {
   border-style: solid;
@@ -328,7 +367,7 @@ $tn-amber: #a8681a;
   }
   > span {
     padding: 4px 8px;
-    border-radius: 4px;
+    border-radius: 5px;
     background: #168dc4;
     color: #fff;
     font-size: 11px;
@@ -564,10 +603,10 @@ $tn-amber: #a8681a;
 }
 
 .dayOn {
-  border-color: #168dc4 !important;
-  background: #eef8fd !important;
-  box-shadow: inset 3px 0 0 #168dc4;
-  color: #237d5c;
+  border-color: #3b82b8 !important;
+  background: color-mix(in srgb, #3b82b8 7%, var(--app-surface)) !important;
+  box-shadow: inset 3px 0 0 #3b82b8;
+  color: var(--app-ink);
 }
 :global([data-theme="dark"]) .dayOn {
   background: var(--app-accent-soft) !important;
@@ -581,9 +620,9 @@ $tn-amber: #a8681a;
   align-items: center;
   margin-top: 8px;
   padding: 9px;
-  border: 1px dashed #98b9ce;
+  border: 1px dashed var(--app-border-strong);
   border-radius: 5px;
-  background: var(--app-surface-2);
+  background: var(--app-surface);
   color: #315c78;
   text-align: left;
   cursor: pointer;
@@ -695,16 +734,20 @@ $tn-amber: #a8681a;
   height: 42px;
   border: none;
   border-radius: 5px;
-  background: linear-gradient(90deg, #087fb8, #1599c9);
+  background: #2f6fa3;
   color: #fff;
   font-weight: 700;
   font-size: 13.5px;
-  box-shadow: 0 6px 14px rgba(8, 127, 184, 0.16);
+  box-shadow: 0 4px 10px rgba(47, 111, 163, 0.18);
   cursor: pointer;
 
+  &:hover:not(:disabled) {
+    background: #275f8d;
+  }
   &:disabled {
     box-shadow: none;
-    background: #b8d8e7;
+    background: color-mix(in srgb, #2f6fa3 28%, var(--app-surface));
+    color: color-mix(in srgb, #2f6fa3 60%, var(--app-surface));
     cursor: default;
   }
 }
@@ -767,7 +810,7 @@ $tn-amber: #a8681a;
   font-size: 11px;
   font-weight: 700;
   padding: 2px 8px;
-  border-radius: 99px;
+  border-radius: 5px;
   background: var(--app-accent-soft);
   color: var(--app-accent-strong);
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronLeft, Flag, Plus, ShieldCheck, Sparkles, Users, type LucideIcon } from "lucide-react";
+import { ChevronLeft, Plus } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
@@ -12,8 +12,6 @@ import { ADD_STAGE_EVENT, TASKS_CHANGED_EVENT } from "@/features/portal-hr/TaskM
 import { Link } from "@/i18n/navigation";
 
 import styles from "./TasksSidebar.module.scss";
-
-const ICONS: LucideIcon[] = [Flag, Users, Sparkles, ShieldCheck];
 
 /** Menu "ngày" thay cho menu thường khi ở Quản lý task (cổng .tree-back + .hr14-side-* của v15). */
 export function TasksSidebar() {
@@ -57,7 +55,6 @@ export function TasksSidebar() {
       </div>
       <nav className={styles.days}>
         {stages.map((stage, i) => {
-          const Icon = ICONS[i % ICONS.length];
           const publishedCount = stage.published ? stage.tasks.length : 0;
           const pct = stage.tasks.length > 0 ? Math.round((publishedCount / stage.tasks.length) * 100) : 0;
           return (
@@ -66,11 +63,16 @@ export function TasksSidebar() {
               href={{ pathname: "/admin/tasks", query: { stage: stage.id } }}
               key={stage.id}
             >
-              <span>
-                <Icon aria-hidden="true" size={16} />
+              <span className={styles.num}>
+                <span className={styles.numText}>{/(\d+)/.exec(stage.title)?.[1] ?? i + 1}</span>
               </span>
               <div>
-                <b>{stage.title}</b>
+                <b className={styles.dayTitle}>
+                  <span>{stage.title}</span>
+                  <u className={stage.published ? styles.pubTag : styles.draftTag}>
+                    {stage.published ? t("tagPublished") : t("tagDraft")}
+                  </u>
+                </b>
                 <small>{t("sideCount", { total: stage.tasks.length, published: publishedCount })}</small>
                 <i>
                   <em style={{ width: `${pct}%` }} />

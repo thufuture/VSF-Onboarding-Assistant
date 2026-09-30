@@ -30,7 +30,7 @@
 .banner {
   margin: 0;
   padding: 10px 14px;
-  border-radius: 8px;
+  border-radius: 5px;
   font-size: 14px;
   background: #fdecec;
   color: #a3121f;
@@ -133,7 +133,7 @@
   gap: 2px;
   width: min(360px, 34%);
   padding: 12px 20px;
-  border-radius: 44px;
+  border-radius: 5px;
   background: rgba(9, 32, 70, 0.92);
   border: 1px solid rgba(255, 255, 255, 0.14);
   color: #fff;
@@ -213,7 +213,7 @@
 .modal {
   position: relative;
   background: var(--app-surface);
-  border-radius: 12px;
+  border-radius: 5px;
   padding: 24px;
   max-width: 480px;
   width: 100%;
@@ -272,7 +272,7 @@
   background: var(--app-accent);
   color: var(--app-on-accent);
   border: none;
-  border-radius: 8px;
+  border-radius: 5px;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;

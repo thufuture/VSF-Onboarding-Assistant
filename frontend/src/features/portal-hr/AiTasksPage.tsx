@@ -235,7 +235,13 @@ export function AiTasksPage() {
                   </span>
                 ))
               ) : (
-                <span className={styles.faint}>{t("document.empty")}</span>
+                <span className={styles.emptyDocs}>
+                  <i>
+                    <FileText aria-hidden="true" size={22} />
+                  </i>
+                  <b>{t("document.empty")}</b>
+                  <small>{t("document.emptyHint")}</small>
+                </span>
               )}
             </div>
 

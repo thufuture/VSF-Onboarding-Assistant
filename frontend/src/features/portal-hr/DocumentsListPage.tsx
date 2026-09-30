@@ -3,6 +3,7 @@
 import {
   Archive,
   BookOpen,
+  Check,
   CheckCircle2,
   Clock,
   ChevronDown,
@@ -16,7 +17,7 @@ import {
   UploadCloud,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { type FormEvent, type ReactNode, useEffect, useMemo, useState } from "react";
+import { type FormEvent, type ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -28,7 +29,7 @@ import type {
   DocumentListItemResponseDTO,
 } from "@/features/portal-hr/dto/responseDTO/portal.response";
 
-import { categoryStyle } from "./docCategory";
+import { categoryStyle, type DocTone } from "./docCategory";
 import styles from "./DocumentsListPage.module.scss";
 
 const PAGE_SIZE = 6;
@@ -75,11 +76,13 @@ function splitSections(markdown: string): Section[] {
   return sections.filter((s) => s.heading || s.body.trim());
 }
 
-type FilterOption = { value: string; label: string; hint?: string };
+type FilterOption = { value: string; label: string; hint?: string; icon?: ReactNode; tone?: DocTone };
 
+/** Ô lọc dạng thả xuống: mỗi ô một tông màu riêng, mỗi lựa chọn có icon màu theo ý nghĩa (v15: .doc-filter-*). */
 function FilterDrop({
   label,
   icon,
+  tone,
   value,
   options,
   open,
@@ -88,6 +91,7 @@ function FilterDrop({
 }: {
   label: string;
   icon: ReactNode;
+  tone: DocTone;
   value: string;
   options: FilterOption[];
   open: boolean;
@@ -97,13 +101,18 @@ function FilterDrop({
   const current = options.find((o) => o.value === value) ?? options[0];
   return (
     <div className={styles.drop}>
-      <button className={`${styles.dropTrigger} ${value ? styles.dropActive : ""}`} onClick={onToggle} type="button">
+      <button
+        aria-expanded={open}
+        className={`${styles.dropTrigger} ${styles[`drop_${tone}`]} ${value ? styles.dropActive : ""}`}
+        onClick={onToggle}
+        type="button"
+      >
         <span className={styles.dropIcon}>{icon}</span>
         <span className={styles.dropText}>
           <small>{label}</small>
           <b>{current.label}</b>
         </span>
-        <ChevronDown aria-hidden="true" size={13} />
+        <ChevronDown aria-hidden="true" className={open ? styles.dropCaretOpen : ""} size={13} />
       </button>
       {open ? (
         <div className={styles.dropMenu}>
@@ -114,8 +123,12 @@ function FilterDrop({
               onClick={() => onPick(o.value)}
               type="button"
             >
-              <b>{o.label}</b>
-              {o.hint ? <small>{o.hint}</small> : null}
+              {o.icon ? <i className={`${styles.optIcon} ${styles[`tone_${o.tone ?? "slate"}`]}`}>{o.icon}</i> : null}
+              <span>
+                <b>{o.label}</b>
+                {o.hint ? <small>{o.hint}</small> : null}
+              </span>
+              {o.value === value ? <Check aria-hidden="true" size={14} /> : null}
             </button>
           ))}
         </div>
@@ -159,6 +172,9 @@ export function DocumentsListPage() {
 
   const [viewMarkdown, setViewMarkdown] = useState<string | null>(null);
   const [viewFailed, setViewFailed] = useState(false);
+  // Mục lục kiểu ngăn điều hướng của Word: đứng yên, làm nổi mục đang đọc theo vị trí cuộn của trang.
+  const canvasRef = useRef<HTMLDivElement>(null);
+  const [activeSec, setActiveSec] = useState<string | null>(null);
 
   function reload() {
     portalHrApi
@@ -228,6 +244,7 @@ export function DocumentsListPage() {
   function openView(doc: DocumentListItemResponseDTO) {
     setViewMarkdown(null);
     setViewFailed(false);
+    setActiveSec(null);
     setModal({ kind: "view", doc });
     if (doc.latest_version_id === null) {
       setViewFailed(true);
@@ -300,6 +317,28 @@ export function DocumentsListPage() {
   }
 
   const sections = viewMarkdown ? splitSections(viewMarkdown) : [];
+
+  function scrollToSection(id: string) {
+    const box = canvasRef.current;
+    const el = document.getElementById(id);
+    if (!box || !el) return;
+    const top = el.getBoundingClientRect().top - box.getBoundingClientRect().top + box.scrollTop - 18;
+    box.scrollTo({ top, behavior: "smooth" });
+    setActiveSec(id);
+  }
+
+  function syncActiveSection() {
+    const box = canvasRef.current;
+    if (!box) return;
+    const boxTop = box.getBoundingClientRect().top;
+    let current: string | null = null;
+    for (const item of sections) {
+      if (!item.heading) continue;
+      const el = document.getElementById(item.id);
+      if (el && el.getBoundingClientRect().top - boxTop <= 60) current = item.id;
+    }
+    setActiveSec(current);
+  }
 
   return (
     <div className={styles.page}>
@@ -382,10 +421,11 @@ export function DocumentsListPage() {
               onToggle={() => setOpenFilter(openFilter === "status" ? null : "status")}
               open={openFilter === "status"}
               options={[
-                { value: "", label: t("filterAllStatus"), hint: t("filter.statusAllHint") },
-                { value: "ACTIVE", label: t("status.ACTIVE"), hint: t("filter.activeHint") },
-                { value: "ARCHIVED", label: t("status.ARCHIVED"), hint: t("filter.archivedHint") },
+                { value: "", label: t("filterAllStatus"), hint: t("filter.statusAllHint"), icon: <ListChecks aria-hidden="true" size={13} />, tone: "slate" },
+                { value: "ACTIVE", label: t("status.ACTIVE"), hint: t("filter.activeHint"), icon: <CheckCircle2 aria-hidden="true" size={13} />, tone: "teal" },
+                { value: "ARCHIVED", label: t("status.ARCHIVED"), hint: t("filter.archivedHint"), icon: <Clock aria-hidden="true" size={13} />, tone: "amber" },
               ]}
+              tone="blue"
               value={statusFilter}
             />
             <FilterDrop
@@ -399,10 +439,11 @@ export function DocumentsListPage() {
               onToggle={() => setOpenFilter(openFilter === "usage" ? null : "usage")}
               open={openFilter === "usage"}
               options={[
-                { value: "", label: t("filter.usageAll"), hint: t("filter.usageAllHint") },
-                { value: "used", label: t("filter.usageUsed"), hint: t("filter.usageUsedHint") },
-                { value: "unused", label: t("filter.usageUnused"), hint: t("filter.usageUnusedHint") },
+                { value: "", label: t("filter.usageAll"), hint: t("filter.usageAllHint"), icon: <FileText aria-hidden="true" size={13} />, tone: "slate" },
+                { value: "used", label: t("filter.usageUsed"), hint: t("filter.usageUsedHint"), icon: <Link2 aria-hidden="true" size={13} />, tone: "indigo" },
+                { value: "unused", label: t("filter.usageUnused"), hint: t("filter.usageUnusedHint"), icon: <FileText aria-hidden="true" size={13} />, tone: "amber" },
               ]}
+              tone="indigo"
               value={usageFilter}
             />
             <FilterDrop
@@ -415,7 +456,14 @@ export function DocumentsListPage() {
               }}
               onToggle={() => setOpenFilter(openFilter === "category" ? null : "category")}
               open={openFilter === "category"}
-              options={[{ value: "", label: t("filterAllCategory") }, ...categoryNames.map((c) => ({ value: c, label: c }))]}
+              options={[
+                { value: "", label: t("filterAllCategory"), icon: <ListChecks aria-hidden="true" size={13} />, tone: "slate" },
+                ...categoryNames.map((c) => {
+                  const cat = categoryStyle(c, 13);
+                  return { value: c, label: c, icon: cat.icon, tone: cat.tone };
+                }),
+              ]}
+              tone="teal"
               value={categoryFilter}
             />
           </div>
@@ -770,27 +818,35 @@ export function DocumentsListPage() {
             <p className={m.faint}>{t("loading")}</p>
           ) : (
             <div className={styles.docRead}>
-              <nav className={styles.docToc}>
+              <nav aria-label={t("toc")} className={styles.docToc}>
                 <b>{t("toc")}</b>
-                {sections
-                  .filter((s) => s.heading)
-                  .map((s, i) => (
-                    <button
-                      key={s.id}
-                      onClick={() => document.getElementById(s.id)?.scrollIntoView({ behavior: "smooth", block: "start" })}
-                      type="button"
-                    >
-                      {String(i + 1).padStart(2, "0")} · {s.heading}
-                    </button>
-                  ))}
+                <div className={styles.docTocList}>
+                  {sections
+                    .filter((s) => s.heading)
+                    .map((s) => (
+                      <button
+                        className={`${styles[`lvl${s.level}`]} ${activeSec === s.id ? styles.tocOn : ""}`}
+                        key={s.id}
+                        onClick={() => scrollToSection(s.id)}
+                        type="button"
+                      >
+                        {s.heading}
+                      </button>
+                    ))}
+                </div>
               </nav>
-              <div className={styles.docBody}>
-                {sections.map((s) => (
-                  <section id={s.id} key={s.id}>
-                    {s.heading ? <h3>{s.heading}</h3> : null}
-                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{s.body}</ReactMarkdown>
-                  </section>
-                ))}
+              <div className={styles.docCanvas} onScroll={syncActiveSection} ref={canvasRef}>
+                <article className={styles.docPage}>
+                  {sections.map((s) => {
+                    const Heading = (s.level <= 1 ? "h2" : s.level === 2 ? "h3" : "h4") as "h2" | "h3" | "h4";
+                    return (
+                      <section id={s.id} key={s.id}>
+                        {s.heading ? <Heading className={styles[`hd${Math.max(s.level, 1)}`]}>{s.heading}</Heading> : null}
+                        <ReactMarkdown remarkPlugins={[remarkGfm]}>{s.body}</ReactMarkdown>
+                      </section>
+                    );
+                  })}
+                </article>
               </div>
             </div>
           )}
