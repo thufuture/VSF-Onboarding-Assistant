@@ -2,7 +2,7 @@
 .page {
   display: flex;
   flex-direction: column;
-  padding: 22px 24px 48px;
+  padding: 14px 16px 28px;
 }
 
 .row {
@@ -15,9 +15,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 28px;
-  padding: 20px 22px;
-  margin-bottom: 16px;
+  gap: 20px;
+  padding: 11px 16px;
+  margin-bottom: 10px;
   background: var(--app-surface);
   border: 1px solid var(--app-border);
   border-radius: 5px;
@@ -29,26 +29,25 @@
 .entTitleCopy {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 10px;
 
   h1 {
-    margin: 4px 0 3px;
-    font-size: 26px;
+    margin: 0 0 2px;
+    font-size: 18px;
     font-weight: 600;
-    letter-spacing: -0.02em;
   }
   p {
     margin: 0;
     max-width: 720px;
     color: var(--app-ink-2);
-    font-size: 14px;
+    font-size: 12.5px;
   }
 }
 
 .entTitleIcon {
   display: grid;
-  width: 46px;
-  height: 46px;
+  width: 38px;
+  height: 38px;
   flex: none;
   place-items: center;
   border-radius: 5px;
@@ -380,16 +379,16 @@
   width: 48px;
   height: 48px;
   place-items: center;
-  border: 4px solid var(--end, #3a8567);
+  border: 4px solid var(--end, #1f8a5f);
   border-radius: 50%;
   background: #fff;
   box-shadow: 0 1px 4px rgb(16 24 40 / 16%);
 }
 .end_start {
-  --end: #3a8567;
+  --end: #1f8a5f;
 }
 .end_finish {
-  --end: #b98330;
+  --end: #d18a12;
 }
 
 .roadItem {
@@ -405,7 +404,7 @@
   width: 2px;
   margin-left: -1px;
   border-radius: 5px;
-  background: color-mix(in srgb, var(--node, #2f6fa8) 40%, #fff);
+  background: color-mix(in srgb, var(--node, #1b6fb8) 40%, #fff);
 
   &::before {
     content: "";
@@ -436,7 +435,7 @@
   display: grid;
   place-items: center;
   padding: 0;
-  border: 4px solid var(--node, #2f6fa8);
+  border: 4px solid var(--node, #1b6fb8);
   border-radius: 50%;
   background: #fff;
   box-shadow: 0 1px 4px rgb(16 24 40 / 16%);
@@ -462,7 +461,7 @@
   place-items: center;
   border: 2px solid #fff;
   border-radius: 50%;
-  background: var(--node, #2f6fa8);
+  background: var(--node, #1b6fb8);
   color: #fff;
   font-size: 11px;
   font-style: normal;
@@ -471,25 +470,25 @@
 
 // Bảng màu mốc theo nhóm task (Hồ sơ lục, Đào tạo lam, Thiết bị tím, Văn phòng vàng, chưa phân nhóm xám).
 .catC1 {
-  --node: #3a8567;
+  --node: #1f8a5f;
 }
 .catC2 {
-  --node: #2f6fa8;
+  --node: #1b6fb8;
 }
 .catC3 {
-  --node: #5766a3;
+  --node: #4457b3;
 }
 .catC4 {
-  --node: #b98330;
+  --node: #d18a12;
 }
 .catC5 {
-  --node: #8b6285;
+  --node: #8a5a86;
 }
 .catC6 {
-  --node: #2f8c86;
+  --node: #1a8a84;
 }
 .catC7 {
-  --node: #7a8797;
+  --node: #6b7a8c;
 }
 
 // thẻ: dải màu nhóm ở đầu (như thẻ roadmap trong ảnh mẫu), thân trắng, nhãn dạng viên thuốc
@@ -523,7 +522,7 @@
   justify-content: space-between;
   gap: 6px;
   padding: 0 10px;
-  background: var(--node, #2f6fa8);
+  background: var(--node, #1b6fb8);
   color: #fff;
 
   small {
@@ -604,9 +603,9 @@
     cursor: pointer;
 
     &:hover:not(:disabled) {
-      border-color: var(--node, #2f6fa8);
+      border-color: var(--node, #1b6fb8);
       background: var(--app-surface-2);
-      color: var(--node, #2f6fa8);
+      color: var(--node, #1b6fb8);
     }
     &:disabled {
       opacity: 0.45;

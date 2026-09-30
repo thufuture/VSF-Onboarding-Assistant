@@ -4,11 +4,11 @@
 $sidebar-width: 248px;
 
 .shell {
-  --app-bg: #f4f6f9;
-  --app-surface: #fff;
-  --app-surface-2: #f1f4f8;
-  --app-border: #e0e6ee;
-  --app-border-strong: #c9d2de;
+  --app-bg: #e9edf3;
+  --app-surface: #f7f9fc;
+  --app-surface-2: #eef2f7;
+  --app-border: #d9e0ea;
+  --app-border-strong: #c3ccd9;
   --app-ink: #2a3646;
   --app-ink-2: #566275;
   --app-ink-3: #8592a4;
@@ -114,35 +114,18 @@ $sidebar-width: 248px;
   text-decoration: none;
 }
 
-// Logo: ô vuông bo tròn, chuyển sắc xanh navy → xanh thương hiệu, chữ V đậm và bóng nhẹ.
+// Logo: ô vuông hai màu chia chéo (xanh dương / xanh ngọc), chữ V trắng — phẳng, không chuyển sắc.
 .mark {
-  position: relative;
   display: grid;
   width: 40px;
   height: 40px;
   flex: none;
   place-items: center;
-  overflow: hidden;
   border-radius: 5px;
-  background: linear-gradient(140deg, #0c2d5b 0%, #145a9c 55%, #1090cb 100%);
-  box-shadow:
-    0 6px 14px rgb(12 45 91 / 24%),
-    inset 0 1px 0 rgb(255 255 255 / 22%);
+  background: linear-gradient(135deg, #1a6fc0 0 54%, #0f9d9a 54% 100%);
   color: #fff;
-  font-size: 19px;
+  font-size: 20px;
   font-weight: 600;
-  letter-spacing: -0.02em;
-
-  &::after {
-    content: "";
-    position: absolute;
-    top: -14px;
-    right: -14px;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background: rgb(255 255 255 / 16%);
-  }
 }
 
 .brandText {
@@ -386,7 +369,7 @@ a.navActive:hover {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 24px;
+  padding: 7px 16px;
   border-bottom: 1px solid var(--app-border);
   background: color-mix(in srgb, var(--app-surface) 92%, transparent);
   backdrop-filter: blur(8px);
@@ -433,11 +416,24 @@ a.navActive:hover {
   align-items: center;
   gap: 12px;
 
+  .crumb {
+    color: var(--app-ink-3);
+    font-size: 13px;
+    white-space: nowrap;
+
+    &::after {
+      content: "/";
+      margin-left: 10px;
+      color: var(--app-border-strong);
+    }
+  }
+
   b {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    font-size: 16px;
+    font-size: 15px;
+    font-weight: 600;
     white-space: nowrap;
 
     svg {

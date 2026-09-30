@@ -8,16 +8,16 @@ $tn-slate: #58657a;
 .page {
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  padding: 22px 24px 48px;
+  gap: 10px;
+  padding: 14px 16px 28px;
 }
 
 .pagehead {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 14px;
-  padding: 16px 20px;
+  gap: 10px;
+  padding: 11px 16px;
   background: var(--app-surface);
   border: 1px solid var(--app-border);
   border-radius: 5px;
@@ -25,8 +25,8 @@ $tn-slate: #58657a;
 
 .phi {
   display: grid;
-  width: 44px;
-  height: 44px;
+  width: 38px;
+  height: 38px;
   flex: none;
   place-items: center;
   border-radius: 5px;
@@ -38,14 +38,14 @@ $tn-slate: #58657a;
 
   h1 {
     margin: 0;
-    font-size: 20px;
+    font-size: 17px;
     font-weight: 600;
     color: var(--app-ink);
   }
   p {
     margin: 2px 0 0;
     color: var(--app-ink-2);
-    font-size: 13px;
+    font-size: 12.5px;
   }
 }
 
@@ -167,7 +167,7 @@ $tn-slate: #58657a;
 .kpiGrid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 14px;
+  gap: 10px;
 
   @media (max-width: 900px) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -177,7 +177,7 @@ $tn-slate: #58657a;
 .kpiGrid3 {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
+  gap: 10px;
 
   @media (max-width: 760px) {
     grid-template-columns: 1fr;
@@ -223,7 +223,7 @@ $tn-slate: #58657a;
 .grid2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 14px;
+  gap: 10px;
 
   @media (max-width: 900px) {
     grid-template-columns: 1fr;

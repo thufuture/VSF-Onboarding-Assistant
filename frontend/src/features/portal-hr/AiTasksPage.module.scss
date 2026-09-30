@@ -9,8 +9,8 @@ $tn-amber: #a8681a;
 .page {
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  padding: 22px 24px 48px;
+  gap: 10px;
+  padding: 14px 16px 28px;
 }
 
 // ── pagehead ai14-hero ──
@@ -18,8 +18,8 @@ $tn-amber: #a8681a;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 14px;
-  padding: 16px 20px;
+  gap: 10px;
+  padding: 11px 16px;
   background: var(--app-surface);
   border: 1px solid var(--app-border);
   border-radius: 5px;
@@ -33,13 +33,13 @@ $tn-amber: #a8681a;
 .pageheadInner {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 10px;
 }
 
 .phi {
   display: grid;
-  width: 44px;
-  height: 44px;
+  width: 38px;
+  height: 38px;
   flex: none;
   place-items: center;
   border-radius: 5px;
@@ -50,14 +50,14 @@ $tn-amber: #a8681a;
 .pageheadText {
   h1 {
     margin: 0;
-    font-size: 20px;
+    font-size: 17px;
     font-weight: 600;
     color: var(--app-ink);
   }
   p {
     margin: 2px 0 0;
     color: var(--app-ink-2);
-    font-size: 13px;
+    font-size: 12.5px;
   }
 }
 
@@ -145,7 +145,7 @@ $tn-amber: #a8681a;
 .grid21 {
   display: grid;
   grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
-  gap: 14px;
+  gap: 10px;
 }
 .layout {
   align-items: stretch;
@@ -790,7 +790,7 @@ $tn-amber: #a8681a;
 
   p {
     margin: 6px 0;
-    font-size: 13px;
+    font-size: 12.5px;
     color: var(--app-ink-2);
   }
 }

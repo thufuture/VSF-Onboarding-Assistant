@@ -24,13 +24,13 @@ export type FlatTone = "blue" | "teal" | "indigo" | "amber" | "rose" | "slate" |
 
 // Mỗi tông gồm màu chính và màu nhạt đi kèm — icon phẳng hai màu (kiểu Flaticon "flat/duotone"), không viền mảnh.
 const TONES: Record<FlatTone, [string, string]> = {
-  blue: ["#2f6fa8", "#b7d2ea"],
-  teal: ["#2f8c86", "#b3dbd8"],
-  indigo: ["#5766a3", "#c2c8e4"],
-  amber: ["#b98330", "#efd8a9"],
-  rose: ["#b45a6c", "#ebc4cb"],
-  slate: ["#65768a", "#cbd3dd"],
-  green: ["#3a8567", "#b4dac9"],
+  blue: ["#1b6fb8", "#a9cdec"],
+  teal: ["#1a8a84", "#a6d9d5"],
+  indigo: ["#4457b3", "#bcc4ee"],
+  amber: ["#d18a12", "#f5d79a"],
+  rose: ["#c0455e", "#eeb8c4"],
+  slate: ["#5b6c81", "#c3ccd8"],
+  green: ["#1f8a5f", "#a6dcc3"],
 };
 
 // Hình vẽ trên lưới 32×32; `a` = màu chính, `b` = màu nhạt. Muốn dùng icon Flaticon thật, thay thân hàm tương ứng bằng SVG tải về.

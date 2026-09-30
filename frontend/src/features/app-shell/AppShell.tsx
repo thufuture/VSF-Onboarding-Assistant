@@ -212,10 +212,13 @@ export function AppShell({ children }: { children: ReactNode }) {
                 {t("nav.roadmap")}
               </b>
             ) : (
+              <>
+                <span className={styles.crumb}>{t(`roles.${user.role}`)}</span>
               <b>
                 <FlatIcon name={activeItem?.flat ?? "dashboard"} size={22} tone={activeItem?.tone ?? "blue"} />
                 {t(`nav.${activeItem?.key ?? "admin"}`)}
               </b>
+              </>
             )}
           </div>
           <span className={styles.mobileBrand}>

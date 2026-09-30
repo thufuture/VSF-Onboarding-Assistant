@@ -48,12 +48,12 @@ const SIZES = [50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50];
 
 // Nhóm task cố định (Hồ sơ / Đào tạo / Thiết bị / Văn phòng) — mỗi nhóm một màu dịu và một icon phẳng; chưa phân nhóm dùng xám.
 const GROUPS: { key: TaskGroupDTO; cls: string; color: string; flat: FlatIconName; tone: FlatTone }[] = [
-  { key: "PROFILE", cls: "catC1", color: "#3a8567", flat: "file", tone: "green" },
-  { key: "TRAINING", cls: "catC2", color: "#2f6fa8", flat: "book", tone: "blue" },
-  { key: "DEVICE", cls: "catC3", color: "#5766a3", flat: "laptop", tone: "indigo" },
-  { key: "OFFICE", cls: "catC4", color: "#b98330", flat: "building", tone: "amber" },
+  { key: "PROFILE", cls: "catC1", color: "#1f8a5f", flat: "file", tone: "green" },
+  { key: "TRAINING", cls: "catC2", color: "#1b6fb8", flat: "book", tone: "blue" },
+  { key: "DEVICE", cls: "catC3", color: "#4457b3", flat: "laptop", tone: "indigo" },
+  { key: "OFFICE", cls: "catC4", color: "#d18a12", flat: "building", tone: "amber" },
 ];
-const NO_GROUP = { key: null, cls: "catC7", color: "#7a8797", flat: "tasks" as FlatIconName, tone: "slate" as FlatTone };
+const NO_GROUP = { key: null, cls: "catC7", color: "#6b7a8c", flat: "tasks" as FlatIconName, tone: "slate" as FlatTone };
 
 export const TASKS_CHANGED_EVENT = "portal-tasks-changed";
 export const ADD_STAGE_EVENT = "portal-add-stage";
