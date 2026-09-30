@@ -1,4 +1,12 @@
 // Thanh bên Quản lý task: lộ trình dọc — Bắt đầu, các ngày nối nhau bằng một đường dọc, Kết thúc.
+.treeTop {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: space-between;
+  margin: 6px 4px 2px 8px;
+}
+
 .treeBack {
   display: flex;
   flex: none;
@@ -91,10 +99,30 @@
   font-weight: 600;
 }
 .tlStart {
-  --tl: #3a8567;
+  --tl: #cf3a43;
 }
 .tlFinish {
-  --tl: #b98330;
+  --tl: #7a4fb0;
+}
+
+.tlEnd {
+  cursor: pointer;
+
+  b {
+    transition: color 0.15s ease;
+  }
+  .tlNode {
+    transition:
+      box-shadow 0.15s ease,
+      transform 0.15s ease;
+  }
+  &:hover .tlNode {
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--tl) 20%, transparent);
+    transform: scale(1.08);
+  }
+  &:hover b {
+    color: var(--app-ink);
+  }
 }
 
 .tlItem {

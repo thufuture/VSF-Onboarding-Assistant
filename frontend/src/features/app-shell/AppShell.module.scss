@@ -123,7 +123,7 @@ $sidebar-width: 248px;
   flex: none;
   place-items: center;
   border-radius: 5px;
-  background: linear-gradient(135deg, #1a6fc0 0 54%, #0f9d9a 54% 100%);
+  background: linear-gradient(135deg, #1a6fc0 0 54%, #d9343f 54% 100%);
   color: #fff;
   font-size: 20px;
   font-weight: 600;
@@ -647,4 +647,54 @@ a.navActive:hover {
       justify-content: center;
     }
   }
+}
+
+// ── hiệu ứng khi trỏ chuột (nút, thẻ, dòng bảng) ──
+
+.logout {
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+}
+
+.logout:not(:disabled):hover {
+  border-color: var(--app-accent);
+  background: var(--app-accent-soft);
+  color: var(--app-accent-strong);
+}
+.logout:not(:disabled):active {
+  transform: translateY(1px);
+}
+
+.iconButton {
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+}
+
+.iconButton:not(:disabled):hover {
+  border-color: var(--app-accent);
+  background: var(--app-accent-soft);
+  color: var(--app-accent-strong);
+}
+.iconButton:not(:disabled):active {
+  transform: translateY(1px);
+}
+
+.userCard {
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+}
+.userCard:hover {
+  border-color: var(--app-border-strong);
+  box-shadow: 0 3px 10px rgb(16 24 40 / 8%);
+  transform: translateY(-1px);
 }

@@ -154,3 +154,54 @@ $tn-amber: #a8681a;
   color: var(--app-ink-2);
   font-size: 12px;
 }
+
+// ── hiệu ứng khi trỏ chuột (nút, thẻ, dòng bảng) ──
+
+.btn {
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+}
+
+.btn:not(:disabled):hover {
+  background: var(--app-accent-strong);
+  box-shadow: 0 3px 8px rgb(31 116 181 / 28%);
+  transform: translateY(-1px);
+}
+.btn:not(:disabled):active {
+  box-shadow: none;
+  transform: translateY(0);
+}
+
+.btnSec {
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+}
+
+.btnSec:not(:disabled):hover {
+  border-color: var(--app-accent);
+  background: var(--app-accent-soft);
+  color: var(--app-accent-strong);
+}
+.btnSec:not(:disabled):active {
+  transform: translateY(1px);
+}
+
+.kpi {
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+}
+.kpi:hover {
+  border-color: var(--app-border-strong);
+  box-shadow: 0 3px 10px rgb(16 24 40 / 8%);
+  transform: translateY(-1px);
+}

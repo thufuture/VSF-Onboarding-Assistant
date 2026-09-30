@@ -18,9 +18,11 @@ export type FlatIconName =
   | "file"
   | "award"
   | "chat"
-  | "lifebuoy";
+  | "lifebuoy"
+  | "check"
+  | "alert";
 
-export type FlatTone = "blue" | "teal" | "indigo" | "amber" | "rose" | "slate" | "green";
+export type FlatTone = "blue" | "teal" | "indigo" | "amber" | "rose" | "slate" | "green" | "red" | "violet";
 
 // Mỗi tông gồm màu chính và màu nhạt đi kèm — icon phẳng hai màu (kiểu Flaticon "flat/duotone"), không viền mảnh.
 const TONES: Record<FlatTone, [string, string]> = {
@@ -29,6 +31,8 @@ const TONES: Record<FlatTone, [string, string]> = {
   indigo: ["#4457b3", "#bcc4ee"],
   amber: ["#d18a12", "#f5d79a"],
   rose: ["#c0455e", "#eeb8c4"],
+  red: ["#cf3a43", "#f4bcbf"],
+  violet: ["#7a4fb0", "#d5c5ec"],
   slate: ["#5b6c81", "#c3ccd8"],
   green: ["#1f8a5f", "#a6dcc3"],
 };
@@ -168,6 +172,19 @@ const SHAPES: Record<FlatIconName, (a: string, b: string) => ReactNode> = {
       <circle cx="10.500" cy="14" fill={b} r="1.900" />
       <circle cx="16" cy="14" fill={b} r="1.900" />
       <circle cx="21.500" cy="14" fill={b} r="1.900" />
+    </>
+  ),
+  check: (a, b) => (
+    <>
+      <circle cx="16" cy="16" fill={a} r="13" />
+      <path d="m10.500 16.500 4 4 7.500-8.500" fill="none" stroke={b} strokeLinecap="round" strokeLinejoin="round" strokeWidth="3.200" />
+    </>
+  ),
+  alert: (a, b) => (
+    <>
+      <path d="M16 4.500 28.500 26.500H3.500z" fill={a} stroke={a} strokeLinejoin="round" strokeWidth="3" />
+      <rect fill={b} height="8" rx="1.400" width="2.800" x="14.600" y="12" />
+      <circle cx="16" cy="22.600" fill={b} r="1.700" />
     </>
   ),
   lifebuoy: (a, b) => (

@@ -860,3 +860,42 @@ $tn-amber: #a8681a;
     cursor: default;
   }
 }
+
+// ── hiệu ứng khi trỏ chuột (nút, thẻ, dòng bảng) ──
+
+.btnSecSm {
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+}
+
+.btnSecSm:not(:disabled):hover {
+  border-color: var(--app-accent);
+  background: var(--app-accent-soft);
+  color: var(--app-accent-strong);
+}
+.btnSecSm:not(:disabled):active {
+  transform: translateY(1px);
+}
+
+.btnSm {
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+}
+
+.btnSm:not(:disabled):hover {
+  background: var(--app-accent-strong);
+  box-shadow: 0 3px 8px rgb(31 116 181 / 28%);
+  transform: translateY(-1px);
+}
+.btnSm:not(:disabled):active {
+  box-shadow: none;
+  transform: translateY(0);
+}

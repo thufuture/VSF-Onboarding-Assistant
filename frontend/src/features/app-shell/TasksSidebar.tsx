@@ -3,7 +3,7 @@
 import { ChevronLeft, Plus } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 
 import { FlatIcon } from "@/components/flat-icons/FlatIcon";
 import { useSession } from "@/features/auth/SessionProvider";
@@ -15,7 +15,7 @@ import { Link } from "@/i18n/navigation";
 import styles from "./TasksSidebar.module.scss";
 
 /** Menu "ngày" thay cho menu thường khi ở Quản lý task (cổng .tree-back + .hr14-side-* của v15). */
-export function TasksSidebar() {
+export function TasksSidebar({ toggle }: { toggle?: ReactNode }) {
   const t = useTranslations("portalTasks");
   const { user } = useSession();
   // ADMIN tới đây từ "Lộ trình mẫu chung" (sửa bản mẫu dùng chung) nên quay lại đúng trang đó.
@@ -47,9 +47,12 @@ export function TasksSidebar() {
 
   return (
     <>
-      <Link className={styles.treeBack} href={isAdmin ? "/admin/template" : "/admin"}>
-        <ChevronLeft aria-hidden="true" size={14} /> {isAdmin ? t("backToTemplate") : t("backToOverview")}
-      </Link>
+      <div className={styles.treeTop}>
+        <Link className={styles.treeBack} href={isAdmin ? "/admin/template" : "/admin"}>
+          <ChevronLeft aria-hidden="true" size={14} /> {isAdmin ? t("backToTemplate") : t("backToOverview")}
+        </Link>
+        {toggle}
+      </div>
       <div className={styles.sideHead}>
         <b>{t("sideTitle")}</b>
         <small>{t("sideHint")}</small>
@@ -57,7 +60,7 @@ export function TasksSidebar() {
       <nav aria-label={t("sideTitle")} className={styles.timeline}>
         <div className={styles.tlEnd}>
           <span className={`${styles.tlNode} ${styles.tlStart}`}>
-            <FlatIcon name="flag" size={16} tone="green" />
+            <FlatIcon name="flag" size={16} tone="red" />
           </span>
           <b>{t("start")}</b>
         </div>
@@ -92,7 +95,7 @@ export function TasksSidebar() {
         })}
         <div className={`${styles.tlEnd} ${styles.tlLast}`}>
           <span className={`${styles.tlNode} ${styles.tlFinish}`}>
-            <FlatIcon name="award" size={16} tone="amber" />
+            <FlatIcon name="award" size={16} tone="violet" />
           </span>
           <b>{t("finish")}</b>
         </div>

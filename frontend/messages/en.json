@@ -301,7 +301,12 @@
       "copy": "© 2026 VSF · v4.1"
     },
     "collapseSidebar": "Collapse sidebar",
-    "expandSidebar": "Expand sidebar"
+    "expandSidebar": "Expand sidebar",
+    "brandSubByRole": {
+      "USER": "New joiner portal",
+      "HR": "HR portal",
+      "ADMIN": "System administration"
+    }
   },
   "chat": {
     "greeting": "Hello, {name}",

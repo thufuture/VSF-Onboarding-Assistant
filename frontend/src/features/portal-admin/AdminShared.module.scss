@@ -347,12 +347,12 @@ $tn-slate: #58657a;
 
   th {
     text-align: left;
-    color: var(--app-ink-3);
-    font-weight: 500;
+    color: #fff;
+    font-weight: 600;
     font-size: 12.5px;
-    padding: 9px 12px;
-    border-bottom: 1px solid var(--app-border);
-    background: var(--app-surface-2);
+    padding: 10px 12px;
+    border-bottom: 0;
+    background: var(--app-accent);
     white-space: nowrap;
   }
 
@@ -583,4 +583,96 @@ $tn-slate: #58657a;
     color: var(--app-ink);
     font-weight: 600;
   }
+}
+
+// ── hiệu ứng khi trỏ chuột (nút, thẻ, dòng bảng) ──
+
+.btn {
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+}
+
+.btn:not(:disabled):hover {
+  background: var(--app-accent-strong);
+  box-shadow: 0 3px 8px rgb(31 116 181 / 28%);
+  transform: translateY(-1px);
+}
+.btn:not(:disabled):active {
+  box-shadow: none;
+  transform: translateY(0);
+}
+
+.btnSec {
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+}
+
+.btnSec:not(:disabled):hover {
+  border-color: var(--app-accent);
+  background: var(--app-accent-soft);
+  color: var(--app-accent-strong);
+}
+.btnSec:not(:disabled):active {
+  transform: translateY(1px);
+}
+
+.kpi {
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+}
+.kpi:hover {
+  border-color: var(--app-border-strong);
+  box-shadow: 0 3px 10px rgb(16 24 40 / 8%);
+  transform: translateY(-1px);
+}
+
+.chip {
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+}
+
+.chip:not(:disabled):hover {
+  border-color: var(--app-accent);
+  color: var(--app-accent-strong);
+}
+
+.iconBtn {
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+}
+
+.iconBtn:not(:disabled):hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgb(16 24 40 / 14%);
+}
+
+.table tbody tr {
+  transition: background 0.15s ease;
+}
+.table tbody tr:hover {
+  background: color-mix(in srgb, var(--app-accent) 6%, var(--app-surface));
+}
+
+.pagerButtons button:not(:disabled):hover {
+  border-color: var(--app-accent);
+  background: var(--app-accent-soft);
+  color: var(--app-accent-strong);
 }

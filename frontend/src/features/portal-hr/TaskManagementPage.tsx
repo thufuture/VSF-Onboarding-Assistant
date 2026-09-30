@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  AlertTriangle,
   CheckCircle2,
   ClipboardList,
   Clock,
@@ -13,7 +12,6 @@ import {
   ListChecks,
   Pencil,
   Plus,
-  Search,
   Send,
   Sparkles,
   Trash2,
@@ -104,7 +102,6 @@ export function TaskManagementPage() {
   const [templates, setTemplates] = useState<TemplateNodeResponseDTO[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
-  const [query, setQuery] = useState("");
 
   const [taskModal, setTaskModal] = useState<{ mode: "create" | "edit"; task?: TaskNodeResponseDTO } | null>(null);
   const [tab, setTab] = useState<TabKey>("info");
@@ -145,18 +142,16 @@ export function TaskManagementPage() {
   const selectedStage = allStages.find((s) => s.id === stageParam) ?? allStages[0] ?? null;
   const selectedTemplate = (templates ?? []).find((tpl) => tpl.id === selectedStage?.templateId) ?? null;
 
-  const totalTasks = allStages.reduce((sum, s) => sum + s.tasks.length, 0);
-  const publishedTasks = allStages
-    .filter((s) => s.templateStatus === "PUBLISHED")
-    .reduce((sum, s) => sum + s.tasks.length, 0);
+  // Thống kê chỉ tính cho ngày đang chọn: mọi task trong một ngày cùng thuộc một lộ trình nên hoặc cùng
+  // đã xuất bản hoặc cùng là bản nháp.
+  const dayTasks = selectedStage?.tasks ?? [];
+  const totalTasks = dayTasks.length;
+  const publishedTasks = selectedStage?.templateStatus === "PUBLISHED" ? totalTasks : 0;
   const draftTasks = totalTasks - publishedTasks;
-  const missingTasks = allStages.reduce((sum, s) => sum + s.tasks.filter((tk) => !tk.body_markdown.trim()).length, 0);
+  const missingTasks = dayTasks.filter((tk) => !tk.body_markdown.trim()).length;
 
   const isPublished = selectedStage?.templateStatus === "PUBLISHED";
-  const stageTasks = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    return (selectedStage?.tasks ?? []).filter((tk) => !q || tk.title.toLowerCase().includes(q));
-  }, [selectedStage, query]);
+  const stageTasks = useMemo(() => selectedStage?.tasks ?? [], [selectedStage]);
 
   const count = stageTasks.length;
   // Task cùng lộ trình (để chọn tiên quyết) và các giai đoạn cùng lộ trình (để chọn "Ngày").
@@ -421,64 +416,13 @@ export function TaskManagementPage() {
 
       {error ? <p className={styles.banner + " " + styles.bannerError}>{error}</p> : null}
 
-      <div className={styles.kpis}>
-        <div className={styles.kpi}>
-          <span className={styles.kpiBlue}>
-            <ListChecks aria-hidden="true" size={18} />
-          </span>
-          <div>
-            <small>{t("kpi.total")}</small>
-            <b>{totalTasks}</b>
-            <p>{t("kpi.totalSub")}</p>
-          </div>
-        </div>
-        <div className={styles.kpi}>
-          <span className={styles.kpiAmber}>
-            <Pencil aria-hidden="true" size={18} />
-          </span>
-          <div>
-            <small>{t("kpi.draft")}</small>
-            <b>{draftTasks}</b>
-            <p>{t("kpi.draftSub")}</p>
-          </div>
-        </div>
-        <div className={styles.kpi}>
-          <span className={styles.kpiTeal}>
-            <CheckCircle2 aria-hidden="true" size={18} />
-          </span>
-          <div>
-            <small>{t("kpi.published")}</small>
-            <b>{publishedTasks}</b>
-            <p>{t("kpi.publishedSub")}</p>
-          </div>
-        </div>
-        <div className={styles.kpi}>
-          <span className={styles.kpiRose}>
-            <AlertTriangle aria-hidden="true" size={18} />
-          </span>
-          <div>
-            <small>{t("kpi.missing")}</small>
-            <b>{missingTasks}</b>
-            <p>{t("kpi.missingSub")}</p>
-          </div>
-        </div>
-      </div>
-
-      <div className={styles.toolbar}>
-        <div className={styles.search}>
-          <Search aria-hidden="true" size={14} />
-          <input
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder={t("searchPlaceholder", { stage: selectedStage?.title ?? "" })}
-            value={query}
-          />
-        </div>
-      </div>
-
       {selectedStage ? (
         <section className={styles.journey}>
           <div className={styles.journeyHead}>
             <div className={styles.journeyTitle}>
+              <span className={styles.journeyIcon}>
+                <FlatIcon name="route" size={26} tone="blue" />
+              </span>
               <div>
                 <h2>{selectedStage.title}</h2>
                 <small>
@@ -486,9 +430,33 @@ export function TaskManagementPage() {
                 </small>
               </div>
             </div>
+            <div className={styles.journeyRight}>
+            <dl className={styles.journeyStats}>
+              <div>
+                <FlatIcon name="tasks" size={24} tone="blue" />
+                <dt>{t("kpi.total")}</dt>
+                <dd>{totalTasks}</dd>
+              </div>
+              <div>
+                <FlatIcon name="file" size={24} tone="amber" />
+                <dt>{t("kpi.draft")}</dt>
+                <dd>{draftTasks}</dd>
+              </div>
+              <div>
+                <FlatIcon name="check" size={24} tone="green" />
+                <dt>{t("kpi.published")}</dt>
+                <dd>{publishedTasks}</dd>
+              </div>
+              <div>
+                <FlatIcon name="alert" size={24} tone="rose" />
+                <dt>{t("kpi.missing")}</dt>
+                <dd>{missingTasks}</dd>
+              </div>
+            </dl>
             <button className={styles.btnSecSm} disabled={isPublished} onClick={openCreate} type="button">
               <Plus aria-hidden="true" size={13} /> {t("addTask")}
             </button>
+            </div>
           </div>
 
           {stageTasks.length === 0 ? (
@@ -512,10 +480,10 @@ export function TaskManagementPage() {
                 </svg>
 
                 {[
-                  { p: layout[0], kind: "start", flat: "flag" as FlatIconName, tone: "green" as FlatTone, label: t("start") },
-                  { p: layout[total - 1], kind: "finish", flat: "award" as FlatIconName, tone: "amber" as FlatTone, label: t("finish") },
+                  { p: layout[0], kind: "start", flat: "flag" as FlatIconName, tone: "red" as FlatTone, label: t("start") },
+                  { p: layout[total - 1], kind: "finish", flat: "award" as FlatIconName, tone: "violet" as FlatTone, label: t("finish") },
                 ].map((end) => (
-                  <div className={`${styles.endNode} ${styles[`end_${end.kind}`]}`} key={end.kind}>
+                  <div className={`${styles.endNode} ${styles[`end_${end.kind}`]}`} key={end.kind} title={end.label}>
                     <span
                       className={styles.endCircle}
                       style={{ left: `calc(${end.p.x}% - 24px)`, top: end.p.center - 24 }}

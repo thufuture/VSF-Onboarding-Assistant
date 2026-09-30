@@ -301,7 +301,12 @@
       "copy": "© 2026 VSF · v4.1"
     },
     "collapseSidebar": "Thu gọn thanh bên",
-    "expandSidebar": "Mở rộng thanh bên"
+    "expandSidebar": "Mở rộng thanh bên",
+    "brandSubByRole": {
+      "USER": "Portal nhân viên mới",
+      "HR": "Portal nhân sự",
+      "ADMIN": "Quản trị hệ thống"
+    }
   },
   "chat": {
     "greeting": "Xin chào, {name}",

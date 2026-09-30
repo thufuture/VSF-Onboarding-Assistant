@@ -96,6 +96,18 @@ export function AppShell({ children }: { children: ReactNode }) {
   const onTasksTree = user.role !== "USER" && pathname.startsWith("/admin/tasks");
   // Thanh bên thu gọn thì Quản lý task hiện thanh biểu tượng thường (không có cây ngày) để nhường chỗ cho trang.
   const showTree = onTasksTree && !collapsed;
+  const collapseButton = (
+    <button
+      aria-label={collapsed ? t("expandSidebar") : t("collapseSidebar")}
+      aria-pressed={collapsed}
+      className={styles.collapseButton}
+      onClick={toggleCollapsed}
+      title={collapsed ? t("expandSidebar") : t("collapseSidebar")}
+      type="button"
+    >
+      {collapsed ? <PanelLeftOpen aria-hidden="true" size={17} /> : <PanelLeftClose aria-hidden="true" size={17} />}
+    </button>
+  );
   // Mục nav khớp đường dẫn hiện tại (dài nhất trước, ví dụ /admin/documents thắng /admin) — dùng cho tiêu đề thanh trên.
   // Quản lý task (cả khi ADMIN sửa lộ trình mẫu chung) luôn mang tiêu đề "Quản lý task" trên thanh trên.
   const activeItem = onTasksTree
@@ -114,7 +126,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             </span>
             <span aria-hidden="true" className={styles.brandText}>
               <b>VSF Onboarding</b>
-              <small>{t("brandSub")}</small>
+              <small>{t(`brandSubByRole.${user.role}`)}</small>
             </span>
           </Link>
           <button
@@ -128,20 +140,15 @@ export function AppShell({ children }: { children: ReactNode }) {
           </button>
         </div>
 
-        <div className={styles.sideTop}>
-          {user.role !== "USER" ? <p className={styles.roleBadge}>{t(`roles.${user.role}`)}</p> : <span />}
-          <button
-            aria-label={collapsed ? t("expandSidebar") : t("collapseSidebar")}
-            aria-pressed={collapsed}
-            className={styles.collapseButton}
-            onClick={toggleCollapsed}
-            title={collapsed ? t("expandSidebar") : t("collapseSidebar")}
-            type="button"
-          >
-            {collapsed ? <PanelLeftOpen aria-hidden="true" size={17} /> : <PanelLeftClose aria-hidden="true" size={17} />}
-          </button>
-        </div>
-        {showTree ? <TasksSidebar /> : null}
+        {showTree ? (
+          // Ở Quản lý task không hiện dòng vai trò: "Tổng quan HR" đưa lên đầu và nút thu/mở nằm cùng dòng đó.
+          <TasksSidebar toggle={collapseButton} />
+        ) : (
+          <div className={styles.sideTop}>
+            {user.role !== "USER" ? <p className={styles.roleBadge}>{t(`roles.${user.role}`)}</p> : <span />}
+            {collapseButton}
+          </div>
+        )}
 
         <nav aria-label={t("navigation")} className={styles.nav} hidden={showTree}>
           {items.map(({ key, flat, href, tone }) => {
