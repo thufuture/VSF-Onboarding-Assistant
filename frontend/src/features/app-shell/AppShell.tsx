@@ -128,8 +128,20 @@ export function AppShell({ children }: { children: ReactNode }) {
           </button>
         </div>
 
+        <div className={styles.sideTop}>
+          {user.role !== "USER" ? <p className={styles.roleBadge}>{t(`roles.${user.role}`)}</p> : <span />}
+          <button
+            aria-label={collapsed ? t("expandSidebar") : t("collapseSidebar")}
+            aria-pressed={collapsed}
+            className={styles.collapseButton}
+            onClick={toggleCollapsed}
+            title={collapsed ? t("expandSidebar") : t("collapseSidebar")}
+            type="button"
+          >
+            {collapsed ? <PanelLeftOpen aria-hidden="true" size={17} /> : <PanelLeftClose aria-hidden="true" size={17} />}
+          </button>
+        </div>
         {showTree ? <TasksSidebar /> : null}
-        {!showTree && user.role !== "USER" ? <p className={styles.roleBadge}>{t(`roles.${user.role}`)}</p> : null}
 
         <nav aria-label={t("navigation")} className={styles.nav} hidden={showTree}>
           {items.map(({ key, flat, href, tone }) => {
@@ -198,16 +210,6 @@ export function AppShell({ children }: { children: ReactNode }) {
             type="button"
           >
             <Menu aria-hidden="true" size={20} />
-          </button>
-          <button
-            aria-label={collapsed ? t("expandSidebar") : t("collapseSidebar")}
-            aria-pressed={collapsed}
-            className={`${styles.iconButton} ${styles.collapseButton}`}
-            onClick={toggleCollapsed}
-            title={collapsed ? t("expandSidebar") : t("collapseSidebar")}
-            type="button"
-          >
-            {collapsed ? <PanelLeftOpen aria-hidden="true" size={18} /> : <PanelLeftClose aria-hidden="true" size={18} />}
           </button>
           <div className={styles.pageTitle}>
             {onChat ? (

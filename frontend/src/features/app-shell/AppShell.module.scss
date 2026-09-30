@@ -549,7 +549,35 @@ a.navActive:hover {
 }
 
 // ── Thanh bên thu gọn (máy tính): chỉ còn logo, icon menu, avatar và nút đăng xuất ──
+.sideTop {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: space-between;
+  margin: 6px 4px 2px 8px;
+
+  .roleBadge {
+    margin: 0;
+  }
+}
+
+// Nút thu/mở thanh bên nằm cuối dòng vai trò ("Nhân sự (HR)"), chỉ có trên máy tính.
 .collapseButton {
+  display: inline-grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--app-ink-3);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--app-surface-2);
+    color: var(--app-ink);
+  }
+
   @include tablet-down {
     display: none;
   }
@@ -581,6 +609,11 @@ a.navActive:hover {
     .sidebarHead {
       justify-content: center;
       padding: 2px 0 14px;
+    }
+
+    .sideTop {
+      justify-content: center;
+      margin: 6px 0 2px;
     }
 
     .nav {
