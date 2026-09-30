@@ -299,7 +299,9 @@
       "terms": "Điều khoản sử dụng",
       "contact": "Liên hệ IT",
       "copy": "© 2026 VSF · v4.1"
-    }
+    },
+    "collapseSidebar": "Thu gọn thanh bên",
+    "expandSidebar": "Mở rộng thanh bên"
   },
   "chat": {
     "greeting": "Xin chào, {name}",

@@ -184,7 +184,7 @@ $column: 780px;
 .reply {
   display: flex;
   align-items: flex-start;
-  gap: 10px;
+  gap: 5px;
 }
 
 .replyMark {
@@ -216,7 +216,7 @@ $column: 780px;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
+  gap: 5px;
   margin-top: 12px;
   padding-top: 12px;
   border-top: 1px solid var(--app-border);
@@ -268,7 +268,7 @@ $column: 780px;
 .thinking {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 5px;
   padding: 12px 16px;
   border: 1px solid var(--app-border);
   border-radius: 4px 18px 18px;
@@ -367,7 +367,7 @@ $column: 780px;
 .composerFoot {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 5px;
   margin-top: 6px;
 
   .hint {

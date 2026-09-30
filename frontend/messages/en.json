@@ -299,7 +299,9 @@
       "terms": "Terms of use",
       "contact": "Contact IT",
       "copy": "© 2026 VSF · v4.1"
-    }
+    },
+    "collapseSidebar": "Collapse sidebar",
+    "expandSidebar": "Expand sidebar"
   },
   "chat": {
     "greeting": "Hello, {name}",

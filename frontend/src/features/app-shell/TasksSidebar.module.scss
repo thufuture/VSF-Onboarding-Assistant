@@ -100,17 +100,26 @@
 .tlItem {
   position: relative;
   display: grid;
-  grid-template-columns: 30px minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 12px;
-  padding: 8px 8px 8px 0;
-  border-radius: 5px;
+  grid-template-columns: 30px minmax(0, 1fr);
+  align-items: start;
+  gap: 10px;
   color: var(--app-ink);
   text-decoration: none;
+}
 
-  &:hover {
-    background: var(--app-surface-2);
-  }
+// Thẻ của từng ngày: nền trắng viền mảnh, chọn thì viền và nền đổi sang màu xanh.
+.tlCard {
+  min-width: 0;
+  padding: 9px 10px;
+  border: 1px solid var(--app-border);
+  border-radius: 5px;
+  background: var(--app-surface);
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease;
+}
+.tlItem:hover .tlCard {
+  border-color: var(--app-border-strong);
 }
 .tlLive {
   --tl: #2f6fa8;
@@ -124,10 +133,12 @@
   --tl: #b98330;
 }
 .tlOn {
-  background: var(--app-accent-soft);
-
+  .tlCard {
+    border-color: var(--tl);
+    background: color-mix(in srgb, var(--tl) 7%, var(--app-surface));
+  }
   .tlNode {
-    box-shadow: 0 0 0 4px color-mix(in srgb, var(--tl) 18%, transparent);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--tl) 20%, transparent);
   }
 }
 
@@ -169,7 +180,7 @@
   }
   i {
     display: block;
-    height: 3px;
+    height: 4px;
     overflow: hidden;
     border-radius: 5px;
     background: var(--app-border);
@@ -182,10 +193,19 @@
   }
 }
 
-.tlItem > strong {
-  color: var(--app-ink-3);
-  font-size: 12px;
-  font-weight: 500;
+.tlBar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  i {
+    flex: 1;
+  }
+  strong {
+    color: var(--app-ink-2);
+    font-size: 11.5px;
+    font-weight: 500;
+  }
 }
 
 .addDay {

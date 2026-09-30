@@ -9,8 +9,8 @@ $tn-amber: #a8681a;
 .page {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding: 14px 16px 28px;
+  gap: 5px;
+  padding: 5px 5px 16px;
 }
 
 // ── pagehead ai14-hero ──
@@ -18,7 +18,7 @@ $tn-amber: #a8681a;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
+  gap: 5px;
   padding: 11px 16px;
   background: var(--app-surface);
   border: 1px solid var(--app-border);
@@ -33,7 +33,7 @@ $tn-amber: #a8681a;
 .pageheadInner {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 5px;
 }
 
 .phi {
@@ -145,7 +145,7 @@ $tn-amber: #a8681a;
 .grid21 {
   display: grid;
   grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
-  gap: 10px;
+  gap: 5px;
 }
 .layout {
   align-items: stretch;
@@ -183,7 +183,7 @@ $tn-amber: #a8681a;
 .chh {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
-  column-gap: 10px;
+  column-gap: 5px;
   align-items: center;
 
   h2 {
@@ -245,7 +245,7 @@ $tn-amber: #a8681a;
 .cardBody {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 5px;
   padding: 14px 16px 16px;
 }
 
@@ -381,7 +381,7 @@ $tn-amber: #a8681a;
 .pickerSearch {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 5px;
   margin: 10px 10px 0;
   padding: 0 10px;
   border: 1px solid var(--app-border-strong);
@@ -406,7 +406,7 @@ $tn-amber: #a8681a;
 .pickerList {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 5px;
   max-height: 300px;
   overflow-y: auto;
   padding: 10px;
@@ -547,7 +547,7 @@ $tn-amber: #a8681a;
   display: grid;
   min-height: 52px;
   grid-template-columns: 32px minmax(0, 1fr) 16px;
-  gap: 8px;
+  gap: 5px;
   align-items: center;
   padding: 8px;
   border: 1px solid var(--app-border-strong);
@@ -661,7 +661,7 @@ $tn-amber: #a8681a;
 .newStageForm {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 5px;
   margin-top: 8px;
   padding: 10px;
   border: 1px solid var(--app-border);
@@ -688,7 +688,7 @@ $tn-amber: #a8681a;
 .audience {
   display: grid;
   grid-template-columns: 36px minmax(0, 1fr);
-  gap: 10px;
+  gap: 5px;
   align-items: center;
   margin: 12px 0;
   padding: 10px;
@@ -730,7 +730,7 @@ $tn-amber: #a8681a;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 5px;
   height: 42px;
   border: none;
   border-radius: 5px;

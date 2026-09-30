@@ -24,6 +24,7 @@ $sidebar-width: 248px;
   display: flex;
   min-height: 100dvh;
   background: var(--app-bg);
+  --sidebar-w: #{$sidebar-width};
   color: var(--app-ink);
   font-family: $font;
   color-scheme: light;
@@ -56,7 +57,7 @@ $sidebar-width: 248px;
   z-index: 30;
   top: 0;
   display: flex;
-  width: $sidebar-width;
+  width: var(--sidebar-w, #{$sidebar-width});
   height: 100dvh;
   flex: none;
   flex-direction: column;
@@ -545,4 +546,72 @@ a.navActive:hover {
   color: var(--app-ink-3);
   font-size: 12px;
   white-space: nowrap;
+}
+
+// ── Thanh bên thu gọn (máy tính): chỉ còn logo, icon menu, avatar và nút đăng xuất ──
+.collapseButton {
+  @include tablet-down {
+    display: none;
+  }
+}
+
+.shell[data-collapsed="true"] {
+  --sidebar-w: 68px;
+
+  .sidebar {
+    align-items: center;
+    padding: 18px 8px 16px;
+
+    @include tablet-down {
+      align-items: stretch;
+      padding: 18px 14px 16px;
+    }
+  }
+
+  @media (min-width: 1025px) {
+    .brandText,
+    .roleBadge,
+    .navItem > span,
+    .navItem small,
+    .userText,
+    .logout span {
+      display: none;
+    }
+
+    .sidebarHead {
+      justify-content: center;
+      padding: 2px 0 14px;
+    }
+
+    .nav {
+      align-items: center;
+      margin: 0;
+      padding: 2px 0 8px;
+    }
+
+    .navItem {
+      justify-content: center;
+      width: 44px;
+      min-height: 44px;
+      padding: 0;
+    }
+
+    .navActive::before {
+      left: -8px;
+    }
+
+    .account {
+      align-items: center;
+    }
+
+    .userCard {
+      padding: 6px;
+    }
+
+    .logout {
+      width: 44px;
+      padding: 0;
+      justify-content: center;
+    }
+  }
 }

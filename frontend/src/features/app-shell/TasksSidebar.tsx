@@ -73,17 +73,21 @@ export function TasksSidebar() {
               key={stage.id}
             >
               <span className={styles.tlNode}>{/(\d+)/.exec(stage.title)?.[1] ?? i + 1}</span>
+              <div className={styles.tlCard}>
               <div className={styles.tlBody}>
                 <b>
                   <span>{stage.title}</span>
                   <u>{stage.published ? t("tagPublished") : t("tagDraft")}</u>
                 </b>
                 <small>{t("sideCount", { total: stage.tasks.length, published: publishedCount })}</small>
-                <i>
-                  <em style={{ width: `${pct}%` }} />
-                </i>
+                <div className={styles.tlBar}>
+                  <i>
+                    <em style={{ width: `${pct}%` }} />
+                  </i>
+                  <strong>{pct}%</strong>
+                </div>
               </div>
-              <strong>{pct}%</strong>
+              </div>
             </Link>
           );
         })}

@@ -1,6 +1,6 @@
 "use client";
 
-import { LogOut, Menu, MessageSquareText, ShieldCheck, Sparkles, Moon, Sun, X } from "lucide-react";
+import { LogOut, Menu, MessageSquareText, PanelLeftClose, PanelLeftOpen, ShieldCheck, Sparkles, Moon, Sun, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState, type ReactNode } from "react";
 
@@ -13,6 +13,7 @@ import { Link, usePathname } from "@/i18n/navigation";
 
 import styles from "./AppShell.module.scss";
 import { TasksSidebar } from "./TasksSidebar";
+import { useSidebarCollapsed } from "./useSidebarCollapsed";
 import { useTheme } from "./useTheme";
 
 type NavTone = "blue" | "teal" | "indigo" | "amber" | "rose" | "slate";
@@ -58,6 +59,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const { user, logout } = useSession();
   const { theme, toggleTheme } = useTheme();
   const pathname = usePathname();
+  const { collapsed, toggleCollapsed } = useSidebarCollapsed();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
   const [signOutFailed, setSignOutFailed] = useState(false);
@@ -92,6 +94,8 @@ export function AppShell({ children }: { children: ReactNode }) {
   const onRoadmap = pathname.startsWith("/chat") && user.role === "USER";
   const home = user.role === "USER" ? "/chat" : "/admin";
   const onTasksTree = user.role !== "USER" && pathname.startsWith("/admin/tasks");
+  // Thanh bên thu gọn thì Quản lý task hiện thanh biểu tượng thường (không có cây ngày) để nhường chỗ cho trang.
+  const showTree = onTasksTree && !collapsed;
   // Mục nav khớp đường dẫn hiện tại (dài nhất trước, ví dụ /admin/documents thắng /admin) — dùng cho tiêu đề thanh trên.
   // Quản lý task (cả khi ADMIN sửa lộ trình mẫu chung) luôn mang tiêu đề "Quản lý task" trên thanh trên.
   const activeItem = onTasksTree
@@ -101,7 +105,7 @@ export function AppShell({ children }: { children: ReactNode }) {
     : undefined;
 
   return (
-    <div className={styles.shell} data-theme={theme}>
+    <div className={styles.shell} data-collapsed={collapsed ? "true" : "false"} data-theme={theme}>
       <aside className={`${styles.sidebar} ${drawerOpen ? styles.sidebarOpen : ""}`} id="app-sidebar">
         <div className={styles.sidebarHead}>
           <Link aria-label={brandText("brand")} className={styles.brand} href={home}>
@@ -124,10 +128,10 @@ export function AppShell({ children }: { children: ReactNode }) {
           </button>
         </div>
 
-        {onTasksTree ? <TasksSidebar /> : null}
-        {!onTasksTree && user.role !== "USER" ? <p className={styles.roleBadge}>{t(`roles.${user.role}`)}</p> : null}
+        {showTree ? <TasksSidebar /> : null}
+        {!showTree && user.role !== "USER" ? <p className={styles.roleBadge}>{t(`roles.${user.role}`)}</p> : null}
 
-        <nav aria-label={t("navigation")} className={styles.nav} hidden={onTasksTree}>
+        <nav aria-label={t("navigation")} className={styles.nav} hidden={showTree}>
           {items.map(({ key, flat, href, tone }) => {
             const active = activeItem?.key === key;
             if (!href) {
@@ -150,6 +154,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                 aria-current={active ? "page" : undefined}
                 className={`${styles.navItem} ${styles[`tone_${tone}`]} ${active ? styles.navActive : ""}`}
                 href={href}
+                title={t(`nav.${key}`)}
                 key={key}
               >
                 <i className={styles.navIcon}>
@@ -193,6 +198,16 @@ export function AppShell({ children }: { children: ReactNode }) {
             type="button"
           >
             <Menu aria-hidden="true" size={20} />
+          </button>
+          <button
+            aria-label={collapsed ? t("expandSidebar") : t("collapseSidebar")}
+            aria-pressed={collapsed}
+            className={`${styles.iconButton} ${styles.collapseButton}`}
+            onClick={toggleCollapsed}
+            title={collapsed ? t("expandSidebar") : t("collapseSidebar")}
+            type="button"
+          >
+            {collapsed ? <PanelLeftOpen aria-hidden="true" size={18} /> : <PanelLeftClose aria-hidden="true" size={18} />}
           </button>
           <div className={styles.pageTitle}>
             {onChat ? (

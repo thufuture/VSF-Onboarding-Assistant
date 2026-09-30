@@ -554,6 +554,9 @@ export function TaskManagementPage() {
                       >
                         <div className={styles.cardBand}>
                           <small>
+                            <span className={styles.bandIcon}>
+                              <FlatIcon name={tone.flat} size={17} tone={tone.tone} />
+                            </span>
                             {t("taskNo", { n: String(i + 1).padStart(2, "0") })}
                           </small>
                           <span className={styles.bandPill}>{isPublished ? t("statusPublished") : t("statusDraft")}</span>
