@@ -78,13 +78,12 @@ export function TasksSidebar() {
                 <b>
                   <span>{stage.title}</span>
                   <u>{stage.published ? t("tagPublished") : t("tagDraft")}</u>
+                  <strong>{pct}%</strong>
                 </b>
-                <small>{t("sideCount", { total: stage.tasks.length, published: publishedCount })}</small>
                 <div className={styles.tlBar}>
                   <i>
                     <em style={{ width: `${pct}%` }} />
                   </i>
-                  <strong>{pct}%</strong>
                 </div>
               </div>
               </div>

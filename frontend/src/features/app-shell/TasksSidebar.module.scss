@@ -38,7 +38,7 @@
   min-height: 0;
   flex: 1;
   flex-direction: column;
-  gap: 10px;
+  gap: 16px;
   overflow-y: auto;
   padding: 6px 6px 14px 2px;
 }
@@ -62,8 +62,8 @@
 .tlItem::before {
   content: "";
   position: absolute;
-  top: -10px;
-  bottom: -10px;
+  top: -16px;
+  bottom: -16px;
   left: 14px;
   width: 2px;
   background: var(--app-border-strong);
@@ -101,7 +101,7 @@
   position: relative;
   display: grid;
   grid-template-columns: 30px minmax(0, 1fr);
-  align-items: start;
+  align-items: center;
   gap: 10px;
   color: var(--app-ink);
   text-decoration: none;
@@ -110,7 +110,7 @@
 // Thẻ của từng ngày: nền trắng viền mảnh, chọn thì viền và nền đổi sang màu xanh.
 .tlCard {
   min-width: 0;
-  padding: 9px 10px;
+  padding: 6px 10px 7px;
   border: 1px solid var(--app-border);
   border-radius: 5px;
   background: var(--app-surface);
@@ -159,6 +159,12 @@
       text-overflow: ellipsis;
     }
   }
+  strong {
+    margin-left: auto;
+    color: var(--app-ink-2);
+    font-size: 11.5px;
+    font-weight: 500;
+  }
   u {
     flex: none;
     padding: 1px 6px;
@@ -180,7 +186,7 @@
   }
   i {
     display: block;
-    height: 4px;
+    height: 3px;
     overflow: hidden;
     border-radius: 5px;
     background: var(--app-border);
@@ -195,6 +201,7 @@
 
 .tlBar {
   display: flex;
+  margin-top: 5px;
   align-items: center;
   gap: 8px;
 
