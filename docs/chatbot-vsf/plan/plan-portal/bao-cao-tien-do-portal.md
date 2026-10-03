@@ -1,181 +1,200 @@
-# Báo cáo tiến độ Portal — Nhân viên mới, HR và Quản trị hệ thống (cập nhật 30/09/2026)
+# Báo cáo tiến độ Portal — Nhân viên mới, HR và Quản trị hệ thống (cập nhật 01/10/2026)
 
-> Nhánh `feat/portal-plan`. Đã commit cục bộ, **chưa push, chưa mở PR**.
+> Nhánh `feat/portal-plan`. Phần khu nhân viên `/me` đã commit cục bộ (`99c17ce`); **toàn bộ đợt làm ngày 01/10/2026 dưới đây chưa commit, chưa push, chưa mở PR**.
+> **Cập nhật 02/10/2026:** đã sửa Viga (so khớp trích dẫn, định tuyến, Markdown, trả lời một phần), tạo task bằng AI phủ đủ mục có tiên quyết và thứ tự, nút Nguồn tô đúng đoạn, Viga toàn trang `/me/viga`, trang Phản hồi Viga làm lại (bổ sung đáp án và tự kiểm lại), đánh giá 👍/👎. Chi tiết, sơ đồ luồng và số đo: [bao-cao-hoan-thanh-viga-task-ai.md](bao-cao-hoan-thanh-viga-task-ai.md). Kiểm chứng mới nhất: backend `pytest` **428 đạt**, frontend `vitest` **261 đạt**, `ruff`, `mypy`, `alembic check`, `tsc`, `eslint` sạch. Các con số 349 và 228 bên dưới là của ngày 01/10.
 > Đối chiếu giao diện: [prototype-ui-flow-v15-shared-roadmap.html](../portal/prototype-ui-flow-v15-shared-roadmap.html).
-> Chi tiết ingest tài liệu và tạo task bằng AI: [ingest-tai-lieu-va-tao-task-bang-ai.md](ingest-tai-lieu-va-tao-task-bang-ai.md).
+> Thiết kế, quyết định và số đo chi tiết: [ingest-tai-lieu-va-tao-task-bang-ai.md](ingest-tai-lieu-va-tao-task-bang-ai.md) (mục 18 là hiện trạng mới nhất).
 
-**Kết luận ngắn:** khu HR có 5 trang, khu Quản trị hệ thống (Admin) có 6 trang, khu nhân viên mới `/me` có 7 trang.
-**Mọi trang đều chạy với API thật; chỉ ngăn "Hỏi Viga" là bản dựng giao diện** (suy ra câu trả lời từ lộ trình thật,
-chưa gọi `POST /chat/ask` — mục 3).
-Luồng "tải tài liệu, AI đề xuất task, HR duyệt, xuất bản, nhân viên làm, Viga trả lời có nguồn" chạy được từ đầu đến cuối.
-Còn 3 mục HR chưa làm (Ticket sự cố, Phản hồi Viga, Đầu mối và đường dẫn) và **2 lỗi thật đã xác minh nhưng chưa sửa**
-(mục 4).
+**Kết luận ngắn:** khu HR có 7 trang, khu Quản trị hệ thống (Admin) có 7 trang, khu nhân viên mới `/me` có 7 trang. **Mọi trang và ngăn
+"Hỏi Viga" đều chạy với API thật, không còn bản dựng giao diện nào.** Luồng "tải tài liệu → xem lại bản nháp → kích hoạt (chạy nền, có phần
+trăm) → AI đề xuất task → HR duyệt, xuất bản → nhân viên làm → Viga trả lời có nguồn hoặc dẫn đường theo lộ trình → chưa trả lời được thì gửi
+HR → HR trả lời" chạy được từ đầu đến cuối và đã chạy thử bằng dịch vụ thật. Ba lỗi đã xác minh từ trước (tải phiên bản mới thất bại, tài liệu
+ngừng sử dụng vẫn bị Viga tìm thấy, lỗi LLM/embedding trả 500) **đã sửa và có test hồi quy**. Còn một mục HR chưa làm (Đầu mối và đường dẫn).
 
 ## 1. Đã làm
 
-### 1.1 Khu HR (5 trang)
-
-| Trang | Đường dẫn | Nội dung chính | API |
-|---|---|---|---|
-| Tổng quan | `/admin` | Lời chào, 4 KPI số thật | `GET /portal/dashboard` |
-| Nhân viên | `/admin/employees` | Bảng tiến độ, task hiện tại, trạng thái, phân trang 5 dòng | `GET /portal/employees` |
-| Quản lý task | `/admin/tasks` | Roadmap ngang có nút Bắt đầu và Kết thúc, thanh bên là lộ trình dọc theo ngày, thống kê (tổng, nháp, đã xuất bản, cần bổ sung) gộp vào tiêu đề ngày kèm icon, thêm/sửa/nhân bản/xóa task, thứ tự, tiên quyết (chống vòng), nhóm task có màu, xuất bản. Đã bỏ hàng thẻ thống kê và ô tìm kiếm task | 6 endpoint (mục 2) |
-| Tài liệu | `/admin/documents` | Bảng 7 cột, 3 ô lọc nhiều màu, thêm, sửa, xem dạng trang giấy có mục lục đứng yên, xem file gốc, ngừng sử dụng và kích hoạt lại | 5 endpoint |
-| Tạo task bằng AI | `/admin/ai-tasks` | Chọn nhiều tài liệu, chọn giai đoạn đích, xem đề xuất kèm nguồn, chấp nhận từng task | 2 endpoint |
-
-### 1.2 Khu nhân viên mới (7 trang, vai trò USER, đường dẫn `/me`)
-
-Thay cho trang roadmap cũ ở `/chat` (đã xóa). Khung riêng: **thanh tiêu đề ngang trải hết bề ngang** — logo bên trái,
-bốn mục chức năng ở giữa, bên phải là nút "Hỏi Viga", chuông thông báo (bấm ra thẻ 4 thông báo mới nhất, có nút đánh dấu
-đã đọc và lối sang trang Thông báo) và avatar mở thẻ tài khoản gồm Hồ sơ, sáng/tối, ngôn ngữ và Đăng xuất.
-Thứ tự mục đúng `NAV.employee` của prototype v15. Mỗi trang có banner ảnh kèm ảnh đại diện của người đang đăng nhập.
-
-| Trang | Đường dẫn | Nội dung chính | API |
-|---|---|---|---|
-| Tổng quan | `/me` | Lời chào đủ họ tên kèm ảnh đại diện, thẻ tiến độ trên banner, 4 KPI, **biểu đồ tròn** theo trạng thái việc, danh sách việc làm được ngay, việc vừa xong, lối tắt | `GET /portal/me/journey` |
-| Nhiệm vụ | `/me/tasks` | Cây ngày dọc bên trái; bên phải xem theo **lộ trình** (dùng chung roadmap với HR) hoặc **danh sách** | `GET /portal/me/journey` |
-| Chi tiết việc | `/me/tasks/{id}` | Cột trái là các việc trong ngày xếp dọc như lộ trình nhỏ (màu, icon và số thứ tự theo nhóm việc); giữa là "Vì sao phải làm", "Các bước thực hiện", "Điều kiện hoàn thành" tách từ nội dung HR soạn; phải là chặng trạng thái, nút tự xác nhận hoàn thành, nút hỏi Viga, việc tiên quyết và việc sẽ mở sau | `GET /portal/me/journey`, `POST /portal/me/tasks/{id}/complete` |
-| Theo dõi | `/me/progress` | 4 KPI, tiến độ từng ngày, cột theo nhóm việc, hoạt động gần đây | `GET /portal/me/journey` |
-| Tài liệu | `/me/documents` | Thẻ tài liệu theo nhóm màu, tìm theo tên, lọc theo nhóm, đọc ngay trong trang | `GET /portal/me/documents`, `GET /chat/documents/{version_id}` |
-| Thông báo | `/me/notifications` | Lọc tất cả/chưa đọc, đánh dấu đã đọc, bấm vào là mở đúng việc | Suy ra từ lộ trình (chưa có API riêng) |
-| Hỏi Viga | ngăn bên phải mọi trang | Cột 372px như view `chat` của v15: avatar Viga, nhãn loại câu trả lời, việc đang chặn, nút mở đúng việc, hộp "Viga làm được gì, không làm gì" | **Chưa nối API** — suy ra từ lộ trình thật |
-| Hồ sơ | `/me/profile` | Thông tin tài khoản, tiến độ, đổi tên hiển thị, đổi mật khẩu | `GET` và `PATCH /portal/me/profile`, `POST /portal/me/password` |
-
-Chuyển hướng theo vai trò (đã thử thật bằng HTTP): chưa đăng nhập vào `/me` → `/login?next=`; HR hoặc Admin vào `/me` →
-`/admin`; nhân viên vào `/admin` hoặc `/chat` → `/me`; nhân viên gọi API của HR hoặc Admin → 403.
-
-### 1.3 Khu Quản trị hệ thống (6 trang, chỉ vai trò ADMIN)
+### 1.1 Khu HR (7 trang)
 
 | Trang | Đường dẫn | Nội dung chính |
 |---|---|---|
-| Tổng quan | `/admin` (ADMIN) | 4 KPI, biểu đồ nhân viên theo phòng ban, hoạt động gần đây |
-| Người dùng | `/admin/users` | Tìm, lọc vai trò, thêm (mật khẩu tạm hiện một lần), sửa, đặt lại mật khẩu, khóa/mở khóa |
-| Phòng ban | `/admin/teams` | Tạo, sửa, chi tiết kèm thành viên, lưu trữ/khôi phục, sao lộ trình mẫu chung |
-| Thành viên | `/admin/members` | Gán và gỡ người khỏi phòng ban, lọc theo trạng thái truy cập |
-| Lộ trình mẫu | `/admin/template` | Bản mẫu chung và lộ trình của từng phòng ban |
-| Nhật ký | `/admin/audit` | Đọc từ `audit_logs` thật |
+| Tổng quan | `/admin` | Lời chào, 4 KPI số thật |
+| Nhân viên | `/admin/employees` | Bảng tiến độ, task hiện tại, trạng thái |
+| **Ticket sự cố** (mới) | `/admin/tickets` | Hàng đợi chung của phòng ban, lọc theo trạng thái, "Nhận xử lý", trả lời, đổi trạng thái kèm ghi chú kết quả; Admin thấy mọi phòng ban |
+| **Phản hồi Viga** (mới) | `/admin/viga-feedback` | Câu nhân viên hỏi mà Viga chưa trả lời được: **ẩn danh**, chỉ của phòng ban mình, gom câu giống nhau và đếm, nút "Bổ sung tài liệu" và "Đã xử lý" |
+| Quản lý task | `/admin/tasks` | Roadmap ngang, cây ngày dọc, thêm/sửa/nhân bản/xóa task, thứ tự, tiên quyết (chống vòng), nhóm task có màu, xuất bản |
+| **Tài liệu** (làm lại) | `/admin/documents` | Mỗi tài liệu có **nhiều phiên bản**: tải file thành **bản nháp** (nhanh, chưa tốn tiền embedding), xem bản bất kỳ, sao chép thành bản nháp mới, sửa nháp (Markdown có xem trước, khóa lạc quan), xóa nháp, **kích hoạt chạy nền có thanh phần trăm**, **đặt lại bản cũ làm bản áp dụng**, ô "tải và kích hoạt luôn", cảnh báo chất lượng cấu trúc file, dòng "Đang xử lý 45%" |
+| **Tạo task bằng AI** (làm lại) | `/admin/ai-tasks` | Chọn nhiều tài liệu → **chạy nền có phần trăm**, kết quả theo từng tài liệu (một tài liệu lỗi không làm hỏng các tài liệu khác, có nút thử lại), nhóm task, "Chấp nhận tất cả", nội dung task ghép ba mục Vì sao / Điều kiện hoàn thành / Các bước |
+
+### 1.2 Khu nhân viên mới (7 trang, vai trò USER, đường dẫn `/me`)
+
+Khung riêng: thanh tiêu đề ngang (logo, 5 mục chức năng, nút "Hỏi Viga", chuông thông báo, avatar mở thẻ tài khoản gồm Hồ sơ, sáng/tối, ngôn ngữ,
+Đăng xuất). Mỗi trang có banner ảnh kèm ảnh đại diện của người đang đăng nhập.
+
+| Trang | Đường dẫn | Nội dung chính | API |
+|---|---|---|---|
+| Tổng quan | `/me` | Lời chào, thẻ tiến độ, 4 KPI, biểu đồ tròn, việc làm được ngay | `GET /portal/me/journey` |
+| Nhiệm vụ | `/me/tasks` | Cây ngày dọc; xem theo lộ trình (dùng chung roadmap với HR) hoặc danh sách | `GET /portal/me/journey` |
+| Chi tiết việc | `/me/tasks/{id}` | Các bước, điều kiện hoàn thành, tiên quyết, tự xác nhận hoàn thành, nút hỏi Viga. **Mở trang thì ghi "việc vừa mở"** để Viga hiểu "việc này" | `.../complete`, `.../opened` |
+| Theo dõi | `/me/progress` | 4 KPI, tiến độ từng ngày, cột theo nhóm, hoạt động gần đây | `GET /portal/me/journey` |
+| Tài liệu | `/me/documents` | Thẻ tài liệu theo nhóm, đọc ngay trong trang (chỉ bản đang áp dụng) | `GET /portal/me/documents`, `GET /chat/documents/{id}` |
+| **Yêu cầu** (mới) | `/me/tickets` | Ticket đã gửi HR, xem và trả lời tiếp, thấy phản hồi của HR | `GET /portal/tickets/mine` và các endpoint ticket |
+| Hồ sơ | `/me/profile` | Thông tin tài khoản, đổi tên hiển thị, đổi mật khẩu | `GET`, `PATCH /portal/me/profile`, `POST /portal/me/password` |
+
+**Hỏi Viga (ngăn bên phải mọi trang) giờ chạy API thật** (`POST /viga/ask`), thay cho bản dựng cũ:
+- Giao diện chỉ gửi câu hỏi và `conversation_id`; backend tự biết "việc hiện tại" của người hỏi.
+- Câu "hôm nay làm gì / tiếp theo / tiến độ" đi **lối tắt luật, không tốn LLM** (0,03 đến 0,08 giây); các câu khác do **LLM chọn công cụ** trong danh sách đóng rồi code kiểm lại.
+- Câu về nội quy, chính sách: tra tài liệu, trả lời kèm **trích dẫn nguyên văn đã kiểm chứng** và nút mở tài liệu tới đúng mục.
+- Tra không ra: nói thẳng "chưa có căn cứ", không đoán; kèm nút **"Gửi câu hỏi này cho HR"** (nhân viên xem và sửa trước khi gửi; Viga không tự gửi).
+- Hội thoại **lưu trên máy chủ kiểu ChatGPT**: lịch sử, mở lại đúng như lúc hỏi, đổi tên, xóa, mở cuộc mới; giữ 90 ngày; chỉ chủ sở hữu xem được.
+- Chuông thông báo thêm "HR đã trả lời" từ ticket.
+
+### 1.3 Khu Quản trị hệ thống (7 trang, chỉ vai trò ADMIN)
+
+Người dùng, Phòng ban, Thành viên, Lộ trình mẫu, Nhật ký như trước; thêm **Chi phí AI** (`/admin/metrics`): lượt gọi, lỗi, độ trễ p50/p95, token và chi phí
+ước tính theo từng thao tác, chọn 7, 30 hay 90 ngày. Chỉ có số liệu, không có nội dung câu hỏi hay tài liệu.
+
+**Tổng quan** (cả HR và Admin) nay có phần **số liệu theo thời gian**: **7 biểu đồ quan trọng nhất** (đã rút gọn theo góp ý, không có hàng thẻ chỉ số hay tiêu đề mục): tròn (tiến độ nhân viên, chi phí theo thao tác), đường (hoạt động mỗi
+ngày gồm task hoàn thành, câu hỏi Viga và ticket mới; chi phí AI mỗi ngày) và hai biểu đồ cột **theo từng lượt tạo task AI**: độ trễ (thời gian chạy so
+với thời gian chờ mô hình) và chi phí. HR chỉ thấy phòng ban của mình, Admin thấy toàn hệ thống; chọn 7, 14 hay 30 ngày; mỗi biểu đồ có chú giải khi trỏ
+chuột, nút xem dạng bảng và bản tối. API `GET /portal/analytics` vẫn trả đủ số liệu (ticket, tài liệu, độ trễ theo thao tác, lượt kích hoạt...) nên thêm biểu
+đồ sau này không phải sửa backend.
 
 ### 1.4 Backend
 
 | Nhóm | Nội dung |
 |---|---|
-| Portal (HR) | dashboard, employees, documents (danh sách, sửa, ẩn/kích hoạt), document-categories, stages, journey-templates/mine, thêm/sửa/xóa task, xuất bản, upload tài liệu, xem file gốc, đề xuất và chấp nhận task AI |
-| Admin | 14 endpoint: dashboard, users (tạo, sửa, đặt lại mật khẩu, khóa), teams (tạo, sửa, lưu trữ, sao lộ trình), memberships, template-overview, audit-logs |
-| Cơ sở dữ liệu | Migration `0002` (portal core) và `0003` (`task_templates.task_group`); enum `TaskGroup` |
-| Quy tắc nghiệp vụ | Không tự khóa hay tự hạ vai trò; email không trùng; chỉ tài khoản HR làm HR phụ trách; mã phòng ban duy nhất; phòng ban đã có lộ trình thì không sao thêm lần nữa; lộ trình đã xuất bản bị khóa sửa; tiên quyết chỉ AND và chống vòng |
-| Nhân viên | Lộ trình tạo khi mở `GET /portal/me/journey`, task có tiên quyết bị khóa, tự xác nhận hoàn thành thì mở khóa task phụ thuộc. Lộ trình trả thêm ngày (`stage_id`, `stage_sort_order`), nhóm task và **danh sách tiên quyết kèm trạng thái** để giao diện nói rõ "cần xong việc nào trước" |
-| Nhân viên: hồ sơ | `GET` và `PATCH /portal/me/profile` (tiến độ, phòng ban, ngày bắt đầu), `POST /portal/me/password` — đổi mật khẩu thì thu hồi mọi phiên cũ, riêng thiết bị đang dùng được cấp cookie mới nên không bị đăng xuất |
-| Nhân viên: tài liệu | `GET /portal/me/documents` chỉ trả tài liệu đang hiệu lực (`ACTIVE`) và có phiên bản `ACTIVE`; nội dung đọc qua `/chat/documents/{version_id}` sẵn có |
+| Tài liệu theo phiên bản | `document_version_service` (nháp, sao chép, sửa có khóa lạc quan, xóa nháp, kích hoạt), `version_lifecycle` (một bản đang áp dụng tại một ngày, đóng bản cũ trong **cùng transaction** với ghi chunk, hẹn ngày hiệu lực tương lai) |
+| Việc nền | `job_service` (hàng đợi PostgreSQL `SKIP LOCKED`, tiến độ đơn điệu, nhận lại job treo, tối đa 2 job, việc định kỳ), `job_handlers` (kích hoạt với phần trăm theo từng lô embedding; tạo task AI) |
+| Cấu trúc tài liệu | `structure.py`: nhận tiêu đề giả (in đậm, đánh số, chữ HOA), đo chất lượng GOOD/MEDIUM/POOR, chia mục dài thành mục phụ, LLM chia mục là phương án cuối (có kiểm chứng, hạn mức, không bao giờ làm kích hoạt thất bại) |
+| Viga | `services/viga/`: ảnh chụp lộ trình (chỉ mã, tên, trạng thái việc đi ra LLM), 5 công cụ lộ trình, bộ lọc thông tin cá nhân, lối tắt luật, LLM định tuyến, hội thoại, câu chưa trả lời được |
+| Ticket | `ticket_service`: gửi tới HR phòng ban, **5 ticket/người/ngày**, chặn câu giống nhau trong 10 phút, HR nhận xử lý/trả lời/đổi trạng thái, đóng ticket không đổi task |
+| Đo lường | `call_metrics`, `llm_calls` (nay có `job_id` để cộng theo từng lượt việc nền), `/admin/metrics`, **`analytics_service` + `GET /portal/analytics`** (số liệu Tổng quan, HR theo phòng ban, Admin toàn bộ); đơn giá DeepSeek tra 01/10/2026 |
+| Cơ sở dữ liệu | Migration `0004` (llm_calls), `0005` (bản nháp, tiến độ job), `0006` (hội thoại, việc vừa mở, nguồn ticket), `0007` (`llm_calls.job_id`) |
+| Bảo mật | Mọi công cụ Viga chỉ đọc lộ trình của chính người hỏi; mã việc do LLM đưa ra bị kiểm thuộc lộ trình; hội thoại, ticket, job chỉ chủ sở hữu (hoặc HR đúng phòng ban, Admin) đọc được; nhân viên không đọc được bản nháp tài liệu |
 
 ### 1.5 Giao diện dùng chung
 
-| Việc | Chi tiết |
-|---|---|
-| Modal xác nhận | Mọi hành động có tác dụng phụ (xóa, nhân bản, ngừng sử dụng, kích hoạt lại, khóa, gỡ, xuất bản) đều qua modal xác nhận |
-| Thanh bên | Theo vai trò (HR, Admin, nhân viên); nút thu/mở nằm sau dòng vai trò, thu còn 68px chỉ icon, nhớ lựa chọn |
-| Bảng màu | Nền xám lạnh, thẻ `#f7f9fc` trên nền `#e9edf3`, chữ dịu, ba mức đậm nhạt (400, 500, 600), không chữ in hoa, bo góc 5px, khoảng cách thẻ 5px |
-| Icon | Bộ icon phẳng hai tông tự vẽ (`components/flat-icons/FlatIcon.tsx`) cho menu, thanh trên, nút roadmap; thêm hai tông `red` và `violet` cho mốc Bắt đầu và Kết thúc |
-| Roadmap dùng chung | `components/roadmap/JourneyRoad.tsx` — HR và nhân viên dùng chung một bộ phận: đường cong mềm, nút tròn có icon nhóm, thẻ có dải màu, mốc Bắt đầu (đỏ) và Kết thúc (tím) khác hẳn 4 màu nhóm việc. Bản của nhân viên tô xanh lá đoạn đường đã đi, nút đã xong có dấu tích, việc bị khóa xám kèm ổ khóa |
-| Hiệu ứng | Nút, thẻ, dòng bảng đều có hiệu ứng khi trỏ chuột (0,15 giây). Khu nhân viên: vệt chạy ở đỉnh trang khi đổi trang, nội dung trôi lên, ảnh bìa ba tấm đổi chậm, sóng nước chạy ở đáy ảnh, đường roadmap "chạy" từ trái sang. Mọi hiệu ứng tắt khi máy đặt `prefers-reduced-motion` |
-| Logo | Một thành phần dùng chung `components/brand/VsfMark.tsx`: ô vuông bo góc chia chéo xanh dương và đỏ, chữ "V" trắng. Dùng ở trang chủ, trang đăng nhập, khung HR/Admin và khung nhân viên nên mọi nơi giống hệt nhau |
-| Avatar Viga | `components/avatar/VigaAvatar.tsx` — nhân viên hỗ trợ đeo tai nghe, cổng thẳng từ `vigaAvatar()` của v15 |
-| Ngôn ngữ | Toàn bộ chữ qua `next-intl`, có `vi` và `en` |
+Mới trong đợt này: `components/charts/` (biểu đồ đường, cột, tròn và khung có nút xem dạng bảng, vẽ bằng SVG thuần, có bản sáng và tối), `components/job-progress/JobProgress` (thanh phần trăm cho mọi việc nền), hook `useJob` (hỏi tiến độ mỗi giây, tự dừng), `DocumentReader`
+(trình đọc có mục lục, dùng chung), `DocumentVersionsModal`, `TicketBoard` và `TicketThread` (dùng chung HR và nhân viên). Các thành phần cũ giữ nguyên
+(modal xác nhận, thanh bên, bảng màu, icon phẳng, roadmap dùng chung, logo, avatar Viga, `vi` và `en`).
 
 ### 1.6 Kiểm chứng đã chạy
 
 | Việc | Kết quả |
 |---|---|
-| `ruff check`, `ruff format --check`, `mypy src` | Sạch |
-| Test tích hợp portal và admin (6 file, PostgreSQL thật) | 30 pass (thêm 3 test cho `/me`: tiên quyết, hồ sơ và đổi mật khẩu, tài liệu) |
-| `tsc --noEmit`, `eslint src` | Sạch |
-| `vitest run` | 168 pass, 16 file (thêm 19 test cho khu nhân viên: mô hình lộ trình, máy trả lời Viga, khung và trang Nhiệm vụ) |
-| `next build` | Thành công, sinh đúng 6 route `/[locale]/me/*` |
-| Gọi thật API bằng cookie ADMIN, HR và nhân viên; chụp màn hình có đăng nhập; bấm thử modal, ngăn Viga, đổi cách xem | Đúng dữ liệu thật của `newhire1` (4 việc Ngày 1, 1 việc bị khóa đúng tiên quyết) |
-| Chụp màn hình khu nhân viên | 6 trang, giao diện tối, khổ điện thoại, ngăn Viga, chi tiết việc — đều đúng bố cục |
+| Backend: `ruff check`, `ruff format --check`, `mypy` (181 file) | Sạch |
+| Backend: `pytest` trên PostgreSQL thật (DB test riêng `vsf_test`) | **349 pass** (trước đợt này 209) |
+| Frontend: `tsc --noEmit`, `eslint src` | Sạch |
+| Frontend: `vitest run` | **228 pass**, 22 file (trước đợt này 183) |
+| Chạy toàn luồng bằng **dịch vụ thật** (Modal embedding, DeepSeek) trên DB thử riêng, file lưu cục bộ | Đạt: tải 4 file Word, kích hoạt có phần trăm, đóng bản cũ, đặt lại bản cũ không tốn embedding, tạo 14 đề xuất task, chấp nhận 6, xuất bản, nhân viên hỏi 8 câu (lối tắt, LLM định tuyến, tài liệu có nguồn, không có căn cứ, ngoài phạm vi), gửi ticket, HR trả lời, số đo Admin |
+| Lỗi thật do test tìm ra và đã sửa | 8 lỗi, liệt kê ở mục 18.7 của tài liệu thiết kế |
+| Trang Tổng quan | Xem bằng mắt bản 15 biểu đồ (sáng, tối, trống, điện thoại, có chú giải) và sửa 2 lỗi hiển thị, sau đó rút còn 7 biểu đồ (bản rút gọn kiểm bằng test); `build_analytics` chạy được trên DB dev thật (chỉ đọc); migration `0007` đã áp dụng cho DB dev, các bảng tài liệu, task, job, ticket, hội thoại, llm_calls vẫn rỗng |
+
+**Số đo thật (tóm tắt, chi tiết ở mục 18.6):** tải file thành nháp 0,4 đến 0,7 giây; kích hoạt 3 đến 5 giây khi dịch vụ embedding đã nóng (lần đầu 24 giây do Modal khởi
+động nguội ~18 giây); đặt lại bản cũ 0,4 giây; tạo task bằng AI 48 giây cho tài liệu 18 mục (0,019 USD); hỏi Viga bằng lối tắt 0,03 đến 0,08 giây, bằng
+tài liệu 6 đến 8 giây, khoảng **0,0033 USD (~82 đồng) một câu**, gần 3 lần ước lượng cũ vì ngữ cảnh tài liệu ~6.800 token.
 
 ## 2. API đã viết
 
-### `/api/v1/portal/*` (HR)
+### `/api/v1/portal/*` (HR) — phần mới trong đợt này
 
 | Method | Đường dẫn | Việc |
 |---|---|---|
-| GET | `/dashboard` | KPI Tổng quan theo phòng ban của người gọi |
-| GET | `/employees` | Nhân viên kèm tiến độ và task hiện tại |
-| GET, POST | `/documents` | Danh sách tài liệu (kèm task đang dùng, người phụ trách) và tải lên |
-| PATCH | `/documents/{id}`, `/documents/{id}/status` | Sửa tên và nhóm; ngừng sử dụng hoặc kích hoạt lại |
-| GET | `/documents/{version_id}/original` | Xem hoặc tải file gốc |
-| GET | `/document-categories`, `/stages`, `/journey-templates/mine` | Danh mục, giai đoạn nháp, cây lộ trình |
-| POST | `/journey-templates`, `/journey-templates/{id}/stages`, `/journey-templates/{id}/publish` | Tạo lộ trình, giai đoạn, xuất bản |
-| POST, PATCH, DELETE | `/stages/{id}/tasks`, `/task-templates/{id}` | Thêm, sửa, xóa task (thứ tự, tiên quyết, nhóm) |
-| POST | `/ai/task-proposals`, `/stages/{id}/tasks/from-proposal` | AI đề xuất; chấp nhận đề xuất |
-| GET, POST | `/me/journey`, `/me/tasks/{id}/complete` | Lộ trình (kèm ngày, nhóm, tiên quyết) và hoàn thành task của nhân viên |
-| GET, PATCH | `/me/profile` | Hồ sơ và tiến độ của chính mình; đổi tên hiển thị |
-| POST | `/me/password` | Đổi mật khẩu của chính mình (thu hồi phiên cũ, giữ phiên thiết bị đang dùng) |
-| GET | `/me/documents` | Thư viện tài liệu cho nhân viên (chỉ tài liệu đang hiệu lực) |
+| POST | `/documents` | Tạo bản nháp từ file (`activate=true` thì kích hoạt luôn, trả 202 + `job_id`) |
+| GET | `/documents/{id}/versions`, `/documents/{id}/versions/{vid}` | Danh sách phiên bản kèm trạng thái, hiệu lực, chất lượng cấu trúc; nội dung một bản |
+| POST, PATCH, DELETE | `/documents/{id}/versions/{vid}/copy`, `.../versions/{vid}`, `.../versions/{vid}` | Sao chép thành nháp; sửa nháp (khóa lạc quan); xóa nháp |
+| POST | `/documents/{id}/versions/{vid}/activate` | Kích hoạt hoặc đặt lại bản cũ làm bản áp dụng (chạy nền) |
+| GET | `/jobs/{id}`, `/jobs?active=true&kind=` | Tiến độ việc nền |
+| POST | `/ai/task-proposal-jobs` | Tạo task bằng AI cho nhiều tài liệu (chạy nền) |
+| POST, GET | `/tickets`, `/tickets/mine`, `/tickets`, `/tickets/{id}` | Gửi, xem ticket |
+| POST, PATCH | `/tickets/{id}/messages`, `/tickets/{id}/claim`, `/tickets/{id}/status` | Trả lời, nhận xử lý, đổi trạng thái |
+| GET, POST | `/content-gaps`, `/content-gaps/{id}/resolve` | Câu Viga chưa trả lời được (ẩn danh) |
+| POST | `/me/tasks/{id}/opened` | Ghi "việc vừa mở" |
+
+Các endpoint cũ (dashboard, employees, documents, stages, journey-templates, task, me/journey, me/profile...) giữ nguyên.
+`POST /documents` đổi hợp đồng: trả 201 hoặc 202 thay vì kết quả nạp đồng bộ.
+
+### `/api/v1/viga/*` (mọi người đã đăng nhập)
+
+`POST /ask`, `GET /conversations`, `GET|PATCH|DELETE /conversations/{id}`.
 
 ### `/api/v1/admin/*` (chỉ ADMIN)
 
-`GET /dashboard`, `GET|POST /users`, `PATCH /users/{id}`, `POST /users/{id}/reset-password`, `PATCH /users/{id}/status`,
-`GET|POST /teams`, `PATCH /teams/{id}`, `PATCH /teams/{id}/status`, `POST /teams/{id}/copy-template`,
-`GET|POST /memberships`, `DELETE /memberships/{team}/{user}`, `GET /template-overview`, `GET /audit-logs`.
+Như trước, thêm `GET /metrics?days=` (số liệu gọi LLM và embedding).
+
+### `GET /api/v1/portal/analytics?days=1..90` (HR và Admin)
+
+Số liệu Tổng quan: nhân viên và task, Viga, ticket, tài liệu, và AI (chi phí và lượt gọi theo ngày, theo thao tác, **20 lượt tạo task và 20 lượt kích hoạt gần nhất với thời
+gian chạy, độ trễ và chi phí từng lượt**); trang hiện mới vẽ 6 biểu đồ trong số đó. HR: phòng ban của mình; Admin: tất cả. Chỉ số liệu tổng hợp, không có nội dung (INV8). Chi tiết: mục 18.4b của tài liệu thiết kế.
 
 ## 3. Chưa làm
 
 | Việc | Ghi chú |
 |---|---|
-| Ticket sự cố (HR) | Bảng `tickets`, `ticket_messages` đã có; chưa có router và giao diện |
-| Phản hồi Viga (HR) | Bảng `content_gaps` đã có; chưa có router và giao diện |
-| Đầu mối và đường dẫn (HR) | Bảng `contact_channels`, `approved_links` đã có; chưa có router và giao diện; tab "Liên hệ" trong form task phụ thuộc mục này |
-| Nút "Nhắn" ở trang Nhân viên | Đang tắt, chưa có API nhắn tin |
-| Nút "Xem task" ở trang Nhân viên | Mới dẫn sang Quản lý task chung, chưa lọc theo từng người |
-| Tạo task bằng AI: hoàn thiện | Chưa lưu `done_criteria`, `estimated_minutes`, `warnings`; chưa tự gán nhóm task; chưa đề xuất tiên quyết; chưa có "Chấp nhận tất cả" và xem trước roadmap |
-| Nhập người dùng từ CSV (Admin) | v15 có nút này, chưa làm |
-| Mô tả ngắn cho tài liệu | Bảng `documents` chưa có cột mô tả; bảng hiện hiển thị `source_key` |
-| **Hỏi Viga (nhân viên)** | Đây là **chỗ duy nhất trong portal chưa dùng API thật**. Câu trả lời suy ra từ chính lộ trình thật của người đang đăng nhập (bước kế tiếp, việc bị khóa vì việc nào, kế hoạch ngày) chứ không gọi `POST /chat/ask`; không khớp thì nói thẳng "chưa có trong lộ trình". Trên ngăn trò chuyện có ghi rõ điều này. Khi nối API thật chỉ cần thay hàm `askViga` trong `vigaMock.ts`, giữ nguyên kiểu dữ liệu |
-| **Thông báo (nhân viên)** | Chưa có bảng và API thông báo. Danh sách hiện được suy ra từ lộ trình thật (việc vừa mở khóa, việc đã xong, nhắc việc của ngày, lời chào); trạng thái "đã đọc" lưu ở trình duyệt của từng người (`localStorage`), không gửi lên máy chủ và không đồng bộ giữa máy |
-| Trang cá nhân của nhân viên | Chưa có ảnh đại diện tự tải lên (đang dùng ảnh vẽ sẵn theo tên), chưa có đổi email, chưa có lịch sử đăng nhập |
-| Giao diện | Icon nét mảnh còn ở ô KPI của Tài liệu, Tổng quan HR, Nhân viên và các trang Admin; các trang này chưa được thiết kế lại theo phong cách mới như Quản lý task và khu nhân viên |
-| Ingest | OCR file scan, xử lý ảnh nhúng, hàng đợi và tiến độ, rerank |
-| Dữ liệu thật | 10 task ngày 1 từ tài liệu thật (kế hoạch P4B) chưa nạp; dữ liệu trong DB dev là dữ liệu mẫu |
+| Đầu mối và đường dẫn (HR) | **Hoãn theo yêu cầu (02/10/2026): đã thử làm rồi gỡ hết, không còn mục này trên giao diện, trong tab sửa task hay ở Viga.** Bảng `contact_channels`, `approved_links` vẫn nằm trong cơ sở dữ liệu (migration 0002); chưa có router và giao diện. Kéo theo công cụ Viga `get_contact`, `get_approved_link`, `get_template` chưa làm |
+| So sánh khác biệt hai phiên bản; cảnh báo và nối lại nguồn của task khi có bản mới | Hiện chỉ đếm số task đang dùng mỗi phiên bản |
+| Sửa tại chỗ bản cũ | Hoãn theo quyết định 5: chỉ sửa bản nháp và sao chép bản cũ thành bản mới |
+| Hủy job đang chạy | Chưa có nút Hủy |
+| Đo lường giai đoạn B và C | Bộ câu hỏi chuẩn, `tests/eval`, baseline, Prometheus; Langfuse chưa phủ ingest, tạo task và bước định tuyến |
+| PDF theo cỡ chữ (bậc 4), OCR, rerank | PDF đi qua markitdown như file chữ; file scan bị từ chối rõ ràng; rerank hoãn |
+| Nút "Nhắn" ở trang Nhân viên, nút "Xem task" lọc theo người, nhập người dùng từ CSV, mô tả ngắn cho tài liệu, ảnh đại diện tự tải lên | Như báo cáo trước |
+| Giao diện | Icon nét mảnh còn ở ô KPI của Tài liệu, Tổng quan HR, Nhân viên và các trang Admin cũ |
+| Dữ liệu thật | 10 task ngày 1 từ tài liệu thật chưa nạp; **DB dev hiện đã được dọn sạch tài liệu và task** để thao tác thủ công |
 
-## 4. Lỗi đã xác minh, chưa sửa
+## 4. Lỗi đã xác minh
 
-| # | Lỗi | Bằng chứng | Ảnh hưởng |
-|---|---|---|---|
-| 1 | **Tải phiên bản mới của cùng tài liệu thất bại.** Phiên bản cũ không được đóng (`effective_to` trống, không chuyển `ARCHIVED`), DB cấm hai bản `ACTIVE` chồng ngày | Chèn thử bản mới trong transaction rồi rollback: `ex_document_versions_active_no_overlap` | Nút "Tải phiên bản mới" ở trang Tài liệu sẽ lỗi |
-| 2 | **Tài liệu đã "ngừng sử dụng" vẫn được Viga tìm thấy.** Nút chỉ đổi `documents.status`, truy vấn tìm kiếm chỉ lọc theo trạng thái phiên bản | Đọc `hybrid_search.py` và `set_document_status` | Thông báo trong modal đúng với danh sách chọn của AI nhưng không đúng với Viga |
+Ba lỗi của báo cáo trước **đã sửa và có test hồi quy**:
 
-Hai lỗi này ảnh hưởng luồng tài liệu; nên sửa trước khi demo cho mentor.
+| # | Lỗi | Cách sửa |
+|---|---|---|
+| 1 | Tải phiên bản mới của cùng tài liệu thất bại (bản cũ không được đóng) | Đóng bản cũ cùng transaction với ghi chunk (cả đường CLI); test đổi bản, hẹn ngày, đặt lại bản cũ |
+| 2 | Tài liệu "ngừng sử dụng" vẫn bị Viga tìm thấy | Tìm kiếm lọc thêm trạng thái tài liệu; test |
+| 3 | Lỗi LLM hoặc embedding trong `/chat/ask` thành 500 | `503 ASSISTANT_UNAVAILABLE` (chat HR) và đường thoát `ERROR` kèm gợi ý gửi HR (Viga); test |
+
+Chưa có lỗi mở nào đã xác minh. Một lần chạy toàn bộ `vitest` trong đợt này có 1 test rớt một lần khi máy đang tải nặng rồi qua ở 4 lần chạy lại liên tiếp; chưa xác định test nào, theo dõi thêm.
 
 ## 5. Rủi ro và lưu ý khác
 
 | Mục | Nội dung |
 |---|---|
-| Docker khi dựng lại | Container `migrate` có lần không tự thoát nên `docker compose up` bị treo; migration đã áp dụng xong, phải khởi động backend tay. Cần kiểm tra trước khi chạy lại trên máy khác |
-| Test không phải lỗi code | 2 test `test_parser` hỏng do mã hóa `cp1252` của Windows khi in tiếng Việt (đã hỏng từ trước); 6 test tích hợp cũ (`test_core_schema`, `test_ingest_service`) va chạm với dữ liệu danh mục đã có sẵn trong DB dev |
-| Dữ liệu mẫu | DB dev có lộ trình "Onboarding Day 1" đã xuất bản và một bản nháp do tôi tạo khi test; đã sửa lại tiếng Việt có dấu và gán nhóm task. Nên xóa hoặc thay bằng dữ liệu thật trước khi demo |
-| Khóa bí mật | `backend/.env` chứa khóa LLM, embedding, Cloudinary, Langfuse thật; đã được `.gitignore`, không có trong commit. Không dán vào tài liệu hay tin nhắn |
-| Prompt AI | Gửi toàn bộ section của tài liệu, chưa có ngân sách token; tài liệu rất dài có thể vượt ngữ cảnh |
-| Ảnh bìa khu nhân viên | Dùng lại 3 ảnh tòa nhà của trang chủ (Wikimedia Commons, CC BY 3.0 và CC BY-SA 4.0). Chỉ là ảnh minh họa, đã ghi công ở chân trang và trong `public/images/landing/CREDITS.md`; **không** ngụ ý VSF làm việc tại tòa nhà đó |
-| Tài liệu cho nhân viên | Trang Tài liệu của nhân viên không cho tải file gốc (endpoint file gốc chỉ mở cho HR và Admin), chỉ đọc bản Markdown đã nạp |
+| Nội dung tài liệu đi ra dịch vụ ngoài | Tạo task, LLM chia mục và hỏi đáp gửi nội dung tài liệu tới DeepSeek; chưa có nhãn loại trừ tài liệu nhạy cảm. Embedding gửi nội dung tới Modal |
+| Modal khởi động nguội | Lần gọi đầu có thể mất ~18 giây; thanh tiến độ báo "Kết nối dịch vụ embedding". Câu hỏi đầu tiên của nhân viên sau thời gian dài cũng có thể chậm |
+| Chi phí | Chi phí embedding chưa tính (chưa có giá Modal). Giá DeepSeek tra một lần ngày 01/10/2026, có thể đổi; ngữ cảnh tài liệu ~6.800 token mỗi câu là phần tốn nhất |
+| Worker chung tiến trình backend | Đủ cho một container; ingest nặng chạy luồng riêng nên không chặn request khác; nhiều tiến trình vẫn an toàn (`SKIP LOCKED`) nhưng bộ đếm giới hạn hỏi vẫn trong bộ nhớ từng tiến trình |
+| Hàm `t` của next-intl | Đổi tham chiếu mỗi lần vẽ: **không đưa `t` vào phụ thuộc của effect** (đã gặp và sửa lỗi gọi API lặp ở hai chỗ; có test chặn tái phát) |
+| Cloudinary | Xóa dữ liệu trong DB **không** xóa file đã tải lên Cloudinary (tên file theo checksum, ghi đè khi tải lại) |
+| Khóa bí mật | `.env` chứa khóa LLM, embedding, Cloudinary, Langfuse thật; đã được `.gitignore`. Không dán vào tài liệu hay tin nhắn |
+| Docker | Đã dựng lại image backend và áp dụng migration `0004` đến `0006` trên DB dev; không đổi `docker-compose.yml` hay `Dockerfile` |
+| Ảnh bìa khu nhân viên | Dùng lại 3 ảnh tòa nhà của trang chủ (Wikimedia Commons, CC BY 3.0 và CC BY-SA 4.0), chỉ minh họa, đã ghi công; không ngụ ý VSF làm việc tại tòa nhà đó |
 
 ## 6. Lịch sử commit trên nhánh (từ mới nhất)
 
 | Commit | Nội dung |
 |---|---|
-| `9b60597` | Giao diện HR/Admin kiểu doanh nghiệp, hiệu ứng trỏ chuột, cây ngày dọc, mốc Bắt đầu và Kết thúc, tài liệu báo cáo |
+| `99c17ce` | Khu nhân viên mới `/me` với API thật (Viga lúc đó là bản dựng giao diện) |
+| `9b60597` | Giao diện HR/Admin kiểu doanh nghiệp, hiệu ứng trỏ chuột, cây ngày dọc, mốc Bắt đầu và Kết thúc |
 | `c62c6f9` | Thẻ ngày ở thanh bên gọn một nửa, giãn cờ Bắt đầu và Kết thúc |
 | `6935900` | Nút thu/mở thanh bên chuyển xuống dòng vai trò |
 | `f948432` | Nút thu/mở thanh bên, khoảng cách 5px, icon trong thẻ task, cây ngày dạng thẻ |
-| `3d39f03` | Thu gọn khoảng cách, làm dịu nền thẻ, logo hai màu, màu nhóm task đậm hơn |
-| `7f12feb` | Chuẩn hóa giao diện kiểu doanh nghiệp, roadmap có nút Bắt đầu và Kết thúc |
-| `32c1437` | Làm lại giao diện HR (roadmap, tài liệu, thanh bên) |
-| `0f81bd0` | Toàn bộ portal HR và Admin với API thật |
 
-Toàn bộ khu nhân viên mới (`/me`), API `/portal/me/*` và các test kèm theo **chưa commit** tại thời điểm viết báo cáo này.
+**Chưa commit** (đợt 01/10/2026): thiết kế lại chuông thông báo (bỏ trang Thông báo riêng), toàn bộ phần tài liệu theo phiên bản, việc nền, cấu trúc tài liệu, Viga thật, ticket,
+phản hồi Viga, trang Chi phí AI, migration `0004` đến `0006`, 10 file Word thử và README trong `docs/chatbot-vsf/data/documents/day1/` và cập nhật hai tài liệu này.
 
 ## 7. Ghi chú về phòng ban và Viga
 
-Đã thống nhất: lộ trình onboarding gần như giống nhau cho mọi người nên dùng một lộ trình chung; phòng ban nào cần khác
-thì Admin sao bản mẫu rồi HR của phòng ban đó sửa bản sao. Tài liệu để chung một kho, ai cần thì tải lên, Viga tìm trên
-toàn kho. **Không** gắn `team_id` vào `documents` và **không** lọc tài liệu theo phòng ban khi Viga trả lời.
+Đã thống nhất: lộ trình onboarding gần như giống nhau cho mọi người nên dùng một lộ trình chung; phòng ban nào cần khác thì Admin sao bản mẫu rồi HR của phòng
+ban đó sửa bản sao. Tài liệu để chung một kho, ai cần thì tải lên, Viga tìm trên toàn kho. **Không** gắn `team_id` vào `documents` và **không** lọc tài liệu
+theo phòng ban khi Viga trả lời. Ticket và câu hỏi chưa trả lời được thì **có** phạm vi phòng ban (tới HR của phòng ban người hỏi).
+
+## 8. Cập nhật 02/10/2026 (theo góp ý sau khi xem giao diện)
+
+- **Khoảng cách tới chân trang:** mọi trang HR, Admin (và khung nhân viên mới) cho thẻ cuối chạm sát chân trang, chỉ cách 2px; đã đo bằng trình duyệt cho 15 trang HR/Admin (2px; hai trang Tổng quan dài nên cuộn, đáy cũng chỉ đệm 2px).
+- **Chân trang dùng chung** (`components/portal-footer`): logo VSF giống logo đầu thanh bên, dùng cho HR, Admin và nhân viên mới; bỏ dòng ghi công ảnh ở chân trang nhân viên và chữ "Bản demo thực tập" ở trang đăng nhập.
+- **Icon nhiều màu (FlatIcon):** thanh điều hướng HR, Admin, nhân viên mỗi mục một màu; thẻ chỉ số Tổng quan HR; trang Tài liệu; trang Tạo task bằng AI (thanh bước, đầu thẻ, ô giai đoạn).
+- **Tổng quan HR:** 6 biểu đồ, khoảng cách thẻ 10px; số trung bình các lượt tạo task nằm trong phụ đề của thẻ (bỏ đầu mục riêng).
+- **Ticket sự cố:** ô tìm kiếm (tên, email, tiêu đề, không phân biệt dấu) và ô chọn lọc trạng thái thay cho các nút; icon theo trạng thái; thẻ lấp đầy chiều cao; `requester_email` có trong danh sách ticket.
+- **Tạo task bằng AI:** hết "Ngày 1/Ngày 2" mẫu (đã xóa trong DB dev); chưa có ngày nào thì tự mở biểu mẫu tạo ngày đầu tiên; khung "chưa chọn tài liệu" không còn nằm trên bộ chọn.
+- **Tài liệu:** bảng vừa khít chiều ngang, chữ dài cắt bằng dấu … và xem đủ khi trỏ chuột; lọc theo ngày cập nhật (từ ngày, đến ngày); ô chọn danh mục thiết kế riêng; danh mục chỉ còn **Onboarding** và **Tài liệu khác** (migration dữ liệu `0008`: chuyển tài liệu sang hai nhóm, ẩn các nhóm cũ); hộp xem phiên bản rộng và cao hơn, hai nút "Tải file thành phiên bản mới" và "Tạo bản mới từ bản này" đưa lên đầu hộp.
+- **Gỡ:** mục "Đầu mối và đường dẫn" khỏi thanh điều hướng, tab "Liên hệ và tài nguyên" khỏi hộp sửa task, mục "Đầu mối" khỏi điều hướng nhân viên.
+- **Dữ liệu DB dev:** đã xóa toàn bộ tài liệu (kèm phiên bản, mục, chunk), ngày và lộ trình, việc nền; người dùng, phòng ban giữ nguyên. Có bản sao lưu trong thư mục tạm của phiên làm việc.
+- **Kiểm chứng:** backend `pytest` 349 pass, `ruff`, `mypy` (181 file), `alembic check` sạch; frontend `vitest` 228 pass, `tsc`, `eslint` sạch.

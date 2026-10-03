@@ -1,0 +1,254 @@
+{
+ "template": {
+  "id": 8,
+  "title": "Lộ trình onboarding",
+  "status": "PUBLISHED"
+ },
+ "tasks": [
+  {
+   "order": 1,
+   "title": "Nộp hồ sơ ngày đầu",
+   "group": "PROFILE",
+   "depends_on": [],
+   "sources": [
+    {
+     "heading": "Chuẩn bị hồ sơ phải nộp trong ngày đầu:",
+     "quote": "• CV. • Lý lịch tư pháp, hoặc giấy hẹn lấy lý lịch tư pháp. • Giấy khám sức khỏe • Hình ảnh xác nhận nơi cư trú (bản photo, có thể chụp ảnh VNeID định danh mức 2). • Căn cước công dân bản Photo. • Chứng chỉ bang cấp chuyên môn bắt buộc. • Đầu mối liên hệ: Phòng tuyển dụng.",
+     "doc": "Huong_dan_ngay_1_onboarding"
+    }
+   ],
+   "body": "## Vì sao phải làm\nChuẩn bị và nộp đầy đủ hồ sơ theo danh sách cho Phòng tuyển dụng trong ngày đầu tiên.\n\n## Điều kiện hoàn thành\n- Đã nộp đủ CV, lý lịch tư pháp (hoặc giấy hẹn), giấy khám sức khỏe, hình ảnh xác nhận nơi cư trú, CCCD photo và chứng chỉ bằng cấp chuyên môn bắt buộc\n- Hồ sơ đã được gửi tới Phòng tuyển dụng\n\n## Các bước\n1. Nhân viên mới chuẩn bị và nộp CV.\n2. Nộp lý lịch tư pháp, hoặc giấy hẹn lấy lý lịch tư pháp.\n3. Nộp giấy khám sức khỏe.\n4. Nộp hình ảnh xác nhận nơi cư trú (bản photo, có thể chụp ảnh VNeID định danh mức 2).\n5. Nộp Căn cước công dân bản photo.\n6. Nộp chứng chỉ bằng cấp chuyên môn bắt buộc.\n7. Gửi toàn bộ hồ sơ tới đầu mối liên hệ: Phòng tuyển dụng."
+  },
+  {
+   "order": 2,
+   "title": "Check-in tại địa điểm làm việc",
+   "group": "OFFICE",
+   "depends_on": [],
+   "sources": [
+    {
+     "heading": "Check-in tại địa điểm làm việc, theo hướng dẫn tùy nơi onboard",
+     "quote": "Check-in tại địa điểm làm việc, theo hướng dẫn tùy nơi onboard",
+     "doc": "Huong_dan_ngay_1_onboarding"
+    }
+   ],
+   "body": "## Vì sao phải làm\nCheck-in tại địa điểm làm việc theo hướng dẫn riêng của từng nơi onboard.\nLưu ý: Tài liệu chỉ nêu tiêu đề 'Check-in tại địa điểm làm việc, theo hướng dẫn tùy nơi onboard', không mô tả cách thực hiện check-in (check-in ở đâu, bằng cách nào).\n\n## Điều kiện hoàn thành\n- Đã check-in tại địa điểm làm việc theo hướng dẫn của nơi onboard"
+  },
+  {
+   "order": 3,
+   "title": "Tham gia chương trình Đào tạo Hội nhập",
+   "group": "TRAINING",
+   "depends_on": [],
+   "sources": [
+    {
+     "heading": "Tham gia chương trình Đào tạo Hội nhập cùng Phòng đào tạo phát triển văn hóa:(bắt buộc cho CBNV mới)",
+     "quote": "• Điều kiện được tính hoàn thành: • Điểm danh đầu giờ. • Hoàn thành Khảo sát sau chương trình đào tạo • Hoàn thành và đạt >= 80% bài test cuối khóa. Đầu mối: v.thudq@vinsmartfuture.tech (Phòng ĐT&PTVH)",
+     "doc": "Huong_dan_ngay_1_onboarding"
+    }
+   ],
+   "body": "## Vì sao phải làm\nTham gia bắt buộc chương trình Đào tạo Hội nhập cùng Phòng đào tạo phát triển văn hóa và hoàn thành đủ các điều kiện tính hoàn thành.\n\n## Điều kiện hoàn thành\n- Đã điểm danh đầu giờ\n- Đã hoàn thành Khảo sát sau chương trình đào tạo\n- Hoàn thành và đạt >= 80% bài test cuối khóa\n\n## Các bước\n1. Nhân viên mới tham gia chương trình Đào tạo Hội nhập cùng Phòng đào tạo phát triển văn hóa (bắt buộc cho CBNV mới).\n2. Điểm danh đầu giờ tại chương trình.\n3. Hoàn thành Khảo sát sau chương trình đào tạo.\n4. Hoàn thành và đạt >= 80% bài test cuối khóa.\n5. Liên hệ đầu mối Phòng ĐT&PTVH qua email v.thudq@vinsmartfuture.tech khi cần hỗ trợ."
+  },
+  {
+   "order": 4,
+   "title": "Nghe nội quy công ty",
+   "group": "TRAINING",
+   "depends_on": [],
+   "sources": [
+    {
+     "heading": "NGHE KỸ NỘI QUY CÔNG TY Ở chương trình Đào tạo Hội nhập cùng Phòng đào tạo phát triển văn hóa. Chi tiết hơn ở https://vingroupjsc.sharepoint.com/sites/VinIT\\_BO\\_HRBP/Shared%20Documents/Forms/AllItems.aspx?id=%2Fsites%2FVinIT%5FBO%5FHRBP%2FShared%20Documents%2F3%2E%20Internal%2F4%2E%20LnD%2FSharepoint%20sharing%2FT%C3%A0i%20li%E1%BB%87u%20H%E1%BB%99i%20nh%E1%BA%ADp%20%28D%C3%A0nh%20cho%20CBNV%20m%E1%BB%9Bi%29&p=true&ga=1",
+     "quote": "NGHE KỸ NỘI QUY CÔNG TY Ở chương trình Đào tạo Hội nhập cùng Phòng đào tạo phát triển văn hóa.",
+     "doc": "Huong_dan_ngay_1_onboarding"
+    }
+   ],
+   "body": "## Vì sao phải làm\nNghe kỹ nội quy công ty trong chương trình Đào tạo Hội nhập; xem tài liệu chi tiết tại link SharePoint được cung cấp.\n\n## Điều kiện hoàn thành\n- Đã nghe nội quy công ty trong chương trình Đào tạo Hội nhập\n\n## Các bước\n1. Nhân viên mới nghe kỹ nội quy công ty trong chương trình Đào tạo Hội nhập cùng Phòng đào tạo phát triển văn hóa.\n2. Xem tài liệu chi tiết tại https://vingroupjsc.sharepoint.com/sites/VinIT_BO_HRBP/Shared%20Documents/Forms/AllItems.aspx?id=%2Fsites%2FVinIT%5FBO%5FHRBP%2FShared%20Documents%2F3%2E%20Internal%2F4%2E%20LnD%2FSharepoint%20sharing%2FT%C3%A0i%20li%E1%BB%87u%20H%E1%BB%99i%20nh%E1%BA%ADp%20%28D%C3%A0nh%20cho%20CBNV%20m%E1%BB%9Bi%29&p=true&ga=1"
+  },
+  {
+   "order": 5,
+   "title": "Đăng ký faceid chấm công và ra vào tòa nhà",
+   "group": "OFFICE",
+   "depends_on": [],
+   "sources": [
+    {
+     "heading": "Dành cho văn phòng Vincom Đồng Khởi:",
+     "quote": "Đăng ký faceid chấm công tại tầng 14 theo chỉ dẫn của phòng nhân sự.(Phòng nhân sự) Đăng ký faceid để ra vào tòa nhà, khi có email (CKSH VPDONGKHOI).",
+     "doc": "Huong_dan_ngay_1_onboarding"
+    }
+   ],
+   "body": "## Vì sao phải làm\nDành cho văn phòng Vincom Đồng Khởi: đăng ký faceid chấm công tại tầng 14 và đăng ký faceid ra vào tòa nhà khi có email.\n\n## Điều kiện hoàn thành\n- Đã đăng ký faceid chấm công tại tầng 14 theo chỉ dẫn của phòng nhân sự\n- Đã đăng ký faceid ra vào tòa nhà khi có email CKSH VPDONGKHOI\n\n## Các bước\n1. Nhân viên văn phòng Vincom Đồng Khởi đăng ký faceid chấm công tại tầng 14 theo chỉ dẫn của phòng nhân sự.\n2. Khi nhận được email từ CKSH VPDONGKHOI, đăng ký faceid để ra vào tòa nhà."
+  },
+  {
+   "order": 6,
+   "title": "Nhận laptop và đăng nhập Outlook, Teams",
+   "group": "DEVICE",
+   "depends_on": [],
+   "sources": [
+    {
+     "heading": "Nhận laptop tại tầng 12 theo chỉ dẫn của ITHD và HR tại tầng 12",
+     "quote": "Nhận laptop tại tầng 12 theo chỉ dẫn của ITHD và HR tại tầng 12 Sau khi có laptop và đăng nhập được outlook và teams thì mới tiếp tục bước tiếp theo.",
+     "doc": "Huong_dan_ngay_1_onboarding"
+    }
+   ],
+   "body": "## Vì sao phải làm\nNhận laptop tại tầng 12 theo chỉ dẫn của ITHD và HR, sau đó đăng nhập được Outlook và Teams để tiếp tục các bước tiếp theo.\n\n## Điều kiện hoàn thành\n- Đã nhận laptop tại tầng 12 theo chỉ dẫn của ITHD và HR\n- Đã đăng nhập được Outlook và Teams trên laptop\n\n## Các bước\n1. Nhân viên mới nhận laptop tại tầng 12 theo chỉ dẫn của ITHD và HR tại tầng 12.\n2. Đăng nhập Outlook và Teams trên laptop; chỉ tiếp tục bước tiếp theo sau khi đã có laptop và đăng nhập được Outlook, Teams."
+  },
+  {
+   "order": 7,
+   "title": "Cập nhật ảnh đại diện, chữ ký và slide",
+   "group": "PROFILE",
+   "depends_on": [
+    "Nhận laptop và đăng nhập Outlook, Teams"
+   ],
+   "sources": [
+    {
+     "heading": "ẢNH ĐẠI DIỆN CHỮ KÝ SLIDE",
+     "quote": "ẢNH ĐẠI DIỆN CHỮ KÝ SLIDE https://vingroupjsc.sharepoint.com/sites/VinIT_BO_HRBP/Shared%20Documents/Forms/AllItems.aspx?id=%2F… ( CÓ TRONG EMAIL ONBOARD)",
+     "doc": "Huong_dan_ngay_1_onboarding"
+    }
+   ],
+   "body": "## Vì sao phải làm\nThực hiện các nội dung về ảnh đại diện, chữ ký và slide có trong email onboard.\nLưu ý: Tài liệu chỉ nêu tiêu đề 'ẢNH ĐẠI DIỆN CHỮ KÝ SLIDE' và ghi nội dung 'CÓ TRONG EMAIL ONBOARD', không mô tả các bước thực hiện cụ thể.\n\n## Điều kiện hoàn thành\n- Đã hoàn thành các nội dung ảnh đại diện, chữ ký, slide theo email onboard"
+  },
+  {
+   "order": 8,
+   "title": "Kiểm tra Quick access trước khi viết ticket",
+   "group": "DEVICE",
+   "depends_on": [
+    "Nhận laptop và đăng nhập Outlook, Teams"
+   ],
+   "sources": [
+    {
+     "heading": "TRƯỚC KHI VIẾT TICKET XEM",
+     "quote": "https://support.vinsmartfuture.tech/app/vinithelpdesk/HomePage.do XEM nhu cầu của hiện tại của bạn CÓ Quick access không",
+     "doc": "Huong_dan_ngay_1_onboarding"
+    }
+   ],
+   "body": "## Vì sao phải làm\nTruy cập cổng hỗ trợ Vinsmart Future để kiểm tra nhu cầu hiện tại của bạn có Quick access hay không trước khi viết ticket.\n\n## Điều kiện hoàn thành\n- Đã kiểm tra trên cổng hỗ trợ xem nhu cầu hiện tại có Quick access không\n\n## Các bước\n1. Nhân viên mới truy cập https://support.vinsmartfuture.tech/app/vinithelpdesk/HomePage.do để xem nhu cầu hiện tại của bạn có Quick access không."
+  },
+  {
+   "order": 9,
+   "title": "Viết email hỗ trợ ITHD theo mẫu",
+   "group": "DEVICE",
+   "depends_on": [
+    "Kiểm tra Quick access trước khi viết ticket",
+    "Nhận laptop và đăng nhập Outlook, Teams"
+   ],
+   "sources": [
+    {
+     "heading": "CÁCH VIẾT EMAIL HỖ TRỢ ITHD",
+     "quote": "To:'support@vinsmartfuture.tech' Tittle: ITHD [Địa điểm làm việc] + [vắn tắt yêu cầu] ( VD yêu cầu cấp màn hình, ... cài hệ điều hành ubuntu, cài phần mềm.) Kính gửi bộ phận ITHD [Nội dung yêu cầu] Người dùng: Trân trọng",
+     "doc": "Huong_dan_ngay_1_onboarding"
+    }
+   ],
+   "body": "## Vì sao phải làm\nSoạn và gửi email yêu cầu hỗ trợ tới ITHD đúng địa chỉ, đúng mẫu tiêu đề và nội dung.\n\n## Điều kiện hoàn thành\n- Đã gửi email tới support@vinsmartfuture.tech với tiêu đề ITHD [Địa điểm làm việc] + [vắn tắt yêu cầu] và nội dung theo mẫu\n\n## Các bước\n1. Nhân viên mới gửi email tới support@vinsmartfuture.tech.\n2. Đặt tiêu đề theo mẫu: ITHD [Địa điểm làm việc] + [vắn tắt yêu cầu] (ví dụ yêu cầu cấp màn hình, cài hệ điều hành ubuntu, cài phần mềm).\n3. Viết nội dung email theo mẫu: 'Kính gửi bộ phận ITHD' / '[Nội dung yêu cầu]' / 'Người dùng:' / 'Trân trọng'."
+  },
+  {
+   "order": 10,
+   "title": "Viết ticket cho các trường hợp ITHD không hỗ trợ",
+   "group": "DEVICE",
+   "depends_on": [
+    "Kiểm tra Quick access trước khi viết ticket",
+    "Nhận laptop và đăng nhập Outlook, Teams"
+   ],
+   "sources": [
+    {
+     "heading": "TRƯỜNG HỢP RIÊNG TICKET KHÔNG HỖ TRỢ",
+     "quote": "• Muốn đổi windown sang Ubuntu và dung web mail. Viết ticket đến bộ phận liên quan theo mẫu Đăng ký web mail: hoặc : VPN (Checkpoint) Exception (USB, Internet Access, Share data external, Outlook Webmail....) Firewall PAM ZTNA WAF Cloud (Wiz) Tùy nhu cầu, và sự đồng thuận của T3. Ở Khối KD và VH Vinmec là anh Dương Anh Nghi (v.dir.data3@vinsmartfuture.tech)",
+     "doc": "Huong_dan_ngay_1_onboarding"
+    }
+   ],
+   "body": "## Vì sao phải làm\nVới các yêu cầu ITHD không hỗ trợ (như đổi Windows sang Ubuntu và dùng web mail), viết ticket đến bộ phận liên quan theo mẫu; các dịch vụ còn lại thực hiện tùy nhu cầu và sự đồng thuận của T3.\nLưu ý: Tài liệu liệt kê tên các dịch vụ (web mail, VPN, Firewall, PAM, ZTNA, WAF, Cloud) nhưng không mô tả cách đăng ký từng dịch vụ.\n\n## Điều kiện hoàn thành\n- Đã gửi ticket đến bộ phận liên quan theo mẫu cho các yêu cầu ITHD không hỗ trợ\n\n## Các bước\n1. Với trường hợp muốn đổi windown sang Ubuntu và dung web mail, nhân viên mới viết ticket đến bộ phận liên quan theo mẫu.\n2. Với các nhu cầu đăng ký web mail, VPN (Checkpoint), Exception (USB, Internet Access, Share data external, Outlook Webmail....), Firewall, PAM, ZTNA, WAF, Cloud (Wiz): thực hiện tùy nhu cầu và sự đồng thuận của T3.\n3. Ở Khối KD và VH Vinmec, liên hệ anh Dương Anh Nghi (v.dir.data3@vinsmartfuture.tech)."
+  },
+  {
+   "order": 11,
+   "title": "Xin phê duyệt T3 qua email trước khi điền form",
+   "group": "DEVICE",
+   "depends_on": [
+    "Nhận laptop và đăng nhập Outlook, Teams"
+   ],
+   "sources": [
+    {
+     "heading": "Trước khi điền form cần phải có sự đồng thuận của  T3 theo phương thức gửi email",
+     "quote": "Trước khi điền form cần phải có sự đồng thuận của T3 theo phương thức gửi email To: email của T3 ( Ở Khối KD và VH Vinmec là anh Dương Anh Nghi (v.dir.data3@vinsmartfuture.tech) ) Title: Xin phê duyệt [Nội dung cần phê duyệt] - [họ và tên] -[mã nhân viên]",
+     "doc": "Huong_dan_ngay_1_onboarding"
+    }
+   ],
+   "body": "## Vì sao phải làm\nGửi email xin sự đồng thuận của T3 theo mẫu trước khi điền form VINSOC SECURITY REQUEST FORM.\n\n## Điều kiện hoàn thành\n- Đã gửi email xin phê duyệt T3 đúng tiêu đề và nội dung theo mẫu\n- Đã điền form VINSOC SECURITY REQUEST FORM sau khi có sự đồng thuận của T3\n\n## Các bước\n1. Nhân viên mới gửi email tới T3; ở Khối KD và VH Vinmec là anh Dương Anh Nghi (v.dir.data3@vinsmartfuture.tech).\n2. Đặt tiêu đề email: Xin phê duyệt [Nội dung cần phê duyệt] - [họ và tên] -[mã nhân viên].\n3. Viết nội dung email theo mẫu: Kính gửi: / Tôi là / Mã nhân viên: / Vị trí / Bộ phận: / [Nêu yêu cầu] / Thông tin chi tiết: / * Mục đích sử dụng: / * Đơn vị công tác: / Kính mong Lãnh đạo xem xét và phê duyệt để bộ phận CNTT có cơ sở khởi tạo tài khoản. / Trân trọng,\n4. Sau khi có sự đồng thuận của T3, điền form VINSOC SECURITY REQUEST FORM tại https://forms.cloud.microsoft/pages/responsepage.aspx?id=OSlq7VPRkk-U-D15DZbJ-DLwMtZwgItEpFo_qNyPLn1URUswRUNLUlRBQVhJWldOVDZYNDROMjVEUC4u&route=shorturl"
+  },
+  {
+   "order": 12,
+   "title": "Xin phê duyệt qua Team cho trường hợp máy đã có Ubuntu sẵn",
+   "group": "DEVICE",
+   "depends_on": [
+    "Nhận laptop và đăng nhập Outlook, Teams"
+   ],
+   "sources": [
+    {
+     "heading": "Trường hợp máy đã có Ubuntu sẵn",
+     "quote": "• đang sử dụng sẵn Ubuntu OS , có thể xin phê duyệt qua Team và chụp ảnh / For users already using Ubuntu OS, approval can be requested via Team and a screenshot can be taken.",
+     "doc": "Huong_dan_ngay_1_onboarding"
+    }
+   ],
+   "body": "## Vì sao phải làm\nNếu máy đang sử dụng sẵn Ubuntu OS, có thể xin phê duyệt qua Team và chụp ảnh.\nLưu ý: Tài liệu không nêu rõ nội dung ảnh chụp cần gửi và đầu mối phê duyệt qua Team.\n\n## Điều kiện hoàn thành\n- Đã xin phê duyệt qua Team và gửi ảnh chụp cho trường hợp máy đã có sẵn Ubuntu OS\n\n## Các bước\n1. Nếu máy đang sử dụng sẵn Ubuntu OS, nhân viên mới có thể xin phê duyệt qua Team.\n2. Chụp ảnh màn hình gửi kèm khi xin phê duyệt qua Team."
+  },
+  {
+   "order": 13,
+   "title": "Upload file phê duyệt và đợi email phản hồi của VinSOC",
+   "group": "DEVICE",
+   "depends_on": [
+    "Nhận laptop và đăng nhập Outlook, Teams"
+   ],
+   "sources": [
+    {
+     "heading": "Trường hợp máy windowns",
+     "quote": "The Approval Email contain fully reflect the Audit (if any) and Approval flow as required in the DOA | Email Phê duyệt thể hiện đủ thông tin luồng Thẩm định (nếu có) và Phê duyệt theo yêu cầu trong CNPQ của Đơn vị Up load file theo chỉ dẫn. Đợi email phản hồi của VinSOC rồi liên hệ bộ phận [ITHD]",
+     "doc": "Huong_dan_ngay_1_onboarding"
+    }
+   ],
+   "body": "## Vì sao phải làm\nVới trường hợp máy Windows: đảm bảo email phê duyệt thể hiện đủ thông tin luồng thẩm định và phê duyệt theo yêu cầu trong CNPQ của Đơn vị, upload file theo chỉ dẫn và đợi email phản hồi của VinSOC.\nLưu ý: Tài liệu không nói rõ file cần upload là file gì và upload ở đâu ('Up load file theo chỉ dẫn').\n\n## Điều kiện hoàn thành\n- Email phê duyệt thể hiện đủ thông tin luồng thẩm định và phê duyệt theo yêu cầu trong CNPQ của Đơn vị\n- Đã upload file theo chỉ dẫn\n- Đã nhận email phản hồi của VinSOC và liên hệ bộ phận ITHD\n\n## Các bước\n1. Đảm bảo email phê duyệt thể hiện đủ thông tin luồng Thẩm định (nếu có) và Phê duyệt theo yêu cầu trong CNPQ của Đơn vị.\n2. Nhân viên mới up load file theo chỉ dẫn.\n3. Đợi email phản hồi của VinSOC rồi liên hệ bộ phận ITHD."
+  },
+  {
+   "order": 14,
+   "title": "Tạo ticket hỗ trợ ITHD sau phản hồi của VinSOC",
+   "group": "DEVICE",
+   "depends_on": [
+    "Upload file phê duyệt và đợi email phản hồi của VinSOC",
+    "Nhận laptop và đăng nhập Outlook, Teams"
+   ],
+   "sources": [
+    {
+     "heading": "SAU KHI CÓ EMAIL PHẢN HỒI CỦA VINSOC",
+     "quote": "Tạo ticket hỗ trợ như mẫu ở CÁCH VIẾT EMAIL HỖ TRỢ ITHD (ở khối mình là DUCBV5) rồi thực hiện tại phòng ITHD(tầng 14) như bình thường.",
+     "doc": "Huong_dan_ngay_1_onboarding"
+    }
+   ],
+   "body": "## Vì sao phải làm\nSau khi có email phản hồi của VinSOC, tạo ticket hỗ trợ theo mẫu ở mục CÁCH VIẾT EMAIL HỖ TRỢ ITHD và thực hiện tại phòng ITHD (tầng 14).\n\n## Điều kiện hoàn thành\n- Đã tạo ticket hỗ trợ theo mẫu ở mục CÁCH VIẾT EMAIL HỖ TRỢ ITHD sau khi có email phản hồi của VinSOC\n- Đã thực hiện tại phòng ITHD (tầng 14)\n\n## Các bước\n1. Sau khi có email phản hồi của VinSOC, nhân viên mới tạo ticket hỗ trợ như mẫu ở CÁCH VIẾT EMAIL HỖ TRỢ ITHD (ở khối mình là DUCBV5).\n2. Thực hiện tại phòng ITHD (tầng 14) như bình thường."
+  },
+  {
+   "order": 15,
+   "title": "Yêu cầu tủ gửi đồ",
+   "group": "OFFICE",
+   "depends_on": [],
+   "sources": [
+    {
+     "heading": "Yêu cầu tủ gửi đồ request tủ gửi đồ(khối mình là NGANNK25)",
+     "quote": "Yêu cầu tủ gửi đồ request tủ gửi đồ(khối mình là NGANNK25)",
+     "doc": "Huong_dan_ngay_1_onboarding"
+    }
+   ],
+   "body": "## Vì sao phải làm\nGửi yêu cầu cấp tủ gửi đồ, đầu mối phụ trách của khối là NGANNK25.\nLưu ý: Câu trong tài liệu viết trùng lặp ('Yêu cầu tủ gửi đồ request tủ gửi đồ') và không nêu rõ kênh gửi yêu cầu.\n\n## Điều kiện hoàn thành\n- Đã gửi yêu cầu tủ gửi đồ tới đầu mối NGANNK25\n\n## Các bước\n1. Nhân viên mới gửi yêu cầu tủ gửi đồ tới đầu mối của khối là NGANNK25."
+  },
+  {
+   "order": 16,
+   "title": "Ký hợp đồng lao động theo email hướng dẫn",
+   "group": "PROFILE",
+   "depends_on": [
+    "Nhận laptop và đăng nhập Outlook, Teams"
+   ],
+   "sources": [
+    {
+     "heading": "CUỐI NGÀY SẼ CÓ EMAIL HƯỚNG DẪN KÝ HỢP ĐỒNG LAO ĐỘNG. KÝ TRONG THỜI GIAN QUY ĐỊNH",
+     "quote": "CUỐI NGÀY SẼ CÓ EMAIL HƯỚNG DẪN KÝ HỢP ĐỒNG LAO ĐỘNG. KÝ TRONG THỜI GIAN QUY ĐỊNH",
+     "doc": "Huong_dan_ngay_1_onboarding"
+    }
+   ],
+   "body": "## Vì sao phải làm\nCuối ngày sẽ có email hướng dẫn ký hợp đồng lao động; ký trong thời gian quy định.\n\n## Điều kiện hoàn thành\n- Đã ký hợp đồng lao động trong thời gian quy định\n\n## Các bước\n1. Nhân viên mới kiểm tra email hướng dẫn ký hợp đồng lao động được gửi vào cuối ngày.\n2. Ký hợp đồng lao động trong thời gian quy định."
+  }
+ ]
+}

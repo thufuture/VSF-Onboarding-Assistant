@@ -1,0 +1,84 @@
+{
+ "model": "deepseek-flash",
+ "variant": "MỘT lời gọi cho cả tài liệu, tắt suy luận, trích bằng số dòng, bù phủ, xếp thứ tự",
+ "runs": [
+  {
+   "tasks": 15,
+   "covered": "15/22",
+   "facts": "14/15",
+   "dependencies": 12,
+   "order_is_permutation": true,
+   "last_task": "Liên hệ Phòng nhân sự nếu chưa nhận email hợp đồng",
+   "seconds_batches": 13.0,
+   "seconds_coverage_retry": 15.8,
+   "seconds_merge": 1.5,
+   "seconds_total": 30.3,
+   "tokens_out": 3990
+  },
+  {
+   "tasks": 15,
+   "covered": "15/22",
+   "facts": "14/15",
+   "dependencies": 2,
+   "order_is_permutation": true,
+   "last_task": "Liên hệ Phòng ĐT&PTVH về việc làm lại bài test cuối khóa",
+   "seconds_batches": 10.7,
+   "seconds_coverage_retry": 12.4,
+   "seconds_merge": 3.3,
+   "seconds_total": 26.4,
+   "tokens_out": 3776
+  },
+  {
+   "tasks": 17,
+   "covered": "17/22",
+   "facts": "11/15",
+   "dependencies": 9,
+   "order_is_permutation": true,
+   "last_task": "Contact HR if no labor contract email received",
+   "seconds_batches": 13.0,
+   "seconds_coverage_retry": 15.6,
+   "seconds_merge": 1.9,
+   "seconds_total": 30.5,
+   "tokens_out": 4041
+  },
+  {
+   "tasks": 14,
+   "covered": "14/22",
+   "facts": "12/15",
+   "dependencies": 2,
+   "order_is_permutation": true,
+   "last_task": "Liên hệ Phòng nhân sự nếu chưa nhận email hướng dẫn ký hợp đồng lao động",
+   "seconds_batches": 11.0,
+   "seconds_coverage_retry": 8.4,
+   "seconds_merge": 1.4,
+   "seconds_total": 20.8,
+   "tokens_out": 3758
+  },
+  {
+   "tasks": 17,
+   "covered": "17/22",
+   "facts": "14/15",
+   "dependencies": 7,
+   "order_is_permutation": true,
+   "last_task": "Thực hiện chuỗi yêu cầu ngoại lệ (Ubuntu, VPN, USB...) nếu có nhu cầu",
+   "seconds_batches": 11.0,
+   "seconds_coverage_retry": 11.3,
+   "seconds_merge": 1.5,
+   "seconds_total": 23.8,
+   "tokens_out": 4368
+  },
+  {
+   "tasks": 14,
+   "covered": "14/22",
+   "facts": "12/15",
+   "dependencies": 11,
+   "order_is_permutation": true,
+   "last_task": "Liên hệ Phòng tuyển dụng về CMND thay thế CCCD",
+   "seconds_batches": 10.2,
+   "seconds_coverage_retry": 10.4,
+   "seconds_merge": 1.6,
+   "seconds_total": 22.2,
+   "tokens_out": 3492
+  }
+ ]
+}
