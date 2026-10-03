@@ -1,11 +1,15 @@
 import type {
   AcceptAiTaskProposalRequestDTO,
+  ActivateDocumentVersionRequestDTO,
+  CopyDocumentVersionRequestDTO,
+  CreateAiTaskProposalJobRequestDTO,
   CreateAiTaskProposalRequestDTO,
   CreateJourneyStageRequestDTO,
   CreateJourneyTemplateRequestDTO,
   CreateTaskManualRequestDTO,
   SetDocumentStatusRequestDTO,
   UpdateDocumentRequestDTO,
+  UpdateDocumentVersionRequestDTO,
   UpdateTaskTemplateRequestDTO,
 } from "@/features/portal-hr/dto/requestDTO/portal.request";
 import type {
@@ -13,12 +17,15 @@ import type {
   DocumentCategoryResponseDTO,
   DocumentListItemResponseDTO,
   DocumentUploadResponseDTO,
+  DocumentVersionDetailResponseDTO,
+  DocumentVersionResponseDTO,
   EmployeeDocumentResponseDTO,
   EmployeeJourneyResponseDTO,
   EmployeeProfileResponseDTO,
   EmployeeSummaryResponseDTO,
   EmployeeTaskResponseDTO,
   HrDashboardResponseDTO,
+  JobResponseDTO,
   JourneyStageResponseDTO,
   JourneyTemplateResponseDTO,
   StageOptionResponseDTO,
@@ -224,6 +231,84 @@ function listEmployees(): Promise<EmployeeSummaryResponseDTO[]> {
   return request("/api/v1/portal/employees");
 }
 
+const JSON_HEADERS = { "Content-Type": "application/json" };
+
+function listDocumentVersions(documentId: number): Promise<DocumentVersionResponseDTO[]> {
+  return request(`/api/v1/portal/documents/${documentId}/versions`);
+}
+
+function getDocumentVersion(documentId: number, versionId: number): Promise<DocumentVersionDetailResponseDTO> {
+  return request(`/api/v1/portal/documents/${documentId}/versions/${versionId}`);
+}
+
+function copyDocumentVersion(
+  documentId: number,
+  versionId: number,
+  body: CopyDocumentVersionRequestDTO = {},
+): Promise<DocumentVersionResponseDTO> {
+  return request(`/api/v1/portal/documents/${documentId}/versions/${versionId}/copy`, {
+    method: "POST",
+    headers: JSON_HEADERS,
+    body: JSON.stringify(body),
+  });
+}
+
+function updateDocumentVersion(
+  documentId: number,
+  versionId: number,
+  body: UpdateDocumentVersionRequestDTO,
+): Promise<DocumentVersionResponseDTO> {
+  return request(`/api/v1/portal/documents/${documentId}/versions/${versionId}`, {
+    method: "PATCH",
+    headers: JSON_HEADERS,
+    body: JSON.stringify(body),
+  });
+}
+
+async function deleteDocumentVersion(documentId: number, versionId: number): Promise<void> {
+  let response: Response;
+  try {
+    response = await fetch(`/api/v1/portal/documents/${documentId}/versions/${versionId}`, {
+      method: "DELETE",
+      credentials: "include",
+    });
+  } catch {
+    throw new PortalError("network");
+  }
+  if (response.status === 401) throw new PortalError("unauthorized");
+  if (response.status === 403) throw new PortalError("forbidden", await readErrorCode(response));
+  if (!response.ok) throw new PortalError("unavailable", await readErrorCode(response));
+}
+
+function activateDocumentVersion(
+  documentId: number,
+  versionId: number,
+  body: ActivateDocumentVersionRequestDTO = {},
+): Promise<JobResponseDTO> {
+  return request(`/api/v1/portal/documents/${documentId}/versions/${versionId}/activate`, {
+    method: "POST",
+    headers: JSON_HEADERS,
+    body: JSON.stringify(body),
+  });
+}
+
+function getJob(jobId: number): Promise<JobResponseDTO> {
+  return request(`/api/v1/portal/jobs/${jobId}`);
+}
+
+function listActiveJobs(kind?: string): Promise<JobResponseDTO[]> {
+  const query = kind ? `&kind=${encodeURIComponent(kind)}` : "";
+  return request(`/api/v1/portal/jobs?active=true${query}`);
+}
+
+function createAiTaskProposalJob(body: CreateAiTaskProposalJobRequestDTO): Promise<JobResponseDTO> {
+  return request("/api/v1/portal/ai/task-proposal-jobs", {
+    method: "POST",
+    headers: JSON_HEADERS,
+    body: JSON.stringify(body),
+  });
+}
+
 export const portalHrApi = {
   createJourneyTemplate,
   createJourneyStage,
@@ -249,4 +334,13 @@ export const portalHrApi = {
   listDocumentCategories,
   updateDocument,
   publishTemplate,
+  listDocumentVersions,
+  getDocumentVersion,
+  copyDocumentVersion,
+  updateDocumentVersion,
+  deleteDocumentVersion,
+  activateDocumentVersion,
+  getJob,
+  listActiveJobs,
+  createAiTaskProposalJob,
 };

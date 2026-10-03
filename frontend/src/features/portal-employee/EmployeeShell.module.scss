@@ -373,35 +373,135 @@
   font-size: 12.5px;
   text-align: center;
 }
+.bellTabs {
+  display: flex;
+  gap: 6px;
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--app-border);
+
+  button {
+    height: 28px;
+    padding: 0 11px;
+    border: 1px solid var(--app-border);
+    border-radius: 5px;
+    background: var(--app-surface);
+    color: var(--app-ink-2);
+    cursor: pointer;
+    font: 500 12px/1 $font;
+    transition:
+      border-color 0.15s ease,
+      color 0.15s ease;
+
+    &:hover {
+      border-color: var(--app-accent);
+      color: var(--app-accent-strong);
+    }
+  }
+}
+.bellTabOn {
+  border-color: var(--app-accent) !important;
+  background: var(--app-accent-soft) !important;
+  color: var(--app-accent-strong) !important;
+}
+
 .bellList {
-  max-height: 340px;
+  max-height: 420px;
   margin: 0;
   padding: 0;
   overflow-y: auto;
   list-style: none;
 
-  li + li button {
+  li + li .bellItem {
     border-top: 1px solid var(--app-border);
   }
-  button {
-    display: block;
-    width: 100%;
-    padding: 11px 14px;
-    border: 0;
-    background: none;
-    color: inherit;
-    cursor: pointer;
-    font: inherit;
-    text-align: left;
-    transition: background 0.15s ease;
+}
+.bellItem {
+  position: relative;
+  display: flex;
+  width: 100%;
+  align-items: flex-start;
+  gap: 11px;
+  padding: 12px 14px 12px 17px;
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+  transition: background 0.15s ease;
 
-    &:hover {
-      background: var(--app-surface-2);
-    }
+  &:hover {
+    background: var(--app-surface-2);
   }
 }
+// Chưa xem: nền ngả xanh, vạch xanh bên trái, chữ đậm, chấm xanh bên phải. Đã xem: nhạt hẳn, icon và chữ mờ đi.
 .bellUnread {
-  background: color-mix(in srgb, var(--app-accent) 5%, transparent);
+  background: color-mix(in srgb, var(--app-accent) 7%, var(--app-surface));
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 3px;
+    background: var(--app-accent);
+  }
+  .bellTitle {
+    font-weight: 600;
+  }
+}
+.bellRead {
+  .bellIcon {
+    filter: grayscale(0.7);
+    opacity: 0.6;
+  }
+  .bellTitle,
+  .bellBody,
+  .bellKind {
+    color: var(--app-ink-3);
+  }
+}
+.bellDot {
+  width: 9px;
+  height: 9px;
+  flex: none;
+  align-self: center;
+  border-radius: 50%;
+  background: var(--app-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--app-accent) 20%, transparent);
+}
+.bellIcon {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  flex: none;
+  place-items: center;
+  border-radius: 50%;
+}
+.kind_unlocked {
+  background: #e3eefb;
+  color: #1b6fb8;
+}
+.kind_done {
+  background: var(--app-success-soft);
+  color: #2f9a6f;
+}
+.kind_reminder {
+  background: #fdf1d8;
+  color: #c27d0e;
+}
+.kind_welcome {
+  background: #ece6f7;
+  color: #7a4fb0;
+}
+.kind_ticket {
+  background: #e0f3f1;
+  color: #1f7f7a;
+}
+.bellText {
+  min-width: 0;
+  flex: 1;
 }
 .bellKind {
   display: block;
@@ -417,31 +517,11 @@
   font-weight: 500;
 }
 .bellBody {
-  display: -webkit-box;
+  display: block;
   margin-top: 2px;
-  overflow: hidden;
   color: var(--app-ink-2);
   font-size: 12px;
   line-height: 1.5;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-}
-.cardFoot {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  padding: 11px 14px;
-  border-top: 1px solid var(--app-border);
-  color: var(--app-accent-strong);
-  font-size: 12.5px;
-  font-weight: 500;
-  text-decoration: none;
-  transition: background 0.15s ease;
-
-  &:hover {
-    background: var(--app-surface-2);
-  }
 }
 
 // ── thẻ tài khoản ──
@@ -537,9 +617,22 @@
   align-items: stretch;
 }
 .main {
+  display: flex;
   min-width: 0;
   flex: 1;
+  flex-direction: column;
   animation: pageIn 0.5s cubic-bezier(0.22, 0.8, 0.3, 1) both;
+}
+// Mọi trang nhân viên gồm PageHero, khối nội dung (.container) rồi chân trang. Chân trang luôn ở đáy; khối nội dung giãn ra và
+// thẻ cuối chạm sát chân trang (chỉ cách 2px), dù trang ngắn hay dài.
+.main > :nth-last-child(2) {
+  display: flex;
+  flex: 1 0 auto;
+  flex-direction: column;
+  padding-bottom: 2px;
+}
+.main > :nth-last-child(2) > :last-child {
+  flex: 1 1 auto;
 }
 @keyframes pageIn {
   from {
@@ -550,23 +643,6 @@
     opacity: 1;
     transform: none;
   }
-}
-
-.footer {
-  border-top: 1px solid var(--app-border);
-  background: var(--app-surface);
-  color: var(--app-ink-3);
-  font-size: 12px;
-}
-.footerIn {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 6px 24px;
-  padding: 14px var(--emp-gutter);
-}
-.credit {
-  max-width: 640px;
 }
 
 @media (max-width: 980px) {

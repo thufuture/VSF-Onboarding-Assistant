@@ -399,180 +399,6 @@ $tn-amber: #a8681a;
   }
 }
 
-// ── modal xem tài liệu: mục lục trái + nội dung phải (v15: hdView) ──
-// ── xem tài liệu kiểu Word: ngăn mục lục đứng yên bên trái, trang giấy trắng trên nền xám (v15: hdView) ──
-.docRead {
-  display: grid;
-  grid-template-columns: 264px minmax(0, 1fr);
-  height: min(66vh, 640px);
-  overflow: hidden;
-  border: 1px solid var(--app-border);
-  border-radius: 5px;
-  background: var(--app-surface);
-
-  @media (max-width: 900px) {
-    grid-template-columns: 1fr;
-    height: auto;
-  }
-}
-
-.docToc {
-  display: flex;
-  min-height: 0;
-  flex-direction: column;
-  border-right: 1px solid var(--app-border);
-  background: var(--app-surface-2);
-
-  > b {
-    padding: 14px 16px 10px;
-    border-bottom: 1px solid var(--app-border);
-    color: var(--app-ink);
-    font-size: 12.5px;
-    font-weight: 600;
-  }
-}
-
-.docTocList {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  gap: 1px;
-  min-height: 0;
-  overflow-y: auto;
-  padding: 8px 8px 14px;
-
-  button {
-    padding: 7px 10px;
-    border: 0;
-    border-left: 3px solid transparent;
-    border-radius: 5px;
-    background: transparent;
-    color: var(--app-ink-2);
-    font-size: 12.5px;
-    line-height: 1.4;
-    text-align: left;
-    cursor: pointer;
-
-    &:hover {
-      background: var(--app-accent-soft);
-      color: var(--app-accent-strong);
-    }
-  }
-}
-.lvl1 {
-  font-weight: 600;
-  color: var(--app-ink) !important;
-}
-.lvl2 {
-  padding-left: 22px !important;
-}
-.lvl3 {
-  padding-left: 36px !important;
-  font-size: 12px !important;
-}
-.tocOn {
-  border-left-color: #2f5496 !important;
-  background: color-mix(in srgb, #2f5496 10%, var(--app-surface)) !important;
-  color: #2f5496 !important;
-  font-weight: 600;
-}
-
-.docCanvas {
-  min-height: 0;
-  overflow-y: auto;
-  padding: 22px 26px 34px;
-  background: #e6eaf0;
-  scroll-behavior: smooth;
-}
-:global([data-theme="dark"]) .docCanvas {
-  background: #1a2230;
-}
-
-// Trang giấy: nền trắng, lề rộng, bóng nhẹ, chữ có chân như tài liệu Word.
-.docPage {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 46px 58px 54px;
-  border: 1px solid #d5dbe3;
-  background: #fff;
-  box-shadow: 0 2px 10px rgba(22, 40, 68, 0.12);
-  color: #1f2933;
-  font-family: Cambria, Georgia, "Times New Roman", serif;
-
-  section {
-    margin-bottom: 4px;
-  }
-  p,
-  li {
-    color: #26313d;
-    font-size: 14.5px;
-    line-height: 1.75;
-  }
-  p {
-    margin: 0 0 10px;
-  }
-  ul,
-  ol {
-    margin: 0 0 10px;
-    padding-left: 24px;
-  }
-  table {
-    width: 100%;
-    margin: 6px 0 14px;
-    border-collapse: collapse;
-    font-family: Calibri, "Segoe UI", system-ui, sans-serif;
-    font-size: 13px;
-  }
-  th,
-  td {
-    padding: 7px 11px;
-    border: 1px solid #a9b4c0;
-    text-align: left;
-    vertical-align: top;
-  }
-  th {
-    background: #eef2f7;
-    color: #1f3864;
-  }
-  // bảng markdown có dòng tiêu đề rỗng (tài liệu nguồn viết vậy) thì ẩn dòng đó đi
-  thead tr:not(:has(th:not(:empty))) {
-    display: none;
-  }
-  hr {
-    margin: 14px 0;
-    border: 0;
-    border-top: 1px solid #d5dbe3;
-  }
-  strong {
-    color: #17212b;
-  }
-}
-:global([data-theme="dark"]) .docPage {
-  background: #fdfdfd;
-}
-
-// Tiêu đề như kiểu Heading 1/2/3 của Word (xanh đậm, sans-serif).
-.hd1,
-.hd2,
-.hd3 {
-  margin: 22px 0 8px;
-  color: #2f5496;
-  font-family: Calibri, "Segoe UI", system-ui, sans-serif;
-  font-weight: 600;
-}
-.hd1 {
-  padding-bottom: 6px;
-  border-bottom: 1px solid #c9d3e0;
-  font-size: 22px;
-}
-.hd2 {
-  font-size: 18px;
-}
-.hd3 {
-  color: #1f3763;
-  font-size: 15.5px;
-}
-
 // ── Thanh lọc dạng dropdown có icon (v15: doc-filter-*) ──
 .filterBar {
   display: flex;
@@ -955,4 +781,172 @@ $tn-amber: #a8681a;
   border-color: var(--app-accent);
   background: var(--app-accent-soft);
   color: var(--app-accent-strong);
+}
+
+// ── Tải nháp / kích hoạt nền: cảnh báo cấu trúc, thanh tiến trình, ô "tải và kích hoạt luôn" ──
+.bannerWarn {
+  background: #fff4e0;
+  color: #8a5a12;
+}
+
+.jobBox {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 14px;
+  border: 1px solid color-mix(in srgb, #{$tn-indigo} 30%, var(--app-border));
+  border-radius: 5px;
+  background: color-mix(in srgb, #{$tn-indigo} 6%, var(--app-surface));
+  font-size: 13px;
+}
+
+.rowProgress {
+  display: flex;
+  min-width: 130px;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.activateRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  margin-top: 14px;
+  padding: 10px 12px;
+  border: 1px solid var(--app-border);
+  border-radius: 5px;
+  background: var(--app-surface-2);
+  cursor: pointer;
+
+  input {
+    margin-top: 3px;
+  }
+  span {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  b {
+    color: var(--app-ink);
+    font-size: 13px;
+    font-weight: 600;
+  }
+  small {
+    color: var(--app-ink-2);
+    font-size: 12px;
+    line-height: 1.4;
+  }
+}
+
+
+// ── Bảng vừa khít chiều ngang (không trượt ngang): cột cố định theo phần trăm, chữ dài cắt bằng dấu … và xem đủ khi trỏ chuột ──
+.tableWrap {
+  overflow-x: hidden;
+}
+.table {
+  table-layout: fixed;
+
+  th,
+  td {
+    overflow: hidden;
+    padding: 10px 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  td b,
+  td small {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+.docName {
+  min-width: 0;
+
+  > div {
+    min-width: 0;
+    flex: 1;
+  }
+}
+.docIcon {
+  background: var(--app-surface-2);
+}
+.kind {
+  max-width: 100%;
+  min-width: 0;
+
+  span {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+.used {
+  min-width: 0;
+  max-width: 100%;
+}
+.rowProgress {
+  min-width: 0;
+}
+.rowActions {
+  flex-wrap: wrap; // cột hẹp thì nút xuống hàng thay vì bị cắt
+  gap: 4px;
+}
+
+// ── Ô chọn ngày cạnh ô tìm kiếm (lọc theo ngày cập nhật) ──
+.dateRange {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.dateField {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 10px;
+  border: 1px solid var(--app-border-strong);
+  border-radius: 5px;
+  background: var(--app-surface);
+
+  span {
+    display: flex;
+    flex-direction: column;
+  }
+  small {
+    color: var(--app-ink-3);
+    font-size: 11px;
+  }
+  input {
+    padding: 0;
+    border: none;
+    background: none;
+    color: var(--app-ink);
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+
+    &:focus {
+      outline: none;
+    }
+  }
+  &:focus-within {
+    border-color: var(--app-accent);
+  }
+}
+.dateClear {
+  padding: 6px 10px;
+  border: 1px dashed var(--app-border-strong);
+  border-radius: 5px;
+  background: none;
+  color: var(--app-ink-2);
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+
+  &:hover {
+    border-color: var(--app-accent);
+    color: var(--app-accent-strong);
+  }
 }

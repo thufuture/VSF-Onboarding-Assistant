@@ -42,7 +42,9 @@ def test_routers_only_use_response_dtos_as_response_models() -> None:
     used = [
         name
         for path in routers.glob("*.py")
-        for name in re.findall(r'response_model=(\w+)|"model": (\w+)', path.read_text(encoding="utf-8"))
+        for name in re.findall(
+            r'response_model=(?:list\[)?(\w+)|\d{3}: \{"model": (\w+)', path.read_text(encoding="utf-8")
+        )
         for name in name
         if name
     ]

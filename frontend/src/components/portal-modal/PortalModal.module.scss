@@ -25,7 +25,15 @@
   width: min(1040px, 100%);
 }
 .vwide {
-  width: min(1040px, 100%);
+  width: min(1480px, 100%);
+  max-height: calc(100vh - 24px);
+}
+.mactions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
 }
 
 .mhead {

@@ -9,12 +9,14 @@ import { stateOf, type Day } from "./journeyModel";
 // Portal chưa có API thông báo (bảng `tickets`/`notifications` chưa có router), nên danh sách này được SUY RA từ
 // chính lộ trình thật: việc vừa mở khóa, việc đã xong, việc bắt buộc còn lại. Trạng thái "đã đọc" lưu ở trình duyệt
 // của từng người (localStorage), không gửi lên máy chủ.
-export type NotificationKind = "unlocked" | "done" | "reminder" | "welcome";
+export type NotificationKind = "unlocked" | "done" | "reminder" | "welcome" | "ticket";
 
 export type Notification = {
   id: string;
   kind: NotificationKind;
   taskId: number | null;
+  /** Đường dẫn mở khi bấm (thông báo ticket); thông báo việc dùng `taskId`. */
+  href?: string | null;
   title: string;
   body: string;
   at: string | null;
@@ -132,15 +134,16 @@ export function useNotifications(
   tasks: EmployeeTaskResponseDTO[],
   days: Day[],
   text: NotificationText,
+  extras: Omit<Notification, "read">[] = [],
 ) {
   const readIdList = useSyncExternalStore(subscribe, readIds, () => EMPTY);
 
   const items = useMemo(() => {
     const read = new Set(readIdList);
-    return buildList(journey, tasks, days, text).map((item) => ({ ...item, read: read.has(item.id) }));
+    return [...extras, ...buildList(journey, tasks, days, text)].map((item) => ({ ...item, read: read.has(item.id) }));
     // `text` là đối tượng dựng lại mỗi lần render nên không đưa vào dependency (nội dung chỉ đổi khi đổi ngôn ngữ).
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [journey, tasks, days, readIdList]);
+  }, [journey, tasks, days, readIdList, extras]);
 
   const markRead = useCallback(
     (id: string) => {

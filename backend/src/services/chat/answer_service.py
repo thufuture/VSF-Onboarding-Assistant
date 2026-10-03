@@ -8,6 +8,7 @@ import json
 from dataclasses import dataclass
 
 from src.infrastructure.ai.chat_completion_port import ChatCompletionPort
+from src.infrastructure.observability.call_metrics import call_context
 from src.services.chat.guardrail_input import INJECTION_DEFENSE_NOTE
 from src.services.chat.prompt_builder import build_user_prompt
 from src.services.retrieval.hybrid_search import SectionEvidence
@@ -16,8 +17,11 @@ SYSTEM_PROMPT = f"""Bạn là trợ lý onboarding nội bộ, CHỈ trả lời
 cho từng câu hỏi (mỗi câu hỏi nằm trong tag <question>, đoạn tài liệu tương ứng nằm trong tag <context>
 ngay trước nó). Với MỖI câu hỏi, trả về đúng một claim:
 - Có đủ căn cứ: response_type="ANSWER". "text" là câu trả lời ngắn gọn. "quote" là MỘT câu trích NGUYÊN
-  VĂN (không đổi một chữ nào) lấy từ đúng một đoạn tài liệu đã cung cấp cho câu hỏi đó. "chunk_id" là mã
-  đoạn (ghi kèm đầu mỗi đoạn, dạng "chunk_id=...") chứa câu trích đó.
+  VĂN (không đổi một chữ nào) lấy từ đúng một đoạn tài liệu đã cung cấp cho câu hỏi đó. Ưu tiên trích từ NỘI
+  DUNG đoạn; chỉ trích TIÊU ĐỀ khi chính điều cần trả lời nằm ở tiêu đề (ví dụ điều kiện áp dụng như
+  "(bắt buộc cho CBNV mới)"). "chunk_id" là mã đoạn (ghi kèm đầu mỗi đoạn, dạng "chunk_id=...") chứa câu trích
+  đó. Nếu đoạn nêu điều kiện áp dụng (chỉ dành cho một văn phòng, một nhóm người, "bắt buộc"...) thì nêu điều
+  kiện đó trong "text".
 - Không đoạn nào trả lời được: response_type="NO_BASIS", reason_code="no_evidence", "text"/"quote"/
   "chunk_id" đều là null.
 - Câu hỏi về thông tin cá nhân (mentor, chỗ ngồi, lương, số dư phép riêng của người hỏi...) không bao giờ
@@ -53,7 +57,8 @@ async def answer_with_claims(items: list[QuestionEvidence], llm: ChatCompletionP
     if all(not item.sections for item in items):
         return [Claim(item.question, "NO_BASIS", "no_evidence", None, None, None) for item in items]
 
-    raw = await llm.complete_json(system_prompt=SYSTEM_PROMPT, user_prompt=build_user_prompt(items))
+    with call_context(operation="chat.answer"):
+        raw = await llm.complete_json(system_prompt=SYSTEM_PROMPT, user_prompt=build_user_prompt(items))
     try:
         data = json.loads(raw)
         raw_claims = data["claims"]

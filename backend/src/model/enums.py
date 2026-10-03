@@ -42,6 +42,7 @@ class Confidentiality(StrEnum):
 
 
 class VersionStatus(StrEnum):
+    DRAFT = "DRAFT"
     PROCESSING = "PROCESSING"
     PENDING_REVIEW = "PENDING_REVIEW"
     ACTIVE = "ACTIVE"
@@ -49,8 +50,15 @@ class VersionStatus(StrEnum):
     FAILED = "FAILED"
 
 
+class VersionSource(StrEnum):
+    UPLOAD = "UPLOAD"
+    EDITED = "EDITED"
+
+
 class JobKind(StrEnum):
     INGEST_VERSION = "INGEST_VERSION"
+    ACTIVATE_VERSION = "ACTIVATE_VERSION"
+    AI_TASK_PROPOSAL = "AI_TASK_PROPOSAL"
     REINDEX = "REINDEX"
     EMBED_RECORD = "EMBED_RECORD"
     RETENTION_PURGE = "RETENTION_PURGE"
@@ -87,6 +95,35 @@ class ReferenceStatus(StrEnum):
 
     DRAFT = "DRAFT"
     APPROVED = "APPROVED"
+
+
+class FeedbackRating(StrEnum):
+    UP = "UP"
+    DOWN = "DOWN"
+
+
+class FeedbackReason(StrEnum):
+    """Lý do chọn nhanh khi bấm 👎 (không bắt buộc)."""
+
+    WRONG = "WRONG"  # sai thông tin
+    MISSING = "MISSING"  # thiếu thông tin
+    UNCLEAR = "UNCLEAR"  # khó hiểu / lộn xộn
+    OFF_TOPIC = "OFF_TOPIC"  # không đúng ý tôi hỏi
+
+
+class GapKind(StrEnum):
+    NO_BASIS = "NO_BASIS"  # tài liệu không có căn cứ cho cả câu hỏi
+    PARTIAL = "PARTIAL"  # trả lời được một phần, phần còn lại tài liệu chưa quy định
+
+
+class ChatRole(StrEnum):
+    USER = "USER"
+    ASSISTANT = "ASSISTANT"
+
+
+class TicketSource(StrEnum):
+    MANUAL = "MANUAL"
+    VIGA = "VIGA"
 
 
 class TicketStatus(StrEnum):

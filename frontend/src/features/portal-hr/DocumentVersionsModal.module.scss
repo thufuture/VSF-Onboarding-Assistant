@@ -1,0 +1,324 @@
+$tone-draft: #a8681a;
+$tone-current: #1f7f7a;
+$tone-scheduled: #0e7fb3;
+$tone-old: #6b7585;
+$tone-processing: #4f5bbf;
+$tone-failed: #c0392b;
+
+.layout {
+  display: grid;
+  grid-template-columns: 290px minmax(0, 1fr);
+  gap: 12px;
+  min-height: 0;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  max-height: min(80vh, 900px);
+  overflow-y: auto;
+}
+
+.vcard {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 9px 11px;
+  border: 1px solid var(--app-border);
+  border-radius: 5px;
+  background: var(--app-surface);
+  color: var(--app-ink-2);
+  text-align: left;
+  cursor: pointer;
+
+  small {
+    font-size: 11.5px;
+    line-height: 1.35;
+  }
+
+  &:hover {
+    border-color: var(--app-accent-strong);
+  }
+}
+
+.vcardOn {
+  border-color: $tone-processing;
+  background: color-mix(in srgb, #{$tone-processing} 7%, var(--app-surface));
+}
+
+.vtop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+
+  b {
+    min-width: 0;
+    overflow: hidden;
+    color: var(--app-ink);
+    font-size: 13px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 8px;
+  border-radius: 5px;
+  background: var(--app-surface-2);
+  color: var(--app-ink-2);
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 600;
+  white-space: nowrap;
+
+  &[data-state="DRAFT"] {
+    background: color-mix(in srgb, #{$tone-draft} 14%, var(--app-surface));
+    color: $tone-draft;
+  }
+  &[data-state="CURRENT"] {
+    background: color-mix(in srgb, #{$tone-current} 14%, var(--app-surface));
+    color: $tone-current;
+  }
+  &[data-state="SCHEDULED"] {
+    background: color-mix(in srgb, #{$tone-scheduled} 14%, var(--app-surface));
+    color: $tone-scheduled;
+  }
+  &[data-state="SUPERSEDED"] {
+    background: var(--app-surface-2);
+    color: $tone-old;
+  }
+  &[data-state="PROCESSING"] {
+    background: color-mix(in srgb, #{$tone-processing} 14%, var(--app-surface));
+    color: $tone-processing;
+  }
+  &[data-state="FAILED"] {
+    background: color-mix(in srgb, #{$tone-failed} 14%, var(--app-surface));
+    color: $tone-failed;
+  }
+}
+
+// Hai nút ở đầu hộp (thay cho hai nút đặt dưới danh sách phiên bản).
+.headBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 7px 12px;
+  border: 1px solid var(--app-border-strong);
+  border-radius: 5px;
+  background: var(--app-surface);
+  color: var(--app-ink);
+  cursor: pointer;
+  font-size: 12.5px;
+  font-weight: 600;
+
+  &:hover:not(:disabled) {
+    border-color: $tone-processing;
+    color: $tone-processing;
+  }
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+}
+
+.pane {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.paneHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+
+  h3 {
+    margin: 0 0 2px;
+    color: var(--app-ink);
+    font-size: 15px;
+    font-weight: 600;
+  }
+  small {
+    color: var(--app-ink-2);
+    font-size: 12px;
+  }
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.progressBox {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+  border: 1px solid color-mix(in srgb, #{$tone-processing} 30%, var(--app-border));
+  border-radius: 5px;
+  background: color-mix(in srgb, #{$tone-processing} 6%, var(--app-surface));
+  font-size: 13px;
+
+  small {
+    color: var(--app-ink-2);
+  }
+}
+
+%banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  margin: 0;
+  padding: 9px 12px;
+  border-radius: 5px;
+  font-size: 13px;
+  line-height: 1.45;
+
+  svg {
+    flex: none;
+    margin-top: 2px;
+  }
+}
+.bannerError {
+  @extend %banner;
+  background: #fdecec;
+  color: #a3121f;
+}
+.bannerOk {
+  @extend %banner;
+  background: var(--app-success-soft);
+  color: var(--app-success);
+}
+.bannerWarn {
+  @extend %banner;
+  background: #fff4e0;
+  color: #8a5a12;
+}
+.bannerInfo {
+  @extend %banner;
+  background: color-mix(in srgb, #{$tone-processing} 10%, var(--app-surface));
+  color: $tone-processing;
+}
+
+.hint {
+  margin: 0;
+  color: var(--app-ink-2);
+  font-size: 12px;
+}
+
+.editor {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.editGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 190px;
+  gap: 8px;
+
+  label {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    color: var(--app-ink-2);
+    font-size: 12px;
+  }
+  input {
+    height: 34px;
+    padding: 0 10px;
+    border: 1px solid var(--app-border);
+    border-radius: 5px;
+    background: var(--app-surface);
+    color: var(--app-ink);
+    font-size: 13px;
+  }
+}
+
+.tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--app-border);
+
+  button {
+    padding: 7px 14px;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    background: transparent;
+    color: var(--app-ink-2);
+    font-size: 12.5px;
+    cursor: pointer;
+
+    &[aria-selected="true"] {
+      border-bottom-color: $tone-processing;
+      color: $tone-processing;
+      font-weight: 600;
+    }
+  }
+}
+
+.textarea {
+  min-height: min(52vh, 520px);
+  padding: 12px;
+  border: 1px solid var(--app-border);
+  border-radius: 5px;
+  background: var(--app-surface);
+  color: var(--app-ink);
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 13px;
+  line-height: 1.55;
+  resize: vertical;
+}
+
+.previewBox {
+  min-height: min(52vh, 520px);
+  max-height: min(60vh, 600px);
+  overflow-y: auto;
+  padding: 14px 18px;
+  border: 1px solid var(--app-border);
+  border-radius: 5px;
+  background: var(--app-surface);
+  color: var(--app-ink);
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+
+.confirmText {
+  margin: 0 0 12px;
+  color: var(--app-ink-2);
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+
+.confirmDate {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: 220px;
+  color: var(--app-ink-2);
+  font-size: 12.5px;
+
+  input {
+    height: 34px;
+    padding: 0 10px;
+    border: 1px solid var(--app-border);
+    border-radius: 5px;
+    background: var(--app-surface);
+    color: var(--app-ink);
+  }
+}

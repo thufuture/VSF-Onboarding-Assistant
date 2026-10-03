@@ -25,6 +25,35 @@ export type AcceptAiTaskProposalRequestDTO = {
   instructions_markdown: string;
   required: boolean;
   source_chunks: AiTaskSourceChunkRequestDTO[];
+  // Tách riêng để backend ghép thành ba mục "Vì sao / Điều kiện hoàn thành / Các bước".
+  summary?: string | null;
+  done_criteria?: string[];
+  estimated_minutes?: number | null;
+  warnings?: string[];
+  task_group?: TaskGroupDTO | null;
+  /** Mã các task đã tạo trước đó phải xong trước task này. */
+  depends_on?: number[];
+};
+
+export type CreateAiTaskProposalJobRequestDTO = {
+  document_version_ids: number[];
+};
+
+export type CopyDocumentVersionRequestDTO = {
+  label?: string | null;
+};
+
+export type UpdateDocumentVersionRequestDTO = {
+  /** Khóa lạc quan: phải bằng `updated_at` lần đọc gần nhất của bản nháp. */
+  expected_updated_at: string;
+  markdown?: string | null;
+  label?: string | null;
+  effective_from?: string | null;
+  clear_effective_from?: boolean;
+};
+
+export type ActivateDocumentVersionRequestDTO = {
+  effective_from?: string | null;
 };
 
 export type CreateTaskManualRequestDTO = {

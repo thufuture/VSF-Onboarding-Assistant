@@ -1,64 +1,19 @@
-"""Wrapper mỏng gọi `ingest_document()` có sẵn cho HR upload qua web (plan-portal/P4B/P4B.md mục 8.3).
+"""Tìm lại file gốc của một phiên bản tài liệu để tải xuống (trang Tài liệu của HR).
 
-Không viết lại logic parse/chunk/embed — chỉ lo phần HTTP-specific: ghi `UploadFile` ra file tạm
-(`ingest_document` cần `Path`, không nhận bytes trực tiếp) và dọn file tạm kể cả khi lỗi.
+Tải file lên và tạo bản nháp nằm ở `document_version_service`; kích hoạt chạy nền ở `job_handlers`.
 """
 
 from __future__ import annotations
 
-import tempfile
 from dataclasses import dataclass
-from datetime import date
 from pathlib import Path
 from typing import Literal
 
-from fastapi import UploadFile
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.config import Settings
 from src.model.document_version import DocumentVersion
-from src.model.enums import Confidentiality, ContentKind
-from src.services.ingest.embedding.port import EmbeddingPort
-from src.services.ingest.ingest_service import IngestResult, ingest_document
-from src.services.ingest.storage import StoragePort
 from src.services.portal.errors import PortalError
-
-
-async def ingest_uploaded_document(
-    session: AsyncSession,
-    *,
-    file: UploadFile,
-    category_slug: str,
-    owner_email: str,
-    title: str,
-    source_key: str,
-    version_label: str,
-    effective_from: date,
-    embedding: EmbeddingPort,
-    storage: StoragePort,
-) -> IngestResult:
-    suffix = Path(file.filename or "").suffix
-    content = await file.read()
-    with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as tmp:
-        tmp.write(content)
-        tmp_path = Path(tmp.name)
-    try:
-        return await ingest_document(
-            session,
-            file_path=tmp_path,
-            category_slug=category_slug,
-            owner_email=owner_email,
-            title=title,
-            source_key=source_key,
-            version_label=version_label,
-            effective_from=effective_from,
-            content_kind=ContentKind.GENERAL.value,
-            confidentiality=Confidentiality.INTERNAL.value,
-            embedding=embedding,
-            storage=storage,
-        )
-    finally:
-        tmp_path.unlink(missing_ok=True)
 
 
 @dataclass(frozen=True)

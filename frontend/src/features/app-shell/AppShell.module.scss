@@ -2,6 +2,7 @@
 
 // Khung khu đã đăng nhập. Bộ biến màu dưới đây dùng chung cho mọi trang trong khung (chat, admin) và đổi theo data-theme.
 $sidebar-width: 248px;
+$header-height: 64px;
 
 .shell {
   --app-bg: #e9edf3;
@@ -93,8 +94,11 @@ $sidebar-width: 248px;
   flex: none;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 8px;
-  padding: 2px 6px 16px;
+  // Logo cao đúng bằng thanh trên: đường kẻ dưới logo thẳng hàng với đường kẻ dưới thanh trên.
+  box-sizing: border-box;
+  height: $header-height;
+  margin: -18px -14px 8px;
+  padding: 0 20px;
   border-bottom: 1px solid var(--app-border);
 
   [data-mobile-only] {
@@ -184,6 +188,15 @@ $sidebar-width: 248px;
 }
 .tone_slate {
   --nav-tone: #64748b;
+}
+.tone_green {
+  --nav-tone: #1f8a5f;
+}
+.tone_red {
+  --nav-tone: #cf3a43;
+}
+.tone_violet {
+  --nav-tone: #7a4fb0;
 }
 
 .navItem {
@@ -361,7 +374,9 @@ a.navActive:hover {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 7px 16px;
+  box-sizing: border-box;
+  height: $header-height;
+  padding: 0 16px;
   border-bottom: 1px solid var(--app-border);
   background: color-mix(in srgb, var(--app-surface) 92%, transparent);
   backdrop-filter: blur(8px);
@@ -477,66 +492,14 @@ a.navActive:hover {
   flex-direction: column;
   overflow-y: auto;
 }
-
-// Chân trang cố định như v15 (.pagefoot): logo nhỏ, ghi chú, liên kết tĩnh, bản quyền.
-.pageFoot {
-  display: flex;
-  flex: none;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 8px 24px;
-  border-top: 1px solid var(--app-border);
-  background: var(--app-surface);
-
-  @include phone-down {
-    display: none;
-  }
+// Mọi trang (trừ khung chat): nội dung lấp đầy vùng làm việc và thẻ cuối chạm tới sát chân trang (chỉ cách 2px), dù trang ngắn
+// hay dài. Gốc mỗi trang là cột flex; bỏ khoảng đệm đáy 16px của từng trang và cho phần tử cuối (thẻ chính) giãn ra.
+.page[data-fill="true"] > * {
+  flex: 1 0 auto;
+  padding-bottom: 2px;
 }
-
-.pfLeft {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-width: 0;
-
-  b {
-    display: block;
-    font-size: 13px;
-    color: var(--app-ink);
-  }
-  small {
-    display: block;
-    color: var(--app-ink-3);
-    font-size: 11.5px;
-  }
-}
-
-.pfMark {
-  display: grid;
-  width: 24px;
-  height: 24px;
-  flex: none;
-  place-items: center;
-  border-radius: 5px;
-  background: var(--app-user-bubble);
-  color: #fff;
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.pfLinks {
-  display: flex;
-  gap: 24px;
-  color: var(--app-ink-2);
-  font-size: 13px;
-  font-weight: 500;
-}
-
-.pfRight {
-  color: var(--app-ink-3);
-  font-size: 12px;
-  white-space: nowrap;
+.page[data-fill="true"] > * > :last-child {
+  flex: 1 1 auto;
 }
 
 // ── Thanh bên thu gọn (máy tính): chỉ còn logo, icon menu, avatar và nút đăng xuất ──
@@ -599,7 +562,7 @@ a.navActive:hover {
 
     .sidebarHead {
       justify-content: center;
-      padding: 2px 0 14px;
+      padding: 0;
     }
 
     .sideTop {

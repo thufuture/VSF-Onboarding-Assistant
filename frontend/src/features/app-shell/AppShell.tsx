@@ -7,8 +7,9 @@ import { useEffect, useState, type ReactNode } from "react";
 import { PersonAvatar } from "@/components/avatar/PersonAvatar";
 import { FlatIcon, type FlatIconName } from "@/components/flat-icons/FlatIcon";
 import { VsfBrand } from "@/components/brand/VsfBrand";
-import { VsfMark } from "@/components/brand/VsfMark";
 import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
+import { PortalFooter } from "@/components/portal-footer/PortalFooter";
+import { VsfMark } from "@/components/brand/VsfMark";
 import { useSession } from "@/features/auth/SessionProvider";
 import { Link, usePathname } from "@/i18n/navigation";
 
@@ -17,36 +18,36 @@ import { TasksSidebar } from "./TasksSidebar";
 import { useSidebarCollapsed } from "./useSidebarCollapsed";
 import { useTheme } from "./useTheme";
 
-type NavTone = "blue" | "teal" | "indigo" | "amber" | "rose" | "slate";
+// Mỗi mục điều hướng một màu riêng (đồng bộ với bảng màu của FlatIcon) để nhận ra nhanh, không còn toàn một màu xanh.
+type NavTone = "blue" | "teal" | "indigo" | "amber" | "rose" | "slate" | "green" | "red" | "violet";
 type NavItem = { key: string; flat: FlatIconName; href?: string; tone: NavTone };
 
 // Mục chưa có trang (không có `href`) hiện mờ kèm nhãn "Sắp có" thay vì liên kết chết.
 const MEMBER_NAV: NavItem[] = [
   { key: "roadmap", flat: "chat", href: "/chat", tone: "blue" },
-  { key: "documents", flat: "book", tone: "blue" },
-  { key: "contacts", flat: "users", tone: "blue" },
-  { key: "tickets", flat: "lifebuoy", tone: "blue" },
+  { key: "documents", flat: "book", tone: "green" },
+  { key: "tickets", flat: "lifebuoy", tone: "rose" },
 ];
 // Đúng thứ tự nav HR trong prototype v15 (NAV.owner): Tổng quan, Nhân viên, Ticket sự cố, Phản hồi Viga,
-// Quản lý task, Tài liệu, Tạo task bằng AI, Đầu mối và đường dẫn. Chỉ mục đã có API thật mới có `href`.
+// Quản lý task, Tài liệu, Tạo task bằng AI. Chỉ mục đã có API thật mới có `href`.
 const STAFF_NAV: NavItem[] = [
   { key: "admin", flat: "dashboard", href: "/admin", tone: "blue" },
-  { key: "employees", flat: "users", href: "/admin/employees", tone: "blue" },
-  { key: "hrTickets", flat: "flag", tone: "blue" },
-  { key: "vigaFeedback", flat: "mail", tone: "blue" },
-  { key: "taskManagement", flat: "tasks", href: "/admin/tasks", tone: "blue" },
-  { key: "documents", flat: "book", href: "/admin/documents", tone: "blue" },
-  { key: "aiTasks", flat: "sparkle", href: "/admin/ai-tasks", tone: "blue" },
-  { key: "registry", flat: "link", tone: "blue" },
+  { key: "employees", flat: "users", href: "/admin/employees", tone: "teal" },
+  { key: "hrTickets", flat: "flag", href: "/admin/tickets", tone: "red" },
+  { key: "vigaFeedback", flat: "mail", href: "/admin/viga-feedback", tone: "amber" },
+  { key: "taskManagement", flat: "tasks", href: "/admin/tasks", tone: "indigo" },
+  { key: "documents", flat: "book", href: "/admin/documents", tone: "green" },
+  { key: "aiTasks", flat: "sparkle", href: "/admin/ai-tasks", tone: "violet" },
 ];
 // Đúng thứ tự nav Admin trong prototype v15 (NAV.admin): Tổng quan, Người dùng, Phòng ban, Thành viên, Lộ trình mẫu, Nhật ký.
 const ADMIN_NAV: NavItem[] = [
   { key: "admin", flat: "dashboard", href: "/admin", tone: "blue" },
-  { key: "adminUsers", flat: "user", href: "/admin/users", tone: "blue" },
-  { key: "adminTeams", flat: "building", href: "/admin/teams", tone: "blue" },
-  { key: "adminMembers", flat: "network", href: "/admin/members", tone: "blue" },
-  { key: "adminTemplate", flat: "route", href: "/admin/template", tone: "blue" },
-  { key: "adminAudit", flat: "clock", href: "/admin/audit", tone: "blue" },
+  { key: "adminUsers", flat: "user", href: "/admin/users", tone: "teal" },
+  { key: "adminTeams", flat: "building", href: "/admin/teams", tone: "indigo" },
+  { key: "adminMembers", flat: "network", href: "/admin/members", tone: "violet" },
+  { key: "adminTemplate", flat: "route", href: "/admin/template", tone: "green" },
+  { key: "adminMetrics", flat: "award", href: "/admin/metrics", tone: "amber" },
+  { key: "adminAudit", flat: "clock", href: "/admin/audit", tone: "slate" },
 ];
 
 /**
@@ -184,6 +185,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           })}
         </nav>
 
+
         <div className={styles.account}>
           <div className={styles.userCard}>
             <PersonAvatar name={user.display_name} sizePx={36} />
@@ -260,23 +262,10 @@ export function AppShell({ children }: { children: ReactNode }) {
             </button>
           </div>
         </header>
-        <div className={styles.page}>{children}</div>
-        <footer className={styles.pageFoot}>
-          <div className={styles.pfLeft}>
-            <span className={styles.pfMark}>V</span>
-            <div>
-              <b>{t("footer.brand")}</b>
-              <small>{t("footer.note")}</small>
-            </div>
-          </div>
-          <nav aria-hidden="true" className={styles.pfLinks}>
-            <span>{t("footer.help")}</span>
-            <span>{t("footer.privacy")}</span>
-            <span>{t("footer.terms")}</span>
-            <span>{t("footer.contact")}</span>
-          </nav>
-          <div className={styles.pfRight}>{t("footer.copy")}</div>
-        </footer>
+        <div className={styles.page} data-fill={pathname.startsWith("/chat") ? undefined : "true"}>
+          {children}
+        </div>
+        <PortalFooter />
       </div>
     </div>
   );

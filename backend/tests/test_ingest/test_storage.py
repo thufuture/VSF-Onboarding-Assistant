@@ -27,7 +27,7 @@ async def test_cloudinary_public_id_keeps_original_extension(monkeypatch: pytest
     monkeypatch.setattr("cloudinary.config", lambda **_kwargs: None)
 
     adapter = CloudinaryStorageAdapter(cloud_name="demo", api_key="k", api_secret="s")
-    await adapter.store(b"noi dung", content_checksum="abc123", filename="Chinh_sach.docx")
+    await adapter.store(b"noi dung", checksum="abc123", filename="Chinh_sach.docx")
 
     assert captured["public_id"] == "abc123.docx"
 
@@ -45,7 +45,7 @@ async def test_cloudinary_public_id_handles_no_extension(monkeypatch: pytest.Mon
     monkeypatch.setattr("cloudinary.config", lambda **_kwargs: None)
 
     adapter = CloudinaryStorageAdapter(cloud_name="demo", api_key="k", api_secret="s")
-    await adapter.store(b"noi dung", content_checksum="abc123", filename="noextension")
+    await adapter.store(b"noi dung", checksum="abc123", filename="noextension")
 
     assert captured["public_id"] == "abc123"
 
@@ -54,6 +54,6 @@ async def test_local_storage_already_kept_extension(tmp_path: Any) -> None:
     # Đối chứng: LocalStorageAdapter đã làm đúng từ đầu (dùng làm mẫu khi sửa CloudinaryStorageAdapter).
     adapter = LocalStorageAdapter(str(tmp_path))
 
-    key = await adapter.store(b"noi dung", content_checksum="abc123", filename="Chinh_sach.docx")
+    key = await adapter.store(b"noi dung", checksum="abc123", filename="Chinh_sach.docx")
 
     assert key.endswith("abc123.docx")

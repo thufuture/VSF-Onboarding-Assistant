@@ -7,6 +7,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
 import { chatApi, ChatError } from "@/features/chat/api";
+import { applyQuoteHighlight, findQuoteRange } from "@/features/chat/quoteHighlight";
 
 import styles from "./DocumentModal.module.scss";
 
@@ -38,6 +39,8 @@ export type DocumentModalProps = {
   versionLabel: string;
   documentUrl: string;
   sectionHeading: string | null;
+  /** Đoạn trích nguyên văn cần tô (không có thì chỉ tô cả mục). */
+  quote?: string | null;
   onClose: () => void;
 };
 
@@ -48,12 +51,14 @@ export function DocumentModal({
   versionLabel,
   documentUrl,
   sectionHeading,
+  quote,
   onClose,
 }: DocumentModalProps) {
   const t = useTranslations("chat.documentModal");
   const [markdown, setMarkdown] = useState<string | null>(null);
   const [errorCode, setErrorCode] = useState<string | null>(null);
   const highlightRef = useRef<HTMLElement>(null);
+  const bodyRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -78,9 +83,18 @@ export function DocumentModal({
 
   // Cuộn tới đúng section ngay khi nội dung đã hiện, không phải bắt người dùng tự tìm.
   // jsdom (test) không cài scrollIntoView — bỏ qua an toàn thay vì lỗi cả hàm.
+  // Có đoạn trích thì tô đúng đoạn đó (trong mục khớp tiêu đề, không thấy thì tìm cả tài liệu) và cuộn tới đó; không thì cuộn tới mục.
   useEffect(() => {
-    highlightRef.current?.scrollIntoView?.({ block: "center", behavior: "smooth" });
-  }, [markdown]);
+    if (markdown === null) return;
+    const range = quote
+      ? (highlightRef.current ? findQuoteRange(highlightRef.current, quote) : null) ??
+        (bodyRef.current ? findQuoteRange(bodyRef.current, quote) : null)
+      : null;
+    const clear = range ? applyQuoteHighlight(range) : null;
+    const anchor = range?.startContainer.parentElement ?? highlightRef.current;
+    anchor?.scrollIntoView?.({ block: "center", behavior: "smooth" });
+    return () => clear?.();
+  }, [markdown, quote]);
 
   const sections = useMemo(() => (markdown === null ? [] : splitIntoSections(markdown)), [markdown]);
   const normalizedTarget = sectionHeading?.trim().toLowerCase() ?? null;
@@ -108,7 +122,7 @@ export function DocumentModal({
           </button>
         </header>
 
-        <div className={styles.body}>
+        <div className={styles.body} ref={bodyRef}>
           {errorCode ? (
             <p className={styles.status}>{t("loadFailed")}</p>
           ) : markdown === null ? (

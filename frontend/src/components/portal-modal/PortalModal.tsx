@@ -19,6 +19,7 @@ export function PortalModal({
   onClose,
   tabs,
   footer,
+  headerActions,
   children,
 }: {
   icon: LucideIcon;
@@ -31,6 +32,8 @@ export function PortalModal({
   onClose: () => void;
   tabs?: ReactNode;
   footer?: ReactNode;
+  /** Nút hành động đặt ngay trên đầu hộp, cạnh nút đóng. */
+  headerActions?: ReactNode;
   children: ReactNode;
 }) {
   useEffect(() => {
@@ -55,6 +58,7 @@ export function PortalModal({
             <h2>{title}</h2>
             {subtitle ? <small>{subtitle}</small> : null}
           </div>
+          {headerActions ? <div className={styles.mactions}>{headerActions}</div> : null}
           <button aria-label={closeLabel} className={styles.ibtn} onClick={onClose} type="button">
             <X aria-hidden="true" size={16} />
           </button>

@@ -17,6 +17,8 @@ const CARD_H = 138;
 const CARD_TOP = 16;
 const CARD_BOTTOM = 298;
 const NODE = 50;
+// Hai thẻ cùng hàng cách nhau 2 bước nút; mỗi bước rộng 0,88·W/(n+1) nên cần W ≥ (n+1)·~128 để thẻ rộng 196 còn hở ≥ 28px.
+const MIN_STEP = 130;
 const CENTERS = [232, 210, 240, 214, 236, 208, 238, 216, 234, 212, 240, 218];
 
 export type RoadState = "done" | "ready" | "locked";
@@ -93,7 +95,7 @@ export function JourneyRoad({
 
   return (
     <div className={styles.roadScroll}>
-      <div className={styles.canvas} style={{ height: CANVAS_H, minWidth: Math.max(820, count * 124) }}>
+      <div className={styles.canvas} style={{ height: CANVAS_H, minWidth: Math.max(820, (count + 1) * MIN_STEP) }}>
         <svg aria-hidden="true" className={styles.roadSvg} preserveAspectRatio="none" viewBox={`0 0 1000 ${CANVAS_H}`}>
           <defs>
             <clipPath id={`${clipId}-reveal`}>

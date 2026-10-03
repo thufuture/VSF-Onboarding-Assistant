@@ -1,0 +1,53 @@
+@use "../../styles/tokens" as *;
+
+// Chân trang cố định như v15 (.pagefoot); dùng chung cho mọi khung đã đăng nhập.
+.footer {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 8px 24px;
+  border-top: 1px solid var(--app-border);
+  background: var(--app-surface);
+
+  @include phone-down {
+    display: none;
+  }
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+
+  b {
+    display: block;
+    color: var(--app-ink);
+    font-size: 13px;
+  }
+  small {
+    display: block;
+    color: var(--app-ink-3);
+    font-size: 11.5px;
+  }
+}
+
+.mark {
+  flex: none;
+}
+
+.links {
+  display: flex;
+  gap: 24px;
+  color: var(--app-ink-2);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.right {
+  color: var(--app-ink-3);
+  font-size: 12px;
+  white-space: nowrap;
+}

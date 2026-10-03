@@ -1,33 +1,43 @@
-"""Điều phối 2-B: parse -> section/chunk -> tách từ -> embedding -> lưu file -> ghi DB (một transaction).
+"""Điều phối 2-B (đường CLI, đồng bộ): parse -> section/chunk -> embedding -> lưu file -> ghi DB (một transaction).
 
 Kế hoạch: docs/chatbot-vsf/plan/phase-2/2-b-nap-tai-lieu-ke-hoach-chi-tiet.md, mục 2 (kiến trúc) và
 mục 11 (xử lý ngoại lệ: 0 chunk, lỗi embedding, idempotent theo content_checksum, transaction/rollback).
+
+Trang Tài liệu của portal dùng đường khác (bản nháp rồi kích hoạt chạy nền, `document_version_service`), nhưng cả hai
+dùng chung `version_lifecycle`: ghi section/chunk và đóng bản cũ **trong cùng transaction** (sửa lỗi 1, mục 10.2).
 """
 
 from __future__ import annotations
 
-import hashlib
 import mimetypes
 from dataclasses import dataclass
-from datetime import UTC, date, datetime
+from datetime import date
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.infrastructure.observability.call_metrics import call_context
 from src.model.audit_log import AuditLog
 from src.model.document import Document
 from src.model.document_category import DocumentCategory
-from src.model.document_chunk import DocumentChunk
-from src.model.document_section import DocumentSection
 from src.model.document_version import DocumentVersion
 from src.model.enums import VersionStatus
 from src.model.user import User
 from src.services.ingest.chunker import ChunkDraft, SectionDraft, split_into_chunks, split_into_sections
 from src.services.ingest.embedding.port import EmbeddingPort
-from src.services.ingest.lexical import to_lexical_text
 from src.services.ingest.parser import ParseError, parse_document
 from src.services.ingest.storage import StoragePort
+from src.services.ingest.structure import analyze_structure, subdivide_sections
+from src.services.ingest.version_lifecycle import (
+    activate_version_row,
+    count_children,
+    embedding_text_of,
+    write_sections_and_chunks,
+)
+
+DEFAULT_TIMEZONE = "Asia/Ho_Chi_Minh"
 
 
 class IngestError(Exception):
@@ -41,6 +51,19 @@ class IngestResult:
     section_count: int
     chunk_count: int
     created: bool  # False: đã có sẵn (cùng content_checksum), không nạp lại (idempotent, INV5)
+
+
+def chunk_markdown(markdown: str) -> tuple[list[tuple[SectionDraft, list[ChunkDraft]]], list[ChunkDraft]]:
+    """Cắt Markdown thành (section, chunk) và danh sách chunk phẳng theo thứ tự ghi/embedding."""
+    sections = subdivide_sections(split_into_sections(markdown))
+    chunks_by_section = [(section, split_into_chunks(section)) for section in sections]
+    return chunks_by_section, [chunk for _, chunks in chunks_by_section for chunk in chunks]
+
+
+def today_in(timezone_name: str = DEFAULT_TIMEZONE) -> date:
+    from datetime import datetime
+
+    return datetime.now(ZoneInfo(timezone_name)).date()
 
 
 async def ingest_document(
@@ -75,34 +98,33 @@ async def ingest_document(
     )
     if existing_version is not None:
         if existing_version.content_checksum == parsed.content_checksum:
-            section_count, chunk_count = await _count_children(session, existing_version.id)
+            section_count, chunk_count = await count_children(session, existing_version.id)
             return IngestResult(document.id, existing_version.id, section_count, chunk_count, created=False)
         raise IngestError(
             f"phiên bản '{version_label}' của tài liệu '{title}' đã tồn tại với nội dung khác (INV5) — "
             "dùng nhãn phiên bản mới nếu nội dung thật sự đã đổi"
         )
 
-    sections_draft = split_into_sections(parsed.markdown)
-    chunks_by_section: list[tuple[SectionDraft, list[ChunkDraft]]] = [
-        (section, split_into_chunks(section)) for section in sections_draft
-    ]
-    all_chunks: list[ChunkDraft] = [chunk for _, chunks in chunks_by_section for chunk in chunks]
+    # Thăng tiêu đề giả (nếu file không có heading thật) trước khi cắt; chữ của tài liệu không đổi.
+    structured_markdown, structure = analyze_structure(parsed.markdown)
+    chunks_by_section, all_chunks = chunk_markdown(structured_markdown)
     if not all_chunks:
-        # Cổng cứng (mục 11.3): 0 chunk thì không được ghi gì, không có version FAILED lưu lại ở 2-B
-        # (CLI đồng bộ, không có bảng job theo dõi FAILED — đủ dùng ở đây là báo lỗi rõ ràng và dừng).
+        # Cổng cứng (mục 11.3): 0 chunk thì không được ghi gì.
         raise IngestError("không tách được đoạn nào từ tài liệu (0 chunk) — không cho phép nạp (mục 11.3)")
 
-    embedding_texts = [_embedding_text(chunk) for chunk in all_chunks]
+    embedding_texts = [embedding_text_of(chunk) for chunk in all_chunks]
     try:
-        vectors = await embedding.embed(embedding_texts)
+        with call_context(operation="ingest.embed"):
+            vectors = await embedding.embed(embedding_texts)
     except Exception as exc:
         raise IngestError(f"embedding thất bại, không ghi dữ liệu nửa vời (mục 11.4/11.5): {exc}") from exc
     if len(vectors) != len(all_chunks) or any(len(vector) != embedding.dimension for vector in vectors):
         raise IngestError("số vector trả về không khớp số chunk hoặc sai số chiều — dừng, không ghi DB")
 
     try:
+        # Tên file theo checksum của FILE (không phải của Markdown) để hai file khác byte không ghi đè nhau.
         storage_key = await storage.store(
-            file_path.read_bytes(), content_checksum=parsed.content_checksum, filename=file_path.name
+            file_path.read_bytes(), checksum=parsed.file_checksum, filename=file_path.name
         )
     except Exception as exc:
         raise IngestError(f"lưu file gốc thất bại: {exc}") from exc
@@ -111,7 +133,7 @@ async def ingest_document(
         document_id=document.id,
         version_label=version_label,
         revision_no=await _next_revision_no(session, document.id),
-        status=VersionStatus.ACTIVE.value,
+        status=VersionStatus.PROCESSING.value,
         original_filename=file_path.name,
         mime_type=mimetypes.guess_type(file_path.name)[0] or "application/octet-stream",
         size_bytes=parsed.size_bytes,
@@ -119,67 +141,44 @@ async def ingest_document(
         file_checksum=parsed.file_checksum,
         content_checksum=parsed.content_checksum,
         parser="markitdown",
-        markdown=parsed.markdown,
-        quality_report={"has_embedded_images": parsed.has_embedded_images},
+        markdown=structured_markdown,
+        quality_report={"has_embedded_images": parsed.has_embedded_images, "structure": structure.as_dict()},
         effective_from=effective_from,
         embedding_model_version=embedding.model_version,
         uploaded_by=owner.id,
-        activated_at=datetime.now(UTC),
     )
     session.add(version)
     await session.flush()  # cần version.id trước khi ghi section/chunk
 
-    section_id_by_index: dict[int, int] = {}
-    for section, _chunks in chunks_by_section:
-        row = DocumentSection(
-            version_id=version.id,
-            section_index=section.section_index,
-            heading=section.heading,
-            content=section.content,
-            token_count=section.token_count,
-        )
-        session.add(row)
-        await session.flush()  # cần row.id để chunk trỏ đúng section_id
-        section_id_by_index[section.section_index] = row.id
-
-    for global_index, (chunk, vector) in enumerate(zip(all_chunks, vectors, strict=True)):
-        session.add(
-            DocumentChunk(
-                section_id=section_id_by_index[chunk.section_index],
-                version_id=version.id,
-                chunk_index=global_index,
-                heading=chunk.heading,
-                content=chunk.content,
-                embedding_text=_embedding_text(chunk),
-                lexical_text=to_lexical_text(chunk.content),
-                content_hash=hashlib.sha256(chunk.content.encode("utf-8")).hexdigest(),
-                token_count=chunk.token_count,
-                embedding_model_version=embedding.model_version,
-                embedding=vector,
-            )
-        )
+    await write_sections_and_chunks(
+        session,
+        version=version,
+        chunks_by_section=chunks_by_section,
+        vectors=vectors,
+        embedding_model_version=embedding.model_version,
+    )
+    # Đóng bản cũ và bật bản này trong cùng transaction (sửa lỗi 1: trước đây bản cũ không bao giờ được đóng).
+    await activate_version_row(
+        session, version=version, effective_from=effective_from, actor_id=owner.id, today=today_in()
+    )
 
     session.add(
         AuditLog(
             actor_id=owner.id,
             action="INGEST_DOCUMENT",
             entity_type="document_version",
-            entity_id=str(version.id),  # version.id đã có từ flush ở trên
+            entity_id=str(version.id),
             after={
                 "document_id": document.id,
                 "version_label": version_label,
-                "section_count": len(sections_draft),
+                "section_count": len(chunks_by_section),
                 "chunk_count": len(all_chunks),
             },
         )
     )
 
     await session.commit()
-    return IngestResult(document.id, version.id, len(sections_draft), len(all_chunks), created=True)
-
-
-def _embedding_text(chunk: ChunkDraft) -> str:
-    return f"{chunk.heading}\n{chunk.content}" if chunk.heading else chunk.content
+    return IngestResult(document.id, version.id, len(chunks_by_section), len(all_chunks), created=True)
 
 
 async def _require_category(session: AsyncSession, slug: str) -> DocumentCategory:
@@ -230,13 +229,3 @@ async def _next_revision_no(session: AsyncSession, document_id: int) -> int:
         select(func.max(DocumentVersion.revision_no)).where(DocumentVersion.document_id == document_id)
     )
     return int(current_max or 0) + 1
-
-
-async def _count_children(session: AsyncSession, version_id: int) -> tuple[int, int]:
-    section_count = await session.scalar(
-        select(func.count()).select_from(DocumentSection).where(DocumentSection.version_id == version_id)
-    )
-    chunk_count = await session.scalar(
-        select(func.count()).select_from(DocumentChunk).where(DocumentChunk.version_id == version_id)
-    )
-    return int(section_count or 0), int(chunk_count or 0)

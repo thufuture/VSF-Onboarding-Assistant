@@ -6,8 +6,8 @@ luồng upload + AI đề xuất + accept end-to-end.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
-from datetime import UTC, datetime
+from dataclasses import dataclass, field
+from datetime import UTC, date, datetime
 from typing import cast
 
 from sqlalchemy import delete, func, select
@@ -25,6 +25,8 @@ from src.model.task_source_mapping import TaskSourceMapping
 from src.model.task_template import TaskTemplate
 from src.model.team_member import TeamMember
 from src.model.user import User
+from src.services.ingest.ingest_service import today_in
+from src.services.ingest.version_lifecycle import get_current_version
 from src.services.portal.errors import PortalError
 
 
@@ -143,10 +145,16 @@ class DocumentListItem:
     category_slug: str
     owner_name: str | None
     task_titles: list[str]
+    current_version_label: str | None = None
+    version_count: int = 0
+    draft_count: int = 0
+    processing_count: int = 0
+    processing_version_ids: list[int] = field(default_factory=list)
 
 
-async def list_documents(session: AsyncSession) -> list[DocumentListItem]:
+async def list_documents(session: AsyncSession, today: date | None = None) -> list[DocumentListItem]:
     """Danh sách tài liệu thật cho trang "Tài liệu" — không lọc theo team (INV9: không có ACL tài liệu)."""
+    today = today or today_in()
     rows = (
         await session.execute(
             select(Document, DocumentCategory.name, DocumentCategory.slug, User.display_name)
@@ -168,11 +176,29 @@ async def list_documents(session: AsyncSession) -> list[DocumentListItem]:
                 )
             ).all()
         )
-        latest_version = await session.scalar(
-            select(DocumentVersion)
-            .where(DocumentVersion.document_id == document.id, DocumentVersion.status == VersionStatus.ACTIVE)
-            .order_by(DocumentVersion.revision_no.desc())
-            .limit(1)
+        latest_version = await get_current_version(session, document.id, today)
+        version_count = (
+            await session.scalar(
+                select(func.count(DocumentVersion.id)).where(DocumentVersion.document_id == document.id)
+            )
+            or 0
+        )
+        draft_count = (
+            await session.scalar(
+                select(func.count(DocumentVersion.id)).where(
+                    DocumentVersion.document_id == document.id, DocumentVersion.status == VersionStatus.DRAFT
+                )
+            )
+            or 0
+        )
+        processing_version_ids = list(
+            (
+                await session.scalars(
+                    select(DocumentVersion.id).where(
+                        DocumentVersion.document_id == document.id, DocumentVersion.status == VersionStatus.PROCESSING
+                    )
+                )
+            ).all()
         )
         section_count = 0
         if latest_version is not None:
@@ -195,6 +221,11 @@ async def list_documents(session: AsyncSession) -> list[DocumentListItem]:
                 category_slug=category_slug,
                 owner_name=owner_name,
                 task_titles=task_titles,
+                current_version_label=latest_version.version_label if latest_version else None,
+                version_count=version_count,
+                draft_count=draft_count,
+                processing_count=len(processing_version_ids),
+                processing_version_ids=processing_version_ids,
             )
         )
     return items
@@ -334,7 +365,7 @@ async def _template_task_ids(session: AsyncSession, template_id: int) -> set[int
     return set(rows.all())
 
 
-async def _apply_dependencies(
+async def apply_dependencies(
     session: AsyncSession, *, task: TaskTemplate, template_id: int, depends_on: list[int]
 ) -> None:
     """Tiên quyết chỉ AND (P0A D8): cùng lộ trình, không tự trỏ vào mình, không tạo vòng."""
@@ -364,7 +395,7 @@ async def _apply_dependencies(
         session.add(TaskDependency(task_template_id=task.id, depends_on_task_template_id=dep_id))
 
 
-async def _place_in_stage(session: AsyncSession, *, task: TaskTemplate, stage_id: int, position: int | None) -> None:
+async def place_in_stage(session: AsyncSession, *, task: TaskTemplate, stage_id: int, position: int | None) -> None:
     """Đặt task vào vị trí `position` (1-based) của giai đoạn rồi đánh số lại 1..n; None = cuối."""
     others = list(
         (
@@ -407,8 +438,8 @@ async def create_task_manual(
     )
     session.add(task)
     await session.flush()
-    await _place_in_stage(session, task=task, stage_id=stage.id, position=sort_order)
-    await _apply_dependencies(session, task=task, template_id=template.id, depends_on=depends_on or [])
+    await place_in_stage(session, task=task, stage_id=stage.id, position=sort_order)
+    await apply_dependencies(session, task=task, template_id=template.id, depends_on=depends_on or [])
     await session.commit()
     return task
 
@@ -444,9 +475,9 @@ async def update_task_template(
         if target is None or target.journey_template_id != current_stage.journey_template_id:
             raise PortalError(422, "STAGE_OUT_OF_TEMPLATE", "portal.stage_out_of_template")
     if journey_stage_id is not None or sort_order is not None:
-        await _place_in_stage(session, task=task, stage_id=target_stage_id, position=sort_order)
+        await place_in_stage(session, task=task, stage_id=target_stage_id, position=sort_order)
     if depends_on is not None:
-        await _apply_dependencies(
+        await apply_dependencies(
             session, task=task, template_id=current_stage.journey_template_id, depends_on=depends_on
         )
     await session.commit()

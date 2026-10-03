@@ -8,12 +8,14 @@ import { PersonAvatar } from "@/components/avatar/PersonAvatar";
 import { portalAdminApi } from "@/features/portal-admin/api";
 import type { AdminDashboardResponseDTO } from "@/features/portal-admin/dto/responseDTO/admin.response";
 import { useSession } from "@/features/auth/SessionProvider";
+import { AnalyticsPanel } from "@/features/portal-analytics/AnalyticsPanel";
 import { Link } from "@/i18n/navigation";
 
 import { adminErrorMessage, adminStyles as s, formatDateTime, IconChip, Kpi } from "./adminUi";
 import { auditIcon, auditTone } from "./auditMeta";
 
-/** Tổng quan quản trị (v15 `viewADash`): KPI phòng ban/HR/nhân viên/cần xử lý, biểu đồ nhân viên theo phòng ban, hoạt động gần đây. */
+/** Tổng quan quản trị (v15 `viewADash`): KPI phòng ban/HR/nhân viên/cần xử lý, biểu đồ nhân viên theo phòng ban, hoạt động gần đây,
+ * cộng số liệu toàn hệ thống theo thời gian (đường, cột, tròn, chi phí và độ trễ AI) từ GET /portal/analytics. */
 export function AdminDashboardPage() {
   const t = useTranslations("portalAdmin");
   const { user } = useSession();
@@ -151,6 +153,8 @@ export function AdminDashboardPage() {
           </div>
         </>
       ) : null}
+
+      <AnalyticsPanel />
     </div>
   );
 }

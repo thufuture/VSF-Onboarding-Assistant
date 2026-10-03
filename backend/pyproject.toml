@@ -11,6 +11,14 @@ line-length = 120
 select = ["E", "F", "I", "N", "W", "UP", "B"]
 ignore = ["E501"]
 
+[tool.ruff.lint.per-file-ignores]
+# Test import fixture từ `portal_docs_fixtures` (pytest tìm theo tên): ruff coi là import thừa/ghi đè.
+"tests/integration/test_portal_*.py" = ["F401", "F811"]
+"tests/integration/test_viga_*.py" = ["F401", "F811"]
+"tests/integration/test_ticket_*.py" = ["F401", "F811"]
+"tests/integration/test_admin_metrics_api.py" = ["F401", "F811"]
+"tests/integration/test_analytics_api.py" = ["F401", "F811"]
+
 [tool.ruff.lint.isort]
 known-first-party = ["src"]
 

@@ -1,5 +1,6 @@
 """DTO yêu cầu của `/api/v1/portal/*` (plan-portal/P4B/P4B.md mục 8)."""
 
+from datetime import date, datetime
 from typing import Literal
 
 from pydantic import BaseModel, Field
@@ -30,6 +31,13 @@ class AcceptAiTaskProposalRequestDTO(BaseModel):
     instructions_markdown: str
     required: bool = True
     source_chunks: list[AiTaskSourceChunkRequestDTO] = []
+    # Các trường tách riêng từ đề xuất để ghép thành ba mục "Vì sao / Điều kiện hoàn thành / Các bước" (có thể bỏ trống).
+    summary: str | None = None
+    done_criteria: list[str] = []
+    estimated_minutes: int | None = None
+    warnings: list[str] = []
+    task_group: Literal["PROFILE", "TRAINING", "DEVICE", "OFFICE"] | None = None
+    depends_on: list[int] = []  # id các task đã tạo trước đó trong cùng lộ trình (giao diện đổi từ tên tiên quyết)
 
 
 class CreateTaskManualRequestDTO(BaseModel):
@@ -67,3 +75,25 @@ class UpdateMyProfileRequestDTO(BaseModel):
 class ChangeMyPasswordRequestDTO(BaseModel):
     current_password: str = Field(min_length=1, max_length=1024)
     new_password: str = Field(min_length=8, max_length=1024)
+
+
+class CopyDocumentVersionRequestDTO(BaseModel):
+    label: str | None = Field(default=None, max_length=32)
+
+
+class UpdateDocumentVersionRequestDTO(BaseModel):
+    """Sửa bản nháp. `expected_updated_at` là khóa lạc quan: phải bằng `updated_at` lần đọc gần nhất."""
+
+    expected_updated_at: datetime
+    markdown: str | None = None
+    label: str | None = Field(default=None, max_length=32)
+    effective_from: date | None = None
+    clear_effective_from: bool = False
+
+
+class ActivateDocumentVersionRequestDTO(BaseModel):
+    effective_from: date | None = None
+
+
+class CreateAiTaskProposalJobRequestDTO(BaseModel):
+    document_version_ids: list[int] = Field(min_length=1, max_length=20)

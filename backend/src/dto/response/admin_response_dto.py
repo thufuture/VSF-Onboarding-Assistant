@@ -76,3 +76,33 @@ class AdminTemplateOverviewResponseDTO(BaseModel):
     shared_task_count: int
     teams_using_copy: int
     active_teams: int
+
+
+class AdminOperationMetricsResponseDTO(BaseModel):
+    operation: str
+    kind: str
+    calls: int
+    errors: int
+    avg_latency_ms: float
+    p50_latency_ms: float
+    p95_latency_ms: float
+    prompt_tokens: int
+    completion_tokens: int
+    input_count: int
+    cost_usd: float
+
+
+class AdminDailyCostResponseDTO(BaseModel):
+    day: str
+    calls: int
+    cost_usd: float
+
+
+class AdminMetricsResponseDTO(BaseModel):
+    days: int
+    since: datetime
+    calls: int
+    errors: int
+    cost_usd: float
+    operations: list[AdminOperationMetricsResponseDTO]
+    daily: list[AdminDailyCostResponseDTO]

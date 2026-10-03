@@ -1,7 +1,7 @@
 """Hồ sơ cá nhân của nhân viên: xem, đổi tên hiển thị, đổi mật khẩu; kèm tiến độ lộ trình đang chạy."""
 
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import date, datetime
 
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -9,14 +9,15 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.model.document import Document
 from src.model.document_category import DocumentCategory
 from src.model.document_section import DocumentSection
-from src.model.document_version import DocumentVersion
 from src.model.employee_journey import EmployeeJourney
 from src.model.employee_task import EmployeeTask
-from src.model.enums import DocumentStatus, EmployeeTaskStatus, VersionStatus
+from src.model.enums import DocumentStatus, EmployeeTaskStatus
 from src.model.task_template import TaskTemplate
 from src.model.user import User
 from src.services.auth.auth_service import department_name, revoke_sessions
 from src.services.auth.passwords import hash_password, verify_password
+from src.services.ingest.ingest_service import today_in
+from src.services.ingest.version_lifecycle import get_current_version
 from src.services.portal.errors import PortalError
 
 
@@ -96,8 +97,9 @@ class EmployeeDocument:
     section_count: int
 
 
-async def list_employee_documents(session: AsyncSession) -> list[EmployeeDocument]:
+async def list_employee_documents(session: AsyncSession, today: date | None = None) -> list[EmployeeDocument]:
     """Tài liệu đang hiệu lực mà Viga cũng dùng làm nguồn (không ACL tài liệu — INV9); bỏ tài liệu đã lưu trữ."""
+    today = today or today_in()
     rows = (
         await session.execute(
             select(Document, DocumentCategory.name, DocumentCategory.slug)
@@ -108,12 +110,7 @@ async def list_employee_documents(session: AsyncSession) -> list[EmployeeDocumen
     ).all()
     items: list[EmployeeDocument] = []
     for document, category_name, category_slug in rows:
-        version = await session.scalar(
-            select(DocumentVersion)
-            .where(DocumentVersion.document_id == document.id, DocumentVersion.status == VersionStatus.ACTIVE)
-            .order_by(DocumentVersion.revision_no.desc())
-            .limit(1)
-        )
+        version = await get_current_version(session, document.id, today)
         if version is None:
             continue
         sections = (

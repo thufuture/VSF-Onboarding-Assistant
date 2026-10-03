@@ -40,7 +40,9 @@ class LangfuseTracer:
                 self._client = None
 
     @contextmanager
-    def span(self, name: str, *, metadata: dict[str, Any] | None = None) -> Iterator[_SpanHandle]:
+    def span(
+        self, name: str, *, metadata: dict[str, Any] | None = None, as_type: str = "span"
+    ) -> Iterator[_SpanHandle]:
         if self._client is None:
             yield _NoopSpan()
             return
@@ -49,7 +51,7 @@ class LangfuseTracer:
         # `yield`, vì lỗi ném vào từ bên trong khối `with tracer.span(...)` (luồng chat chính) phải được
         # truyền tiếp nguyên vẹn, không bị nuốt hay biến thành "generator didn't stop after throw()".
         try:
-            span_cm = self._client.start_as_current_observation(name=name, as_type="span", metadata=metadata)
+            span_cm = self._client.start_as_current_observation(name=name, as_type=as_type, metadata=metadata)
             span = span_cm.__enter__()
         except Exception:
             logger.warning("Không mở được Langfuse span '%s', bỏ qua theo dõi bước này.", name, exc_info=True)

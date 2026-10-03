@@ -9,8 +9,10 @@ hoặc bị yêu cầu injection "trả về 100 câu hỏi").
 from __future__ import annotations
 
 import json
+from collections.abc import Sequence
 
 from src.infrastructure.ai.chat_completion_port import ChatCompletionPort
+from src.infrastructure.observability.call_metrics import call_context
 from src.services.chat.guardrail_input import INJECTION_DEFENSE_NOTE, wrap_user_input
 
 # Không có ca hợp lệ nào trong hỏi-đáp onboarding cần hơn 5 ý trong một câu hỏi (ví dụ đã gặp thực tế: 2 ý).
@@ -30,11 +32,35 @@ mảng một phần tử (giữ nguyên ý, chỉ sửa chính tả/viết tắt
 Chỉ trả JSON đúng schema, không giải thích gì thêm:
 {{"standalone_questions": ["câu hỏi độc lập 1", "câu hỏi độc lập 2"]}}"""
 
+HISTORY_NOTE = (
+    "Nếu có khối <history> (vài lượt hội thoại gần nhất), chỉ dùng nó để hiểu câu hỏi mới đang nối tiếp ý gì "
+    '(ví dụ "còn thử việc thì sao?" -> viết lại đủ chủ đề). Không trả lời, không đưa nội dung lịch sử vào câu hỏi '
+    "nếu câu mới đã đủ ý."
+)
+# Mỗi lượt lịch sử cắt ngắn để giữ số token ổn định và không đưa nguyên văn câu trả lời dài vào prompt.
+HISTORY_TURN_MAX_CHARS = 300
 
-async def rewrite_query(question: str, llm: ChatCompletionPort) -> list[str]:
-    """Không lưu kết quả vào DB (mục 12.2, kế hoạch) — chỉ dùng tạm trong bộ nhớ cho lượt xử lý này."""
+
+def _format_history(history: Sequence[tuple[str, str]]) -> str:
+    lines = [f"{'Người hỏi' if role == 'USER' else 'Viga'}: {text[:HISTORY_TURN_MAX_CHARS]}" for role, text in history]
+    return "<history>\n" + "\n".join(lines) + "\n</history>\n"
+
+
+async def rewrite_query(
+    question: str, llm: ChatCompletionPort, history: Sequence[tuple[str, str]] | None = None
+) -> list[str]:
+    """Không lưu kết quả vào DB (mục 12.2, kế hoạch) — chỉ dùng tạm trong bộ nhớ cho lượt xử lý này.
+
+    `history`: các cặp (vai, nội dung) của vài lượt gần nhất trong cùng cuộc trò chuyện (mục 6.2), chỉ để hiểu câu nối tiếp.
+    """
     fallback = question.strip()
-    raw = await llm.complete_json(system_prompt=SYSTEM_PROMPT, user_prompt=wrap_user_input(question))
+    system_prompt = SYSTEM_PROMPT
+    user_prompt = wrap_user_input(question)
+    if history:
+        system_prompt = f"{SYSTEM_PROMPT}\n{HISTORY_NOTE}"
+        user_prompt = _format_history(history) + user_prompt
+    with call_context(operation="chat.rewrite"):
+        raw = await llm.complete_json(system_prompt=system_prompt, user_prompt=user_prompt)
     try:
         data = json.loads(raw)
         questions = data["standalone_questions"]

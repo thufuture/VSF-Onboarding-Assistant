@@ -405,6 +405,84 @@ async def test_accept_proposal_creates_task_template_with_source_mapping(
         assert len(mappings) == 1
         assert mappings[0].document_section_id == first_section.id
         assert mappings[0].document_version_id == result.version_id
+        assert mappings[0].quote == "Nhận laptop tại tầng 12"  # lưu đoạn trích để "Xem nguồn" tô đúng đoạn
+
+
+async def test_accepted_proposals_are_ordered_and_linked_by_prerequisites(
+    session_factory: async_sessionmaker[AsyncSession],
+    team: SimpleNamespace,
+    category: str,
+    make_member: MakeMember,
+    cleanup_documents: list[int],
+    cleanup_templates: list[int],
+    tmp_path: Path,
+) -> None:
+    from src.model.task_dependency import TaskDependency
+
+    hr = await make_member("HR", team.id)
+    async with session_factory() as session:
+        result = await _ingest_fixture_document(session, category, hr.email, tmp_path)
+    cleanup_documents.append(result.document_id)
+    async with session_factory() as session:
+        sections = (
+            await session.scalars(select(DocumentSection).where(DocumentSection.version_id == result.version_id))
+        ).all()
+    section = sections[0]
+
+    app = app_for(session_factory, "[]")
+    async with client_for(app) as client:
+        await login(client, hr)
+        template_id = (
+            await client.post(
+                "/api/v1/portal/journey-templates", json={"code": f"tpl-{uuid4().hex[:8]}", "title": "Lộ trình thử"}
+            )
+        ).json()["id"]
+        cleanup_templates.append(template_id)
+        stage_id = (
+            await client.post(
+                f"/api/v1/portal/journey-templates/{template_id}/stages", json={"title": "Ngày 1", "sort_order": 1}
+            )
+        ).json()["id"]
+
+        async def accept(title: str, quote: str, depends_on: list[int]) -> int:
+            response = await client.post(
+                f"/api/v1/portal/stages/{stage_id}/tasks/from-proposal",
+                json={
+                    "title": title,
+                    "instructions_markdown": "Bước 1.",
+                    "required": True,
+                    "source_chunks": [{"document_section_id": section.id, "quote": quote}],
+                    "depends_on": depends_on,
+                },
+            )
+            assert response.status_code == 200, response.text
+            return int(response.json()["id"])
+
+        first = await accept("Nhận laptop", "Nhận laptop tại tầng 12", [])
+        second = await accept("Đăng ký faceid", "Nhận laptop tại tầng 12", [first])
+        bad = await client.post(
+            f"/api/v1/portal/stages/{stage_id}/tasks/from-proposal",
+            json={
+                "title": "Việc lỗi",
+                "instructions_markdown": "x",
+                "source_chunks": [{"document_section_id": section.id, "quote": "Nhận laptop tại tầng 12"}],
+                "depends_on": [999999999],
+            },
+        )
+
+    assert bad.status_code == 422  # tiên quyết ngoài lộ trình bị từ chối
+    async with session_factory() as session:
+        tasks = (
+            await session.scalars(
+                select(TaskTemplate).where(TaskTemplate.id.in_([first, second])).order_by(TaskTemplate.sort_order)
+            )
+        ).all()
+        assert [task.id for task in tasks] == [first, second]
+        assert [task.sort_order for task in tasks] == [1, 2]  # trước đây đều bằng 0
+        dependencies = (
+            await session.scalars(select(TaskDependency).where(TaskDependency.task_template_id == second))
+        ).all()
+        assert [dep.depends_on_task_template_id for dep in dependencies] == [first]
 
 
 async def test_accept_into_published_template_is_rejected(

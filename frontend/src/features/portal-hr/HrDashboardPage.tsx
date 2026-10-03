@@ -1,11 +1,13 @@
 "use client";
 
-import { BookOpen, ListChecks, Layers, Sparkles, UploadCloud } from "lucide-react";
+import { Sparkles, UploadCloud } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
 import { PersonAvatar } from "@/components/avatar/PersonAvatar";
+import { FlatIcon } from "@/components/flat-icons/FlatIcon";
 import { useSession } from "@/features/auth/SessionProvider";
+import { AnalyticsPanel } from "@/features/portal-analytics/AnalyticsPanel";
 import { portalHrApi, PortalError } from "@/features/portal-hr/api";
 import type { HrDashboardResponseDTO } from "@/features/portal-hr/dto/responseDTO/portal.response";
 import { Link } from "@/i18n/navigation";
@@ -17,8 +19,8 @@ function errorMessage(t: (key: string) => string, error: unknown): string {
   return t("errors.unavailable");
 }
 
-/** Tổng quan HR thật — cổng đúng bố cục `.pagehead.hero` + `.kpi` của prototype v15, chỉ hiện số thật
- * từ GET /portal/dashboard. Không có biểu đồ/bảng phiên bản/link chờ duyệt vì chưa có dữ liệu đó thật. */
+/** Tổng quan HR thật — bố cục `.pagehead.hero` + `.kpi` của prototype v15 với số thật từ GET /portal/dashboard, cộng phần
+ * số liệu theo thời gian (đường, cột, tròn, chi phí và độ trễ AI) từ GET /portal/analytics trong phạm vi phòng ban của HR. */
 export function HrDashboardPage() {
   const t = useTranslations("hrDashboard");
   const { user } = useSession();
@@ -67,7 +69,7 @@ export function HrDashboardPage() {
             <div className={styles.kh}>
               <small>{t("kpi.tasks")}</small>
               <span className={styles.ichip}>
-                <ListChecks aria-hidden="true" size={15} />
+                <FlatIcon name="tasks" size={22} tone="indigo" />
               </span>
             </div>
             <b>{data.task_template_count}</b>
@@ -77,7 +79,7 @@ export function HrDashboardPage() {
             <div className={styles.kh}>
               <small>{t("kpi.documents")}</small>
               <span className={styles.ichip}>
-                <BookOpen aria-hidden="true" size={15} />
+                <FlatIcon name="book" size={22} tone="green" />
               </span>
             </div>
             <b>{data.document_count}</b>
@@ -87,7 +89,7 @@ export function HrDashboardPage() {
             <div className={styles.kh}>
               <small>{t("kpi.templates")}</small>
               <span className={styles.ichip}>
-                <Sparkles aria-hidden="true" size={15} />
+                <FlatIcon name="route" size={22} tone="teal" />
               </span>
             </div>
             <b>{data.journey_template_count}</b>
@@ -97,7 +99,7 @@ export function HrDashboardPage() {
             <div className={styles.kh}>
               <small>{t("kpi.stages")}</small>
               <span className={styles.ichip}>
-                <Layers aria-hidden="true" size={15} />
+                <FlatIcon name="award" size={22} tone="amber" />
               </span>
             </div>
             <b>{data.journey_stage_count}</b>
@@ -105,6 +107,8 @@ export function HrDashboardPage() {
           </div>
         </div>
       ) : null}
+
+      <AnalyticsPanel />
     </div>
   );
 }

@@ -10,6 +10,7 @@ import type {
   AdminAuditLogResponseDTO,
   AdminDashboardResponseDTO,
   AdminMembershipResponseDTO,
+  AdminMetricsResponseDTO,
   AdminTeamResponseDTO,
   AdminTemplateOverviewResponseDTO,
   AdminUserResponseDTO,
@@ -72,4 +73,5 @@ export const portalAdminApi = {
     send<void>("DELETE", `${base}/memberships/${teamId}/${userId}`),
   getTemplateOverview: () => request<AdminTemplateOverviewResponseDTO>(`${base}/template-overview`),
   listAuditLogs: () => request<AdminAuditLogResponseDTO[]>(`${base}/audit-logs?limit=100`),
+  getMetrics: (days: number) => request<AdminMetricsResponseDTO>(`${base}/metrics?days=${days}`),
 };

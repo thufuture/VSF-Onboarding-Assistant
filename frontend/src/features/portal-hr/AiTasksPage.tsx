@@ -2,40 +2,75 @@
 
 import {
   Check,
-  CheckCircle2,
   ChevronDown,
   FileText,
-  Flag,
-  Layers,
   Plus,
   Search,
   ShieldCheck,
   Sparkles,
-  Users,
   X,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { type FormEvent, Fragment, useEffect, useState } from "react";
+import { type FormEvent, Fragment, useEffect, useRef, useState } from "react";
 
+import { FlatIcon, type FlatIconName, type FlatTone } from "@/components/flat-icons/FlatIcon";
+import { JobProgress } from "@/components/job-progress/JobProgress";
+import { modalStyles as m, PortalModal } from "@/components/portal-modal/PortalModal";
 import { useSession } from "@/features/auth/SessionProvider";
 import { portalHrApi, PortalError } from "@/features/portal-hr/api";
 import type {
+  AiProposalDocumentResultDTO,
   AiTaskProposalResponseDTO,
   DocumentListItemResponseDTO,
+  JobResponseDTO,
   StageOptionResponseDTO,
 } from "@/features/portal-hr/dto/responseDTO/portal.response";
 
+import { AiRoadmapReview, nextReviewKey, type Review } from "./AiRoadmapReview";
 import { categoryStyle } from "./docCategory";
 import styles from "./AiTasksPage.module.scss";
+import { useJob } from "./useJob";
 
 function errorMessage(t: (key: string) => string, error: unknown): string {
   if (error instanceof PortalError) return t(`errors.${error.code}`);
   return t("errors.unavailable");
 }
 
+const DOCUMENT_ERRORS = new Set(["AI_INVALID_JSON", "LLM_UNAVAILABLE", "DOCUMENT_VERSION_NOT_FOUND"]);
+const JOB_ERRORS = new Set(["LLM_NOT_CONFIGURED", "NO_DOCUMENTS", "JOB_ERROR", "JOB_INTERRUPTED"]);
+
+/** Gom đề xuất của nhiều tài liệu theo thứ tự tài liệu, bỏ đề xuất trùng tên (giữ cái đầu tiên); nhớ đề xuất lấy từ tài liệu nào. */
+function mergeProposals(
+  documents: AiProposalDocumentResultDTO[],
+): { proposal: AiTaskProposalResponseDTO; origin: NonNullable<Review["origin"]> }[] {
+  const merged: { proposal: AiTaskProposalResponseDTO; origin: NonNullable<Review["origin"]> }[] = [];
+  for (const entry of documents) {
+    for (const proposal of entry.proposals) {
+      if (merged.some((item) => item.proposal.title === proposal.title)) continue;
+      merged.push({
+        proposal,
+        origin: { versionId: entry.version_id, title: entry.document_title, label: entry.version_label },
+      });
+    }
+  }
+  return merged;
+}
+
 const TILE_TONES = ["tone0", "tone1", "tone2", "tone3"] as const;
 // Biểu tượng theo thứ tự ô giai đoạn, đúng v15: flag / users / sparkles / shield.
-const TILE_ICONS = [Flag, Users, Sparkles, ShieldCheck];
+const TILES: { icon: FlatIconName; tone: FlatTone }[] = [
+  { icon: "flag", tone: "red" },
+  { icon: "users", tone: "teal" },
+  { icon: "sparkle", tone: "violet" },
+  { icon: "award", tone: "amber" },
+];
+// Thanh bước: mỗi bước một biểu tượng và một màu riêng (xanh dương, chàm, xanh ngọc, hổ phách) cho dễ phân biệt.
+const STEP_FLAT: { icon: FlatIconName; tone: FlatTone }[] = [
+  { icon: "file", tone: "blue" },
+  { icon: "sparkle", tone: "indigo" },
+  { icon: "check", tone: "teal" },
+  { icon: "tasks", tone: "amber" },
+];
 
 /** "Tạo task bằng AI" thật — cổng đúng cấu trúc/DOM prototype v15 (.ai14-steps/.ai14-source-card/
  * .ai14-config/.ai14-days/.ai14-run) trích từ DOM đã render thật, chỉ dùng dữ liệu thật (tài liệu đã
@@ -54,15 +89,41 @@ export function AiTasksPage() {
   const [pickerQuery, setPickerQuery] = useState("");
   const [selectedStageId, setSelectedStageId] = useState<number | null>(null);
 
-  const [newTemplateCode, setNewTemplateCode] = useState(() => "tpl-" + Date.now().toString(36));
   const [newTemplateTitle, setNewTemplateTitle] = useState("Lộ trình onboarding");
   const [newStageTitle, setNewStageTitle] = useState("Ngày 1");
 
-  const [proposals, setProposals] = useState<AiTaskProposalResponseDTO[] | null>(null);
+  const [reviews, setReviews] = useState<Review[] | null>(null);
+  const [docResults, setDocResults] = useState<AiProposalDocumentResultDTO[]>([]);
+  const [proposalJobId, setProposalJobId] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [acceptedCount, setAcceptedCount] = useState(0);
+  // Task đã tạo trong lượt này (tên → mã) để đổi "tiên quyết theo tên" của AI thành tiên quyết thật khi tạo tiếp.
+  const createdByTitle = useRef(new Map<string, number>());
+
+  function finishProposalJob(job: JobResponseDTO) {
+    setBusy((current) => (current === "propose" ? null : current));
+    if (job.status === "FAILED") {
+      const code = (job.error ?? "").split(":")[0];
+      setError(JOB_ERRORS.has(code) ? t(`run.errors.${code}`) : t("errors.unavailable"));
+      return;
+    }
+    const documents = ((job.result?.documents as AiProposalDocumentResultDTO[] | undefined) ?? []).filter(Boolean);
+    setDocResults(documents);
+    createdByTitle.current = new Map();
+    setReviews(
+      mergeProposals(documents).map(({ proposal, origin }) => ({
+        key: nextReviewKey(),
+        proposal,
+        status: "pending" as const,
+        origin,
+      })),
+    );
+    setAcceptedCount(0);
+  }
+
+  const proposalJob = useJob(proposalJobId, finishProposalJob);
 
   function loadDocs() {
     portalHrApi
@@ -87,8 +148,8 @@ export function AiTasksPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Như v15: bước 1 giữ nguyên tới khi bấm phân tích; có đề xuất là bước "HR chấp nhận", đã chấp nhận là bước cuối.
-  const stepIndex = proposals !== null ? (acceptedCount > 0 ? 3 : 2) : 0;
+  // Bước 1 tới khi bấm phân tích; đang chạy là "AI dựng roadmap"; có đề xuất là "HR chấp nhận"; đã chấp nhận là bước cuối.
+  const stepIndex = reviews !== null ? (acceptedCount > 0 && reviews.length === 0 ? 3 : 2) : busy === "propose" ? 1 : 0;
 
   const readyDocs = (documents ?? []).filter((d) => d.latest_version_id !== null && d.status === "ACTIVE");
   const pickerDocs = readyDocs.filter((d) => {
@@ -102,20 +163,32 @@ export function AiTasksPage() {
     );
   }
 
+  function openNewStage() {
+    setNewStageTitle(`Ngày ${(stages?.length ?? 0) + 1}`);
+    setError(null);
+    setNewStageOpen(true);
+  }
+
   async function handleCreateStage(event: FormEvent) {
     event.preventDefault();
     setError(null);
     setBusy("stage");
     try {
-      const template = await portalHrApi.createJourneyTemplate({ code: newTemplateCode, title: newTemplateTitle });
-      const stage = await portalHrApi.createJourneyStage(template.id, { title: newStageTitle, sort_order: 1 });
+      // Đã có lộ trình nháp: thêm ngày mới vào đó. Chưa có: tạo lộ trình mới (mã do hệ thống sinh, không bắt người dùng nhập).
+      const existing = stages?.[0];
+      const template = existing
+        ? { id: existing.journey_template_id, title: existing.template_title }
+        : await portalHrApi.createJourneyTemplate({ code: "tpl-" + Date.now().toString(36), title: newTemplateTitle });
+      const stage = await portalHrApi.createJourneyStage(template.id, {
+        title: newStageTitle,
+        sort_order: (stages?.length ?? 0) + 1,
+      });
       setStages((current) => [
         ...(current ?? []),
         { id: stage.id, journey_template_id: template.id, title: stage.title, template_title: template.title },
       ]);
       setSelectedStageId(stage.id);
       setNewStageOpen(false);
-      setNewTemplateCode("tpl-" + Date.now().toString(36));
     } catch (caught) {
       setError(errorMessage(t, caught));
     } finally {
@@ -123,48 +196,78 @@ export function AiTasksPage() {
     }
   }
 
-  async function handlePropose() {
-    const versionIds = selectedDocs.map((d) => d.latest_version_id).filter((id): id is number => id !== null);
+  async function handlePropose(onlyVersionIds?: number[]) {
+    const versionIds =
+      onlyVersionIds ?? selectedDocs.map((d) => d.latest_version_id).filter((id): id is number => id !== null);
     if (versionIds.length === 0) return;
     setError(null);
     setBusy("propose");
     try {
-      // API đề xuất theo từng phiên bản tài liệu: gọi lần lượt rồi gộp, bỏ đề xuất trùng tên.
-      const merged: AiTaskProposalResponseDTO[] = [];
-      for (const versionId of versionIds) {
-        const part = await portalHrApi.proposeAiTasks({ document_version_id: versionId });
-        for (const proposal of part) {
-          if (!merged.some((item) => item.title === proposal.title)) merged.push(proposal);
-        }
-      }
-      setProposals(merged);
-      setAcceptedCount(0);
+      // Chạy nền có phần trăm (mục 14.5): backend trả job_id ngay, giao diện hỏi tiến độ mỗi giây.
+      const job = await portalHrApi.createAiTaskProposalJob({ document_version_ids: versionIds });
+      setReviews(null);
+      setDocResults([]);
+      setProposalJobId(job.id);
     } catch (caught) {
       setError(errorMessage(t, caught));
-    } finally {
       setBusy(null);
     }
   }
 
-  async function handleAccept(proposal: AiTaskProposalResponseDTO) {
-    if (!selectedStageId) return;
-    setError(null);
-    setBusy(`accept-${proposal.title}`);
+  async function acceptOne(proposal: AiTaskProposalResponseDTO): Promise<boolean> {
+    if (!selectedStageId) return false;
     try {
-      const result = await portalHrApi.acceptAiTaskProposal(selectedStageId, {
+      const dependsOn = (proposal.prerequisites ?? [])
+        .map((name) => createdByTitle.current.get(name))
+        .filter((id): id is number => id !== undefined);
+      const created = await portalHrApi.acceptAiTaskProposal(selectedStageId, {
         title: proposal.title,
         instructions_markdown: proposal.instructions_markdown,
         required: true,
         source_chunks: proposal.source_chunks,
+        summary: proposal.summary,
+        done_criteria: proposal.done_criteria,
+        estimated_minutes: proposal.estimated_minutes,
+        warnings: proposal.warnings,
+        task_group: proposal.task_group ?? null,
+        depends_on: dependsOn,
       });
-      setNotice(t("propose.accepted", { id: result.id }));
-      setAcceptedCount((n) => n + 1);
-      setProposals((current) => (current ? current.filter((item) => item !== proposal) : current));
+      createdByTitle.current.set(proposal.title, created.id);
+      return true;
     } catch (caught) {
       setError(errorMessage(t, caught));
-    } finally {
-      setBusy(null);
+      return false;
     }
+  }
+
+  /** "Thêm vào Quản lý task": chỉ lúc này task thật mới được tạo, theo đúng thứ tự trên roadmap; lỗi thì dừng và giữ phần còn lại. */
+  async function handleCreateTasks() {
+    if (!reviews || !selectedStageId) return;
+    setError(null);
+    setNotice(null);
+    setBusy("accept-all");
+    let created = 0;
+    const remaining = [...reviews];
+    while (remaining.length > 0) {
+      const next = remaining[0]!;
+      if (!(await acceptOne(next.proposal))) break;
+      remaining.shift();
+      created += 1;
+    }
+    setReviews(remaining);
+    if (created > 0) {
+      setAcceptedCount((n) => n + created);
+      setNotice(t("propose.acceptedAll", { count: created }));
+    }
+    setBusy(null);
+  }
+
+  function resetReview() {
+    createdByTitle.current = new Map();
+    setReviews(null);
+    setDocResults([]);
+    setNotice(null);
+    setAcceptedCount(0);
   }
 
   const runLabel =
@@ -181,7 +284,7 @@ export function AiTasksPage() {
       <header className={styles.pagehead}>
         <div className={styles.pageheadInner}>
           <span className={styles.phi}>
-            <Sparkles aria-hidden="true" size={22} />
+            <FlatIcon name="sparkle" size={28} tone="violet" />
           </span>
           <div className={styles.pageheadText}>
             <h1>{t("title")}</h1>
@@ -194,14 +297,26 @@ export function AiTasksPage() {
       </header>
 
       <ol className={styles.steps}>
-        {["step1", "step2", "step3", "step4"].map((key, i) => (
-          <Fragment key={key}>
-            <li className={i === stepIndex ? styles.stepOn : ""}>
-              <b>{i + 1}</b> {t(`steps.${key}`)}
-            </li>
-            {i < 3 ? <li aria-hidden="true" className={styles.stepLine} /> : null}
-          </Fragment>
-        ))}
+        {["step1", "step2", "step3", "step4"].map((key, i) => {
+          const flat = STEP_FLAT[i] ?? { icon: "file" as const, tone: "blue" as const };
+          const state = i === stepIndex ? styles.stepOn : i < stepIndex ? styles.stepDone : "";
+          return (
+            <Fragment key={key}>
+              <li aria-current={i === stepIndex ? "step" : undefined} className={`${styles[`stepTone${i}`]} ${state}`}>
+                <b>
+                  {i < stepIndex ? <Check aria-hidden="true" size={14} /> : <FlatIcon name={flat.icon} size={17} tone={flat.tone} />}
+                </b>{" "}
+                {t(`steps.${key}`)}
+              </li>
+              {i < 3 ? (
+                <li
+                  aria-hidden="true"
+                  className={`${styles.stepLine} ${styles[`stepTone${i}`]} ${i < stepIndex ? styles.stepLineDone : ""}`}
+                />
+              ) : null}
+            </Fragment>
+          );
+        })}
       </ol>
 
       {error ? <p className={styles.banner + " " + styles.bannerError}>{error}</p> : null}
@@ -212,7 +327,7 @@ export function AiTasksPage() {
           <div className={styles.cardHead}>
             <div className={styles.chh}>
               <span className={`${styles.ichip} ${styles.toneBlue}`}>
-                <FileText aria-hidden="true" size={15} />
+                <FlatIcon name="file" size={20} tone="blue" />
               </span>
               <h2>{t("document.heading")}</h2>
               <small>{t("document.selectedCount", { count: selectedDocs.length })}</small>
@@ -223,7 +338,8 @@ export function AiTasksPage() {
             </button>
           </div>
           <div className={styles.cardBody}>
-            <div className={`${styles.selectedList} ${selectedDocs.length ? styles.has : ""}`}>
+            {selectedDocs.length > 0 || !pickerOpen ? (
+              <div className={`${styles.selectedList} ${selectedDocs.length ? styles.has : styles.selectedEmpty}`}>
               {selectedDocs.length ? (
                 selectedDocs.map((doc) => (
                   <span className={styles.selectedChip} key={doc.id}>
@@ -237,13 +353,14 @@ export function AiTasksPage() {
               ) : (
                 <span className={styles.emptyDocs}>
                   <i>
-                    <FileText aria-hidden="true" size={22} />
+                    <FlatIcon name="file" size={34} tone="blue" />
                   </i>
                   <b>{t("document.empty")}</b>
                   <small>{t("document.emptyHint")}</small>
                 </span>
               )}
-            </div>
+              </div>
+            ) : null}
 
             {pickerOpen ? (
               <div className={styles.picker}>
@@ -310,7 +427,7 @@ export function AiTasksPage() {
           <div className={styles.cardHead}>
             <div className={styles.chh}>
               <span className={`${styles.ichip} ${styles.toneIndigo}`}>
-                <Layers aria-hidden="true" size={15} />
+                <FlatIcon name="route" size={20} tone="indigo" />
               </span>
               <h2>{t("stage.heading")}</h2>
               <small>{t("stage.hint")}</small>
@@ -319,7 +436,7 @@ export function AiTasksPage() {
           <div className={styles.cardBody}>
             <div className={styles.dayGrid}>
               {(stages ?? []).map((stage, i) => {
-                const TileIcon = TILE_ICONS[i % TILE_ICONS.length];
+                const tile = TILES[i % TILES.length] ?? TILES[0]!;
                 return (
                   <button
                     className={`${styles.day} ${selectedStageId === stage.id ? styles.dayOn : ""} ${styles[TILE_TONES[i % 4]]}`}
@@ -328,7 +445,7 @@ export function AiTasksPage() {
                     type="button"
                   >
                     <span>
-                      <TileIcon aria-hidden="true" size={15} />
+                      <FlatIcon name={tile.icon} size={20} tone={tile.tone} />
                     </span>
                     <span className={styles.dayText}>
                       <b>{stage.title}</b>
@@ -340,37 +457,19 @@ export function AiTasksPage() {
               })}
             </div>
 
-            {newStageOpen ? (
-              <form className={styles.newStageForm} onSubmit={handleCreateStage}>
-                <label>
-                  {t("template.code")}
-                  <input onChange={(e) => setNewTemplateCode(e.target.value)} required value={newTemplateCode} />
-                </label>
-                <label>
-                  {t("template.title")}
-                  <input onChange={(e) => setNewTemplateTitle(e.target.value)} required value={newTemplateTitle} />
-                </label>
-                <label>
-                  {t("stage.title")}
-                  <input onChange={(e) => setNewStageTitle(e.target.value)} required value={newStageTitle} />
-                </label>
-                <button className={styles.btnSm} disabled={busy === "stage"} type="submit">
-                  {t("stage.create")}
-                </button>
-              </form>
-            ) : (
-              <button className={styles.newDay} onClick={() => setNewStageOpen(true)} type="button">
-                <Plus aria-hidden="true" size={15} />
-                <span>
-                  <b>{t("stage.addNew")}</b>
-                  <small>{t("stage.addNewHint")}</small>
-                </span>
-              </button>
-            )}
+            {stages !== null && stages.length === 0 ? <p className={styles.noStages}>{t("stage.empty")}</p> : null}
+
+            <button className={styles.newDay} onClick={openNewStage} type="button">
+              <Plus aria-hidden="true" size={15} />
+              <span>
+                <b>{stages !== null && stages.length === 0 ? t("stage.createFirst") : t("stage.addNew")}</b>
+                <small>{t("stage.addNewHint")}</small>
+              </span>
+            </button>
 
             <div className={styles.audience}>
               <span>
-                <Layers aria-hidden="true" size={16} />
+                <FlatIcon name="building" size={22} tone="indigo" />
               </span>
               <div>
                 <small>{t("audience.label")}</small>
@@ -382,11 +481,21 @@ export function AiTasksPage() {
             <button
               className={styles.run}
               disabled={selectedDocs.length === 0 || !selectedStageId || busy === "propose"}
-              onClick={handlePropose}
+              onClick={() => handlePropose()}
               type="button"
             >
               <Sparkles aria-hidden="true" size={15} /> {runLabel}
             </button>
+            {proposalJobId !== null && busy === "propose" ? (
+              <div className={styles.jobBox}>
+                <JobProgress
+                  percent={proposalJob.job?.progress_percent ?? 0}
+                  stage={proposalJob.job?.stage ?? t("run.waiting")}
+                  state="running"
+                />
+                {proposalJob.lost ? <small>{t("run.lost")}</small> : null}
+              </div>
+            ) : null}
             <p className={styles.hint}>
               <ShieldCheck aria-hidden="true" size={12} /> {t("run.footnote")}
             </p>
@@ -394,52 +503,107 @@ export function AiTasksPage() {
         </div>
       </div>
 
-      {proposals ? (
-        <div className={styles.card}>
-          <div className={styles.cardHead}>
-            <div className={styles.chh}>
-              <span className={`${styles.ichip} ${styles.toneAmber}`}>
-                <Sparkles aria-hidden="true" size={15} />
-              </span>
-              <h2>{t("propose.heading")}</h2>
-              <small>{t("propose.hint")}</small>
+      {newStageOpen ? (
+        <PortalModal
+          closeLabel={t("stage.close")}
+          footer={
+            <>
+              <button className={m.btnSec} onClick={() => setNewStageOpen(false)} type="button">
+                {t("stage.cancel")}
+              </button>
+              <button className={m.btn} disabled={busy === "stage"} form="new-stage-form" type="submit">
+                <Plus aria-hidden="true" size={14} /> {t("stage.create")}
+              </button>
+            </>
+          }
+          icon={Plus}
+          onClose={() => setNewStageOpen(false)}
+          subtitle={t("stage.addNewHint")}
+          title={t("stage.addNew")}
+          tone="indigo"
+        >
+          <form id="new-stage-form" onSubmit={handleCreateStage}>
+            {error ? <p className={`${styles.banner} ${styles.bannerError}`}>{error}</p> : null}
+            <div className={m.fgrid}>
+              <div className={m.span2}>
+                <label htmlFor="new-stage-title">{t("stage.title")}</label>
+                <input
+                  autoFocus
+                  id="new-stage-title"
+                  onChange={(e) => setNewStageTitle(e.target.value)}
+                  required
+                  type="text"
+                  value={newStageTitle}
+                />
+              </div>
+              {stages !== null && stages.length > 0 ? null : (
+                <div className={m.span2}>
+                  <label htmlFor="new-template-title">{t("template.title")}</label>
+                  <input
+                    id="new-template-title"
+                    onChange={(e) => setNewTemplateTitle(e.target.value)}
+                    required
+                    type="text"
+                    value={newTemplateTitle}
+                  />
+                </div>
+              )}
             </div>
-          </div>
-          <div className={styles.cardBody}>
-            {proposals.length === 0 ? (
-              <p className={styles.faint}>{t("propose.empty")}</p>
-            ) : (
-              <ul className={styles.proposalList}>
-                {proposals.map((proposal) => (
-                  <li className={styles.proposalCard} key={proposal.title}>
-                    <div className={styles.proposalHead}>
-                      <b>{proposal.title}</b>
-                      <span className={styles.confidence} data-level={proposal.confidence}>
-                        {t("propose.confidence")}: {proposal.confidence}
-                      </span>
-                    </div>
-                    <p>{proposal.summary}</p>
-                    <p className={styles.instructions}>{proposal.instructions_markdown}</p>
-                    <p className={styles.sourcesLabel}>{t("propose.sources")}:</p>
-                    <ul className={styles.sourceList}>
-                      {proposal.source_chunks.map((chunk) => (
-                        <li key={chunk.document_section_id}>“{chunk.quote}”</li>
-                      ))}
-                    </ul>
-                    <button
-                      className={styles.btnSm}
-                      disabled={busy === `accept-${proposal.title}`}
-                      onClick={() => handleAccept(proposal)}
-                      type="button"
-                    >
-                      <CheckCircle2 aria-hidden="true" size={14} /> {t("propose.accept")}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        </div>
+          </form>
+        </PortalModal>
+      ) : null}
+
+      {docResults.length > 0 ? (
+        <ul aria-label={t("result.heading")} className={styles.docResults}>
+          {docResults.map((entry) => (
+            <li data-status={entry.status} key={entry.version_id}>
+              <b>{entry.document_title}</b>
+              <small>{entry.version_label}</small>
+              <span>
+                {entry.status === "DONE"
+                  ? t("result.done", { count: entry.proposals.length })
+                  : DOCUMENT_ERRORS.has(entry.error ?? "")
+                    ? t(`result.errors.${entry.error}`)
+                    : t("result.failed")}
+              </span>
+              {entry.truncated_sections ? (
+                <em>{t("result.truncated", { count: entry.truncated_sections })}</em>
+              ) : null}
+              {entry.uncovered_sections && entry.uncovered_sections.length > 0 ? (
+                <em title={entry.uncovered_sections.map((item) => item.heading ?? "").join("\n")}>
+                  {t("result.uncovered", {
+                    count: entry.uncovered_sections.length,
+                    names: entry.uncovered_sections
+                      .slice(0, 3)
+                      .map((item) => item.heading ?? "")
+                      .join("; "),
+                  })}
+                </em>
+              ) : null}
+              {entry.status === "FAILED" ? (
+                <button
+                  className={styles.btnSm}
+                  disabled={busy === "propose"}
+                  onClick={() => handlePropose([entry.version_id])}
+                  type="button"
+                >
+                  {t("result.retry")}
+                </button>
+              ) : null}
+            </li>
+          ))}
+        </ul>
+      ) : null}
+
+      {reviews ? (
+        <AiRoadmapReview
+          busy={busy !== null}
+          dayTitle={stages?.find((stage) => stage.id === selectedStageId)?.title ?? ""}
+          onChange={setReviews}
+          onCreate={handleCreateTasks}
+          onReset={resetReview}
+          reviews={reviews}
+        />
       ) : null}
     </div>
   );

@@ -4,10 +4,9 @@ Route journey/task thủ công đầy đủ (dependency, publish) chưa có ở 
 upload → AI đề xuất → accept chạy được end-to-end (P4B mục 8).
 """
 
-from datetime import date
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, File, Form, Response, UploadFile
+from fastapi import APIRouter, Depends, Response
 from fastapi.responses import FileResponse, RedirectResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -15,8 +14,6 @@ from src.api.dependencies import (
     get_chat_completion_port,
     get_current_user,
     get_db,
-    get_embedding_port,
-    get_storage_port,
     require_role,
     require_team_scope,
     session_secret,
@@ -39,10 +36,9 @@ from src.dto.response.portal_response_dto import (
     AiTaskProposalResponseDTO,
     DocumentCategoryResponseDTO,
     DocumentListItemResponseDTO,
-    DocumentUploadResponseDTO,
     EmployeeDocumentResponseDTO,
     EmployeeJourneyResponseDTO,
-    EmployeePrerequisiteDTO,
+    EmployeePrerequisiteResponseDTO,
     EmployeeProfileResponseDTO,
     EmployeeSummaryResponseDTO,
     EmployeeTaskResponseDTO,
@@ -52,6 +48,7 @@ from src.dto.response.portal_response_dto import (
     StageNodeResponseDTO,
     StageOptionResponseDTO,
     TaskNodeResponseDTO,
+    TaskSourceResponseDTO,
     TaskTemplateResponseDTO,
     TemplateNodeResponseDTO,
 )
@@ -63,18 +60,17 @@ from src.model.task_template import TaskTemplate
 from src.model.user import User
 from src.services.auth.auth_service import start_session
 from src.services.auth.errors import AuthError
-from src.services.ingest.embedding.port import EmbeddingPort
-from src.services.ingest.ingest_service import IngestError
-from src.services.ingest.storage import StoragePort
 from src.services.portal import (
     ai_task_service,
     employee_service,
     journey_service,
     profile_service,
+    task_sources,
     template_service,
 )
 from src.services.portal.errors import PortalError
-from src.services.portal.ingest_bridge import ingest_uploaded_document, resolve_original_document
+from src.services.portal.ingest_bridge import resolve_original_document
+from src.services.viga import snapshot as snapshot_service
 
 router = APIRouter(prefix="/api/v1/portal", tags=["portal"])
 
@@ -110,8 +106,21 @@ async def _check_template_scope(db: AsyncSession, user: User, template: JourneyT
         await require_team_scope(template.team_id, user, db)
 
 
+def _source_dto(source: task_sources.TaskSource) -> TaskSourceResponseDTO:
+    return TaskSourceResponseDTO(
+        document_title=source.document_title,
+        version_label=source.version_label,
+        version_id=source.version_id,
+        document_url=source.document_url,
+        section_heading=source.section_heading,
+        quote=source.quote,
+    )
+
+
 def _employee_task_dto(
-    details: journey_service.TaskDetail, prerequisites: dict[int, list[tuple[str, bool]]]
+    details: journey_service.TaskDetail,
+    prerequisites: dict[int, list[tuple[str, bool]]],
+    sources: dict[int, list[task_sources.TaskSource]],
 ) -> EmployeeTaskResponseDTO:
     return EmployeeTaskResponseDTO(
         id=details.task.id,
@@ -127,8 +136,10 @@ def _employee_task_dto(
         status=details.task.status,
         completed_at=details.task.completed_at,
         prerequisites=[
-            EmployeePrerequisiteDTO(title=title, done=done) for title, done in prerequisites.get(details.task.id, [])
+            EmployeePrerequisiteResponseDTO(title=title, done=done)
+            for title, done in prerequisites.get(details.task.id, [])
         ],
+        sources=[_source_dto(source) for source in sources.get(details.template.id, [])],
     )
 
 
@@ -142,13 +153,25 @@ async def get_my_journey(
     template = await db.get(JourneyTemplate, journey.journey_template_id)
     details = await journey_service.list_task_details(db, journey.id)
     prerequisites = await journey_service.list_prerequisites(db, journey.id)
+    sources = await task_sources.sources_by_task(db, [d.template.id for d in details])
     return EmployeeJourneyResponseDTO(
         id=journey.id,
         journey_template_id=journey.journey_template_id,
         journey_title=template.title if template else "",
         started_at=journey.started_at,
-        tasks=[_employee_task_dto(d, prerequisites) for d in details],
+        tasks=[_employee_task_dto(d, prerequisites, sources) for d in details],
     )
+
+
+@router.post("/me/tasks/{employee_task_id}/opened", status_code=204)
+async def mark_my_task_opened(
+    employee_task_id: int,
+    user: Annotated[User, Depends(get_current_user)],
+    db: Annotated[AsyncSession, Depends(get_db)],
+) -> Response:
+    """Ghi "việc vừa mở" để Viga hiểu "việc này" mà giao diện không cần gửi `task_id` (mục 15.3e). Không đổi trạng thái việc."""
+    await snapshot_service.mark_task_opened(db, user, employee_task_id)
+    return Response(status_code=204)
 
 
 @router.post("/me/tasks/{employee_task_id}/complete", response_model=EmployeeTaskResponseDTO)
@@ -162,7 +185,8 @@ async def complete_my_task(
     details = await journey_service.list_task_details(db, task.employee_journey_id)
     prerequisites = await journey_service.list_prerequisites(db, task.employee_journey_id)
     current = next(d for d in details if d.task.id == task.id)
-    return _employee_task_dto(current, prerequisites)
+    sources = await task_sources.sources_by_task(db, [current.template.id])
+    return _employee_task_dto(current, prerequisites, sources)
 
 
 def _profile_dto(profile: profile_service.Profile) -> EmployeeProfileResponseDTO:
@@ -245,22 +269,7 @@ async def list_documents(
     db: Annotated[AsyncSession, Depends(get_db)],
 ) -> list[DocumentListItemResponseDTO]:
     items = await template_service.list_documents(db)
-    return [
-        DocumentListItemResponseDTO(
-            id=item.id,
-            title=item.title,
-            category_name=item.category_name,
-            status=item.status,
-            updated_at=item.updated_at,
-            latest_version_id=item.latest_version_id,
-            section_count=item.section_count,
-            source_key=item.source_key,
-            category_slug=item.category_slug,
-            owner_name=item.owner_name,
-            task_titles=item.task_titles,
-        )
-        for item in items
-    ]
+    return [_document_item(item) for item in items]
 
 
 @router.get("/stages")
@@ -301,43 +310,6 @@ async def create_journey_stage(
     template = await _require_template_scope(db, user, template_id)
     stage = await template_service.add_stage(db, template=template, title=body.title, sort_order=body.sort_order)
     return JourneyStageResponseDTO.model_validate(stage, from_attributes=True)
-
-
-@router.post("/documents", response_model=DocumentUploadResponseDTO)
-async def upload_document(
-    user: Annotated[User, Depends(require_role(UserRole.HR, UserRole.ADMIN))],
-    db: Annotated[AsyncSession, Depends(get_db)],
-    embedding: Annotated[EmbeddingPort, Depends(get_embedding_port)],
-    storage: Annotated[StoragePort, Depends(get_storage_port)],
-    file: Annotated[UploadFile, File()],
-    title: Annotated[str, Form()],
-    category_slug: Annotated[str, Form()],
-    source_key: Annotated[str, Form()],
-    version_label: Annotated[str, Form()],
-    effective_from: Annotated[date, Form()],
-) -> DocumentUploadResponseDTO:
-    try:
-        result = await ingest_uploaded_document(
-            db,
-            file=file,
-            category_slug=category_slug,
-            owner_email=user.email,
-            title=title,
-            source_key=source_key,
-            version_label=version_label,
-            effective_from=effective_from,
-            embedding=embedding,
-            storage=storage,
-        )
-    except IngestError as exc:
-        raise PortalError(422, "INGEST_FAILED", "portal.ingest_failed") from exc
-    return DocumentUploadResponseDTO(
-        document_id=result.document_id,
-        document_version_id=result.version_id,
-        section_count=result.section_count,
-        chunk_count=result.chunk_count,
-        created=result.created,
-    )
 
 
 @router.get("/documents/{document_version_id}/original")
@@ -393,19 +365,7 @@ async def set_document_status(
     if not items:
         raise PortalError(404, "DOCUMENT_NOT_FOUND", "portal.document_not_found")
     item = items[0]
-    return DocumentListItemResponseDTO(
-        id=item.id,
-        title=item.title,
-        category_name=item.category_name,
-        status=item.status,
-        updated_at=item.updated_at,
-        latest_version_id=item.latest_version_id,
-        section_count=item.section_count,
-        source_key=item.source_key,
-        category_slug=item.category_slug,
-        owner_name=item.owner_name,
-        task_titles=item.task_titles,
-    )
+    return _document_item(item)
 
 
 @router.get("/journey-templates/mine")
@@ -416,6 +376,7 @@ async def list_my_templates(
     """Cây lộ trình đầy đủ trong phạm vi HR — nguồn dữ liệu thật cho "Quản lý task"."""
     team_id = await template_service.hr_team_id(db, user) if user.role == UserRole.HR else None
     nodes = await template_service.list_my_templates(db, team_id=team_id)
+    sources = await task_sources.sources_by_task(db, [t.id for n in nodes for s in n.stages for t in s.tasks])
     return [
         TemplateNodeResponseDTO(
             id=n.id,
@@ -439,6 +400,7 @@ async def list_my_templates(
                             team_id=t.team_id,
                             depends_on=t.depends_on,
                             task_group=t.task_group,
+                            sources=[_source_dto(source) for source in sources.get(t.id, [])],
                         )
                         for t in s.tasks
                     ],
@@ -539,19 +501,7 @@ async def list_employees(
 
 
 def _document_item(item: template_service.DocumentListItem) -> DocumentListItemResponseDTO:
-    return DocumentListItemResponseDTO(
-        id=item.id,
-        title=item.title,
-        category_name=item.category_name,
-        status=item.status,
-        updated_at=item.updated_at,
-        latest_version_id=item.latest_version_id,
-        section_count=item.section_count,
-        source_key=item.source_key,
-        category_slug=item.category_slug,
-        owner_name=item.owner_name,
-        task_titles=item.task_titles,
-    )
+    return DocumentListItemResponseDTO(**vars(item))
 
 
 @router.get("/document-categories")

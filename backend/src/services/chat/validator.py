@@ -1,18 +1,15 @@
 """Kiểm claim trước khi hiển thị: `chunk_id` phải thuộc lượt tìm kiếm của đúng câu hỏi con đó (INV6),
-`quote` phải là chuỗi con nguyên văn của section cha chứa chunk đó (INV13, sau chuẩn hóa NFC và gộp
-khoảng trắng). Claim không qua kiểm tra bị ép về `NO_BASIS` — không bao giờ hiển thị câu trả lời chưa
+`quote` phải là chuỗi con nguyên văn của section cha chứa chunk đó (INV13, sau khi bỏ ký hiệu Markdown,
+gộp khoảng trắng và không phân biệt hoa thường: xem `services/text_match.py`). Claim không qua kiểm tra bị ép về `NO_BASIS` — không bao giờ hiển thị câu trả lời chưa
 kiểm chứng (mục 6, kế hoạch 2-C/2-D mở rộng).
 """
 
 from __future__ import annotations
 
-import unicodedata
+from dataclasses import replace
 
 from src.services.chat.answer_service import Claim, QuestionEvidence
-
-
-def _normalize(text: str) -> str:
-    return " ".join(unicodedata.normalize("NFC", text).split())
+from src.services.text_match import quote_matches, tidy_quote, unescape_markdown
 
 
 def validate_claim(claim: Claim, evidence_by_question: dict[str, QuestionEvidence]) -> Claim:
@@ -28,10 +25,16 @@ def validate_claim(claim: Claim, evidence_by_question: dict[str, QuestionEvidenc
     if section is None:  # INV6: chunk_id phải thuộc tập chunk đã truy xuất cho ĐÚNG câu hỏi con này
         return Claim(claim.question, "NO_BASIS", "validation_failed", None, None, None)
 
-    if _normalize(claim.quote) not in _normalize(section.content):  # INV13
+    # INV13 (so khớp trên chữ, bỏ ký hiệu Markdown). Tiêu đề mục cũng là chữ của mục (đã hiện cho mô hình ở đầu đoạn): tài liệu thật
+    # có điều kiện áp dụng nằm ngay tiêu đề, vd. "(bắt buộc cho CBNV mới)", "Dành cho văn phòng Vincom Đồng Khởi".
+    if not quote_matches(claim.quote, f"{section.heading or ''}\n{section.content}"):
         return Claim(claim.question, "NO_BASIS", "validation_failed", None, None, None)
 
-    return claim
+    tidy = tidy_quote(claim.quote)
+    text = unescape_markdown(claim.text) if claim.text else claim.text
+    if tidy == claim.quote and text == claim.text:
+        return claim
+    return replace(claim, quote=tidy, text=text)
 
 
 def validate_claims(claims: list[Claim], items: list[QuestionEvidence]) -> list[Claim]:

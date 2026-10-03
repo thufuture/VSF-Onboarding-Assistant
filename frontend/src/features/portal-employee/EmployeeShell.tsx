@@ -1,13 +1,14 @@
 "use client";
 
-import { Bell, Check, ChevronDown, ChevronRight, LogOut, Moon, Sun, UserRound } from "lucide-react";
+import { Bell, Check, ChevronDown, Clock, LockOpen, LogOut, MessageCircle, Moon, Sparkles, Sun, UserRound } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 
 import { PersonAvatar } from "@/components/avatar/PersonAvatar";
 import { VigaAvatar } from "@/components/avatar/VigaAvatar";
 import { VsfMark } from "@/components/brand/VsfMark";
-import { FlatIcon, type FlatIconName } from "@/components/flat-icons/FlatIcon";
+import { PortalFooter } from "@/components/portal-footer/PortalFooter";
+import { FlatIcon, type FlatIconName, type FlatTone } from "@/components/flat-icons/FlatIcon";
 import { FlagIcon } from "@/components/i18n/LanguageSwitcher";
 import { useTheme } from "@/features/app-shell/useTheme";
 import { useSession } from "@/features/auth/SessionProvider";
@@ -21,12 +22,22 @@ import { useVigaPanel } from "./vigaPanelStore";
 
 // Đúng thứ tự nav nhân viên của prototype v15 (NAV.employee): Tổng quan, Nhiệm vụ, Theo dõi, Tài liệu.
 // "Thông báo" nằm ở chuông, các thiết lập (sáng/tối, ngôn ngữ) và "Hồ sơ" nằm trong thẻ tài khoản.
-const NAV: { key: "overview" | "tasks" | "progress" | "documents"; href: string; icon: FlatIconName; exact?: boolean }[] = [
-  { key: "overview", href: "/me", icon: "dashboard", exact: true },
-  { key: "tasks", href: "/me/tasks", icon: "tasks" },
-  { key: "progress", href: "/me/progress", icon: "route" },
-  { key: "documents", href: "/me/documents", icon: "book" },
+const NAV: {
+  key: "overview" | "tasks" | "progress" | "documents" | "tickets";
+  href: string;
+  icon: FlatIconName;
+  tone: FlatTone;
+  exact?: boolean;
+}[] = [
+  { key: "overview", href: "/me", icon: "dashboard", tone: "blue", exact: true },
+  { key: "tasks", href: "/me/tasks", icon: "tasks", tone: "indigo" },
+  { key: "progress", href: "/me/progress", icon: "route", tone: "green" },
+  { key: "documents", href: "/me/documents", icon: "book", tone: "amber" },
+  { key: "tickets", href: "/me/tickets", icon: "lifebuoy", tone: "rose" },
 ];
+
+// Icon theo loại thông báo (màu nằm ở EmployeeShell.module.scss: kind_*).
+const KIND_ICONS = { unlocked: LockOpen, done: Check, reminder: Clock, welcome: Sparkles, ticket: MessageCircle } as const;
 
 const LANGUAGES: Locale[] = ["vi", "en"];
 const LANGUAGE_NAMES: Record<Locale, string> = { vi: "Việt Nam", en: "English" };
@@ -67,13 +78,16 @@ export function EmployeeShell({ children }: { children: ReactNode }) {
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [bellOpen, setBellOpen] = useState(false);
+  const [bellFilter, setBellFilter] = useState<"all" | "unread">("all");
   const menuRef = useDismiss(menuOpen, () => setMenuOpen(false));
   const bellRef = useDismiss(bellOpen, () => setBellOpen(false));
 
+  // Trang Viga đầy đủ thay cho ngăn bên phải: ẩn ngăn và nút "Hỏi Viga" để không có hai khung trò chuyện cùng lúc.
+  const onVigaPage = pathname === "/me/viga" || pathname.startsWith("/me/viga/");
   const isActive = (href: string, exact?: boolean) =>
     exact ? pathname === href : pathname === href || pathname.startsWith(`${href}/`);
 
-  const latest = notifications.slice(0, 4);
+  const shown = notifications.filter((item) => (bellFilter === "unread" ? !item.read : true));
 
   function changeLocale(next: Locale) {
     setMenuOpen(false);
@@ -102,22 +116,24 @@ export function EmployeeShell({ children }: { children: ReactNode }) {
                 href={item.href}
                 key={item.key}
               >
-                <FlatIcon name={item.icon} size={20} tone="blue" />
+                <FlatIcon name={item.icon} size={20} tone={item.tone} />
                 <span>{t(`nav.${item.key}`)}</span>
               </Link>
             ))}
           </nav>
 
           <div className={styles.tools}>
-            <button
-              aria-expanded={vigaOpen}
-              className={`${styles.vigaButton} ${vigaOpen ? styles.vigaOn : ""}`}
-              onClick={toggleViga}
-              type="button"
-            >
-              <VigaAvatar sizePx={22} />
-              <span>{t("askViga")}</span>
-            </button>
+            {onVigaPage ? null : (
+              <button
+                aria-expanded={vigaOpen}
+                className={`${styles.vigaButton} ${vigaOpen ? styles.vigaOn : ""}`}
+                onClick={toggleViga}
+                type="button"
+              >
+                <VigaAvatar sizePx={22} />
+                <span>{t("askViga")}</span>
+              </button>
+            )}
 
             <div className={styles.dropWrap} ref={bellRef}>
               <button
@@ -140,35 +156,62 @@ export function EmployeeShell({ children }: { children: ReactNode }) {
                     </button>
                   </div>
 
-                  {latest.length === 0 ? (
+                  <div className={styles.bellTabs} role="tablist">
+                    {(["all", "unread"] as const).map((key) => (
+                      <button
+                        aria-selected={bellFilter === key}
+                        className={bellFilter === key ? styles.bellTabOn : ""}
+                        key={key}
+                        onClick={() => setBellFilter(key)}
+                        role="tab"
+                        type="button"
+                      >
+                        {t(key === "all" ? "notifications.filterAll" : "notifications.filterUnread", {
+                          count: key === "all" ? notifications.length : unreadCount,
+                        })}
+                      </button>
+                    ))}
+                  </div>
+
+                  {shown.length === 0 ? (
                     <p className={styles.cardEmpty}>{t("notifications.emptyTitle")}</p>
                   ) : (
                     <ul className={styles.bellList}>
-                      {latest.map((item) => (
-                        <li key={item.id}>
-                          <button
-                            className={item.read ? "" : styles.bellUnread}
-                            onClick={() => {
-                              markRead(item.id);
-                              setBellOpen(false);
-                              if (item.taskId) router.push(`/me/tasks/${item.taskId}`);
-                            }}
-                            role="menuitem"
-                            title={item.title}
-                            type="button"
-                          >
-                            <span className={styles.bellKind}>{t(`notifications.kind.${item.kind}`)}</span>
-                            <span className={styles.bellTitle}>{item.title}</span>
-                            <span className={styles.bellBody}>{item.body}</span>
-                          </button>
-                        </li>
-                      ))}
+                      {shown.map((item) => {
+                        const Icon = KIND_ICONS[item.kind];
+                        return (
+                          <li key={item.id}>
+                            <button
+                              className={`${styles.bellItem} ${item.read ? styles.bellRead : styles.bellUnread}`}
+                              onClick={() => {
+                                markRead(item.id);
+                                if (item.taskId) {
+                                  setBellOpen(false);
+                                  router.push(`/me/tasks/${item.taskId}`);
+                                } else if (item.href) {
+                                  setBellOpen(false);
+                                  router.push(item.href);
+                                }
+                              }}
+                              role="menuitem"
+                              title={item.title}
+                              type="button"
+                            >
+                              <span className={`${styles.bellIcon} ${styles[`kind_${item.kind}`]}`}>
+                                <Icon aria-hidden="true" size={16} />
+                              </span>
+                              <span className={styles.bellText}>
+                                <span className={styles.bellKind}>{t(`notifications.kind.${item.kind}`)}</span>
+                                <span className={styles.bellTitle}>{item.title}</span>
+                                <span className={styles.bellBody}>{item.body}</span>
+                              </span>
+                              {item.read ? null : <i aria-label={t("notifications.unreadMark")} className={styles.bellDot} />}
+                            </button>
+                          </li>
+                        );
+                      })}
                     </ul>
                   )}
-
-                  <Link className={styles.cardFoot} href="/me/notifications" onClick={() => setBellOpen(false)}>
-                    {t("notifications.seeAll")} <ChevronRight aria-hidden="true" size={14} />
-                  </Link>
                 </div>
               ) : null}
             </div>
@@ -242,15 +285,10 @@ export function EmployeeShell({ children }: { children: ReactNode }) {
         <main className={styles.main} key={pathname}>
           {children}
 
-          <footer className={styles.footer}>
-            <div className={styles.footerIn}>
-              <span>{t("footer.product")}</span>
-              <span className={styles.credit}>{t("footer.credit")}</span>
-            </div>
-          </footer>
+          <PortalFooter />
         </main>
 
-        <VigaPanel />
+        {onVigaPage ? null : <VigaPanel />}
       </div>
     </div>
   );

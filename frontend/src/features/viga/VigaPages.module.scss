@@ -1,0 +1,157 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 5px 5px 16px;
+}
+
+.pagehead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 16px;
+  border: 1px solid var(--app-border);
+  border-radius: 5px;
+  background: var(--app-surface);
+
+  > div {
+    flex: 1;
+    min-width: 0;
+  }
+  h1 {
+    margin: 0;
+    color: var(--app-ink);
+    font-size: 17px;
+    font-weight: 600;
+  }
+  p {
+    margin: 2px 0 0;
+    color: var(--app-ink-2);
+    font-size: 12.5px;
+  }
+}
+
+.phi {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  flex: none;
+  place-items: center;
+  border-radius: 5px;
+  background: color-mix(in srgb, #1f7f7a 13%, var(--app-surface));
+  color: #1f7f7a;
+}
+
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--app-ink-2);
+  font-size: 12.5px;
+}
+
+.card {
+  padding: 4px 0;
+  overflow-x: auto;
+  border: 1px solid var(--app-border);
+  border-radius: 5px;
+  background: var(--app-surface);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+
+  th,
+  td {
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--app-border);
+    color: var(--app-ink);
+    text-align: left;
+    vertical-align: middle;
+  }
+  th {
+    color: var(--app-ink-3);
+    font-size: 11.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+  tr[data-resolved="true"] td {
+    color: var(--app-ink-3);
+  }
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+
+  a,
+  button {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 10px;
+    border: 1px solid var(--app-border);
+    border-radius: 5px;
+    background: var(--app-surface);
+    color: var(--app-accent-strong);
+    cursor: pointer;
+    font-size: 12.5px;
+    text-decoration: none;
+
+    &:hover:not(:disabled) {
+      border-color: var(--app-accent);
+    }
+    &:disabled {
+      opacity: 0.5;
+    }
+  }
+}
+.done {
+  color: #2f9a6f;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 36px 12px;
+  color: var(--app-ink-3);
+  text-align: center;
+
+  b {
+    color: var(--app-ink-2);
+  }
+  small {
+    font-size: 12px;
+  }
+}
+
+.faint,
+.privacy {
+  margin: 0;
+  padding: 14px 16px;
+  color: var(--app-ink-3);
+  font-size: 12.5px;
+}
+// Ghi chú riêng tư nằm cuối thẻ (thay vì dưới thẻ) để thẻ chính chạm sát chân trang.
+.privacy {
+  padding: 10px 16px;
+  border-top: 1px solid var(--app-border);
+}
+.error {
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 5px;
+  background: #fdecec;
+  color: #a3121f;
+  font-size: 13.5px;
+}

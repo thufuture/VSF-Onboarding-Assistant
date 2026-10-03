@@ -70,3 +70,34 @@ export type AdminTemplateOverviewResponseDTO = {
   teams_using_copy: number;
   active_teams: number;
 };
+
+export type AdminOperationMetricsResponseDTO = {
+  operation: string;
+  kind: string;
+  calls: number;
+  errors: number;
+  avg_latency_ms: number;
+  p50_latency_ms: number;
+  p95_latency_ms: number;
+  prompt_tokens: number;
+  completion_tokens: number;
+  input_count: number;
+  cost_usd: number;
+};
+
+export type AdminDailyCostResponseDTO = {
+  day: string;
+  calls: number;
+  cost_usd: number;
+};
+
+/** Số liệu gọi LLM và embedding. Chỉ có số liệu, không có nội dung câu hỏi hay tài liệu. */
+export type AdminMetricsResponseDTO = {
+  days: number;
+  since: string;
+  calls: number;
+  errors: number;
+  cost_usd: number;
+  operations: AdminOperationMetricsResponseDTO[];
+  daily: AdminDailyCostResponseDTO[];
+};

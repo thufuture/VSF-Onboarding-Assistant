@@ -19,6 +19,7 @@ from src.dto.response.admin_response_dto import (
     AdminAuditLogResponseDTO,
     AdminDashboardResponseDTO,
     AdminMembershipResponseDTO,
+    AdminMetricsResponseDTO,
     AdminTeamResponseDTO,
     AdminTemplateOverviewResponseDTO,
     AdminUserResponseDTO,
@@ -26,7 +27,7 @@ from src.dto.response.admin_response_dto import (
 )
 from src.model.enums import UserRole
 from src.model.user import User
-from src.services.portal import admin_service
+from src.services.portal import admin_service, metrics_service
 
 router = APIRouter(prefix="/api/v1/admin", tags=["admin"])
 
@@ -129,3 +130,10 @@ async def list_audit_logs(
     user: AdminUser, db: Db, limit: Annotated[int, Query(ge=1, le=200)] = 100
 ) -> list[AdminAuditLogResponseDTO]:
     return await admin_service.list_audit_logs(db, limit=limit)
+
+
+@router.get("/metrics", response_model=AdminMetricsResponseDTO)
+async def metrics(user: AdminUser, db: Db, days: Annotated[int, Query(ge=1, le=90)] = 7) -> AdminMetricsResponseDTO:
+    """Số liệu gọi LLM/embedding: lượt, lỗi, độ trễ p50/p95, token, chi phí ước tính theo từng thao tác."""
+    report = await metrics_service.get_metrics(db, days=days)
+    return AdminMetricsResponseDTO.model_validate(report, from_attributes=True)

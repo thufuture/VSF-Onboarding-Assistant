@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  BookOpen,
   CheckCircle2,
   ClipboardList,
   Clock,
@@ -8,7 +9,6 @@ import {
   Eye,
   Flag,
   Info,
-  Link2,
   ListChecks,
   Pencil,
   Plus,
@@ -23,6 +23,8 @@ import { type FormEvent, useEffect, useMemo, useState } from "react";
 
 import { FlatIcon, type FlatIconName, type FlatTone } from "@/components/flat-icons/FlatIcon";
 import { ConfirmModal, modalStyles as m, PortalModal, useToast } from "@/components/portal-modal/PortalModal";
+import { JourneyRoad, type RoadItem } from "@/components/roadmap/JourneyRoad";
+import { TaskSources } from "@/components/task-sources/TaskSources";
 import { portalHrApi, PortalError } from "@/features/portal-hr/api";
 import type {
   TaskGroupDTO,
@@ -33,16 +35,6 @@ import { parseTaskBody, serializeTaskBody } from "@/features/portal-hr/taskBody"
 import { Link } from "@/i18n/navigation";
 
 import styles from "./TaskManagementPage.module.scss";
-
-// Hình học roadmap: canvas cao 470, nút rải đều 7%→93%; độ cao lệch nhẹ (±17px) để đường cong mềm như sóng thoải,
-// thẻ xen kẽ trên (top 16) / dưới (top 298), rộng 176 và cao 138 (dải màu đầu thẻ + thân + nút thao tác).
-const CANVAS_H = 470;
-const CARD_W = 196;
-const CARD_H = 138;
-const CARD_TOP = 16;
-const CARD_BOTTOM = 298;
-const CENTERS = [232, 210, 240, 214, 236, 208, 238, 216, 234, 212, 240, 218];
-const SIZES = [50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50];
 
 // Nhóm task cố định (Hồ sơ / Đào tạo / Thiết bị / Văn phòng) — mỗi nhóm một màu dịu và một icon phẳng; chưa phân nhóm dùng xám.
 const GROUPS: { key: TaskGroupDTO; cls: string; color: string; flat: FlatIconName; tone: FlatTone }[] = [
@@ -88,7 +80,7 @@ type TaskForm = {
   depends: number[];
 };
 
-type TabKey = "info" | "guide" | "prereq" | "links";
+type TabKey = "info" | "guide" | "prereq";
 
 /** "Quản lý lộ trình onboarding" — cổng đúng DOM/CSS của view h-tasks (v15): tiêu đề, 4 KPI, tìm kiếm,
  * roadmap sóng ngang thẻ xen kẽ, chú giải; mọi nút (thêm/sửa/xem/nhân bản/xóa/thêm ngày/xuất bản) mở modal như v15.
@@ -153,34 +145,18 @@ export function TaskManagementPage() {
   const isPublished = selectedStage?.templateStatus === "PUBLISHED";
   const stageTasks = useMemo(() => selectedStage?.tasks ?? [], [selectedStage]);
 
-  const count = stageTasks.length;
   // Task cùng lộ trình (để chọn tiên quyết) và các giai đoạn cùng lộ trình (để chọn "Ngày").
   const templateStages = selectedTemplate?.stages ?? [];
-  // Điểm 0 = "Bắt đầu", điểm 1..n = task, điểm n+1 = "Kết thúc": cả ba loại đều là nút nằm trên đường.
-  const total = count + 2;
-  const layout = Array.from({ length: total }, (_, j) => {
-    const x = 6 + (j * 88) / (total - 1);
-    const size = SIZES[j % SIZES.length];
-    const center = CENTERS[j % CENTERS.length];
-    return { x, size, center, top: center - size / 2, onTop: (j - 1) % 2 === 0 };
-  });
-  // Đường cong Catmull-Rom qua mọi điểm (toạ độ viewBox 1000 = phần trăm × 10).
-  const pts = layout.map((p) => ({ x: p.x * 10, y: p.center }));
-  const path = pts
-    .map((q, i) => {
-      if (i === 0) return `M ${q.x} ${q.y}`;
-      const p0 = pts[i - 2] ?? pts[i - 1];
-      const p1 = pts[i - 1];
-      const p3 = pts[i + 1] ?? q;
-      const c1x = p1.x + (q.x - p0.x) / 6;
-      const c1y = p1.y + (q.y - p0.y) / 6;
-      const c2x = q.x - (p3.x - p1.x) / 6;
-      const c2y = q.y - (p3.y - p1.y) / 6;
-      return `C ${c1x} ${c1y}, ${c2x} ${c2y}, ${q.x} ${q.y}`;
-    })
-    .join(" ");
-
-  const toneOf = (group: TaskGroupDTO | null) => GROUPS.find((g) => g.key === group) ?? NO_GROUP;
+  const roadItems: RoadItem[] = stageTasks.map((task) => ({
+    id: task.id,
+    title: task.title,
+    group: task.task_group,
+    pill: isPublished ? t("statusPublished") : t("statusDraft"),
+    chips: [
+      { icon: <Clock aria-hidden="true" size={10} />, label: task.required ? t("required") : t("optional") },
+      { icon: <ListChecks aria-hidden="true" size={10} />, label: t("prereq", { count: task.depends_on.length }) },
+    ],
+  }));
 
   const templateTasks = templateStages.flatMap((s) => s.tasks.map((tk) => ({ ...tk, stageTitle: s.title })));
 
@@ -378,7 +354,6 @@ export function TaskManagementPage() {
     { key: "info", icon: Info, label: t("tabs.info") },
     { key: "guide", icon: ClipboardList, label: t("tabs.guide") },
     { key: "prereq", icon: Workflow, label: t("tabs.prereq") },
-    { key: "links", icon: Link2, label: t("tabs.links") },
   ];
 
   const viewParts = viewingTask ? parseTaskBody(viewingTask.body_markdown) : null;
@@ -466,111 +441,36 @@ export function TaskManagementPage() {
               <span>{t("emptyTasks")}</span>
             </div>
           ) : (
-            <div className={styles.roadScroll}>
-              <div className={styles.canvas} style={{ height: CANVAS_H, minWidth: Math.max(820, count * 124) }}>
-                <svg
-                  aria-hidden="true"
-                  className={styles.roadSvg}
-                  preserveAspectRatio="none"
-                  viewBox={`0 0 1000 ${CANVAS_H}`}
-                >
-                  <path className={styles.roadBed} d={path} vectorEffect="non-scaling-stroke" />
-                  <path className={styles.roadLine} d={path} vectorEffect="non-scaling-stroke" />
-                  <path className={styles.roadDash} d={path} vectorEffect="non-scaling-stroke" />
-                </svg>
-
-                {[
-                  { p: layout[0], kind: "start", flat: "flag" as FlatIconName, tone: "red" as FlatTone, label: t("start") },
-                  { p: layout[total - 1], kind: "finish", flat: "award" as FlatIconName, tone: "violet" as FlatTone, label: t("finish") },
-                ].map((end) => (
-                  <div className={`${styles.endNode} ${styles[`end_${end.kind}`]}`} key={end.kind} title={end.label}>
-                    <span
-                      className={styles.endCircle}
-                      style={{ left: `calc(${end.p.x}% - 24px)`, top: end.p.center - 24 }}
-                    >
-                      <FlatIcon name={end.flat} size={24} tone={end.tone} />
-                    </span>
-                    <em style={{ left: `calc(${end.p.x}% - 40px)`, top: end.p.center + 30 }}>{end.label}</em>
-                  </div>
-                ))}
-
-                {stageTasks.map((task, i) => {
-                  const p = layout[i + 1];
-                  const tone = toneOf(task.task_group);
-                  const tetherTop = p.onTop ? CARD_TOP + CARD_H : p.top + p.size;
-                  const tetherHeight = p.onTop ? p.top - (CARD_TOP + CARD_H) : CARD_BOTTOM - (p.top + p.size);
-                  return (
-                    <article className={`${styles.roadItem} ${styles[tone.cls]}`} key={task.id}>
-                      <i className={`${styles.tether} ${p.onTop ? styles.tetherTop : styles.tetherBottom}`} style={{ left: `${p.x}%`, top: tetherTop, height: Math.max(tetherHeight, 0) }} />
-                      <button
-                        aria-label={task.title}
-                        className={styles.node}
-                        onClick={() => setViewingTask(task)}
-                        style={{ left: `calc(${p.x}% - ${p.size / 2}px)`, top: p.top, width: p.size, height: p.size }}
-                        type="button"
-                      >
-                        <FlatIcon name={tone.flat} size={24} tone={tone.tone} />
-                        <i className={styles.nodeNum}>{i + 1}</i>
-                      </button>
-                      <div
-                        className={styles.card}
-                        style={{
-                          width: CARD_W,
-                          left: `clamp(4px, calc(${p.x}% - ${CARD_W / 2}px), calc(100% - ${CARD_W + 4}px))`,
-                          top: p.onTop ? CARD_TOP : CARD_BOTTOM,
-                        }}
-                      >
-                        <div className={styles.cardBand}>
-                          <small>
-                            <span className={styles.bandIcon}>
-                              <FlatIcon name={tone.flat} size={17} tone={tone.tone} />
-                            </span>
-                            {t("taskNo", { n: String(i + 1).padStart(2, "0") })}
-                          </small>
-                          <span className={styles.bandPill}>{isPublished ? t("statusPublished") : t("statusDraft")}</span>
-                        </div>
-                        <div className={styles.cardBody}>
-                          <h3 title={task.title}>{task.title}</h3>
-                          <div className={styles.chips}>
-                            <span>
-                              <Clock aria-hidden="true" size={10} /> {task.required ? t("required") : t("optional")}
-                            </span>
-                            <span>
-                              <ListChecks aria-hidden="true" size={10} /> {t("prereq", { count: task.depends_on.length })}
-                            </span>
-                          </div>
-                        </div>
-                        <div className={styles.actions}>
-                          <button onClick={() => setViewingTask(task)} title={t("viewTask")} type="button">
-                            <Eye aria-hidden="true" size={12} />
-                          </button>
-                          <button disabled={isPublished} onClick={() => openEdit(task)} title={t("edit")} type="button">
-                            <Pencil aria-hidden="true" size={12} />
-                          </button>
-                          <button
-                            disabled={isPublished}
-                            onClick={() => setDuplicatingTask(task)}
-                            title={t("duplicate")}
-                            type="button"
-                          >
-                            <Copy aria-hidden="true" size={12} />
-                          </button>
-                          <button
-                            className={styles.danger}
-                            disabled={isPublished}
-                            onClick={() => setDeletingTask(task)}
-                            title={t("delete")}
-                            type="button"
-                          >
-                            <Trash2 aria-hidden="true" size={12} />
-                          </button>
-                        </div>
-                      </div>
-                    </article>
-                  );
-                })}
-              </div>
-            </div>
+            <JourneyRoad
+              actionsFor={(item) => {
+                const task = stageTasks.find((row) => row.id === item.id);
+                if (!task) return [];
+                return [
+                  { icon: <Eye aria-hidden="true" size={12} />, title: t("viewTask"), onClick: () => setViewingTask(task) },
+                  {
+                    icon: <BookOpen aria-hidden="true" size={12} />,
+                    title: t("sourceAction"),
+                    disabled: !task.sources || task.sources.length === 0,
+                    onClick: () => setViewingTask(task),
+                  },
+                  { icon: <Pencil aria-hidden="true" size={12} />, title: t("edit"), disabled: isPublished, onClick: () => openEdit(task) },
+                  { icon: <Copy aria-hidden="true" size={12} />, title: t("duplicate"), disabled: isPublished, onClick: () => setDuplicatingTask(task) },
+                  {
+                    icon: <Trash2 aria-hidden="true" size={12} />,
+                    title: t("delete"),
+                    tone: "danger" as const,
+                    disabled: isPublished,
+                    onClick: () => setDeletingTask(task),
+                  },
+                ];
+              }}
+              items={roadItems}
+              labels={{ start: t("start"), finish: t("finish"), taskNo: (n) => t("taskNo", { n }) }}
+              onOpen={(item) => {
+                const task = stageTasks.find((row) => row.id === item.id);
+                if (task) setViewingTask(task);
+              }}
+            />
           )}
 
           <div className={styles.legend}>
@@ -740,14 +640,6 @@ export function TaskManagementPage() {
                   ))}
               </div>
             </div>
-
-            <div hidden={tab !== "links"}>
-              <div className={m.emptyPanel}>
-                <Link2 aria-hidden="true" size={22} />
-                <b>{t("form.linksTitle")}</b>
-                <span>{t("form.linksSoon")}</span>
-              </div>
-            </div>
           </form>
         </PortalModal>
       ) : null}
@@ -816,6 +708,14 @@ export function TaskManagementPage() {
                   <li key={i}>{step}</li>
                 ))}
               </ol>
+            </section>
+          ) : null}
+          {viewingTask.sources && viewingTask.sources.length > 0 ? (
+            <section className={styles.viewSection}>
+              <h3>
+                <BookOpen aria-hidden="true" size={14} /> {t("view.sources")}
+              </h3>
+              <TaskSources sources={viewingTask.sources} />
             </section>
           ) : null}
         </PortalModal>

@@ -209,7 +209,7 @@
       "contactTitle": "Liên hệ",
       "contactLine": "Bản demo thực tập",
       "contactNote": "Địa chỉ liên hệ là địa chỉ giả lập.",
-      "copyright": "© 2026 VSF Onboarding Assistant. Bản demo thực tập.",
+      "copyright": "© 2026 VSF Onboarding Assistant.",
       "photoLead": "Ảnh minh họa Vincom Center Đồng Khởi, TP.HCM. Ảnh: ",
       "photoSource": "qua Wikimedia Commons",
       "photoEdited": "đã cắt và nén",
@@ -275,7 +275,6 @@
       "chat": "Trợ lý hỏi đáp",
       "roadmap": "Lộ trình của tôi",
       "documents": "Tài liệu",
-      "contacts": "Đầu mối",
       "tickets": "Yêu cầu hỗ trợ",
       "admin": "Tổng quan",
       "employees": "Nhân viên",
@@ -283,13 +282,13 @@
       "vigaFeedback": "Phản hồi Viga",
       "taskManagement": "Quản lý task",
       "aiTasks": "Tạo task bằng AI",
-      "registry": "Đầu mối và đường dẫn",
       "soon": "Sắp có",
       "adminUsers": "Người dùng",
       "adminTeams": "Phòng ban",
       "adminMembers": "Thành viên",
       "adminTemplate": "Lộ trình mẫu",
-      "adminAudit": "Nhật ký"
+      "adminAudit": "Nhật ký",
+      "adminMetrics": "Chi phí AI"
     },
     "footer": {
       "brand": "VSF Onboarding Portal",
@@ -361,7 +360,6 @@
     "description": "Khu quản trị đang được xây dựng. Hiện tại bạn có thể xem trang chat như nhân sự mới.",
     "upcoming": {
       "documents": "Quản lý tài liệu và phiên bản",
-      "registry": "Danh bạ đầu mối và liên kết",
       "tickets": "Yêu cầu hỗ trợ từ nhân sự mới"
     },
     "openChat": "Mở trang chat"
@@ -395,7 +393,8 @@
       "kind": "Loại",
       "prereq": "Tiên quyết",
       "none": "Không có",
-      "steps": "Các bước"
+      "steps": "Các bước",
+      "sources": "Nguồn tài liệu"
     },
     "edit": "Sửa",
     "duplicate": "Nhân bản",
@@ -442,8 +441,6 @@
       "done": "Điều kiện hoàn thành",
       "steps": "Các bước (mỗi dòng một bước)",
       "prereqHint": "Chọn các task phải xong trước task này.",
-      "linksTitle": "Đầu mối và đường dẫn",
-      "linksSoon": "Sẽ có khi làm mục Đầu mối và đường dẫn.",
       "stageHint": "Tạo giai đoạn trống rồi thêm task thủ công hoặc bằng AI.",
       "stageNumber": "Số ngày",
       "dayWord": "Ngày",
@@ -474,8 +471,7 @@
     "tabs": {
       "info": "Thông tin",
       "guide": "Hướng dẫn",
-      "prereq": "Tiên quyết",
-      "links": "Liên hệ và tài nguyên"
+      "prereq": "Tiên quyết"
     },
     "deleteConfirmButton": "Xóa task",
     "duplicateConfirmTitle": "Nhân bản task “{title}”?",
@@ -493,7 +489,8 @@
       "none": "Chưa phân nhóm"
     },
     "tagPublished": "Xuất bản",
-    "tagDraft": "Nháp"
+    "tagDraft": "Nháp",
+    "sourceAction": "Nguồn tài liệu"
   },
   "portalEmployees": {
     "viewTask": "Xem task",
@@ -590,11 +587,13 @@
       "sections": "Xử lý nội dung",
       "status": "Trạng thái",
       "updated": "Cập nhật",
-      "tasks": "Task sử dụng"
+      "tasks": "Task sử dụng",
+      "version": "Phiên bản"
     },
     "status": {
       "ACTIVE": "Sẵn sàng",
-      "ARCHIVED": "Đã lưu trữ"
+      "ARCHIVED": "Đã lưu trữ",
+      "NO_CURRENT": "Chưa kích hoạt"
     },
     "upload": {
       "file": "Chọn file (.docx, .pdf, .md)",
@@ -604,10 +603,19 @@
       "version": "Phiên bản",
       "effectiveFrom": "Hiệu lực từ",
       "submit": "Tải lên",
-      "success": "Đã ingest — {sections} section, {chunks} chunk.",
       "name": "Tên tài liệu",
       "drop": "Kéo thả hoặc bấm để chọn tệp",
-      "dropHint": "docx, pdf, md, txt · tối đa 20 MB"
+      "dropHint": "docx, pdf, md, txt · tối đa 20 MB",
+      "structurePoor": "Tài liệu gần như không có tiêu đề nên Viga sẽ trích nguồn kém chính xác. Hãy mở phiên bản, thêm tiêu đề (dòng bắt đầu bằng ##) trước khi kích hoạt; nếu để nguyên, hệ thống có thể nhờ AI chia mục.",
+      "structureMedium": "Hệ thống đã suy ra tiêu đề hoặc chia nhỏ các mục dài. Hãy mở phiên bản để xem lại mục lục.",
+      "startedBackground": "Đã tải file; đang kích hoạt ở chế độ nền.",
+      "reused": "Phiên bản này đã có sẵn (cùng nhãn, cùng nội dung), không tạo thêm.",
+      "draftCreated": "Đã tạo bản nháp. Mở “Phiên bản” để xem lại rồi kích hoạt.",
+      "progressTitle": "Đang kích hoạt tài liệu…",
+      "failedBackground": "Kích hoạt không thành công",
+      "activateNow": "Tải và kích hoạt luôn",
+      "activateNowHint": "Cắt đoạn, embedding và bật làm bản áp dụng ngay (chạy nền, có phần trăm).",
+      "draftOnlyHint": "Chỉ tạo bản nháp: chưa ảnh hưởng Viga, xem lại rồi kích hoạt sau."
     },
     "errors": {
       "unauthorized": "Bạn cần đăng nhập lại.",
@@ -621,7 +629,7 @@
     "closeButton": "Đóng",
     "cancel": "Hủy",
     "save": "Lưu",
-    "view": "Xem nội dung",
+    "view": "Phiên bản và nội dung",
     "edit": "Sửa thông tin",
     "newVersion": "Tải phiên bản mới",
     "editTitle": "Sửa tài liệu",
@@ -653,7 +661,97 @@
       "usageUsedHint": "Đã liên kết với task",
       "usageUnused": "Chưa gắn task",
       "usageUnusedHint": "Chưa có task sử dụng",
-      "category": "Nhóm tài liệu"
+      "category": "Nhóm tài liệu",
+      "from": "Từ ngày",
+      "to": "Đến ngày",
+      "clearDates": "Xóa ngày"
+    },
+    "version": {
+      "none": "Chưa có bản áp dụng",
+      "count": "{count} phiên bản",
+      "drafts": "{count} nháp"
+    },
+    "versions": {
+      "subtitle": "{count} phiên bản",
+      "listLabel": "Danh sách phiên bản",
+      "state": {
+        "DRAFT": "Bản nháp",
+        "PROCESSING": "Đang xử lý",
+        "SCHEDULED": "Sắp hiệu lực",
+        "CURRENT": "Đang áp dụng",
+        "SUPERSEDED": "Đã thay thế",
+        "FAILED": "Lỗi"
+      },
+      "source": {
+        "UPLOAD": "Từ file tải lên",
+        "EDITED": "Đã chỉnh sửa"
+      },
+      "effective": {
+        "range": "Hiệu lực {from} – {to}",
+        "from": "Hiệu lực từ {from}",
+        "none": "Chưa đặt hiệu lực"
+      },
+      "tasks": "{count} task đang dùng",
+      "fromParent": "sao chép từ bản {label}",
+      "originalNote": "File gốc “{name}” thuộc bản được sao chép, không phản ánh phần đã sửa.",
+      "uploadNew": "Tải file thành phiên bản mới",
+      "copy": "Tạo bản mới từ bản này",
+      "edit": "Sửa nháp",
+      "activate": "Kích hoạt",
+      "setCurrent": "Đặt làm bản áp dụng",
+      "deleteDraft": "Xóa nháp",
+      "lastFailure": "Lần kích hoạt gần nhất không thành công: {error}",
+      "structure": {
+        "POOR": "Tài liệu gần như không có tiêu đề: Viga sẽ trích nguồn kém chính xác. Hãy thêm tiêu đề (dòng bắt đầu bằng ##) trước khi kích hoạt, hoặc để hệ thống nhờ AI chia mục khi kích hoạt.",
+        "MEDIUM": "Tiêu đề được suy ra hoặc mục dài đã được chia nhỏ: hãy xem lại mục lục trước khi kích hoạt.",
+        "aiApplied": "Mục lục của bản này do AI đề xuất (chữ của tài liệu không đổi). Có thể tạo bản mới từ bản này để chỉnh lại."
+      },
+      "editor": {
+        "label": "Nhãn phiên bản",
+        "effective": "Hiệu lực dự kiến",
+        "write": "Soạn thảo",
+        "preview": "Xem trước",
+        "markdown": "Nội dung Markdown",
+        "hint": "Lưu nhiều lần không tốn phí embedding. Bản nháp chưa ảnh hưởng Viga cho tới khi kích hoạt."
+      },
+      "confirm": {
+        "activateTitle": "Kích hoạt bản “{label}”?",
+        "activateBody": "Viga và task sẽ dùng bản này kể từ ngày hiệu lực; bản đang áp dụng ngừng hiệu lực từ ngày hôm trước. Việc này chạy nền, có thể mất vài chục giây vì phải cắt đoạn và embedding.",
+        "setCurrentBody": "Quay về bản “{label}” làm bản áp dụng từ ngày hiệu lực; bản đang áp dụng sẽ chuyển thành đã thay thế. Bản này đã có dữ liệu nên thường không tốn embedding.",
+        "effectiveFrom": "Hiệu lực từ",
+        "deleteTitle": "Xóa bản nháp “{label}”?",
+        "deleteBody": "Bản nháp bị xóa hẳn và không khôi phục được. Các phiên bản khác không bị ảnh hưởng."
+      },
+      "progress": {
+        "title": "Đang kích hoạt…",
+        "waiting": "Đang chờ",
+        "lost": "Mất kết nối khi hỏi tiến độ; tải lại trang để xem kết quả.",
+        "done": "Đã kích hoạt xong — {sections} mục, {chunks} đoạn.",
+        "reused": "Dùng lại dữ liệu đã embedding.",
+        "failed": "Kích hoạt không thành công ({error}). Bản cũ vẫn đang chạy bình thường."
+      },
+      "errors": {
+        "unauthorized": "Bạn cần đăng nhập lại.",
+        "forbidden": "Bạn không có quyền cho hành động này.",
+        "unavailable": "Có lỗi xảy ra, thử lại sau.",
+        "network": "Không kết nối được server.",
+        "VERSION_CONFLICT": "Bản nháp vừa được người khác lưu. Đóng và mở lại phiên bản để lấy nội dung mới nhất.",
+        "VERSION_NOT_EDITABLE": "Chỉ sửa được bản nháp. Hãy tạo bản mới từ bản này rồi sửa.",
+        "VERSION_LABEL_EXISTS": "Nhãn phiên bản này đã có, hãy chọn nhãn khác.",
+        "VERSION_LABEL_REQUIRED": "Cần nhập nhãn phiên bản.",
+        "VERSION_LABEL_TOO_LONG": "Nhãn phiên bản tối đa 32 ký tự.",
+        "VERSION_CONTENT_TOO_SHORT": "Nội dung quá ngắn (tối thiểu 200 ký tự).",
+        "VERSION_ALREADY_CURRENT": "Bản này đang là bản áp dụng.",
+        "VERSION_NOT_ACTIVATABLE": "Bản này đang được xử lý hoặc không kích hoạt được.",
+        "VERSION_NOT_DELETABLE": "Chỉ xóa được bản nháp chưa từng kích hoạt.",
+        "DOCUMENT_ARCHIVED": "Tài liệu đang ngừng sử dụng: hãy kích hoạt lại tài liệu trước."
+      }
+    },
+    "category": {
+      "hint": {
+        "onboarding": "Ngày đầu, giấy tờ, thiết bị, quy định cần biết",
+        "other": "Các tài liệu còn lại"
+      }
     }
   },
   "portalHr": {
@@ -677,7 +775,11 @@
       "title": "Tên giai đoạn",
       "create": "Tạo giai đoạn",
       "addNew": "Tạo ngày hoặc giai đoạn mới",
-      "addNewHint": "Dùng khi cần thêm giai đoạn mới cho lộ trình"
+      "addNewHint": "Dùng khi cần thêm giai đoạn mới cho lộ trình",
+      "empty": "Chưa có ngày nào. Hãy tạo ngày đầu tiên cho lộ trình ở biểu mẫu bên dưới, rồi chọn tài liệu để AI đề xuất task.",
+      "createFirst": "Tạo ngày đầu tiên",
+      "cancel": "Hủy",
+      "close": "Đóng"
     },
     "document": {
       "heading": "Tài liệu nguồn",
@@ -707,7 +809,15 @@
       "loading": "Đang xử lý…",
       "submit": "AI đề xuất task",
       "footnote": "AI đề xuất task vào giai đoạn đã chọn; HR chấp nhận từng task.",
-      "submitCount": "Phân tích {count} tài liệu và đề xuất roadmap"
+      "submitCount": "Phân tích {count} tài liệu và đề xuất roadmap",
+      "waiting": "Đang chờ",
+      "lost": "Mất kết nối khi hỏi tiến độ; tải lại trang để xem kết quả.",
+      "errors": {
+        "LLM_NOT_CONFIGURED": "Chưa cấu hình dịch vụ AI nên chưa thể tạo đề xuất.",
+        "NO_DOCUMENTS": "Chưa chọn tài liệu nào.",
+        "JOB_ERROR": "Việc tạo đề xuất gặp lỗi, thử lại sau.",
+        "JOB_INTERRUPTED": "Việc tạo đề xuất bị gián đoạn, thử lại sau."
+      }
     },
     "propose": {
       "heading": "AI đề xuất task",
@@ -716,13 +826,84 @@
       "confidence": "Độ tin cậy",
       "sources": "Nguồn trích dẫn",
       "accept": "Chấp nhận, tạo task",
-      "accepted": "Đã tạo task #{id} trong giai đoạn."
+      "accepted": "Đã tạo task #{id} trong giai đoạn.",
+      "acceptAll": "Chấp nhận tất cả ({count})",
+      "acceptedAll": "Đã tạo {count} task trong giai đoạn.",
+      "group": {
+        "PROFILE": "Hồ sơ",
+        "TRAINING": "Đào tạo",
+        "DEVICE": "Thiết bị",
+        "OFFICE": "Văn phòng"
+      },
+      "summary": {
+        "proposed": "Task đề xuất",
+        "accepted": "Đã chấp nhận",
+        "pending": "Chờ xem"
+      },
+      "acceptPending": "Chấp nhận tất cả",
+      "addToTasks": "Thêm vào Quản lý task",
+      "reset": "Chọn lại nguồn",
+      "roadSub": "{count} task AI đề xuất · chưa hiển thị cho nhân viên",
+      "minutes": "{n} phút",
+      "copySuffix": "(bản sao)",
+      "status": {
+        "pending": "Chờ xem",
+        "accepted": "Đã chấp nhận",
+        "edited": "Đã sửa"
+      },
+      "confidenceLevel": {
+        "HIGH": "Tin cậy cao",
+        "MEDIUM": "Tin cậy vừa",
+        "LOW": "Tin cậy thấp"
+      },
+      "actions": {
+        "accept": "Chấp nhận",
+        "source": "Xem đúng đoạn nguồn",
+        "edit": "Sửa",
+        "duplicate": "Nhân bản",
+        "remove": "Bỏ khỏi roadmap"
+      },
+      "road": {
+        "start": "Bắt đầu",
+        "finish": "Hoàn tất",
+        "taskNo": "Task {n}"
+      },
+      "remove": {
+        "title": "Bỏ đề xuất khỏi roadmap?",
+        "body": "“{title}” sẽ bị gỡ khỏi roadmap AI đề xuất. Chạy lại phân tích nếu muốn xem lại đề xuất này.",
+        "confirm": "Bỏ đề xuất"
+      },
+      "edit": {
+        "title": "Sửa đề xuất",
+        "name": "Tên task",
+        "summary": "Vì sao phải làm",
+        "minutes": "Thời lượng (phút)",
+        "steps": "Các bước",
+        "done": "Điều kiện hoàn thành (mỗi dòng một điều kiện)",
+        "save": "Lưu"
+      },
+      "prerequisites": "Cần xong trước",
+      "needsCheck": "Cần kiểm tra",
+      "reviewNotes": "HR cần kiểm tra"
     },
     "errors": {
       "unauthorized": "Bạn cần đăng nhập lại.",
       "forbidden": "Bạn không có quyền cho hành động này.",
       "unavailable": "Có lỗi xảy ra, thử lại sau.",
       "network": "Không kết nối được server."
+    },
+    "result": {
+      "heading": "Kết quả theo từng tài liệu",
+      "done": "{count} đề xuất",
+      "failed": "Không tạo được đề xuất",
+      "retry": "Thử lại",
+      "truncated": "Tài liệu dài: {count} mục cuối chưa được đưa vào phân tích.",
+      "errors": {
+        "AI_INVALID_JSON": "AI trả dữ liệu không đúng định dạng",
+        "LLM_UNAVAILABLE": "Dịch vụ AI tạm thời không phản hồi",
+        "DOCUMENT_VERSION_NOT_FOUND": "Không đọc được nội dung tài liệu"
+      },
+      "uncovered": "{count} mục chưa có task: {names}"
     }
   },
   "portalAdmin": {
@@ -958,6 +1139,41 @@
         "journey_template": "Lộ trình",
         "document": "Tài liệu"
       }
+    },
+    "metrics": {
+      "title": "Chi phí và hiệu năng AI",
+      "description": "Số lượt gọi, lỗi, độ trễ, token và chi phí ước tính của LLM và embedding theo từng thao tác. Chỉ có số liệu, không có nội dung.",
+      "period": "Khoảng thời gian",
+      "lastDays": "{count} ngày gần nhất",
+      "kpi": {
+        "calls": "Lượt gọi",
+        "errors": "Lượt lỗi",
+        "errorRate": "{percent}% số lượt",
+        "cost": "Chi phí ước tính",
+        "costNote": "Theo đơn giá cấu hình; embedding chưa có giá nên tính 0"
+      },
+      "table": {
+        "operation": "Thao tác",
+        "calls": "Lượt",
+        "errors": "Lỗi",
+        "tokensIn": "Token vào",
+        "tokensOut": "Token ra",
+        "embedded": "Chuỗi embed",
+        "cost": "USD"
+      },
+      "operations": {
+        "chat_rewrite": "Viết lại câu hỏi",
+        "chat_embed": "Embedding câu hỏi",
+        "chat_answer": "Trả lời từ tài liệu",
+        "viga_route": "Viga chọn công cụ",
+        "ingest_embed": "Embedding khi kích hoạt tài liệu",
+        "ingest_reembed": "Embedding lại khi đổi model",
+        "ingest_probe": "Kiểm tra dịch vụ embedding",
+        "ingest_structure": "AI chia mục tài liệu",
+        "task_proposal": "Tạo task bằng AI"
+      },
+      "empty": "Chưa có lượt gọi nào trong khoảng này.",
+      "note": "Độ trễ p50 và p95 tính theo từng lượt gọi (không phải cả câu hỏi). Giá DeepSeek tra ngày 01/10/2026, có thể đổi: kiểm lại trước khi dùng làm số liệu tài chính."
     }
   },
   "employee": {
@@ -973,16 +1189,13 @@
       "tasks": "Nhiệm vụ",
       "progress": "Theo dõi",
       "documents": "Tài liệu",
-      "notifications": "Thông báo"
+      "notifications": "Thông báo",
+      "tickets": "Yêu cầu"
     },
     "menu": {
       "profile": "Hồ sơ của tôi",
       "logout": "Đăng xuất",
       "appearance": "Giao diện"
-    },
-    "footer": {
-      "product": "VSF Onboarding Portal — lộ trình, tài liệu và trợ lý Viga cho nhân viên mới.",
-      "credit": "Ảnh minh họa tòa nhà lấy từ Wikimedia Commons (CC BY 3.0 và CC BY-SA 4.0), ghi công đầy đủ trong kho mã."
     },
     "task": {
       "close": "Đóng",
@@ -1145,7 +1358,8 @@
         "unlocked": "Việc mới mở",
         "done": "Đã hoàn thành",
         "reminder": "Nhắc việc",
-        "welcome": "Hệ thống"
+        "welcome": "Hệ thống",
+        "ticket": "HR phản hồi"
       },
       "welcomeTitle": "Chào mừng bạn đến VSF!",
       "welcomeBody": "Bắt đầu từ trang Tổng quan; bạn có thể hỏi Viga bất cứ lúc nào.",
@@ -1155,7 +1369,9 @@
       "doneBody": "Việc này đã được ghi nhận trong lộ trình của bạn.",
       "reminderTitle": "{day} còn việc chưa xong",
       "reminderBody": "Còn {count} việc bắt buộc trong ngày này.",
-      "seeAll": "Xem tất cả thông báo"
+      "unreadMark": "Chưa xem",
+      "ticketTitle": "HR đã trả lời: {subject}",
+      "ticketBody": "Mở yêu cầu để xem phản hồi."
     },
     "profile": {
       "title": "Hồ sơ của tôi",
@@ -1200,7 +1416,6 @@
       "title": "Viga",
       "subtitle": "Vin Intelligent Guidance Assistant",
       "close": "Đóng",
-      "mockNote": "Bản dựng giao diện: câu trả lời được suy ra từ chính lộ trình của bạn, chưa nối với trợ lý thật.",
       "inputLabel": "Câu hỏi cho Viga",
       "placeholder": "Hỏi về việc cần làm…",
       "send": "Gửi",
@@ -1212,19 +1427,37 @@
         "q4": "Hồ sơ cần nộp gồm những gì?"
       },
       "type": {
+        "ANSWER": "Trả lời có nguồn",
+        "NO_BASIS": "Chưa có căn cứ",
+        "OUT_OF_SCOPE": "Ngoài tài liệu chung",
         "NEXT_STEP": "Bước kế tiếp",
         "PREREQUISITE_REQUIRED": "Cần làm trước",
         "DAY_PLAN": "Kế hoạch ngày",
         "INFO": "Thông tin",
-        "NOT_IN_JOURNEY": "Chưa có căn cứ"
+        "NOT_IN_JOURNEY": "Không trong lộ trình",
+        "CLARIFY": "Cần làm rõ",
+        "ERROR": "Tạm thời chưa trả lời được"
       },
       "reply": {
-        "notInJourney": "Nội dung này chưa có trong lộ trình onboarding của bạn nên mình không đoán. Bạn hỏi HR phụ trách giúp nhé.",
-        "allDone": "Việc này bạn đã hoàn thành rồi.",
+        "notInJourney": "Việc này không có trong lộ trình của bạn.",
+        "allDone": "Bạn đã hoàn thành toàn bộ việc trong lộ trình.",
+        "taskDone": "Bạn đã hoàn thành việc “{title}”.",
+        "taskReady": "Việc “{title}” đang mở, bạn làm được ngay.",
         "nextStep": "Bạn làm được ngay việc “{title}”. Mở việc để xem hướng dẫn từng bước.",
         "locked": "Bạn chưa làm được “{title}” vì cần hoàn thành “{blocker}” trước.",
         "dayPlan": "{day}: bạn làm được ngay {ready} việc trên tổng {total} việc của ngày.",
-        "dayPlanEmpty": "{day}: hiện chưa có việc nào làm được ngay, các việc còn lại đang chờ việc tiên quyết."
+        "dayPlanEmpty": "{day}: hiện chưa có việc nào làm được ngay, các việc còn lại đang chờ việc tiên quyết.",
+        "dayNotFound": "Mình không thấy ngày đó trong lộ trình của bạn.",
+        "progress": "Bạn đã hoàn thành {done}/{total} việc ({percent}%).",
+        "taskDetail": "Hướng dẫn “{title}”:\n{detail}",
+        "clarifyTask": "Bạn đang nói về việc nào?",
+        "noJourney": "Bạn chưa có lộ trình onboarding nên mình chưa tra được việc cần làm.",
+        "noTaskNow": "Hiện chưa có việc nào làm được ngay.",
+        "noBasis": "Mình chưa có căn cứ trong tài liệu để trả lời câu này, nên mình không đoán.",
+        "outOfScope": "Thông tin này không có trong tài liệu chung. Bạn hỏi HR phụ trách nhé; mình có thể giúp gửi câu hỏi cho HR.",
+        "assistantUnavailable": "Viga tạm thời chưa trả lời được, bạn thử lại sau nhé. Nếu việc gấp, bạn có thể gửi câu hỏi cho HR.",
+        "smalltalk": "Mình là Viga, chuyên dẫn đường lộ trình onboarding và tra tài liệu HR đã đăng. Bạn hỏi mình về việc cần làm hoặc nội quy nhé.",
+        "assumed": "Mình đang hiểu bạn nói về việc “{title}”."
       },
       "action": {
         "openTask": "Mở: {title}",
@@ -1250,6 +1483,72 @@
         "b1": "Không tự đánh dấu hoàn thành thay bạn",
         "b2": "Không đoán khi tài liệu chưa có căn cứ — sẽ nói thẳng là chưa có",
         "b3": "Không cấp quyền, không duyệt và không thay HR quyết định"
+      },
+      "claim": {
+        "quote": "Trích nguyên văn",
+        "partialNoBasis": "Một vài ý trong câu hỏi chưa có căn cứ trong tài liệu nên mình không trả lời phần đó.",
+        "unansweredTitle": "Phần chưa có trong tài liệu",
+        "unansweredHint": "Mình chưa có căn cứ để trả lời ý này nên không đoán. Bạn có thể gửi câu hỏi cho HR."
+      },
+      "thinking": "Viga đang tra cứu…",
+      "errors": {
+        "throttled": "Bạn hỏi nhanh quá, thử lại sau {seconds} giây nhé.",
+        "unavailable": "Viga tạm thời chưa trả lời được, bạn thử lại sau nhé.",
+        "network": "Không kết nối được máy chủ. Bạn kiểm tra mạng rồi thử lại nhé."
+      },
+      "history": {
+        "title": "Lịch sử trò chuyện",
+        "new": "Cuộc trò chuyện mới",
+        "loading": "Đang tải…",
+        "empty": "Chưa có cuộc trò chuyện nào.",
+        "rename": "Đổi tên",
+        "delete": "Xóa cuộc trò chuyện",
+        "retention": "Cuộc trò chuyện được lưu 90 ngày kể từ lần trao đổi cuối; chỉ bạn xem được và bạn xóa được."
+      },
+      "report": {
+        "button": "Gửi câu hỏi này cho HR",
+        "sent": "Đã gửi cho HR (mã #{id}). Bạn theo dõi phản hồi ở mục Yêu cầu.",
+        "title": "Gửi câu hỏi cho HR",
+        "subtitle": "HR phòng ban của bạn sẽ nhận và trả lời",
+        "intro": "Bạn xem lại và sửa câu hỏi nếu cần. Câu hỏi chỉ được gửi sau khi bạn bấm “Gửi”; Viga không tự gửi.",
+        "question": "Câu hỏi",
+        "note": "Ghi chú thêm (không bắt buộc)",
+        "notePlaceholder": "Ví dụ: mình đã thử làm theo hướng dẫn nhưng vẫn lỗi ở bước 2",
+        "limits": "Tối đa 5 yêu cầu mỗi ngày; câu giống nhau trong 10 phút sẽ không gửi lại.",
+        "send": "Gửi",
+        "cancel": "Hủy",
+        "close": "Đóng",
+        "errors": {
+          "TICKET_DAILY_LIMIT": "Bạn đã dùng hết 5 yêu cầu hôm nay. Mai bạn gửi tiếp nhé.",
+          "TICKET_DUPLICATE": "Bạn vừa gửi câu này rồi. HR sẽ phản hồi sớm.",
+          "NO_TEAM_ASSIGNED": "Bạn chưa được gán phòng ban nên chưa gửi được. Liên hệ HR hoặc quản trị viên.",
+          "generic": "Chưa gửi được. Bạn thử lại giúp nhé."
+        }
+      },
+      "expand": "Mở rộng thành trang đầy đủ",
+      "feedback": {
+        "question": "Câu trả lời này có đúng ý bạn?",
+        "up": "Đúng ý",
+        "down": "Chưa đúng",
+        "thanks": "Cảm ơn bạn đã góp ý",
+        "reasonLabel": "Vì sao chưa đúng? (không bắt buộc)",
+        "reasons": {
+          "WRONG": "Sai thông tin",
+          "MISSING": "Thiếu thông tin",
+          "UNCLEAR": "Khó hiểu, lộn xộn",
+          "OFF_TOPIC": "Không đúng ý tôi hỏi"
+        },
+        "commentPlaceholder": "Ghi chú thêm cho HR (không bắt buộc)",
+        "send": "Gửi",
+        "failed": "Chưa gửi được đánh giá, bạn thử lại nhé."
+      },
+      "page": {
+        "title": "Trò chuyện với Viga",
+        "listTitle": "Cuộc trò chuyện",
+        "collapse": "Thu nhỏ về ngăn Viga",
+        "greetingTitle": "Bạn muốn hỏi gì hôm nay?",
+        "greetingHint": "Hỏi về việc cần làm, việc đang bị khóa hoặc tra trong tài liệu HR đã đăng. Viga chỉ trả lời khi có căn cứ.",
+        "emptyList": "Chưa có cuộc trò chuyện nào. Hãy đặt câu hỏi đầu tiên."
       }
     },
     "taskPage": {
@@ -1280,7 +1579,255 @@
       "completeFailed": "Chưa ghi nhận được. Bạn thử lại giúp nhé.",
       "heroSubtitle": "{group} · {required} · {day}",
       "railTitle": "Việc trong {day}",
-      "railHint": "{done}/{total} việc đã xong"
+      "railHint": "{done}/{total} việc đã xong",
+      "sourcesTitle": "Nguồn tài liệu",
+      "sourcesHint": "Đoạn tài liệu việc này dựa vào"
+    },
+    "tickets": {
+      "title": "Yêu cầu của tôi",
+      "subtitle": "Các câu hỏi bạn đã gửi cho HR và phản hồi nhận được."
     }
+  },
+  "viga": {
+    "ticket": {
+      "loading": "Đang tải…",
+      "listLabel": "Danh sách ticket",
+      "filterAll": "Tất cả",
+      "status": {
+        "OPEN": "Mới",
+        "IN_PROGRESS": "Đang xử lý",
+        "RESOLVED": "Đã giải quyết",
+        "CLOSED": "Đã đóng"
+      },
+      "messages": "{count} tin",
+      "hrReplied": "HR đã phản hồi",
+      "unclaimed": "Chưa có HR nhận",
+      "emptyMine": "Bạn chưa gửi yêu cầu nào",
+      "emptyMineHint": "Khi Viga chưa trả lời được, bấm “Gửi câu hỏi này cho HR” để HR hỗ trợ.",
+      "emptyStaff": "Chưa có ticket nào",
+      "emptyStaffHint": "Ticket nhân viên gửi cho phòng ban của bạn sẽ hiện ở đây.",
+      "pick": "Chọn một ticket để xem trao đổi.",
+      "relatedTask": "việc: {title}",
+      "assigned": "HR phụ trách: {name}",
+      "staffTag": "HR",
+      "resolution": "Kết quả: {note}",
+      "closedNote": "Ticket đã đóng nên không trả lời thêm được.",
+      "replyLabel": "Nội dung trả lời",
+      "replyPlaceholder": "Nhập nội dung trao đổi…",
+      "send": "Gửi",
+      "claim": "Nhận xử lý",
+      "statusLabel": "Trạng thái",
+      "noteLabel": "Ghi chú kết quả",
+      "saveStatus": "Lưu trạng thái",
+      "taskUnchanged": "Đóng ticket không tự đổi trạng thái việc của nhân viên; hãy xử lý việc riêng nếu cần.",
+      "errors": {
+        "generic": "Có lỗi xảy ra, thử lại sau.",
+        "closed": "Ticket đã đóng, không trả lời thêm được.",
+        "claimed": "Đã có HR khác nhận ticket này."
+      },
+      "searchLabel": "Tìm ticket",
+      "searchPlaceholderStaff": "Tìm theo tên, email, tiêu đề…",
+      "searchPlaceholderMine": "Tìm theo tiêu đề…",
+      "filterLabel": "Lọc theo trạng thái",
+      "noMatch": "Không tìm thấy ticket phù hợp",
+      "noMatchHint": "Thử từ khóa khác hoặc đổi bộ lọc trạng thái.",
+      "pickHint": "Nhấn vào một ticket ở danh sách bên trái để đọc và trả lời.",
+      "showing": "Hiển thị {shown} trên {total} ticket"
+    },
+    "hrTickets": {
+      "title": "Ticket sự cố",
+      "description": "Câu hỏi nhân viên gửi HR khi Viga chưa trả lời được. Hàng đợi chung của phòng ban: nhận xử lý để tránh trùng."
+    },
+    "feedback": {
+      "title": "Phản hồi Viga",
+      "description": "Câu Viga chưa trả lời được và câu nhân viên bấm 👎. Bổ sung tài liệu, Viga sẽ tự hỏi lại để biết đã đủ chưa.",
+      "showResolved": "Hiện cả câu đã xử lý",
+      "loading": "Đang tải…",
+      "error": "Chưa tải được danh sách, thử lại sau.",
+      "emptyTitle": "Chưa có phản hồi nào cần xử lý",
+      "emptyHint": "Khi Viga chưa có căn cứ hoặc nhân viên bấm 👎, câu hỏi sẽ hiện ở đây.",
+      "question": "Câu hỏi",
+      "times": "{count} lần",
+      "lastAsked": "Gần nhất",
+      "addDocument": "Bổ sung tài liệu",
+      "resolve": "Đã xử lý",
+      "resolved": "Đã xử lý",
+      "privacy": "Câu hỏi hiện ẩn danh và chỉ của phòng ban bạn; hội thoại cá nhân của nhân viên HR không đọc được.",
+      "satisfaction": "Hài lòng 7 ngày",
+      "openDown": "Chưa hài lòng",
+      "openGaps": "Chưa có căn cứ",
+      "searchLabel": "Tìm câu hỏi",
+      "searchPlaceholder": "Tìm theo nội dung câu hỏi…",
+      "kindLabel": "Lọc theo loại",
+      "kind": {
+        "ALL": "Mọi loại",
+        "NO_BASIS": "Chưa có căn cứ",
+        "PARTIAL": "Trả lời một phần",
+        "DOWN": "Chưa hài lòng"
+      },
+      "rowKind": {
+        "NO_BASIS": "Chưa có căn cứ",
+        "PARTIAL": "Trả lời một phần",
+        "DOWN": "Chưa hài lòng"
+      },
+      "statusLabel": "Lọc theo trạng thái",
+      "status": {
+        "open": "Chưa xử lý",
+        "resolved": "Đã xử lý",
+        "all": "Tất cả"
+      },
+      "sortLabel": "Sắp xếp",
+      "sort": {
+        "count": "Hỏi nhiều nhất",
+        "recent": "Mới nhất"
+      },
+      "partialAnswered": "Viga đã trả lời được:",
+      "answeredWas": "Viga đã trả lời:",
+      "reasons": {
+        "WRONG": "Sai thông tin",
+        "MISSING": "Thiếu thông tin",
+        "UNCLEAR": "Khó hiểu, lộn xộn",
+        "OFF_TOPIC": "Không đúng ý hỏi"
+      },
+      "resolvedBy": "Đã bổ sung ở: {title}",
+      "recheck": "Kiểm tra lại",
+      "rechecking": "Đang hỏi lại Viga…",
+      "recheckOk": "Viga đã trả lời được",
+      "recheckFail": "Viga vẫn chưa có căn cứ để trả lời. Hãy viết rõ hơn hoặc bổ sung tài liệu.",
+      "recheckError": "Chưa hỏi lại được, thử lại sau.",
+      "noMatch": "Không có câu phù hợp",
+      "noMatchHint": "Thử từ khóa khác hoặc đổi bộ lọc.",
+      "supplement": {
+        "title": "Bổ sung câu trả lời",
+        "subtitle": "Thêm vào tài liệu “Hỏi đáp bổ sung” của phòng ban",
+        "hint": "Viết câu trả lời đúng cho câu hỏi này. Hệ thống thêm vào tài liệu Hỏi đáp bổ sung rồi hỏi lại Viga; chỉ khi Viga trả lời được thì câu mới tự đóng.",
+        "question": "Câu hỏi (sửa cho rõ nghĩa nếu cần)",
+        "answer": "Câu trả lời đúng",
+        "answerPlaceholder": "Ví dụ: Khi chưa có lý lịch tư pháp, bạn nộp giấy hẹn của cơ quan cấp và bổ sung bản chính trong vòng 30 ngày.",
+        "contact": "Đầu mối (không bắt buộc)",
+        "contactPlaceholder": "Ví dụ: Phòng Tuyển dụng, tuyendung@vinsmartfuture.tech",
+        "submit": "Lưu và kiểm tra",
+        "cancel": "Hủy",
+        "close": "Đóng",
+        "edit": "Sửa lại câu trả lời",
+        "working": "Đang thêm vào tài liệu và cập nhật để Viga tra cứu được…",
+        "starting": "Đang bắt đầu",
+        "checking": "Đang hỏi lại Viga với câu hỏi này…",
+        "checkingStage": "Hỏi lại Viga",
+        "okTitle": "Viga đã trả lời được",
+        "closed": "Câu hỏi đã được đánh dấu đã xử lý.",
+        "missTitle": "Viga vẫn chưa trả lời được",
+        "missBody": "Câu trả lời đã được lưu nhưng Viga chưa tìm thấy đủ căn cứ. Hãy sửa câu hỏi cho giống cách nhân viên hay hỏi hoặc viết câu trả lời đầy đủ hơn.",
+        "errors": {
+          "save": "Chưa lưu được câu trả lời. Bạn thử lại giúp nhé.",
+          "activation": "Chưa cập nhật được tài liệu. Bạn thử lại sau.",
+          "recheck": "Đã lưu nhưng chưa hỏi lại được Viga. Bấm “Kiểm tra lại” ở dòng câu hỏi."
+        }
+      }
+    }
+  },
+  "analytics": {
+    "title": "Số liệu theo thời gian",
+    "loading": "Đang tải số liệu…",
+    "updatedAt": "Cập nhật lúc {time}",
+    "scopeAll": "Toàn hệ thống",
+    "scopeTeam": "Phòng ban: {team}",
+    "scopeNoTeam": "Chưa thuộc phòng ban nào",
+    "period": "Khoảng thời gian",
+    "lastDays": "{count} ngày gần nhất",
+    "empty": "Chưa có dữ liệu trong khoảng này.",
+    "viewTable": "Xem dạng bảng",
+    "viewChart": "Xem dạng biểu đồ",
+    "errors": {
+      "unauthorized": "Phiên đăng nhập đã hết hạn, hãy đăng nhập lại.",
+      "forbidden": "Bạn không có quyền xem số liệu này.",
+      "unavailable": "Chưa tải được số liệu. Hãy thử lại sau.",
+      "network": "Không kết nối được máy chủ."
+    },
+    "table": {
+      "date": "Ngày",
+      "state": "Trạng thái",
+      "count": "Số lượng",
+      "operation": "Thao tác"
+    },
+    "progress": {
+      "title": "Tiến độ nhân viên",
+      "sub": "Mỗi nhân viên thuộc đúng một nhóm",
+      "center": "nhân viên",
+      "states": {
+        "NO_JOURNEY": "Chưa có lộ trình",
+        "NOT_STARTED": "Chưa bắt đầu",
+        "IN_PROGRESS": "Đang làm",
+        "COMPLETED": "Hoàn thành"
+      }
+    },
+    "activity": {
+      "title": "Hoạt động mỗi ngày",
+      "sub": "Task hoàn thành, câu hỏi Viga và ticket mới theo ngày",
+      "completed": "Task hoàn thành",
+      "questions": "Câu hỏi Viga",
+      "tickets": "Ticket mới"
+    },
+    "outcome": {
+      "title": "Kết quả câu trả lời của Viga",
+      "sub": "Câu có nội dung trả lời so với câu không có căn cứ",
+      "center": "có trả lời",
+      "names": {
+        "answer": "Trả lời có căn cứ",
+        "guidance": "Hướng dẫn việc cần làm",
+        "no_basis": "Không có căn cứ",
+        "out_of_scope": "Ngoài phạm vi",
+        "error": "Lỗi"
+      }
+    },
+    "costDay": {
+      "title": "Chi phí AI mỗi ngày",
+      "sub": "USD, ước tính theo đơn giá cấu hình",
+      "series": "Chi phí (USD)"
+    },
+    "costOp": {
+      "title": "Chi phí theo thao tác",
+      "sub": "Thao tác nào đang tốn tiền nhất",
+      "other": "Khác",
+      "none": "Chưa phát sinh chi phí"
+    },
+    "operations": {
+      "chat_rewrite": "Viết lại câu hỏi",
+      "chat_embed": "Nhúng câu hỏi",
+      "chat_answer": "Trả lời có căn cứ",
+      "viga_route": "Viga chọn công cụ",
+      "ingest_embed": "Nhúng tài liệu",
+      "ingest_reembed": "Nhúng lại tài liệu",
+      "ingest_probe": "Kiểm tra dịch vụ nhúng",
+      "ingest_structure": "Nhận diện cấu trúc",
+      "task_proposal": "Tạo task bằng AI",
+      "job": "Việc nền khác"
+    },
+    "runs": {
+      "taskTitle": "Từng lượt tạo task bằng AI",
+      "average": "Trung bình {count} lượt thành công gần nhất: {seconds} mỗi lượt, {cost} USD, {items} đề xuất.",
+      "noRuns": "Chưa có lượt tạo task nào gần đây.",
+      "latencyTitle": "Độ trễ mỗi lượt tạo task",
+      "latencySub": "Thời gian chạy cả lượt so với thời gian chờ mô hình AI (giây)",
+      "costTitle": "Chi phí mỗi lượt tạo task",
+      "costSub": "USD cho từng lượt, cộng theo mã việc",
+      "run": "Lượt",
+      "status": "Trạng thái",
+      "statuses": {
+        "SUCCEEDED": "Thành công",
+        "FAILED": "Lỗi"
+      },
+      "duration": "Thời gian chạy",
+      "llmLatency": "Chờ mô hình AI",
+      "documents": "Số tài liệu",
+      "proposals": "Số đề xuất",
+      "llmCalls": "Số lượt gọi AI",
+      "tokensIn": "Token đầu vào",
+      "tokensOut": "Token đầu ra",
+      "cost": "Chi phí (USD)"
+    }
+  },
+  "taskSources": {
+    "view": "Xem trong tài liệu"
   }
 }

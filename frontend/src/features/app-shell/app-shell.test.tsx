@@ -124,13 +124,13 @@ describe("AppShell", () => {
     const nav = within(screen.getByRole("navigation", { name: app.navigation }));
     expect(nav.getByRole("link", { name: app.nav.roadmap })).toHaveAttribute("aria-current", "page");
     expect(nav.queryByRole("link", { name: app.nav.admin })).toBeNull();
-    for (const key of ["documents", "contacts", "tickets"] as const) {
+    for (const key of ["documents", "tickets"] as const) {
       expect(nav.getByText(app.nav[key]).closest("[aria-disabled='true']")).not.toBeNull();
     }
-    expect(nav.getAllByText(app.nav.soon)).toHaveLength(3);
+    expect(nav.getAllByText(app.nav.soon)).toHaveLength(2);
   });
 
-  it("HR thấy Tổng quan, Nhân viên, Quản lý task, Tài liệu, Tạo task bằng AI và đường tới trang chat; mục chưa có API mờ kèm Sắp có", () => {
+  it("HR thấy Tổng quan, Nhân viên, Ticket, Phản hồi Viga, Quản lý task, Tài liệu, Tạo task bằng AI; Đầu mối và đường dẫn", () => {
     renderWithSession(<AppShell>x</AppShell>, HR);
 
     const nav = within(screen.getByRole("navigation", { name: app.navigation }));
@@ -139,11 +139,11 @@ describe("AppShell", () => {
     expect(nav.getByRole("link", { name: app.nav.taskManagement })).toHaveAttribute("href", "/vi/admin/tasks");
     expect(nav.getByRole("link", { name: app.nav.documents })).toHaveAttribute("href", "/vi/admin/documents");
     expect(nav.getByRole("link", { name: app.nav.aiTasks })).toHaveAttribute("href", "/vi/admin/ai-tasks");
+    expect(nav.getByRole("link", { name: app.nav.hrTickets })).toHaveAttribute("href", "/vi/admin/tickets");
+    expect(nav.getByRole("link", { name: app.nav.vigaFeedback })).toHaveAttribute("href", "/vi/admin/viga-feedback");
     expect(nav.queryByRole("link", { name: app.nav.chat })).toBeNull();
-    for (const key of ["hrTickets", "vigaFeedback", "registry"] as const) {
-      expect(nav.getByText(app.nav[key]).closest("[aria-disabled='true']")).not.toBeNull();
-    }
-    expect(nav.getAllByText(app.nav.soon)).toHaveLength(3);
+    // Mọi mục của HR đều là liên kết thật, không còn mục mờ "Sắp có".
+    expect(nav.queryByText(app.nav.soon)).toBeNull();
   });
 
   it("logo dẫn về chat với nhân sự mới và về admin với HR", () => {

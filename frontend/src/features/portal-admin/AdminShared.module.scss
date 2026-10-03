@@ -380,6 +380,12 @@ $tn-slate: #58657a;
   color: var(--app-ink-3);
   font-size: 12px;
 }
+// Ghi chú nằm cuối thẻ (thay vì dưới thẻ) để thẻ chính chạm sát chân trang.
+.cardNote {
+  margin: 0;
+  padding: 10px 14px;
+  border-top: 1px solid var(--app-border);
+}
 
 .emptyCell {
   padding: 18px 12px;

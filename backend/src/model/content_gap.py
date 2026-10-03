@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import BigInteger, ForeignKey, Index, Text
+from sqlalchemy import BigInteger, ForeignKey, Index, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from src.model.base import Base, TimestampTZ, created_at_column, id_column
@@ -20,5 +20,12 @@ class ContentGap(Base):
         BigInteger, ForeignKey("employee_tasks.id", ondelete="SET NULL")
     )
     question_text: Mapped[str] = mapped_column(Text)
+    # NO_BASIS: cả câu không có căn cứ. PARTIAL: trả lời được một phần, `answer_excerpt` là phần đã trả lời được.
+    kind: Mapped[str] = mapped_column(String(12), server_default="NO_BASIS")
+    answer_excerpt: Mapped[str | None] = mapped_column(Text)
     resolved_at: Mapped[datetime | None] = mapped_column(TimestampTZ)
+    # Phiên bản tài liệu HR bổ sung để trả lời câu này (truy ngược "đã bổ sung ở đâu").
+    resolved_by_version_id: Mapped[int | None] = mapped_column(
+        BigInteger, ForeignKey("document_versions.id", ondelete="SET NULL")
+    )
     created_at: Mapped[datetime] = created_at_column()

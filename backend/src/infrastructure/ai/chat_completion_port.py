@@ -7,6 +7,9 @@ from typing import Protocol
 
 
 class ChatCompletionPort(Protocol):
-    async def complete_json(self, *, system_prompt: str, user_prompt: str) -> str:
-        """Gọi LLM ở chế độ JSON output, trả về chuỗi JSON thô (chưa parse) do LLM sinh ra."""
+    async def complete_json(self, *, system_prompt: str, user_prompt: str, timeout_seconds: float | None = None) -> str:
+        """Gọi LLM ở chế độ JSON output, trả về chuỗi JSON thô (chưa parse) do LLM sinh ra.
+
+        `timeout_seconds` đặt giới hạn riêng cho lời gọi này (việc dài như soạn cả bộ task); bỏ trống thì dùng mặc định của adapter.
+        """
         ...

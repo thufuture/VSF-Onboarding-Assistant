@@ -2,7 +2,7 @@
 
 import { ArrowLeft, Check, ChevronRight, Loader2, Lock } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -10,7 +10,9 @@ import { VigaAvatar } from "@/components/avatar/VigaAvatar";
 import { FlatIcon } from "@/components/flat-icons/FlatIcon";
 import { useToast } from "@/components/portal-modal/PortalModal";
 import { groupStyle } from "@/components/roadmap/taskGroups";
+import { TaskSources } from "@/components/task-sources/TaskSources";
 import { parseTaskBody } from "@/features/portal-hr/taskBody";
+import { vigaApi } from "@/features/viga/api";
 import { Link, useRouter } from "@/i18n/navigation";
 
 import { TaskRail } from "./TaskRail";
@@ -41,6 +43,12 @@ export function EmployeeTaskPage({ taskId }: { taskId: number }) {
   const [justDone, setJustDone] = useState(false);
 
   const task = tasks.find((row) => row.id === taskId) ?? null;
+
+  // Ghi "việc vừa mở" để Viga hiểu "việc này" mà không cần giao diện gửi mã việc kèm câu hỏi (mục 15.3e).
+  const openedId = task?.id ?? null;
+  useEffect(() => {
+    if (openedId !== null) void vigaApi.markTaskOpened(openedId);
+  }, [openedId]);
   const group = groupStyle(task?.task_group ?? null);
   const state = task ? stateOf(task) : "locked";
 
@@ -250,6 +258,18 @@ export function EmployeeTaskPage({ taskId }: { taskId: number }) {
                 <VigaAvatar sizePx={26} />
                 <span>{t("askViga")}</span>
               </button>
+
+              {task.sources && task.sources.length > 0 ? (
+                <section className={styles.railCard}>
+                  <div className={styles.railHead}>
+                    <h2>{t("sourcesTitle")}</h2>
+                    <small>{t("sourcesHint")}</small>
+                  </div>
+                  <div className={styles.railBody}>
+                    <TaskSources sources={task.sources} />
+                  </div>
+                </section>
+              ) : null}
 
               {prereqTasks.length > 0 ? (
                 <section className={styles.railCard}>

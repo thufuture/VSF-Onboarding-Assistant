@@ -1,4 +1,4 @@
-from sqlalchemy import BigInteger, ForeignKey, Index
+from sqlalchemy import BigInteger, ForeignKey, Index, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from src.model.base import Base, id_column
@@ -20,3 +20,5 @@ class TaskSourceMapping(Base):
     document_section_id: Mapped[int | None] = mapped_column(
         BigInteger, ForeignKey("document_sections.id", ondelete="RESTRICT")
     )
+    # Đoạn nguyên văn trong section làm căn cứ cho task (để "Xem nguồn" tô đúng đoạn, không tô cả section).
+    quote: Mapped[str | None] = mapped_column(Text)

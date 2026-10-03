@@ -89,16 +89,6 @@
   background: var(--app-bg);
 }
 
-.mockNote {
-  margin: 0 0 12px;
-  padding: 8px 10px;
-  border: 1px dashed var(--app-border-strong);
-  border-radius: 5px;
-  color: var(--app-ink-3);
-  font-size: 11.5px;
-  line-height: 1.5;
-}
-
 .intro {
   display: flex;
   flex-direction: column;
@@ -249,107 +239,6 @@
   }
 }
 
-.type {
-  display: inline-block;
-  margin-bottom: 7px;
-  padding: 2px 8px;
-  border-radius: 5px;
-  background: var(--app-surface-2);
-  color: var(--app-ink-2);
-  font-size: 10.5px;
-  font-weight: 600;
-}
-.NEXT_STEP,
-.DAY_PLAN {
-  background: var(--app-accent-soft);
-  color: var(--app-accent-strong);
-}
-.PREREQUISITE_REQUIRED {
-  background: #fdf3e0;
-  color: #8a6a1c;
-}
-.NOT_IN_JOURNEY {
-  background: var(--app-surface-2);
-  color: var(--app-ink-2);
-}
-
-.blocks {
-  margin: 10px 0 0;
-  padding: 0;
-  list-style: none;
-
-  li {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 4px;
-    padding: 6px 9px;
-    border-radius: 5px;
-    background: var(--app-surface-2);
-    color: var(--app-ink-2);
-    font-size: 12.5px;
-
-    span:nth-child(2) {
-      flex: 1;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-    small {
-      color: var(--app-ink-3);
-      font-size: 11px;
-    }
-  }
-}
-.dot {
-  width: 8px;
-  height: 8px;
-  flex: none;
-  border-radius: 50%;
-  background: var(--app-ink-3);
-}
-.dot_done {
-  background: #2f9a6f;
-}
-.dot_ready {
-  background: #1b6fb8;
-}
-.dot_locked {
-  background: #8f9bb0;
-}
-
-.actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 10px;
-
-  button {
-    padding: 6px 11px;
-    border: 1px solid var(--app-accent);
-    border-radius: 5px;
-    background: var(--app-surface);
-    color: var(--app-accent-strong);
-    cursor: pointer;
-    font: 500 12.5px/1.35 $font;
-    text-align: left;
-    transition:
-      background 0.15s ease,
-      transform 0.15s ease;
-
-    &:hover {
-      background: var(--app-accent-soft);
-      transform: translateY(-1px);
-    }
-  }
-}
-
-.sources {
-  margin: 10px 0 0 !important;
-  color: var(--app-ink-3) !important;
-  font-size: 11.5px !important;
-}
-
 .foot {
   flex: none;
   padding: 10px 14px 14px;
@@ -431,6 +320,129 @@
 @media (prefers-reduced-motion: reduce) {
   .panelOpen,
   .turn {
+    animation: none;
+  }
+}
+
+// ── Lịch sử cuộc trò chuyện (mở lại, đổi tên, xóa) ──
+.history {
+  display: flex;
+  max-height: 46%;
+  flex: none;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 14px;
+  overflow-y: auto;
+  border-bottom: 1px solid var(--app-border);
+  background: var(--app-surface-2);
+
+  > b {
+    color: var(--app-ink);
+    font-size: 12.5px;
+  }
+  ul {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  li {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    border-radius: 5px;
+
+    form {
+      flex: 1;
+    }
+    input {
+      width: 100%;
+      height: 30px;
+      padding: 0 8px;
+      border: 1px solid var(--app-accent);
+      border-radius: 5px;
+      background: var(--app-surface);
+      color: var(--app-ink);
+      font: 400 12.5px/1 $font;
+    }
+  }
+}
+.historyOn {
+  background: var(--app-accent-soft);
+}
+.historyOpen {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 1px;
+  padding: 6px 8px;
+  border: 0;
+  background: none;
+  color: var(--app-ink);
+  cursor: pointer;
+  font: 500 12.5px/1.3 $font;
+  text-align: left;
+
+  span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  small {
+    color: var(--app-ink-3);
+    font-size: 11px;
+    font-weight: 400;
+  }
+  &:hover span {
+    color: var(--app-accent-strong);
+  }
+}
+.historyIcon {
+  display: grid;
+  width: 24px;
+  height: 24px;
+  flex: none;
+  place-items: center;
+  border: 0;
+  border-radius: 5px;
+  background: none;
+  color: var(--app-ink-3);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--app-surface);
+    color: var(--app-accent-strong);
+  }
+}
+.historyEmpty,
+.historyNote {
+  margin: 0;
+  color: var(--app-ink-3);
+  font-size: 11.5px;
+}
+
+.errorText {
+  color: #a3121f !important;
+}
+.thinking {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--app-ink-3) !important;
+}
+.spin {
+  animation: vigaSpin 1s linear infinite;
+}
+@keyframes vigaSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .spin {
     animation: none;
   }
 }

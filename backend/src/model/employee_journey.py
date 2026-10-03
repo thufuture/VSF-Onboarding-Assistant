@@ -25,5 +25,11 @@ class EmployeeJourney(Base):
     # để lịch sử ổn định nếu sau này nhân viên đổi phòng ban — xem plan-portal/P1/P1.md mục 0).
     team_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("teams.id", ondelete="RESTRICT"))
     started_at: Mapped[datetime] = mapped_column(TimestampTZ, server_default=func.now())
+    # Việc nhân viên vừa mở gần nhất (để Viga hiểu "việc này" mà không cần giao diện gửi task_id). Không phải trạng thái
+    # "đang làm": máy trạng thái việc vẫn chỉ có LOCKED/READY/DONE. SET NULL khi việc bị xóa.
+    last_opened_task_id: Mapped[int | None] = mapped_column(
+        BigInteger, ForeignKey("employee_tasks.id", ondelete="SET NULL", use_alter=True)
+    )
+    last_opened_at: Mapped[datetime | None] = mapped_column(TimestampTZ)
     deleted_at: Mapped[datetime | None] = mapped_column(TimestampTZ)  # soft delete — P0A §5 retention
     created_at: Mapped[datetime] = created_at_column()

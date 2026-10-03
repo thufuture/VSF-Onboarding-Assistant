@@ -7,8 +7,8 @@ import {
   CheckCircle2,
   Clock,
   ChevronDown,
-  Eye,
   FileText,
+  History,
   Link2,
   ListChecks,
   Pencil,
@@ -17,20 +17,23 @@ import {
   UploadCloud,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { type FormEvent, type ReactNode, useEffect, useMemo, useRef, useState } from "react";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
+import { type FormEvent, type ReactNode, useEffect, useMemo, useState } from "react";
 
+import { FlatIcon } from "@/components/flat-icons/FlatIcon";
+import { JobProgress } from "@/components/job-progress/JobProgress";
 import { ConfirmModal, modalStyles as m, PortalModal, useToast } from "@/components/portal-modal/PortalModal";
-import { chatApi } from "@/features/chat/api";
 import { portalHrApi, PortalError } from "@/features/portal-hr/api";
 import type {
   DocumentCategoryResponseDTO,
   DocumentListItemResponseDTO,
+  JobResponseDTO,
 } from "@/features/portal-hr/dto/responseDTO/portal.response";
 
-import { categoryStyle, type DocTone } from "./docCategory";
+import { CategoryPicker } from "./CategoryPicker";
+import { categoryFlat, categoryStyle, type DocTone } from "./docCategory";
 import styles from "./DocumentsListPage.module.scss";
+import { DocumentVersionsModal } from "./DocumentVersionsModal";
+import { isJobFinished, useActiveActivations, useJob } from "./useJob";
 
 const PAGE_SIZE = 6;
 // Chiều cao tối thiểu của vùng bảng = đủ một trang đầy, để chân phân trang luôn nằm đáy thẻ.
@@ -50,30 +53,13 @@ function errorMessage(t: (key: string) => string, error: unknown): string {
   return t("errors.unavailable");
 }
 
-function formatDate(iso: string): string {
-  return new Date(iso).toLocaleDateString("vi-VN");
+/** Ngày (yyyy-mm-dd) theo giờ máy người xem, để so với ô chọn ngày. */
+function localDay(iso: string): string {
+  return new Date(iso).toLocaleDateString("sv-SE");
 }
 
-type Section = { id: string; level: number; heading: string | null; body: string };
-
-// Cùng quy tắc tách section với backend (H1–H3 mở section mới) để mục lục khớp nội dung đã ingest.
-function splitSections(markdown: string): Section[] {
-  const sections: Section[] = [];
-  let current: Section | null = null;
-  for (const line of markdown.split("\n")) {
-    const heading = /^(#{1,3})\s+(.+?)\s*$/.exec(line);
-    if (heading) {
-      current = { id: `sec-${sections.length}`, level: heading[1].length, heading: heading[2], body: "" };
-      sections.push(current);
-    } else {
-      if (!current) {
-        current = { id: `sec-${sections.length}`, level: 0, heading: null, body: "" };
-        sections.push(current);
-      }
-      current.body += `${line}\n`;
-    }
-  }
-  return sections.filter((s) => s.heading || s.body.trim());
+function formatDate(iso: string): string {
+  return new Date(iso).toLocaleDateString("vi-VN");
 }
 
 type FilterOption = { value: string; label: string; hint?: string; icon?: ReactNode; tone?: DocTone };
@@ -141,7 +127,7 @@ type Modal =
   | { kind: "upload" }
   | { kind: "newVersion"; doc: DocumentListItemResponseDTO }
   | { kind: "edit"; doc: DocumentListItemResponseDTO }
-  | { kind: "view"; doc: DocumentListItemResponseDTO }
+  | { kind: "versions"; doc: DocumentListItemResponseDTO }
   | { kind: "archive"; doc: DocumentListItemResponseDTO }
   | { kind: "reactivate"; doc: DocumentListItemResponseDTO };
 
@@ -161,6 +147,8 @@ export function DocumentsListPage() {
   const [statusFilter, setStatusFilter] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
   const [usageFilter, setUsageFilter] = useState("");
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
   const [openFilter, setOpenFilter] = useState<string | null>(null);
   const [page, setPage] = useState(1);
 
@@ -170,11 +158,15 @@ export function DocumentsListPage() {
   const [docVersion, setDocVersion] = useState("1.0");
   const [docEffectiveFrom, setDocEffectiveFrom] = useState(() => new Date().toISOString().slice(0, 10));
 
-  const [viewMarkdown, setViewMarkdown] = useState<string | null>(null);
-  const [viewFailed, setViewFailed] = useState(false);
-  // Mục lục kiểu ngăn điều hướng của Word: đứng yên, làm nổi mục đang đọc theo vị trí cuộn của trang.
-  const canvasRef = useRef<HTMLDivElement>(null);
-  const [activeSec, setActiveSec] = useState<string | null>(null);
+  // "Tải và kích hoạt luôn" (tài liệu mới) hay chỉ tạo bản nháp để xem lại rồi mới kích hoạt (phiên bản mới).
+  const [docActivate, setDocActivate] = useState(true);
+  const [uploadJobId, setUploadJobId] = useState<number | null>(null);
+  const [warning, setWarning] = useState<string | null>(null);
+  const { jobs: activeJobs, refresh: refreshJobs } = useActiveActivations(true, () => reload());
+  const uploadJob = useJob(uploadJobId, () => {
+    reload();
+    refreshJobs();
+  });
 
   function reload() {
     portalHrApi
@@ -195,6 +187,12 @@ export function DocumentsListPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Mô tả ngắn của hai nhóm tài liệu hiện có (nhóm khác không có mô tả thì chỉ hiện tên).
+  const categoryHints: Record<string, string> = {
+    onboarding: t("category.hint.onboarding"),
+    "tai-lieu-khac": t("category.hint.other"),
+  };
+
   const categoryNames = useMemo(
     () => Array.from(new Set((documents ?? []).map((d) => d.category_name))).sort(),
     [documents],
@@ -210,9 +208,11 @@ export function DocumentsListPage() {
           d.task_titles.some((task) => task.toLowerCase().includes(q))) &&
         (!usageFilter || (usageFilter === "used" ? d.task_titles.length > 0 : d.task_titles.length === 0)) &&
         (!statusFilter || d.status === statusFilter) &&
-        (!categoryFilter || d.category_name === categoryFilter),
+        (!categoryFilter || d.category_name === categoryFilter) &&
+        (!fromDate || localDay(d.updated_at) >= fromDate) &&
+        (!toDate || localDay(d.updated_at) <= toDate),
     );
-  }, [documents, query, statusFilter, categoryFilter, usageFilter]);
+  }, [documents, query, statusFilter, categoryFilter, usageFilter, fromDate, toDate]);
 
   const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const pageItems = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
@@ -226,12 +226,14 @@ export function DocumentsListPage() {
     setFile(null);
     setDocTitle("");
     setDocVersion("1.0");
+    setDocActivate(true);
     setModal({ kind: "upload" });
   }
 
   function openNewVersion(doc: DocumentListItemResponseDTO) {
     setFile(null);
     setDocVersion("");
+    setDocActivate(false);
     setModal({ kind: "newVersion", doc });
   }
 
@@ -242,37 +244,40 @@ export function DocumentsListPage() {
   }
 
   function openView(doc: DocumentListItemResponseDTO) {
-    setViewMarkdown(null);
-    setViewFailed(false);
-    setActiveSec(null);
-    setModal({ kind: "view", doc });
-    if (doc.latest_version_id === null) {
-      setViewFailed(true);
-      return;
-    }
-    chatApi
-      .getDocument(doc.latest_version_id)
-      .then((result) => setViewMarkdown(result.markdown))
-      .catch(() => setViewFailed(true));
+    setModal({ kind: "versions", doc });
   }
 
   async function submitUpload(event: FormEvent, existing?: DocumentListItemResponseDTO) {
     event.preventDefault();
     if (!file) return;
     setError(null);
+    setWarning(null);
     setBusy(true);
     try {
       const form = new FormData();
       form.append("file", file);
-      form.append("title", existing?.title ?? docTitle);
-      form.append("category_slug", existing?.category_slug ?? docCategory);
-      // Cùng source_key = thêm phiên bản mới của tài liệu cũ; khác = tài liệu mới.
-      form.append("source_key", existing?.source_key ?? `portal-${Date.now()}`);
       form.append("version_label", docVersion);
-      form.append("effective_from", docEffectiveFrom);
+      if (existing) {
+        // Thêm phiên bản mới cho tài liệu đã có: gửi mã tài liệu, không gửi lại tên/danh mục.
+        form.append("document_id", String(existing.id));
+      } else {
+        form.append("title", docTitle);
+        form.append("category_slug", docCategory);
+        form.append("source_key", `portal-${Date.now()}`);
+      }
+      if (docEffectiveFrom) form.append("effective_from", docEffectiveFrom);
+      if (docActivate) form.append("activate", "true");
       const result = await portalHrApi.uploadDocument(form);
       setModal(null);
-      showToast(t("upload.success", { sections: result.section_count, chunks: result.chunk_count }));
+      if (result.structure_quality === "POOR") setWarning(t("upload.structurePoor"));
+      else if (result.structure_quality === "MEDIUM") setWarning(t("upload.structureMedium"));
+      if (result.job_id !== null) {
+        setUploadJobId(result.job_id);
+        refreshJobs();
+        showToast(t("upload.startedBackground"));
+      } else {
+        showToast(result.reused ? t("upload.reused") : t("upload.draftCreated"));
+      }
       reload();
     } catch (caught) {
       setError(errorMessage(t, caught));
@@ -316,29 +321,9 @@ export function DocumentsListPage() {
     }
   }
 
-  const sections = viewMarkdown ? splitSections(viewMarkdown) : [];
-
-  function scrollToSection(id: string) {
-    const box = canvasRef.current;
-    const el = document.getElementById(id);
-    if (!box || !el) return;
-    const top = el.getBoundingClientRect().top - box.getBoundingClientRect().top + box.scrollTop - 18;
-    box.scrollTo({ top, behavior: "smooth" });
-    setActiveSec(id);
-  }
-
-  function syncActiveSection() {
-    const box = canvasRef.current;
-    if (!box) return;
-    const boxTop = box.getBoundingClientRect().top;
-    let current: string | null = null;
-    for (const item of sections) {
-      if (!item.heading) continue;
-      const el = document.getElementById(item.id);
-      if (el && el.getBoundingClientRect().top - boxTop <= 60) current = item.id;
-    }
-    setActiveSec(current);
-  }
+  // Phần trăm của job kích hoạt đang chạy theo từng phiên bản (để dòng tài liệu hiện "Đang xử lý 45%").
+  const jobByVersion = new Map<number, JobResponseDTO>();
+  for (const job of activeJobs) if (job.document_version_id !== null) jobByVersion.set(job.document_version_id, job);
 
   return (
     <div className={styles.page}>
@@ -356,13 +341,24 @@ export function DocumentsListPage() {
       </header>
 
       {error ? <p className={styles.banner + " " + styles.bannerError}>{error}</p> : null}
+      {warning ? <p className={styles.banner + " " + styles.bannerWarn}>{warning}</p> : null}
+      {uploadJobId !== null && uploadJob.job && !(isJobFinished(uploadJob.job) && uploadJob.job.status === "SUCCEEDED") ? (
+        <div className={styles.jobBox}>
+          <b>{uploadJob.job.status === "FAILED" ? t("upload.failedBackground") : t("upload.progressTitle")}</b>
+          <JobProgress
+            percent={uploadJob.job.progress_percent}
+            stage={uploadJob.job.status === "FAILED" ? uploadJob.job.error : uploadJob.job.stage}
+            state={uploadJob.job.status === "FAILED" ? "failed" : "running"}
+          />
+        </div>
+      ) : null}
 
       <div className={styles.kpiGrid}>
         <div className={styles.kpi}>
           <div className={styles.kh}>
             <small>{t("kpi.total")}</small>
             <span className={`${styles.ichip} ${styles.toneBlue}`}>
-              <BookOpen aria-hidden="true" size={15} />
+              <FlatIcon name="book" size={22} tone="blue" />
             </span>
           </div>
           <b>{total}</b>
@@ -371,7 +367,7 @@ export function DocumentsListPage() {
           <div className={styles.kh}>
             <small>{t("kpi.ready")}</small>
             <span className={`${styles.ichip} ${styles.toneTeal}`}>
-              <CheckCircle2 aria-hidden="true" size={15} />
+              <FlatIcon name="check" size={22} tone="green" />
             </span>
           </div>
           <b>{readyCount}</b>
@@ -380,7 +376,7 @@ export function DocumentsListPage() {
           <div className={styles.kh}>
             <small>{t("kpi.pending")}</small>
             <span className={`${styles.ichip} ${styles.toneAmber}`}>
-              <Clock aria-hidden="true" size={15} />
+              <FlatIcon name="clock" size={22} tone="amber" />
             </span>
           </div>
           <b>{pendingCount}</b>
@@ -389,7 +385,7 @@ export function DocumentsListPage() {
           <div className={styles.kh}>
             <small>{t("kpi.used")}</small>
             <span className={`${styles.ichip} ${styles.toneIndigo}`}>
-              <ListChecks aria-hidden="true" size={15} />
+              <FlatIcon name="tasks" size={22} tone="indigo" />
             </span>
           </div>
           <b>{usedCount}</b>
@@ -408,6 +404,53 @@ export function DocumentsListPage() {
               placeholder={t("searchPlaceholder")}
               value={query}
             />
+          </div>
+          <div className={styles.dateRange}>
+            <label className={styles.dateField}>
+              <FlatIcon name="clock" size={20} tone="amber" />
+              <span>
+                <small>{t("filter.from")}</small>
+                <input
+                  aria-label={t("filter.from")}
+                  max={toDate || undefined}
+                  onChange={(event) => {
+                    setFromDate(event.target.value);
+                    setPage(1);
+                  }}
+                  type="date"
+                  value={fromDate}
+                />
+              </span>
+            </label>
+            <label className={styles.dateField}>
+              <FlatIcon name="clock" size={20} tone="teal" />
+              <span>
+                <small>{t("filter.to")}</small>
+                <input
+                  aria-label={t("filter.to")}
+                  min={fromDate || undefined}
+                  onChange={(event) => {
+                    setToDate(event.target.value);
+                    setPage(1);
+                  }}
+                  type="date"
+                  value={toDate}
+                />
+              </span>
+            </label>
+            {fromDate || toDate ? (
+              <button
+                className={styles.dateClear}
+                onClick={() => {
+                  setFromDate("");
+                  setToDate("");
+                  setPage(1);
+                }}
+                type="button"
+              >
+                {t("filter.clearDates")}
+              </button>
+            ) : null}
           </div>
           <div className={styles.dropRow}>
             <FilterDrop
@@ -471,11 +514,22 @@ export function DocumentsListPage() {
 
         <div className={styles.tableWrap} style={{ minHeight: PAGE_SIZE * ROW_HEIGHT + HEAD_HEIGHT }}>
           <table className={styles.table}>
+            <colgroup>
+              <col style={{ width: "24%" }} />
+              <col style={{ width: "13%" }} />
+              <col style={{ width: "9%" }} />
+              <col style={{ width: "9%" }} />
+              <col style={{ width: "11%" }} />
+              <col style={{ width: "11%" }} />
+              <col style={{ width: "9%" }} />
+              <col style={{ width: "14%" }} />
+            </colgroup>
             <thead>
               <tr>
                 <th>{t("table.document")}</th>
                 <th>{t("table.category")}</th>
                 <th>{t("table.sections")}</th>
+                <th>{t("table.version")}</th>
                 <th>{t("table.status")}</th>
                 <th>{t("table.tasks")}</th>
                 <th>{t("table.updated")}</th>
@@ -485,31 +539,33 @@ export function DocumentsListPage() {
             <tbody>
               {documents === null ? (
                 <tr>
-                  <td colSpan={7}>{t("loading")}</td>
+                  <td colSpan={8}>{t("loading")}</td>
                 </tr>
               ) : pageItems.length === 0 ? (
                 <tr>
-                  <td colSpan={7}>{t("empty")}</td>
+                  <td colSpan={8}>{t("empty")}</td>
                 </tr>
               ) : (
                 pageItems.map((doc) => {
                   const cat = categoryStyle(doc.category_name);
+                  const flat = categoryFlat(doc.category_name);
                   return (
                     <tr className={doc.status !== "ACTIVE" ? styles.rowOff : ""} key={doc.id}>
                       <td>
                         <div className={styles.docName}>
-                          <span className={`${styles.docIcon} ${styles[`tone_${cat.tone}`]}`}>
-                            <FileText aria-hidden="true" size={16} />
+                          <span className={styles.docIcon}>
+                            <FlatIcon name={flat.icon} size={24} tone={flat.tone} />
                           </span>
                           <div>
-                            <b>{doc.title}</b>
-                            {doc.source_key ? <small>{doc.source_key}</small> : null}
+                            <b title={doc.title}>{doc.title}</b>
+                            {doc.source_key ? <small title={doc.source_key}>{doc.source_key}</small> : null}
                           </div>
                         </div>
                       </td>
                       <td>
-                        <span className={`${styles.kind} ${styles[`tone_${cat.tone}`]}`}>
-                          {cat.icon} {doc.category_name}
+                        <span className={`${styles.kind} ${styles[`tone_${cat.tone}`]}`} title={doc.category_name}>
+                          <FlatIcon name={flat.icon} size={16} tone={flat.tone} />
+                          <span>{doc.category_name}</span>
                         </span>
                       </td>
                       <td>
@@ -521,10 +577,32 @@ export function DocumentsListPage() {
                         </div>
                       </td>
                       <td>
-                        <span className={styles.status} data-status={doc.status}>
-                          <i />
-                          {t(`status.${doc.status}`)}
-                        </span>
+                        <div className={styles.date}>
+                          <b>{doc.current_version_label ?? t("version.none")}</b>
+                          <small>
+                            {t("version.count", { count: doc.version_count })}
+                            {doc.draft_count > 0 ? ` · ${t("version.drafts", { count: doc.draft_count })}` : ""}
+                          </small>
+                        </div>
+                      </td>
+                      <td>
+                        {doc.processing_version_ids.some((id) => jobByVersion.has(id)) ? (
+                          <div className={styles.rowProgress}>
+                            {doc.processing_version_ids.map((id) => {
+                              const job = jobByVersion.get(id);
+                              return job ? (
+                                <JobProgress compact key={id} percent={job.progress_percent} stage={job.stage} state="running" />
+                              ) : null;
+                            })}
+                          </div>
+                        ) : (
+                          <span className={styles.status} data-status={doc.status}>
+                            <i />
+                            {doc.status === "ACTIVE" && doc.latest_version_id === null
+                              ? t("status.NO_CURRENT")
+                              : t(`status.${doc.status}`)}
+                          </span>
+                        )}
                       </td>
                       <td>
                         <div className={styles.used}>
@@ -547,7 +625,7 @@ export function DocumentsListPage() {
                       <td>
                         <div className={styles.date}>
                           <b>{formatDate(doc.updated_at)}</b>
-                          {doc.owner_name ? <small>{doc.owner_name}</small> : null}
+                          {doc.owner_name ? <small title={doc.owner_name}>{doc.owner_name}</small> : null}
                         </div>
                       </td>
                       <td>
@@ -558,7 +636,7 @@ export function DocumentsListPage() {
                             title={t("view")}
                             type="button"
                           >
-                            <Eye aria-hidden="true" size={13} />
+                            <History aria-hidden="true" size={13} />
                           </button>
                           <button className={styles.iconBtn} onClick={() => openEdit(doc)} title={t("edit")} type="button">
                             <Pencil aria-hidden="true" size={13} />
@@ -667,13 +745,7 @@ export function DocumentsListPage() {
               </div>
               <div>
                 <label htmlFor="up-cat">{t("upload.category")}</label>
-                <select id="up-cat" onChange={(e) => setDocCategory(e.target.value)} required value={docCategory}>
-                  {categories.map((c) => (
-                    <option key={c.slug} value={c.slug}>
-                      {c.name}
-                    </option>
-                  ))}
-                </select>
+                <CategoryPicker hints={categoryHints} id="up-cat" onChange={setDocCategory} options={categories} value={docCategory} />
               </div>
               <div>
                 <label htmlFor="up-ver">{t("upload.version")}</label>
@@ -684,12 +756,18 @@ export function DocumentsListPage() {
                 <input
                   id="up-eff"
                   onChange={(e) => setDocEffectiveFrom(e.target.value)}
-                  required
                   type="date"
                   value={docEffectiveFrom}
                 />
               </div>
             </div>
+            <label className={styles.activateRow}>
+              <input checked={docActivate} onChange={(e) => setDocActivate(e.target.checked)} type="checkbox" />
+              <span>
+                <b>{t("upload.activateNow")}</b>
+                <small>{docActivate ? t("upload.activateNowHint") : t("upload.draftOnlyHint")}</small>
+              </span>
+            </label>
           </form>
         </PortalModal>
       ) : null}
@@ -737,12 +815,18 @@ export function DocumentsListPage() {
                 <input
                   id="nv-eff"
                   onChange={(e) => setDocEffectiveFrom(e.target.value)}
-                  required
                   type="date"
                   value={docEffectiveFrom}
                 />
               </div>
             </div>
+            <label className={styles.activateRow}>
+              <input checked={docActivate} onChange={(e) => setDocActivate(e.target.checked)} type="checkbox" />
+              <span>
+                <b>{t("upload.activateNow")}</b>
+                <small>{docActivate ? t("upload.activateNowHint") : t("upload.draftOnlyHint")}</small>
+              </span>
+            </label>
           </form>
         </PortalModal>
       ) : null}
@@ -772,85 +856,20 @@ export function DocumentsListPage() {
               </div>
               <div className={m.span2}>
                 <label htmlFor="ed-cat">{t("upload.category")}</label>
-                <select id="ed-cat" onChange={(e) => setDocCategory(e.target.value)} value={docCategory}>
-                  {categories.map((c) => (
-                    <option key={c.slug} value={c.slug}>
-                      {c.name}
-                    </option>
-                  ))}
-                </select>
+                <CategoryPicker hints={categoryHints} id="ed-cat" onChange={setDocCategory} options={categories} value={docCategory} />
               </div>
             </div>
           </form>
         </PortalModal>
       ) : null}
 
-      {modal?.kind === "view" ? (
-        <PortalModal
-          closeLabel={t("close")}
-          footer={
-            <>
-              {modal.doc.latest_version_id ? (
-                <a
-                  className={m.btnSec}
-                  href={portalHrApi.originalDocumentUrl(modal.doc.latest_version_id)}
-                  rel="noopener noreferrer"
-                  target="_blank"
-                >
-                  <FileText aria-hidden="true" size={14} /> {t("viewOriginal")}
-                </a>
-              ) : null}
-              <button className={m.btnSec} onClick={() => setModal(null)} type="button">
-                {t("closeButton")}
-              </button>
-            </>
-          }
-          icon={FileText}
+      {modal?.kind === "versions" ? (
+        <DocumentVersionsModal
+          doc={modal.doc}
+          onChanged={() => reload()}
           onClose={() => setModal(null)}
-          subtitle={`${modal.doc.category_name} · ${t("sectionCount", { count: modal.doc.section_count })}`}
-          title={modal.doc.title}
-          tone="indigo"
-          vwide
-        >
-          {viewFailed ? (
-            <p className={m.faint}>{t("viewFailed")}</p>
-          ) : viewMarkdown === null ? (
-            <p className={m.faint}>{t("loading")}</p>
-          ) : (
-            <div className={styles.docRead}>
-              <nav aria-label={t("toc")} className={styles.docToc}>
-                <b>{t("toc")}</b>
-                <div className={styles.docTocList}>
-                  {sections
-                    .filter((s) => s.heading)
-                    .map((s) => (
-                      <button
-                        className={`${styles[`lvl${s.level}`]} ${activeSec === s.id ? styles.tocOn : ""}`}
-                        key={s.id}
-                        onClick={() => scrollToSection(s.id)}
-                        type="button"
-                      >
-                        {s.heading}
-                      </button>
-                    ))}
-                </div>
-              </nav>
-              <div className={styles.docCanvas} onScroll={syncActiveSection} ref={canvasRef}>
-                <article className={styles.docPage}>
-                  {sections.map((s) => {
-                    const Heading = (s.level <= 1 ? "h2" : s.level === 2 ? "h3" : "h4") as "h2" | "h3" | "h4";
-                    return (
-                      <section id={s.id} key={s.id}>
-                        {s.heading ? <Heading className={styles[`hd${Math.max(s.level, 1)}`]}>{s.heading}</Heading> : null}
-                        <ReactMarkdown remarkPlugins={[remarkGfm]}>{s.body}</ReactMarkdown>
-                      </section>
-                    );
-                  })}
-                </article>
-              </div>
-            </div>
-          )}
-        </PortalModal>
+          onUploadNewVersion={() => openNewVersion(modal.doc)}
+        />
       ) : null}
 
       {modal?.kind === "archive" ? (

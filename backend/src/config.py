@@ -38,6 +38,10 @@ class Settings(BaseSettings):
     # tất định (mặc định, an toàn cho dev/CI — không gọi mạng nếu chưa cấu hình).
     embedding_provider: Literal["modal-bge-m3", "fake"] = "fake"
     embedding_endpoint: str | None = None
+    # Giữ dịch vụ embedding ấm khi đang có người dùng (Modal tắt container khi rảnh, khởi động nguội mất ~20 giây).
+    embedding_keep_warm_enabled: bool = True
+    embedding_keep_warm_interval_seconds: float = 45.0
+    embedding_keep_warm_window_seconds: float = 600.0
     embedding_api_key: SecretStr | None = None
     # Timeout/retry riêng cho lúc nạp tài liệu (khác với lúc chat, chưa cần ở Phase 2).
     ingestion_embedding_connect_timeout_seconds: float = 5
@@ -66,6 +70,30 @@ class Settings(BaseSettings):
     langfuse_public_key: str | None = None
     langfuse_secret_key: SecretStr | None = None
     langfuse_host: str = "https://cloud.langfuse.com"
+
+    # Đơn giá để ƯỚC TÍNH chi phí (USD). Mặc định 0 = chưa biết đơn giá, số liệu chi phí khi đó hiển thị 0 chứ không
+    # đoán. Điền theo bảng giá thật của nhà cung cấp (LLM: USD mỗi 1 triệu token; embedding: USD mỗi 1000 chuỗi).
+    # DeepSeek `deepseek-flash` tra ngày 01/10/2026 (giá giờ cao điểm, cache miss: mức bảo thủ); xem mục 12.11a của
+    # plan-portal/ingest-tai-lieu-va-tao-task-bang-ai.md. Đặt 0 nếu muốn tắt ước tính.
+    llm_price_input_per_million_usd: float = 0.30
+    llm_price_output_per_million_usd: float = 1.20
+    embedding_price_per_thousand_usd: float = 0.0
+
+    # Hàng đợi việc nền (nạp/kích hoạt tài liệu, tạo task bằng AI) chạy trong tiến trình backend (mục 14).
+    job_worker_enabled: bool = True
+    job_max_concurrent: int = 2
+    job_poll_seconds: float = 1.0
+    # Job RUNNING không báo tiến độ quá lâu thì coi là worker đã chết và đưa về hàng đợi.
+    job_stale_seconds: int = 300
+
+    # LLM chia mục cho tài liệu kém cấu trúc (mục 13.2b): chỉ chạy khi luật cố định không tìm được tiêu đề, tài liệu đủ
+    # dài, và chưa vượt hạn mức số lần gọi mỗi ngày. Chỉ gửi chữ của tài liệu đã có (không OCR).
+    # Hội thoại Viga lưu trong PostgreSQL, tự xóa sau số ngày không hoạt động này (quyết định 8, mục 0.1).
+    chat_retention_days: int = 90
+
+    structure_llm_enabled: bool = True
+    structure_llm_min_words: int = 400
+    structure_llm_daily_limit: int = 30
 
     @field_validator("app_timezone")
     @classmethod

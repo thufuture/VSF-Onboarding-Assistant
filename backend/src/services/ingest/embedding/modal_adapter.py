@@ -12,8 +12,11 @@ dừng ngay, không thử lại vô ích; số chiều hoặc số lượng vect
 from __future__ import annotations
 
 import asyncio
+import time
 
 import httpx
+
+from src.infrastructure.observability.call_metrics import CallRecord, emit
 
 
 class EmbeddingServiceError(Exception):
@@ -54,11 +57,30 @@ class ModalEmbeddingAdapter:
         if not texts:
             return []
         vectors: list[list[float]] = []
-        async with httpx.AsyncClient() as client:
-            for start in range(0, len(texts), self.MAX_BATCH_SIZE):
-                batch = texts[start : start + self.MAX_BATCH_SIZE]
-                vectors.extend(await self._embed_batch(client, batch))
+        started = time.perf_counter()
+        try:
+            async with httpx.AsyncClient() as client:
+                for start in range(0, len(texts), self.MAX_BATCH_SIZE):
+                    batch = texts[start : start + self.MAX_BATCH_SIZE]
+                    vectors.extend(await self._embed_batch(client, batch))
+        except EmbeddingServiceError:
+            self._emit(started, len(texts), ok=False, error="embedding_error")
+            raise
+        self._emit(started, len(texts), ok=True)
         return vectors
+
+    def _emit(self, started: float, count: int, *, ok: bool, error: str | None = None) -> None:
+        emit(
+            CallRecord(
+                kind="embedding",
+                provider="modal",
+                model=self.model_version,
+                latency_ms=(time.perf_counter() - started) * 1000,
+                ok=ok,
+                input_count=count,
+                error=error,
+            )
+        )
 
     async def _embed_batch(self, client: httpx.AsyncClient, batch: list[str]) -> list[list[float]]:
         last_error: EmbeddingServiceError | None = None
