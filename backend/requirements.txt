@@ -5,7 +5,9 @@ uvicorn[standard]>=0.34,<1.0
 python-multipart>=0.0.20,<1.0
 pydantic>=2.10,<3
 pydantic-settings>=2.7,<3
-sqlalchemy>=2.0.36,<3
+# Chặn dưới 2.1: SQLAlchemy 2.1 (ra 24/09/2026) đổi kiểu dữ liệu của truy vấn (mypy báo hàng chục lỗi ở thống kê và readiness) và
+# toàn bộ code, test, migration của dự án mới chạy với 2.0.x. Nâng lên 2.1 là một việc riêng, có kiểm thử.
+sqlalchemy>=2.0.36,<2.1
 # SQLAlchemy asyncio cần greenlet; trước đây được kéo vào gián tiếp qua resolver, khai rõ để build image
 # không phụ thuộc vào việc gói khác có kéo theo greenlet hay không (đã gặp lỗi thiếu khi build lại image).
 greenlet>=3.0,<4
