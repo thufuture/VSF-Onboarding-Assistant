@@ -11,6 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 from src.config import Settings, get_settings
 from src.infrastructure.ai.chat_completion_port import ChatCompletionPort
 from src.infrastructure.ai.deepseek_adapter import DeepSeekChatCompletion
+from src.infrastructure.ai.llm_gate import shared_gate
 from src.infrastructure.observability.call_metrics import set_user_id
 from src.infrastructure.observability.langfuse_tracer import LangfuseTracer
 from src.model.enums import UserRole
@@ -20,12 +21,12 @@ from src.services.auth.auth_service import load_session_user
 from src.services.auth.errors import AuthError
 from src.services.auth.login_throttle import LoginThrottle
 from src.services.auth.sessions import SESSION_COOKIE_NAME, SessionError, SessionToken, read_token
-from src.services.chat.chat_throttle import ChatThrottle
 from src.services.ingest.embedding.keep_warm import KeepWarm
 from src.services.ingest.embedding.port import EmbeddingPort
 from src.services.ingest.factory import build_embedding_port, build_storage_port
 from src.services.ingest.storage import StoragePort
 from src.services.readiness_service import ReadinessService
+from src.services.viga.chat_throttle import ChatThrottle
 
 
 def get_session_factory(request: Request) -> async_sessionmaker[AsyncSession]:
@@ -128,7 +129,11 @@ def get_chat_completion_port(settings: Annotated[Settings, Depends(get_settings)
     if settings.llm_api_key is None:
         raise RuntimeError("LLM_API_KEY chưa cấu hình")
     return DeepSeekChatCompletion(
-        base_url=settings.llm_base_url, api_key=settings.llm_api_key.get_secret_value(), model=settings.llm_model
+        base_url=settings.llm_base_url,
+        api_key=settings.llm_api_key.get_secret_value(),
+        model=settings.llm_model,
+        max_retries=settings.llm_max_retries,
+        gate=shared_gate(settings.llm_max_concurrent, settings.llm_background_max_concurrent),
     )
 
 

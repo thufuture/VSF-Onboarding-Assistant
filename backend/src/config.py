@@ -63,21 +63,36 @@ class Settings(BaseSettings):
     llm_base_url: str = "https://api.deepseek.com"
     llm_model: str = "deepseek-flash"
     llm_api_key: SecretStr | None = None
+    # Giới hạn lời gọi LLM song song (nhà cung cấp cho 11 mỗi tài khoản, vượt thì 429): tổng 9, riêng việc nền 5 để không chiếm
+    # chỗ của Viga. Thử lại tối đa `llm_max_retries` lần khi 429/5xx/mất kết nối (xem infrastructure/ai/llm_gate.py).
+    llm_max_concurrent: int = 9
+    llm_background_max_concurrent: int = 5
+    llm_max_retries: int = 2
+
+    # Tạo task bằng AI (kế hoạch tối ưu độ trễ, Ai-task/ke-hoach-toi-uu-tao-task-bang-ai.md): "fast" = tắt suy luận, trích
+    # nguồn bằng số dòng, một lượt bù phủ và một lời gọi xếp thứ tự; "legacy" = cách cũ (suy luận bật, trích nguyên văn).
+    task_proposal_mode: Literal["fast", "legacy"] = "fast"
+    task_proposal_batch_words: int = 2500
+    task_proposal_call_timeout_seconds: float = 60
 
     # Theo dõi từng bước gọi LLM/embedding bằng Langfuse (tùy chọn — mục 7, kế hoạch 2-C/2-D mở rộng).
-    # Tắt mặc định; bật khi có khóa. Chỉ metadata được gửi đi, không gửi nội dung câu hỏi/câu trả lời thật.
+    # Tắt mặc định; bật khi có khóa. Mặc định chỉ gửi số liệu (token, chi phí, độ trễ, số lượng). Nội dung câu hỏi, câu trả
+    # lời và tài liệu là dữ liệu nội bộ đi ra dịch vụ ngoài: chỉ gửi khi đặt LANGFUSE_CAPTURE_CONTENT=true.
     langfuse_enabled: bool = False
+    langfuse_capture_content: bool = False
+    langfuse_content_max_chars: int = 4000
     langfuse_public_key: str | None = None
     langfuse_secret_key: SecretStr | None = None
     langfuse_host: str = "https://cloud.langfuse.com"
 
     # Đơn giá để ƯỚC TÍNH chi phí (USD). Mặc định 0 = chưa biết đơn giá, số liệu chi phí khi đó hiển thị 0 chứ không
-    # đoán. Điền theo bảng giá thật của nhà cung cấp (LLM: USD mỗi 1 triệu token; embedding: USD mỗi 1000 chuỗi).
+    # đoán. Điền theo bảng giá thật của nhà cung cấp (LLM: USD mỗi 1 triệu token; embedding: USD mỗi giây GPU).
     # DeepSeek `deepseek-flash` tra ngày 01/10/2026 (giá giờ cao điểm, cache miss: mức bảo thủ); xem mục 12.11a của
     # plan-portal/ingest-tai-lieu-va-tao-task-bang-ai.md. Đặt 0 nếu muốn tắt ước tính.
     llm_price_input_per_million_usd: float = 0.30
     llm_price_output_per_million_usd: float = 1.20
-    embedding_price_per_thousand_usd: float = 0.0
+    # Embedding BGE-M3 chạy trên Modal (GPU L4): tính theo giây GPU chạy. L4 = $0.000222/giây (modal.com/pricing, tra 05/10/2026).
+    embedding_price_per_second_usd: float = 0.000222
 
     # Hàng đợi việc nền (nạp/kích hoạt tài liệu, tạo task bằng AI) chạy trong tiến trình backend (mục 14).
     job_worker_enabled: bool = True

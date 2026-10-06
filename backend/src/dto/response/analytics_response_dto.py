@@ -35,6 +35,34 @@ class OperationBreakdownResponseDTO(BaseModel):
     cost_usd: float
 
 
+class ProviderBreakdownResponseDTO(BaseModel):
+    """Tổng theo nhà cung cấp: DeepSeek (LLM) và BGE-M3 trên Modal (embedding) có đơn vị đo khác nhau nên tách riêng."""
+
+    provider: str  # deepseek | modal
+    kind: str  # llm | embedding
+    calls: int
+    errors: int
+    p50_latency_ms: float
+    p95_latency_ms: float
+    prompt_tokens: int
+    completion_tokens: int
+    input_count: int
+    gpu_seconds: float  # tổng thời gian lời gọi (với embedding = giây GPU Modal tính tiền)
+    cost_usd: float
+    cost_per_day: list[float]
+    cost_per_hour: list[float]  # 24 giờ gần nhất, khớp `AiAnalyticsResponseDTO.hours`
+
+
+class CostGroupResponseDTO(BaseModel):
+    """Chi phí của một khoản HR tự gây ra: tải tài liệu lên (`upload`, các thao tác `ingest.*`) hoặc tạo task bằng AI (`tasks`)."""
+
+    key: str  # upload | tasks
+    calls: int
+    cost_usd: float
+    cost_per_day: list[float]
+    cost_per_hour: list[float]
+
+
 class JobRunResponseDTO(BaseModel):
     """Một lượt việc nền (tạo task bằng AI hoặc kích hoạt tài liệu): thời gian chạy thật, chi phí và độ trễ LLM cộng theo job."""
 
@@ -90,6 +118,9 @@ class AiAnalyticsResponseDTO(BaseModel):
     errors_per_day: list[int]
     cost_per_day: list[float]
     by_operation: list[OperationBreakdownResponseDTO]
+    by_provider: list[ProviderBreakdownResponseDTO]
+    cost_groups: list[CostGroupResponseDTO]
+    hours: list[str]  # ISO yyyy-mm-ddTHH:00 theo múi giờ ứng dụng, 24 giờ gần nhất
     task_runs: list[JobRunResponseDTO]
     activation_runs: list[JobRunResponseDTO]
 

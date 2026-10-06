@@ -29,11 +29,11 @@ from src.infrastructure.ai.chat_completion_port import ChatCompletionPort
 from src.infrastructure.observability.langfuse_tracer import LangfuseTracer
 from src.model.enums import ChatRole, GapKind
 from src.model.user import User
-from src.services.chat.pipeline import DocumentQaResult, run_document_qa
 from src.services.ingest.embedding.port import EmbeddingPort
 from src.services.retrieval.hybrid_search import SectionEvidence
 from src.services.viga import conversations, gaps
 from src.services.viga.guard import is_personal_info_question, shortcut_tool, tool_fits_question
+from src.services.viga.pipeline import DocumentQaResult, run_document_qa
 from src.services.viga.router import CONFIDENCE_THRESHOLD, RouteDecision, route_question
 from src.services.viga.snapshot import JourneySnapshot, load_snapshot
 from src.services.viga.tools import (
@@ -271,6 +271,14 @@ async def _decide(
     if not decision.clarify and not tool_fits_question(decision.tool, question):
         # Công cụ lộ trình không hợp với câu hỏi (vd. hỏi thông tin trong tài liệu): tài liệu mới có đáp án đúng.
         return await _documents(question, route="FALLBACK", **docs)  # type: ignore[arg-type]
+
+    # LLM định tuyến muốn hỏi lại "việc nào?" cho công cụ gắn với một việc. Câu mô tả sự cố (vd. "đăng nhập được Outlook nhưng
+    # Teams không vào được") không nói tới việc nào trong lộ trình nhưng tài liệu thường có đúng đáp án: tra tài liệu TRƯỚC,
+    # có căn cứ thì trả lời luôn; chỉ khi tài liệu không có mới hỏi lại.
+    if decision.clarify and decision.tool in TASK_TOOLS and snapshot is not None:
+        from_documents = await _documents(question, route="LLM", **docs)  # type: ignore[arg-type]
+        if from_documents.response_type not in ("NO_BASIS", "OUT_OF_SCOPE", "ERROR"):
+            return from_documents
 
     # [6] công cụ lộ trình tất định.
     tool_reply = _route_from_llm(decision, snapshot, question, now)

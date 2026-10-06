@@ -59,6 +59,15 @@ class DbCallSink:
                         user_id=record.user_id,
                         request_id=record.request_id,
                         job_id=record.job_id,
+                        first_byte_ms=record.first_byte_ms,
+                        first_token_ms=record.first_token_ms,
+                        reasoning_ms=record.reasoning_ms,
+                        content_ms=record.content_ms,
+                        reasoning_tokens=record.reasoning_tokens,
+                        cached_input_tokens=record.cached_input_tokens,
+                        finish_reason=record.finish_reason,
+                        attempt=record.attempt,
+                        queue_wait_ms=record.queue_wait_ms,
                     )
                 )
                 await session.commit()

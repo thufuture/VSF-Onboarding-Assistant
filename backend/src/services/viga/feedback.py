@@ -183,6 +183,23 @@ async def resolve_dissatisfied(session: AsyncSession, *, feedback_id: int, team_
     return len(ids)
 
 
+async def scoped_dissatisfied(
+    session: AsyncSession, *, feedback_id: int, team_id: int | None
+) -> tuple[VigaFeedback, str]:
+    """Một đánh giá 👎 trong phạm vi `team_id` (None = ADMIN) và câu hỏi gốc của nó; không có hoặc ngoài phạm vi thì 404."""
+    feedback = await session.get(VigaFeedback, feedback_id)
+    if (
+        feedback is None
+        or feedback.rating != FeedbackRating.DOWN.value
+        or (team_id is not None and feedback.team_id != team_id)
+    ):
+        raise PortalError(404, "FEEDBACK_NOT_FOUND", "portal.feedback_not_found")
+    question = (await _questions_of(session, [feedback_id])).get(feedback_id, "")
+    if not question:
+        raise PortalError(404, "FEEDBACK_NOT_FOUND", "portal.feedback_not_found")
+    return feedback, question
+
+
 async def _questions_of(session: AsyncSession, feedback_ids: list[int]) -> dict[int, str]:
     if not feedback_ids:
         return {}

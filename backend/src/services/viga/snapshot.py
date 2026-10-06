@@ -15,8 +15,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.model.employee_journey import EmployeeJourney
 from src.model.employee_task import EmployeeTask
+from src.model.employee_task_dependency import EmployeeTaskDependency
 from src.model.enums import EmployeeTaskStatus
-from src.model.task_dependency import TaskDependency
 from src.model.user import User
 from src.services.portal import journey_service
 from src.services.portal.errors import PortalError
@@ -122,41 +122,41 @@ class JourneySnapshot:
         return "\n".join(f"id={t.id} | {t.title} | {t.status} | {t.stage_title}" for t in self.tasks)
 
 
-async def load_snapshot(session: AsyncSession, user: User, *, start_if_missing: bool = True) -> JourneySnapshot | None:
-    """Ảnh chụp lộ trình của `user`; `None` nếu người này chưa có lộ trình và không tạo được."""
-    try:
-        journey = await journey_service.get_or_start_journey(session, user) if start_if_missing else None
-    except PortalError:
-        return None
+async def load_snapshot(session: AsyncSession, user: User, *, start_if_missing: bool = False) -> JourneySnapshot | None:
+    """Ảnh chụp lộ trình của `user`; `None` nếu người này chưa bấm "Tạo lộ trình".
+
+    Viga KHÔNG tự tạo lộ trình (tạo là thao tác chủ động của nhân viên); `start_if_missing` giữ lại cho tương thích và bị bỏ qua.
+    """
+    journey = await journey_service.get_journey(session, user)
     if journey is None:
         return None
     details = await journey_service.list_task_details(session, journey.id)
-    by_template = {d.task.task_template_id: d.task.id for d in details}
+    ids = [d.task.id for d in details]
     dependency_rows = (
         await session.execute(
-            select(TaskDependency.task_template_id, TaskDependency.depends_on_task_template_id).where(
-                TaskDependency.task_template_id.in_(list(by_template))
+            select(EmployeeTaskDependency.employee_task_id, EmployeeTaskDependency.depends_on_employee_task_id).where(
+                EmployeeTaskDependency.employee_task_id.in_(ids)
             )
         )
-        if by_template
+        if ids
         else None
     )
+    known = set(ids)
     prerequisites: dict[int, list[int]] = {}
-    for template_id, depends_on in dependency_rows.all() if dependency_rows is not None else []:
-        target, source = by_template.get(template_id), by_template.get(depends_on)
-        if target is not None and source is not None:
-            prerequisites.setdefault(target, []).append(source)
+    for task_id, depends_on in dependency_rows.all() if dependency_rows is not None else []:
+        if depends_on in known:
+            prerequisites.setdefault(task_id, []).append(depends_on)
     tasks = tuple(
         SnapshotTask(
             id=d.task.id,
-            title=d.template.title,
+            title=d.task.title,
             status=d.task.status,
             stage_id=d.stage.id,
             stage_title=d.stage.title,
             stage_sort=d.stage.sort_order,
-            sort_order=d.template.sort_order,
-            required=d.template.required,
-            body_markdown=d.template.body_markdown,
+            sort_order=d.task.sort_order,
+            required=d.task.required,
+            body_markdown=d.task.body_markdown,
             prerequisite_ids=tuple(prerequisites.get(d.task.id, ())),
         )
         for d in details

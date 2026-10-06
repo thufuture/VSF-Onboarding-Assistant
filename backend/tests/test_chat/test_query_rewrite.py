@@ -4,7 +4,7 @@ nhiều phần tử, LLM trả sai định dạng -> lùi về câu gốc."""
 import json
 
 from src.infrastructure.ai.fake_chat_completion import FakeChatCompletion
-from src.services.chat.query_rewrite import MAX_SUBQUESTION_LENGTH, MAX_SUBQUESTIONS, SYSTEM_PROMPT, rewrite_query
+from src.services.viga.query_rewrite import MAX_SUBQUESTION_LENGTH, MAX_SUBQUESTIONS, SYSTEM_PROMPT, rewrite_query
 
 
 async def test_single_intent_question_returns_one_element() -> None:

@@ -1,9 +1,9 @@
 """Đơn vị cho `build_user_prompt` (mục 3.1/3.3, 2-e-prompt-guardrail-rerank/02-augmentation.md): tag rõ
 ràng, metadata nguồn, GIỮ NGUYÊN thứ tự RRF (không đảo best-first-and-last)."""
 
-from src.services.chat.answer_service import QuestionEvidence
-from src.services.chat.prompt_builder import build_user_prompt
 from src.services.retrieval.hybrid_search import SectionEvidence
+from src.services.viga.answer_service import QuestionEvidence
+from src.services.viga.prompt_builder import build_user_prompt
 
 
 def _section(

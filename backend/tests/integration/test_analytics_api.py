@@ -268,6 +268,30 @@ async def test_hr_overview_is_scoped_to_their_team_and_adds_up(
         assert operations["chat.answer"]["errors"] == 1
         assert operations["ingest.embed"]["input_count"] == 18
 
+        # Tách theo nhà cung cấp: DeepSeek (LLM, tính theo token) và BGE-M3 trên Modal (embedding, tính theo giây GPU)
+        providers = {row["provider"]: row for row in ai["by_provider"]}
+        assert set(providers) == {"deepseek", "modal"}
+        assert providers["modal"]["kind"] == "embedding" and providers["modal"]["calls"] == 1
+        assert providers["modal"]["gpu_seconds"] == pytest.approx(3.3)
+        assert providers["modal"]["input_count"] == 18
+        assert providers["deepseek"]["kind"] == "llm" and providers["deepseek"]["calls"] == 4
+        assert providers["deepseek"]["completion_tokens"] >= 12000
+        assert sum(row["cost_usd"] for row in providers.values()) == pytest.approx(ai["cost_usd"])
+        assert providers["deepseek"]["cost_per_day"][-1] == pytest.approx(providers["deepseek"]["cost_usd"])
+        # HR chỉ cần hai khoản: tải tài liệu lên (ingest.*) và tạo task (task.proposal), mỗi khoản theo ngày và theo giờ
+        groups = {row["key"]: row for row in ai["cost_groups"]}
+        assert set(groups) == {"upload", "tasks"}
+        assert groups["tasks"]["calls"] == 2 and groups["upload"]["calls"] == 1
+        assert groups["tasks"]["cost_usd"] == pytest.approx(operations["task.proposal"]["cost_usd"])
+        assert sum(groups["tasks"]["cost_per_day"]) == pytest.approx(groups["tasks"]["cost_usd"])
+        assert len(groups["tasks"]["cost_per_hour"]) == 24
+        assert sum(groups["tasks"]["cost_per_hour"]) == pytest.approx(groups["tasks"]["cost_usd"])
+
+        # Theo giờ: 24 đầu giờ gần nhất, tổng khớp tổng chi phí (mọi lời gọi vừa xảy ra)
+        assert len(ai["hours"]) == 24 and ai["hours"][-1].endswith(":00")
+        assert all(len(row["cost_per_hour"]) == 24 for row in providers.values())
+        assert sum(sum(row["cost_per_hour"]) for row in providers.values()) == pytest.approx(ai["cost_usd"])
+
         # Từng lượt: thời gian chạy thật, chi phí và độ trễ LLM cộng theo job
         runs = {run["job_id"]: run for run in ai["task_runs"]}
         ok_run = runs[task_jobs[0]]

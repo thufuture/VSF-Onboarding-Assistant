@@ -175,7 +175,7 @@ async def test_order_dependencies_and_cycle_rejection(
         assert selfdep.status_code == 422
 
 
-async def test_publish_locks_template_and_empty_publish_rejected(
+async def test_publish_applies_draft_and_applied_version_is_not_editable_but_new_task_goes_to_a_new_draft(
     session_factory: async_sessionmaker[AsyncSession], team: SimpleNamespace, make_member: MakeMember
 ) -> None:
     hr = await make_member("HR", team.id)
@@ -201,11 +201,29 @@ async def test_publish_locks_template_and_empty_publish_rejected(
         assert published.status_code == 200
         assert published.json()["status"] == "PUBLISHED"
 
-        locked = await client.post(
+        tree = (await client.get("/api/v1/portal/journey-templates/mine")).json()
+        day = next(s for t in tree if t["id"] == template["id"] for s in t["stages"])
+        applied_task = day["versions"][0]["tasks"][0]
+        assert day["versions"][0]["status"] == "APPLIED"
+
+        # Bản đang áp dụng bất biến: sửa hay xóa task trong đó bị chặn (lỗ hổng "sửa mẫu là đổi lộ trình của mọi người" đã vá).
+        edit = await client.patch(
+            f"/api/v1/portal/task-templates/{applied_task['id']}", json={"title": "A đổi", "body_markdown": "a"}
+        )
+        assert edit.status_code == 409 and edit.json()["code"] == "VERSION_NOT_EDITABLE"
+        delete_response = await client.delete(f"/api/v1/portal/task-templates/{applied_task['id']}")
+        assert delete_response.status_code == 409 and delete_response.json()["code"] == "VERSION_NOT_EDITABLE"
+
+        # Thêm task vào ngày đã áp dụng: tạo bản nháp v2 (sao từ bản áp dụng) rồi ghi vào đó.
+        added = await client.post(
             f"/api/v1/portal/stages/{stage['id']}/tasks", json={"title": "B", "body_markdown": "b"}
         )
-        assert locked.status_code == 409
-        assert locked.json()["code"] == "TEMPLATE_ALREADY_PUBLISHED"
+        assert added.status_code == 200, added.text
+        tree = (await client.get("/api/v1/portal/journey-templates/mine")).json()
+        day = next(s for t in tree if t["id"] == template["id"] for s in t["stages"])
+        by_no = {v["version_no"]: v for v in day["versions"]}
+        assert [t["title"] for t in by_no[1]["tasks"]] == ["A"]
+        assert by_no[2]["status"] == "DRAFT" and [t["title"] for t in by_no[2]["tasks"]] == ["A", "B"]
 
 
 async def test_task_group_is_saved_updated_and_validated(

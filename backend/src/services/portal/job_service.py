@@ -28,12 +28,14 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from src.infrastructure.ai.chat_completion_port import ChatCompletionPort
 from src.infrastructure.observability.call_metrics import call_context
+from src.infrastructure.observability.langfuse_tracer import current_tracer
 from src.model.enums import JobStatus, UserRole
 from src.model.job import Job
 from src.model.user import User
 from src.services.ingest.embedding.port import EmbeddingPort
 from src.services.ingest.storage import StoragePort
 from src.services.portal.errors import PortalError
+from src.services.portal.proposal_options import ProposalOptions
 
 logger = logging.getLogger(__name__)
 
@@ -62,6 +64,8 @@ class JobContext:
     structure_llm_enabled: bool = True
     structure_llm_min_words: int = 400
     structure_llm_daily_limit: int = 30
+    # Cách đề xuất task bằng AI (đường nhanh/cũ, kích thước lô, giờ chờ mỗi lời gọi).
+    proposal: ProposalOptions = field(default_factory=ProposalOptions)
 
 
 @dataclass(frozen=True)
@@ -83,16 +87,31 @@ class JobProgress:
         self._job_id = job_id
         self._last = 0
 
-    async def update(self, percent: float, stage: str) -> None:
+    async def update(self, percent: float, stage: str, steps: dict[str, Any] | None = None) -> None:
+        """`steps` (tùy chọn) là tiến độ theo bước, ghi vào `jobs.progress` để giao diện vẽ danh sách bước."""
         value = max(self._last, min(99, int(percent)))
         self._last = value
+        values: dict[str, Any] = {"progress_percent": value, "stage": stage[:96], "locked_at": func.now()}
+        if steps is not None:
+            values["progress"] = steps
         async with self._factory() as session:
-            await session.execute(
-                update(Job)
-                .where(Job.id == self._job_id)
-                .values(progress_percent=value, stage=stage[:96], locked_at=func.now())
-            )
+            await session.execute(update(Job).where(Job.id == self._job_id).values(**values))
             await session.commit()
+
+
+HEARTBEAT_SECONDS = 15.0
+
+
+async def _heartbeat(session_factory: async_sessionmaker[AsyncSession], job_id: int, interval: float) -> None:
+    """Nhịp sống riêng của job, không phụ thuộc handler có báo tiến độ hay không (một lời gọi LLM dài không bị coi là worker chết)."""
+    while True:
+        await asyncio.sleep(interval)
+        try:
+            async with session_factory() as session:
+                await session.execute(update(Job).where(Job.id == job_id).values(locked_at=func.now()))
+                await session.commit()
+        except Exception:
+            logger.exception("job_heartbeat_failed job_id=%s", job_id)
 
 
 HandlerRun = Callable[[JobContext, ClaimedJob, JobProgress], Awaitable[dict[str, Any] | None]]
@@ -173,6 +192,7 @@ async def claim_next_job(session_factory: async_sessionmaker[AsyncSession], work
         job.locked_at = now
         job.started_at = job.started_at or now
         job.progress_percent = 0
+        job.progress = None
         job.stage = "Đang bắt đầu"
         await session.commit()
         return ClaimedJob(
@@ -367,10 +387,21 @@ async def _run_claimed_job(ctx: JobContext, handlers: Handlers, claimed: Claimed
         )
         return
     progress = JobProgress(ctx.session_factory, claimed.id)
+    beat = asyncio.create_task(_heartbeat(ctx.session_factory, claimed.id, HEARTBEAT_SECONDS))
     try:
         # Gắn người tạo và mã job vào mọi lời gọi LLM/embedding của việc này: cộng được chi phí và độ trễ theo từng lượt.
-        with call_context(operation="job", user_id=claimed.created_by, job_id=claimed.id):
+        with (
+            call_context(operation="job", user_id=claimed.created_by, job_id=claimed.id),
+            current_tracer().span(
+                f"job.{claimed.kind}",
+                input={"job_id": claimed.id, "kind": claimed.kind, "payload": claimed.payload},
+                user_id=claimed.created_by,
+                session_id=f"job-{claimed.id}",
+                tags=["job", str(claimed.kind)],
+            ) as root,
+        ):
             result = await handler.run(ctx, claimed, progress)
+            root.update(output=result)
     except asyncio.CancelledError:
         # Tắt backend giữa chừng: để job RUNNING, lần khởi động sau `requeue_stale_jobs` sẽ nhận lại.
         raise
@@ -385,6 +416,9 @@ async def _run_claimed_job(ctx: JobContext, handlers: Handlers, claimed: Claimed
         await _finish_failure(ctx, handlers, claimed, code="JOB_ERROR", message=type(exc).__name__, retryable=False)
     else:
         await _finish_success(ctx.session_factory, claimed.id, result)
+    finally:
+        beat.cancel()
+        await asyncio.gather(beat, return_exceptions=True)
 
 
 # --- Đọc job cho API (quyền: người tạo hoặc ADMIN) ---
@@ -396,6 +430,16 @@ async def get_job_for_user(session: AsyncSession, job_id: int, user: User) -> Jo
     if job is None or (user.role != UserRole.ADMIN and job.created_by != user.id):
         raise PortalError(404, "JOB_NOT_FOUND", "portal.job_not_found")
     return job
+
+
+async def queue_ahead(session: AsyncSession, job: Job) -> int | None:
+    """Số job đang chờ xếp trước job này (chỉ có nghĩa khi job còn PENDING) — giao diện hiện "đang xếp hàng, trước bạn còn N việc"."""
+    if job.status != JobStatus.PENDING.value:
+        return None
+    count = await session.scalar(
+        select(func.count()).select_from(Job).where(Job.status == JobStatus.PENDING.value, Job.id < job.id)
+    )
+    return int(count or 0)
 
 
 async def list_jobs_for_user(

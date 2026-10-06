@@ -22,3 +22,6 @@ httpx>=0.28,<1.0
 underthesea>=6.8,<10
 # Lưu file tài liệu gốc khi STORAGE_PROVIDER=cloudinary (mặc định "local" không cần thư viện này ở runtime).
 cloudinary>=1.41,<2
+
+# Theo dõi bằng Langfuse (tùy chọn): từng bước, từng lời gọi LLM/embedding với độ trễ, token, chi phí.
+langfuse>=3,<5

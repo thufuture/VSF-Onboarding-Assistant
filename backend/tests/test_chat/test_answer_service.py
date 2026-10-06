@@ -4,8 +4,8 @@ gọi LLM khi không có evidence, hỏng hợp đồng JSON thì ép NO_BASIS, 
 import json
 
 from src.infrastructure.ai.fake_chat_completion import FakeChatCompletion
-from src.services.chat.answer_service import QuestionEvidence, answer_with_claims
 from src.services.retrieval.hybrid_search import SectionEvidence
+from src.services.viga.answer_service import QuestionEvidence, answer_with_claims
 
 _SECTION = SectionEvidence(
     section_id=62,

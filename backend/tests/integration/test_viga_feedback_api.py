@@ -507,3 +507,93 @@ async def test_answer_with_a_wrong_quote_is_retried_once_and_not_logged_as_a_gap
             await session.execute(delete(DocumentCategory).where(DocumentCategory.slug == slug))
             await session.execute(delete(AuditLog).where(AuditLog.actor_id == hr.id))
             await session.commit()
+
+
+async def test_hr_can_supplement_and_recheck_a_disliked_question(
+    app: FastAPI,
+    llm_holder: Any,
+    team: SimpleNamespace,
+    other_team: SimpleNamespace,
+    make_member: MakeMember,
+    published_template: SimpleNamespace,
+    session_factory: async_sessionmaker[AsyncSession],
+    tmp_path: Any,
+) -> None:
+    """Câu bị 👎 cũng bổ sung được tài liệu và kiểm tra lại như câu chưa trả lời được; HR phòng khác không đụng được."""
+    from src.api.dependencies import get_storage_port
+    from src.model.audit_log import AuditLog
+    from src.model.document import Document
+    from src.model.document_version import DocumentVersion
+    from src.model.job import Job
+    from src.services.ingest.storage import LocalStorageAdapter
+
+    app.dependency_overrides[get_storage_port] = lambda: LocalStorageAdapter(str(tmp_path))
+    employee = await make_member("USER", team.id)
+    hr = await make_member("HR", team.id)
+    far_hr = await make_member("HR", other_team.id)
+    unique = uuid4().hex[:8]
+    llm_holder.llm = ScriptedLlm(route=route_json("search_documents"))
+    key = f"qa-supplement-team-{team.id}"
+
+    try:
+        async with client_for(app) as client:
+            await login(client, employee)
+            answer = await _ask(client, f"Làm sao đăng ký gửi xe máy {unique}?")
+            rated = await client.put(
+                f"/api/v1/viga/messages/{answer['message_id']}/feedback", json={"rating": "DOWN", "reason": "MISSING"}
+            )
+            assert rated.status_code == 200
+
+        async with client_for(app) as client:
+            await login(client, hr)
+            group = [
+                g for g in (await client.get("/api/v1/portal/viga-feedback")).json() if unique in g["question_text"]
+            ][0]
+            supplement_url = f"/api/v1/portal/viga-feedback/{group['id']}/supplement"
+            recheck_url = f"/api/v1/portal/viga-feedback/{group['id']}/recheck"
+
+            assert (await client.post(supplement_url, json={"answer": "ok"})).status_code == 422  # quá ngắn
+            created = await client.post(
+                supplement_url,
+                json={"answer": "Đăng ký gửi xe máy tại phòng Hành chính tầng 3.", "contact": "Phòng Hành chính"},
+            )
+            assert created.status_code == 202, created.text
+            assert created.json()["version_label"] == "Bổ sung 1"
+
+            # Hỏi lại khi Viga vẫn chưa trả lời được: để mở, không đóng nhóm
+            miss = await client.post(recheck_url)
+            assert miss.status_code == 200 and miss.json()["answered"] is False and miss.json()["closed"] == 0
+            still = [
+                g for g in (await client.get("/api/v1/portal/viga-feedback")).json() if unique in g["question_text"]
+            ]
+            assert len(still) == 1 and not still[0]["resolved"]
+
+        async with client_for(app) as client:
+            await login(client, far_hr)
+            assert (
+                await client.post(supplement_url, json={"answer": "Câu trả lời của phòng khác."})
+            ).status_code == 404
+            assert (await client.post(recheck_url)).status_code == 404
+
+        async with client_for(app) as client:
+            await login(client, employee)
+            assert (
+                await client.post(supplement_url, json={"answer": "Nhân viên không được bổ sung."})
+            ).status_code == 403
+    finally:
+        app.dependency_overrides.pop(get_storage_port, None)
+        async with session_factory() as session:
+            document = await session.scalar(select(Document).where(Document.source_key == key))
+            if document is not None:
+                version_ids = list(
+                    (
+                        await session.scalars(
+                            select(DocumentVersion.id).where(DocumentVersion.document_id == document.id)
+                        )
+                    ).all()
+                )
+                await session.execute(delete(Job).where(Job.document_version_id.in_(version_ids)))
+                await session.execute(delete(DocumentVersion).where(DocumentVersion.id.in_(version_ids)))
+                await session.execute(delete(Document).where(Document.id == document.id))
+            await session.execute(delete(AuditLog).where(AuditLog.actor_id.in_([hr.id, far_hr.id])))
+            await session.commit()

@@ -1,20 +1,29 @@
-"""State machine EmployeeTask — plan-portal/P2/P2.md mục 2.
+"""State machine EmployeeTask — plan-portal/P2/P2.md mục 2, và lộ trình RIÊNG của từng nhân viên.
 
 Chỉ chạm 3 trạng thái: LOCKED, READY, DONE. Các trạng thái còn lại (IN_PROGRESS, WAITING_EXTERNAL,
 BLOCKED, SKIPPED) để dành cho Viga/ticket (P5/P7), P2 không có đường nào set chúng.
+
+Lộ trình của nhân viên là BẢN SAO độc lập (kế hoạch plan-portal/logic-task/ke-hoach-phien-ban-ngay-va-lo-trinh-rieng-nhan-vien.md):
+nhân viên bấm "Tạo lộ trình" thì sao chép các phiên bản `APPLIED` của các ngày và có hiệu lực ngay (không nháp). Sau đó HR sửa
+hay áp dụng bản mới ở Quản lý task KHÔNG đổi lộ trình này; nhân viên được báo và tự bấm "Cập nhật" (`rollout_service`).
 """
 
+from dataclasses import dataclass
 from datetime import UTC, datetime
 from typing import cast
 
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.model.employee_journey import EmployeeJourney
+from src.model.employee_stage import EmployeeStage
 from src.model.employee_task import EmployeeTask
-from src.model.enums import EmployeeTaskStatus, JourneyTemplateStatus
+from src.model.employee_task_dependency import EmployeeTaskDependency
+from src.model.enums import EmployeeTaskStatus, JourneyTemplateStatus, StageVersionStatus
 from src.model.journey_stage import JourneyStage
 from src.model.journey_template import JourneyTemplate
+from src.model.stage_version import StageVersion
 from src.model.task_dependency import TaskDependency
 from src.model.task_template import TaskTemplate
 from src.model.team_member import TeamMember
@@ -32,8 +41,13 @@ async def _current_team_id(session: AsyncSession, user_id: int) -> int | None:
     )
 
 
+async def team_id_of(session: AsyncSession, user_id: int) -> int | None:
+    """Team của một người (HR dùng để kiểm phạm vi trước khi thêm lộ trình cho nhân viên)."""
+    return await _current_team_id(session, user_id)
+
+
 async def _find_journey_template(session: AsyncSession, team_id: int | None) -> JourneyTemplate | None:
-    """1 template PUBLISHED khớp team của user; ưu tiên template riêng của team trước template dùng chung."""
+    """1 template đã áp dụng (PUBLISHED) khớp team của user; ưu tiên template riêng của team trước template dùng chung."""
     if team_id is not None:
         scoped = await session.scalar(
             select(JourneyTemplate)
@@ -54,97 +68,156 @@ async def _find_journey_template(session: AsyncSession, team_id: int | None) -> 
     )
 
 
-async def _start_journey(session: AsyncSession, user: User, template: JourneyTemplate, team_id: int) -> EmployeeJourney:
-    """P0A D2: snapshot 1 lần từ template hiện có — publish version mới sau đó không ảnh hưởng journey này."""
-    journey = EmployeeJourney(user_id=user.id, journey_template_id=template.id, team_id=team_id)
-    session.add(journey)
-    await session.flush()
-
-    task_templates = (
-        await session.scalars(
-            select(TaskTemplate)
-            .join(JourneyStage, JourneyStage.id == TaskTemplate.journey_stage_id)
-            .where(JourneyStage.journey_template_id == template.id)
-        )
-    ).all()
-    if not task_templates:
-        await session.commit()
-        return journey
-
-    template_ids = [t.id for t in task_templates]
-    dependency_rows = (
-        await session.scalars(
-            select(TaskDependency.task_template_id).where(TaskDependency.task_template_id.in_(template_ids))
-        )
-    ).all()
-    has_dependency = set(dependency_rows)
-
-    for task_template in task_templates:
-        status = EmployeeTaskStatus.LOCKED if task_template.id in has_dependency else EmployeeTaskStatus.READY
-        session.add(
-            EmployeeTask(
-                employee_journey_id=journey.id,
-                task_template_id=task_template.id,
-                team_id=team_id,
-                status=status,
+async def _copy_applied_stages(session: AsyncSession, journey: EmployeeJourney, template: JourneyTemplate) -> int:
+    """Sao chép phiên bản `APPLIED` của từng ngày thành bản sao riêng. Trả số việc đã sao chép."""
+    rows = (
+        await session.execute(
+            select(JourneyStage, StageVersion)
+            .join(StageVersion, StageVersion.journey_stage_id == JourneyStage.id)
+            .where(
+                JourneyStage.journey_template_id == template.id,
+                StageVersion.status == StageVersionStatus.APPLIED.value,
             )
+            .order_by(JourneyStage.sort_order, JourneyStage.id)
         )
-    await session.commit()
-    return journey
+    ).all()
+    total = 0
+    for stage, version in rows:
+        tasks = (
+            await session.scalars(
+                select(TaskTemplate)
+                .where(TaskTemplate.stage_version_id == version.id)
+                .order_by(TaskTemplate.sort_order, TaskTemplate.id)
+            )
+        ).all()
+        if not tasks:
+            continue
+        employee_stage = EmployeeStage(
+            employee_journey_id=journey.id,
+            journey_stage_id=stage.id,
+            source_stage_version_id=version.id,
+            title=stage.title,
+            sort_order=stage.sort_order,
+        )
+        session.add(employee_stage)
+        await session.flush()
+        copies: dict[int, EmployeeTask] = {}
+        for task in tasks:
+            copy = EmployeeTask(
+                employee_journey_id=journey.id,
+                employee_stage_id=employee_stage.id,
+                source_task_template_id=task.id,
+                origin_key=task.origin_key,
+                title=task.title,
+                body_markdown=task.body_markdown,
+                required=task.required,
+                task_group=task.task_group,
+                sort_order=task.sort_order,
+                team_id=journey.team_id,
+                status=EmployeeTaskStatus.READY.value,
+            )
+            session.add(copy)
+            copies[task.id] = copy
+        await session.flush()
+        edges = (
+            await session.scalars(select(TaskDependency).where(TaskDependency.task_template_id.in_(list(copies))))
+        ).all()
+        for edge in edges:
+            target, source = copies.get(edge.task_template_id), copies.get(edge.depends_on_task_template_id)
+            if target is None or source is None:
+                continue
+            session.add(EmployeeTaskDependency(employee_task_id=target.id, depends_on_employee_task_id=source.id))
+            target.status = EmployeeTaskStatus.LOCKED.value  # có tiên quyết thì khóa, không thì làm được ngay
+        total += len(copies)
+    return total
 
 
-async def get_or_start_journey(session: AsyncSession, user: User) -> EmployeeJourney:
-    """Trả journey đang hoạt động của `user`; tự tạo nếu chưa có (P2.md mục 1)."""
-    existing = await session.scalar(
+async def _active_journey(session: AsyncSession, user_id: int) -> EmployeeJourney | None:
+    result: EmployeeJourney | None = await session.scalar(
         select(EmployeeJourney)
-        .where(EmployeeJourney.user_id == user.id, EmployeeJourney.deleted_at.is_(None))
+        .where(EmployeeJourney.user_id == user_id, EmployeeJourney.deleted_at.is_(None))
         .order_by(EmployeeJourney.id.desc())
         .limit(1)
     )
-    if existing is not None:
-        return existing
+    return result
 
-    team_id = await _current_team_id(session, user.id)
+
+async def get_journey(session: AsyncSession, user: User) -> EmployeeJourney | None:
+    """Lộ trình đang hoạt động của `user`, hoặc `None` nếu người này chưa bấm "Tạo lộ trình"."""
+    return await _active_journey(session, user.id)
+
+
+async def create_journey(session: AsyncSession, user: User) -> tuple[EmployeeJourney, bool]:
+    """Tạo lộ trình RIÊNG cho `user` từ các bản đang áp dụng (có hiệu lực ngay). Idempotent: đã có thì trả lại cái cũ.
+
+    Trả (lộ trình, vừa tạo mới?).
+    """
+    user_id = user.id  # lấy trước: sau rollback đối tượng `user` hết hạn và đọc lại ngoài ngữ cảnh async sẽ lỗi
+    existing = await _active_journey(session, user_id)
+    if existing is not None:
+        return existing, False
+    team_id = await _current_team_id(session, user_id)
     if team_id is None:
         raise PortalError(409, "NO_TEAM_ASSIGNED", "portal.no_team_assigned")
     template = await _find_journey_template(session, team_id)
     if template is None:
         raise PortalError(404, "NO_JOURNEY_TEMPLATE", "portal.no_journey_template")
-    return await _start_journey(session, user, template, team_id)
+    journey = EmployeeJourney(user_id=user_id, journey_template_id=template.id, team_id=team_id)
+    session.add(journey)
+    try:
+        await session.flush()
+    except IntegrityError:
+        # Hai yêu cầu cùng lúc: index duy nhất chỉ giữ một lộ trình; yêu cầu thua lấy lại cái của yêu cầu thắng.
+        await session.rollback()
+        existing = await _active_journey(session, user_id)
+        if existing is None:
+            raise
+        return existing, False
+    copied = await _copy_applied_stages(session, journey, template)
+    if not copied:
+        await session.rollback()
+        raise PortalError(404, "NO_JOURNEY_TEMPLATE", "portal.no_journey_template")
+    await session.commit()
+    return journey, True
 
 
-async def _unlock_dependents(session: AsyncSession, journey_id: int, completed_template_id: int) -> None:
+async def unlock_dependents(session: AsyncSession, journey_id: int) -> None:
+    """Việc đang khóa mà mọi tiên quyết (trong bản sao) đã xong thì làm được ngay."""
     locked_tasks = (
         await session.scalars(
             select(EmployeeTask).where(
-                EmployeeTask.employee_journey_id == journey_id, EmployeeTask.status == EmployeeTaskStatus.LOCKED
+                EmployeeTask.employee_journey_id == journey_id,
+                EmployeeTask.status == EmployeeTaskStatus.LOCKED,
+                EmployeeTask.deleted_at.is_(None),
             )
         )
     ).all()
     if not locked_tasks:
         return
-
     all_tasks = (
-        await session.scalars(select(EmployeeTask).where(EmployeeTask.employee_journey_id == journey_id))
+        await session.scalars(
+            select(EmployeeTask).where(
+                EmployeeTask.employee_journey_id == journey_id, EmployeeTask.deleted_at.is_(None)
+            )
+        )
     ).all()
-    done_template_ids = {t.task_template_id for t in all_tasks if t.status == EmployeeTaskStatus.DONE}
-
+    done_ids = {t.id for t in all_tasks if t.status == EmployeeTaskStatus.DONE}
     for candidate in locked_tasks:
         prerequisite_ids = (
             await session.scalars(
-                select(TaskDependency.depends_on_task_template_id).where(
-                    TaskDependency.task_template_id == candidate.task_template_id
+                select(EmployeeTaskDependency.depends_on_employee_task_id).where(
+                    EmployeeTaskDependency.employee_task_id == candidate.id
                 )
             )
         ).all()
-        if prerequisite_ids and all(dep_id in done_template_ids for dep_id in prerequisite_ids):
+        if prerequisite_ids and all(dep_id in done_ids for dep_id in prerequisite_ids):
             candidate.status = EmployeeTaskStatus.READY
 
 
 async def complete_task(session: AsyncSession, user: User, employee_task_id: int) -> EmployeeTask:
     """P0A D1: 1 hành động duy nhất cho cả task, không có sub-step/duyệt. Idempotent nếu đã DONE."""
     task = await session.get(EmployeeTask, employee_task_id)
-    if task is None:
+    if task is None or task.deleted_at is not None:
         raise PortalError(404, "TASK_NOT_FOUND", "portal.task_not_found")
 
     journey = await session.get(EmployeeJourney, task.employee_journey_id)
@@ -160,55 +233,56 @@ async def complete_task(session: AsyncSession, user: User, employee_task_id: int
     task.status = EmployeeTaskStatus.DONE
     task.completed_at = datetime.now(UTC)
     await session.flush()
-    await _unlock_dependents(session, journey.id, task.task_template_id)
+    await unlock_dependents(session, journey.id)
     await session.commit()
     return task
 
 
+@dataclass
 class TaskDetail:
-    """Kết quả join EmployeeTask + TaskTemplate + JourneyStage — đủ dữ liệu cho UI vẽ roadmap."""
+    """Một việc trong lộ trình riêng kèm ngày của nó — đủ dữ liệu cho UI vẽ roadmap (mọi chữ lấy từ bản sao)."""
 
-    def __init__(self, task: EmployeeTask, template: TaskTemplate, stage: JourneyStage) -> None:
-        self.task = task
-        self.template = template
-        self.stage = stage
+    task: EmployeeTask
+    stage: EmployeeStage
 
 
 async def list_task_details(session: AsyncSession, journey_id: int) -> list[TaskDetail]:
     rows = await session.execute(
-        select(EmployeeTask, TaskTemplate, JourneyStage)
-        .join(TaskTemplate, TaskTemplate.id == EmployeeTask.task_template_id)
-        .join(JourneyStage, JourneyStage.id == TaskTemplate.journey_stage_id)
-        .where(EmployeeTask.employee_journey_id == journey_id)
-        .order_by(JourneyStage.sort_order, TaskTemplate.sort_order, EmployeeTask.id)
+        select(EmployeeTask, EmployeeStage)
+        .join(EmployeeStage, EmployeeStage.id == EmployeeTask.employee_stage_id)
+        .where(
+            EmployeeTask.employee_journey_id == journey_id,
+            EmployeeTask.deleted_at.is_(None),
+            EmployeeStage.deleted_at.is_(None),
+        )
+        .order_by(EmployeeStage.sort_order, EmployeeStage.id, EmployeeTask.sort_order, EmployeeTask.id)
     )
-    return [TaskDetail(task, template, stage) for task, template, stage in rows.all()]
+    return [TaskDetail(task, stage) for task, stage in rows.all()]
 
 
 async def list_prerequisites(session: AsyncSession, journey_id: int) -> dict[int, list[tuple[str, bool]]]:
     """Tiên quyết của từng task trong journey: `employee_task.id -> [(tên task tiên quyết, đã xong?)]`."""
-    tasks = (await session.scalars(select(EmployeeTask).where(EmployeeTask.employee_journey_id == journey_id))).all()
-    by_template = {t.task_template_id: t for t in tasks}
-    if not by_template:
-        return {}
-    title_rows = (
-        await session.execute(select(TaskTemplate.id, TaskTemplate.title).where(TaskTemplate.id.in_(by_template)))
+    tasks = (
+        await session.scalars(
+            select(EmployeeTask).where(
+                EmployeeTask.employee_journey_id == journey_id, EmployeeTask.deleted_at.is_(None)
+            )
+        )
     ).all()
-    titles = {template_id: title for template_id, title in title_rows}
+    by_id = {t.id: t for t in tasks}
+    if not by_id:
+        return {}
     rows = (
         await session.execute(
-            select(TaskDependency.task_template_id, TaskDependency.depends_on_task_template_id).where(
-                TaskDependency.task_template_id.in_(by_template)
+            select(EmployeeTaskDependency.employee_task_id, EmployeeTaskDependency.depends_on_employee_task_id).where(
+                EmployeeTaskDependency.employee_task_id.in_(list(by_id))
             )
         )
     ).all()
     result: dict[int, list[tuple[str, bool]]] = {}
-    for template_id, depends_on_id in rows:
-        target = by_template.get(template_id)
-        source = by_template.get(depends_on_id)
-        if target is None or source is None:
+    for task_id, depends_on_id in rows:
+        source = by_id.get(depends_on_id)
+        if source is None:
             continue
-        result.setdefault(target.id, []).append(
-            (titles.get(depends_on_id, ""), source.status == EmployeeTaskStatus.DONE)
-        )
+        result.setdefault(task_id, []).append((source.title, source.status == EmployeeTaskStatus.DONE))
     return result

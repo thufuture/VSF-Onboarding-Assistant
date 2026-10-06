@@ -19,24 +19,26 @@ from src.api.routers.chat_router import router as chat_router
 from src.api.routers.health_router import router as health_router
 from src.api.routers.portal_document_router import router as portal_document_router
 from src.api.routers.portal_router import router as portal_router
+from src.api.routers.portal_version_router import router as portal_version_router
 from src.api.routers.ticket_router import router as ticket_router
 from src.api.routers.viga_router import router as viga_router
 from src.config import Settings, get_settings
 from src.infrastructure.ai.deepseek_adapter import ChatCompletionError
-from src.infrastructure.observability.call_metrics import set_prices, set_request_id, set_sink
-from src.infrastructure.observability.langfuse_tracer import LangfuseTracer
+from src.infrastructure.observability.call_metrics import set_observer, set_prices, set_request_id, set_sink
+from src.infrastructure.observability.langfuse_tracer import LangfuseTracer, set_current_tracer
 from src.infrastructure.persistence.engine import create_engine, create_session_factory
 from src.services.auth.errors import AuthError
 from src.services.auth.login_throttle import LoginThrottle
 from src.services.auth.seed import assert_no_dev_accounts
-from src.services.chat.chat_throttle import ChatThrottle
 from src.services.ingest.embedding.keep_warm import KeepWarm
 from src.services.ingest.embedding.modal_adapter import EmbeddingServiceError, ModalEmbeddingAdapter
 from src.services.portal.errors import PortalError
 from src.services.portal.job_handlers import HANDLERS
 from src.services.portal.job_service import JobContext, JobWorker
 from src.services.portal.metrics_service import DbCallSink
+from src.services.portal.proposal_options import ProposalOptions
 from src.services.viga import conversations
+from src.services.viga.chat_throttle import ChatThrottle
 
 logger = logging.getLogger(__name__)
 
@@ -56,7 +58,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     set_prices(
         llm_input_per_million=settings.llm_price_input_per_million_usd,
         llm_output_per_million=settings.llm_price_output_per_million_usd,
-        embedding_per_thousand=settings.embedding_price_per_thousand_usd,
+        embedding_per_second=settings.embedding_price_per_second_usd,
     )
     worker = _build_job_worker(app, settings)
     if worker is not None:
@@ -72,6 +74,9 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
             await worker.stop()
         await call_sink.drain()
         set_sink(None)
+        set_observer(None)
+        app.state.langfuse_tracer.flush()
+        set_current_tracer(None)
         await engine.dispose()
 
 
@@ -99,6 +104,11 @@ def _build_job_worker(app: FastAPI, settings: Settings) -> JobWorker | None:
         structure_llm_enabled=settings.structure_llm_enabled,
         structure_llm_min_words=settings.structure_llm_min_words,
         structure_llm_daily_limit=settings.structure_llm_daily_limit,
+        proposal=ProposalOptions(
+            mode=settings.task_proposal_mode,
+            batch_words=settings.task_proposal_batch_words,
+            call_timeout_seconds=settings.task_proposal_call_timeout_seconds,
+        ),
     )
 
     async def purge_old_conversations() -> None:
@@ -155,7 +165,12 @@ def create_app() -> FastAPI:
         public_key=settings.langfuse_public_key,
         secret_key=settings.langfuse_secret_key.get_secret_value() if settings.langfuse_secret_key else None,
         host=settings.langfuse_host,
+        capture_content=settings.langfuse_capture_content,
+        content_max_chars=settings.langfuse_content_max_chars,
     )
+    if app.state.langfuse_tracer.active:
+        set_current_tracer(app.state.langfuse_tracer)
+        set_observer(app.state.langfuse_tracer.start_call)
 
     @app.exception_handler(AuthError)
     async def auth_error_handler(_: Request, exc: AuthError) -> JSONResponse:
@@ -191,6 +206,7 @@ def create_app() -> FastAPI:
     app.include_router(chat_router)
     app.include_router(portal_document_router)
     app.include_router(portal_router)
+    app.include_router(portal_version_router)
     app.include_router(ticket_router)
     app.include_router(analytics_router)
     app.include_router(viga_router)

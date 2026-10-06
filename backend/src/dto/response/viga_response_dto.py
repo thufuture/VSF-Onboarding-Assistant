@@ -117,6 +117,23 @@ class TicketSummaryResponseDTO(BaseModel):
     message_count: int
     last_sender_is_staff: bool
     resolution_note: str | None
+    unread: bool = False
+
+
+class TicketUnreadResponseDTO(BaseModel):
+    """Số ticket đang có tin chưa xem (mỗi ticket tính một, không đếm từng tin) và mã của chúng."""
+
+    count: int
+    ticket_ids: list[int]
+
+
+class TicketAttachmentResponseDTO(BaseModel):
+    id: int
+    kind: str  # IMAGE | VIDEO
+    url: str
+    filename: str
+    content_type: str
+    size_bytes: int
 
 
 class TicketMessageResponseDTO(BaseModel):
@@ -126,6 +143,7 @@ class TicketMessageResponseDTO(BaseModel):
     body: str
     created_at: datetime
     mine: bool
+    attachments: list[TicketAttachmentResponseDTO] = []
 
 
 class TicketDetailResponseDTO(BaseModel):

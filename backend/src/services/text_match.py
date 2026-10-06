@@ -14,6 +14,9 @@ import unicodedata
 _MARKUP = re.compile(r"[*`>#_]+")
 _DOTS = re.compile(r"[•·]")
 _BULLET = re.compile(r"(?m)^\s*[-+]\s+")
+# Dấu `-` hoặc `+` đứng riêng giữa dòng: `tidy_quote` gộp nhiều dòng thành một nên dấu đầu dòng của các dòng sau nằm lại giữa câu
+# ("- CV. - Lý lịch ..."), trong khi bản gốc xuống dòng sau mỗi dấu. Bỏ ở cả hai phía để quote đã làm sạch vẫn khớp lại bản gốc.
+_LONE_DASH = re.compile(r"(?<!\S)[-+](?=\s|$)")
 _INLINE_BULLET = re.compile(r"(^|\s)\*\s+")
 _ESCAPE = re.compile(r"\\([\\`*_{}\[\]()#+\-.!|>~<])")
 
@@ -21,6 +24,7 @@ _ESCAPE = re.compile(r"\\([\\`*_{}\[\]()#+\-.!|>~<])")
 def normalize_for_match(text: str) -> str:
     cleaned = unicodedata.normalize("NFC", text).replace("\\", "")
     cleaned = _BULLET.sub(" ", cleaned)
+    cleaned = _LONE_DASH.sub(" ", cleaned)
     cleaned = _MARKUP.sub("", cleaned)  # xóa hẳn (không thành khoảng trắng): "**3 tháng**)." phải khớp "3 tháng)."
     cleaned = _DOTS.sub(" ", cleaned)
     return " ".join(cleaned.split()).lower()

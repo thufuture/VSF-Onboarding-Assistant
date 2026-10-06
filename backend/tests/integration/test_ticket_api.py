@@ -338,3 +338,195 @@ async def test_ticket_row_is_removed_with_its_requester_cleanup(
     async with session_factory() as session:
         row = await session.get(Ticket, ticket_id)
     assert row is not None and row.created_by_user_id == employee.id
+
+
+# ───────────────────────────── Ảnh và video đính kèm ─────────────────────────────
+
+ATTACHMENTS = "/api/v1/portal/ticket-attachments"
+
+
+class FakeMediaStorage:
+    """Thay Cloudinary: trả URL giả theo loại tệp, không gọi mạng."""
+
+    def __init__(self) -> None:
+        self.stored: list[tuple[str, str, int]] = []
+
+    async def store(self, content: bytes, *, checksum: str, filename: str) -> str:
+        return f"documents/{checksum}"
+
+    async def store_media(self, content: bytes, *, filename: str, kind: str) -> str:
+        self.stored.append((kind, filename, len(content)))
+        return f"https://res.cloudinary.test/{kind.lower()}/{len(self.stored)}-{filename}"
+
+
+def png(name: str = "loi.png", size: int = 2048) -> dict[str, Any]:
+    return {"file": (name, b"\x89PNG" + b"0" * size, "image/png")}
+
+
+async def test_employee_attaches_an_image_and_a_video_and_hr_sees_the_urls(
+    app: FastAPI, team: SimpleNamespace, make_member: MakeMember, published_template: SimpleNamespace
+) -> None:
+    from src.api.dependencies import get_storage_port
+
+    storage = FakeMediaStorage()
+    app.dependency_overrides[get_storage_port] = lambda: storage
+    employee = await make_member("USER", team.id, "Trần Anh Thư")
+    hr = await make_member("HR", team.id, "HR Hồng")
+
+    async with client_for(app) as client:
+        await login(client, employee)
+        image = await client.post(ATTACHMENTS, files=png())
+        video = await client.post(ATTACHMENTS, files={"file": ("man-hinh.mp4", b"0" * 4096, "video/mp4")})
+        assert image.status_code == 201 and video.status_code == 201, (image.text, video.text)
+        assert image.json()["kind"] == "IMAGE" and video.json()["kind"] == "VIDEO"
+        assert image.json()["url"].startswith("https://res.cloudinary.test/image/")
+
+        created = await client.post(
+            TICKETS,
+            json=new_ticket("Laptop báo lỗi màn hình xanh", attachment_ids=[image.json()["id"], video.json()["id"]]),
+        )
+        assert created.status_code == 201, created.text
+        ticket_id = created.json()["id"]
+        detail = (await client.get(f"{TICKETS}/{ticket_id}")).json()
+        assert [a["kind"] for a in detail["messages"][0]["attachments"]] == ["IMAGE", "VIDEO"]
+
+    async with client_for(app) as client:
+        await login(client, hr)
+        seen = (await client.get(f"{TICKETS}/{ticket_id}")).json()["messages"][0]["attachments"]
+        assert [a["url"] for a in seen] == [image.json()["url"], video.json()["url"]]  # HR thấy đúng URL đã lưu
+        reply_image = await client.post(ATTACHMENTS, files=png("huong-dan.png"))
+        reply = await client.post(
+            f"{TICKETS}/{ticket_id}/messages",
+            json={"body": "Làm theo ảnh này", "attachment_ids": [reply_image.json()["id"]]},
+        )
+        assert reply.status_code == 201, reply.text
+        assert reply.json()["messages"][-1]["attachments"][0]["filename"] == "huong-dan.png"
+    assert [s[0] for s in storage.stored] == ["IMAGE", "VIDEO", "IMAGE"]
+
+
+async def test_attachment_rules_type_size_ownership_and_limit(
+    app: FastAPI, team: SimpleNamespace, make_member: MakeMember, published_template: SimpleNamespace
+) -> None:
+    from src.api.dependencies import get_storage_port
+
+    app.dependency_overrides[get_storage_port] = lambda: FakeMediaStorage()
+    one = await make_member("USER", team.id, "Người một")
+    two = await make_member("USER", team.id, "Người hai")
+
+    async with client_for(app) as client:
+        await login(client, one)
+        # loại tệp: chữ thường và tệp đổi đuôi đều bị từ chối
+        assert (
+            await client.post(ATTACHMENTS, files={"file": ("ghi-chu.txt", b"abc", "text/plain")})
+        ).status_code == 415
+        assert (await client.post(ATTACHMENTS, files={"file": ("gia.png", b"abc", "video/mp4")})).status_code == 415
+        # dung lượng ảnh tối đa 10 MB
+        too_big = await client.post(ATTACHMENTS, files=png("to.png", size=10 * 1024 * 1024 + 10))
+        assert too_big.status_code == 413 and too_big.json()["code"] == "ATTACHMENT_TOO_LARGE"
+        assert (await client.post(ATTACHMENTS, files={"file": ("rong.png", b"", "image/png")})).status_code == 422
+
+        mine = (await client.post(ATTACHMENTS, files=png())).json()
+        # bỏ tệp đang chờ của chính mình được; tệp của người khác thì không
+        spare = (await client.post(ATTACHMENTS, files=png("thua.png"))).json()
+        assert (await client.delete(f"{ATTACHMENTS}/{spare['id']}")).status_code == 204
+        assert (await client.delete(f"{ATTACHMENTS}/{spare['id']}")).status_code == 404
+        # tối đa 5 tệp mỗi tin nhắn
+        six = [mine["id"]] * 5 + [mine["id"] + 1000, mine["id"] + 1001]
+        assert (await client.post(TICKETS, json=new_ticket(attachment_ids=six))).status_code == 422
+
+    async with client_for(app) as client:
+        await login(client, two)
+        # người khác gắn tệp của "one" vào ticket của mình: tệp bị bỏ qua, không lộ
+        created = await client.post(TICKETS, json=new_ticket(attachment_ids=[mine["id"]]))
+        assert created.status_code == 201
+        detail = (await client.get(f"{TICKETS}/{created.json()['id']}")).json()
+        assert detail["messages"][0]["attachments"] == []
+        assert (await client.delete(f"{ATTACHMENTS}/{mine['id']}")).status_code == 404
+
+
+async def test_attachments_need_cloud_storage(
+    app: FastAPI, team: SimpleNamespace, make_member: MakeMember, tmp_path: Any
+) -> None:
+    from src.api.dependencies import get_storage_port
+    from src.services.ingest.storage import LocalStorageAdapter
+
+    app.dependency_overrides[get_storage_port] = lambda: LocalStorageAdapter(str(tmp_path))
+    employee = await make_member("USER", team.id, "Người ba")
+
+    async with client_for(app) as client:
+        await login(client, employee)
+        response = await client.post(ATTACHMENTS, files=png())
+        assert response.status_code == 503 and response.json()["code"] == "ATTACHMENTS_UNAVAILABLE"
+
+
+# ───────────────────────────── Số ticket có tin chưa đọc ─────────────────────────────
+
+
+async def unread(client: Any) -> dict[str, Any]:
+    response = await client.get(f"{TICKETS}/unread")
+    assert response.status_code == 200, response.text
+    return response.json()
+
+
+async def test_unread_counts_tickets_not_messages_and_drops_by_one_when_opened(
+    app: FastAPI,
+    team: SimpleNamespace,
+    other_team: SimpleNamespace,
+    make_member: MakeMember,
+    published_template: SimpleNamespace,
+) -> None:
+    employee = await make_member("USER", team.id, "Trần Anh Thư")
+    hr_one = await make_member("HR", team.id, "HR Hồng")
+    hr_two = await make_member("HR", team.id, "HR Lan")
+    outsider_hr = await make_member("HR", other_team.id, "HR phòng khác")
+
+    async with client_for(app) as client:
+        await login(client, employee)
+        first = (await client.post(TICKETS, json=new_ticket("Câu hỏi thứ nhất"))).json()["id"]
+        second = (await client.post(TICKETS, json=new_ticket("Câu hỏi thứ hai"))).json()["id"]
+        # Tin của chính mình không làm ticket "chưa đọc" với mình.
+        assert (await unread(client))["count"] == 0
+
+    async with client_for(app) as client:
+        await login(client, hr_one)
+        # Hai ticket mới của nhân viên: HR thấy 2 (đếm ticket, mỗi ticket 1, kể cả khi có nhiều tin)
+        await client.post(
+            f"{TICKETS}/{first}/messages", json={"body": "Nhân viên nhắn thêm?"}
+        )  # tin của HR, không đổi số
+        before = await unread(client)
+        assert before["count"] == 2 and before["ticket_ids"] == sorted([first, second])
+        flags = {t["id"]: t["unread"] for t in (await client.get(TICKETS)).json()}
+        assert flags == {first: True, second: True}
+
+        opened = await client.post(f"{TICKETS}/{first}/read")
+        assert opened.status_code == 200 and opened.json() == {
+            "count": 1,
+            "ticket_ids": [second],
+        }  # mở một ticket thì trừ 1
+        again = await client.post(f"{TICKETS}/{first}/read")
+        assert again.json()["count"] == 1  # mở lại không trừ thêm
+        assert {t["id"]: t["unread"] for t in (await client.get(TICKETS)).json()} == {first: False, second: True}
+
+    async with client_for(app) as client:
+        await login(client, hr_two)
+        assert (await unread(client))["count"] == 2  # trạng thái đọc là của từng người: HR khác vẫn thấy chưa đọc
+
+    async with client_for(app) as client:
+        await login(client, outsider_hr)
+        assert (await unread(client))["count"] == 0  # HR phòng khác không thấy ticket
+        assert (await client.post(f"{TICKETS}/{first}/read")).status_code == 404
+
+    async with client_for(app) as client:
+        await login(client, employee)
+        # HR đã trả lời ở ticket `first`: nhân viên thấy 1 ticket chưa đọc; mở ra thì về 0
+        mine = await unread(client)
+        assert mine["count"] == 1 and mine["ticket_ids"] == [first]
+        assert (await client.post(f"{TICKETS}/{first}/read")).json()["count"] == 0
+
+    # Nhân viên nhắn thêm vào ticket HR đã đọc: HR thấy chưa đọc trở lại
+    async with client_for(app) as client:
+        await login(client, employee)
+        await client.post(f"{TICKETS}/{first}/messages", json={"body": "Em xin hỏi thêm"})
+    async with client_for(app) as client:
+        await login(client, hr_one)
+        assert (await unread(client))["ticket_ids"] == sorted([first, second])

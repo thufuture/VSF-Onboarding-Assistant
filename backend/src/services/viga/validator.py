@@ -8,8 +8,8 @@ from __future__ import annotations
 
 from dataclasses import replace
 
-from src.services.chat.answer_service import Claim, QuestionEvidence
 from src.services.text_match import quote_matches, tidy_quote, unescape_markdown
+from src.services.viga.answer_service import Claim, QuestionEvidence
 
 
 def validate_claim(claim: Claim, evidence_by_question: dict[str, QuestionEvidence]) -> Claim:

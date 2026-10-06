@@ -26,7 +26,7 @@ class TaskSourceResponseDTO(BaseModel):
 
 class EmployeeTaskResponseDTO(BaseModel):
     id: int
-    task_template_id: int
+    task_template_id: int | None  # việc mẫu đã sao chép (nguồn); None nếu việc không có nguồn mẫu
     title: str
     body_markdown: str
     required: bool
@@ -39,6 +39,8 @@ class EmployeeTaskResponseDTO(BaseModel):
     completed_at: datetime | None
     prerequisites: list[EmployeePrerequisiteResponseDTO]
     sources: list[TaskSourceResponseDTO] = []
+    # Mã thay đổi đang chờ nhân viên xem ("Có chỉnh sửa"); None nếu việc này không có thay đổi chờ.
+    pending_change_id: int | None = None
 
 
 class EmployeeJourneyResponseDTO(BaseModel):
@@ -47,6 +49,11 @@ class EmployeeJourneyResponseDTO(BaseModel):
     journey_title: str
     started_at: datetime
     tasks: list[EmployeeTaskResponseDTO]
+
+
+class EmployeeJourneyCreatedResponseDTO(BaseModel):
+    journey_id: int
+    created: bool  # False: nhân viên đã có lộ trình từ trước (không tạo lại)
 
 
 class JourneyTemplateResponseDTO(BaseModel):
@@ -165,11 +172,15 @@ class StageOptionResponseDTO(BaseModel):
     journey_template_id: int
     title: str
     template_title: str
+    draft_version_id: int | None = None  # bản nháp sẽ nhận task AI (chưa có thì tạo khi tạo task đầu tiên)
+    draft_version_no: int | None = None
+    applied_version_no: int | None = None
 
 
 class TaskNodeResponseDTO(BaseModel):
     id: int
     journey_stage_id: int
+    stage_version_id: int
     title: str
     body_markdown: str
     required: bool
@@ -180,11 +191,27 @@ class TaskNodeResponseDTO(BaseModel):
     sources: list[TaskSourceResponseDTO] = []
 
 
+StageVersionStatusDTO = Literal["DRAFT", "APPLIED", "ARCHIVED"]
+
+
+class VersionNodeResponseDTO(BaseModel):
+    id: int
+    version_no: int
+    status: StageVersionStatusDTO
+    note: str | None
+    based_on_version_id: int | None
+    applied_at: datetime | None
+    created_at: datetime
+    tasks: list[TaskNodeResponseDTO]
+
+
 class StageNodeResponseDTO(BaseModel):
     id: int
     title: str
     sort_order: int
-    tasks: list[TaskNodeResponseDTO]
+    tasks: list[TaskNodeResponseDTO]  # việc của bản hiển thị mặc định (đang áp dụng, không thì nháp mới nhất)
+    versions: list[VersionNodeResponseDTO] = []
+    default_version_id: int | None = None
 
 
 class TemplateNodeResponseDTO(BaseModel):
@@ -281,3 +308,97 @@ class JobResponseDTO(BaseModel):
     document_version_id: int | None
     created_at: datetime
     finished_at: datetime | None
+    # Tiến độ theo bước (`jobs.progress`), giây đã chạy và số việc xếp trước (khi còn chờ). Chỉ mã bước và số, không nội dung.
+    progress: dict[str, Any] | None = None
+    started_at: datetime | None = None
+    elapsed_seconds: int | None = None
+    queue_ahead: int | None = None
+
+
+class StageVersionResponseDTO(BaseModel):
+    id: int
+    journey_stage_id: int
+    version_no: int
+    status: StageVersionStatusDTO
+    note: str | None
+    based_on_version_id: int | None
+    applied_at: datetime | None
+    created_at: datetime
+    task_count: int
+
+
+class ApplyPreviewResponseDTO(BaseModel):
+    """Xem trước khi áp dụng (không ghi gì): bao nhiêu việc đổi, thêm, bỏ và bao nhiêu nhân viên sẽ nhận thông báo."""
+
+    modified: int
+    added: int
+    removed: int
+    employee_count: int
+    has_applied_before: bool
+
+
+class ApplyResultResponseDTO(BaseModel):
+    version: StageVersionResponseDTO
+    notified_count: int
+
+
+RolloutStateDTO = Literal["UNSEEN", "SEEN", "UPDATED", "KEPT_OLD", "SUPERSEDED"]
+
+
+class RolloutRowResponseDTO(BaseModel):
+    notice_id: int
+    user_id: int
+    display_name: str
+    email: str
+    state: RolloutStateDTO
+    pending: int
+    accepted: int
+    dismissed: int
+    total: int
+    read_at: datetime | None
+
+
+ChangeKindDTO = Literal["MODIFIED", "ADDED", "REMOVED", "PREREQUISITES"]
+ChangeStatusDTO = Literal["PENDING", "ACCEPTED", "DISMISSED", "SUPERSEDED"]
+
+
+class TaskChangeResponseDTO(BaseModel):
+    """Một việc thay đổi: nội dung TRƯỚC (của chính nhân viên) và SAU (bản mới)."""
+
+    id: int
+    notice_id: int
+    kind: ChangeKindDTO
+    status: ChangeStatusDTO
+    task_title: str
+    employee_task_id: int | None
+    employee_status: EmployeeTaskStatusDTO | None  # trạng thái hiện tại của việc (đã làm hay chưa)
+    stage_title: str
+    before: dict[str, Any] | None
+    after: dict[str, Any] | None
+    changed_fields: list[str]
+    informational: bool  # việc đã làm bị bỏ ở bản mới: giữ nguyên, chỉ báo thông tin (không có nút)
+
+
+class JourneyNoticeResponseDTO(BaseModel):
+    id: int
+    journey_stage_id: int | None
+    stage_title: str
+    version_no: int
+    created_at: datetime
+    read_at: datetime | None
+    changes: list[TaskChangeResponseDTO]
+
+
+class ChangePreviewResponseDTO(BaseModel):
+    """Hậu quả cụ thể của nút "Cập nhật" (hộp ghi chú trước khi bấm); không ghi gì."""
+
+    change_id: int
+    kind: ChangeKindDTO
+    keeps_done: bool  # việc đã làm: cập nhật chỉ đổi nội dung, vẫn là đã xong
+    removes_task: bool
+    also_update: list[str]  # tên các việc được cập nhật kèm
+    locked_until: list[str]  # việc sẽ bị khóa cho tới khi xong các việc này
+
+
+class AcceptChangeResponseDTO(BaseModel):
+    updated_change_ids: list[int]

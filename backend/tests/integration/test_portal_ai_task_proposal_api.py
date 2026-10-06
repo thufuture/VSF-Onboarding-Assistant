@@ -196,7 +196,14 @@ async def cleanup_templates(session_factory: async_sessionmaker[AsyncSession]) -
 
 
 def app_for(session_factory: async_sessionmaker[AsyncSession], llm_response: str) -> FastAPI:
-    settings = Settings(_env_file=None, session_secret=SECRET, login_max_failures=3, login_window_seconds=900)
+    # Các test này dùng LLM giả trả định dạng đường cũ (AI chép quote); đường nhanh có test riêng ở test_ai_task_fast.py.
+    settings = Settings(
+        _env_file=None,
+        session_secret=SECRET,
+        login_max_failures=3,
+        login_window_seconds=900,
+        task_proposal_mode="legacy",
+    )
     application = create_app()
     application.state.session_factory = session_factory
     application.state.login_throttle = LoginThrottle(3, 900)
@@ -485,12 +492,13 @@ async def test_accepted_proposals_are_ordered_and_linked_by_prerequisites(
         assert [dep.depends_on_task_template_id for dep in dependencies] == [first]
 
 
-async def test_accept_into_published_template_is_rejected(
+async def test_accept_into_an_applied_day_creates_a_new_draft_and_leaves_the_applied_version_untouched(
     session_factory: async_sessionmaker[AsyncSession],
     team: SimpleNamespace,
     make_member: MakeMember,
     cleanup_templates: list[int],
 ) -> None:
+    """Task AI KHÔNG BAO GIỜ ghi vào bản đang áp dụng: ngày chỉ có bản áp dụng thì tạo bản nháp v2 từ nó rồi ghi vào đó."""
     hr = await make_member("HR", team.id)
     app = app_for(session_factory, "[]")
 
@@ -505,19 +513,30 @@ async def test_accept_into_published_template_is_rejected(
             f"/api/v1/portal/journey-templates/{template_id}/stages", json={"title": "Ngày 1", "sort_order": 1}
         )
         stage_id = stage_resp.json()["id"]
-
-        async with session_factory() as session:
-            await session.execute(
-                update(JourneyTemplate)
-                .where(JourneyTemplate.id == template_id)
-                .values(status=JourneyTemplateStatus.PUBLISHED.value)
-            )
-            await session.commit()
+        first = await client.post(
+            f"/api/v1/portal/stages/{stage_id}/tasks/from-proposal",
+            json={"title": "Việc đầu", "instructions_markdown": "Y", "required": True, "source_chunks": []},
+        )
+        assert first.status_code == 200, first.text
+        tree = (await client.get("/api/v1/portal/journey-templates/mine")).json()
+        stage = next(s for t in tree if t["id"] == template_id for s in t["stages"])
+        v1 = stage["versions"][0]
+        assert v1["status"] == "DRAFT" and len(v1["tasks"]) == 1
+        applied = await client.post(f"/api/v1/portal/stage-versions/{v1['id']}/apply")
+        assert applied.status_code == 200, applied.text
 
         response = await client.post(
             f"/api/v1/portal/stages/{stage_id}/tasks/from-proposal",
-            json={"title": "X", "instructions_markdown": "Y", "required": True, "source_chunks": []},
+            json={"title": "Việc thêm", "instructions_markdown": "Y", "required": True, "source_chunks": []},
         )
 
-    assert response.status_code == 409
-    assert response.json()["code"] == "TEMPLATE_ALREADY_PUBLISHED"
+        assert response.status_code == 200, response.text
+        tree = (await client.get("/api/v1/portal/journey-templates/mine")).json()
+        stage = next(s for t in tree if t["id"] == template_id for s in t["stages"])
+        by_no = {v["version_no"]: v for v in stage["versions"]}
+        assert by_no[1]["status"] == "APPLIED" and [t["title"] for t in by_no[1]["tasks"]] == ["Việc đầu"]
+        assert by_no[2]["status"] == "DRAFT"
+        assert [t["title"] for t in by_no[2]["tasks"]] == [
+            "Việc đầu",
+            "Việc thêm",
+        ]  # nháp mới sao từ bản áp dụng rồi thêm

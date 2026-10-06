@@ -50,10 +50,12 @@ class CreateTicketRequestDTO(BaseModel):
     note: str | None = Field(default=None, max_length=1000)
     employee_task_id: int | None = None
     conversation_id: int | None = None
+    attachment_ids: list[int] = Field(default_factory=list, max_length=5)
 
 
 class AddTicketMessageRequestDTO(BaseModel):
     body: str = Field(min_length=1, max_length=4000)
+    attachment_ids: list[int] = Field(default_factory=list, max_length=5)
 
 
 class SetTicketStatusRequestDTO(BaseModel):

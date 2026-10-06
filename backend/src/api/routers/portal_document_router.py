@@ -45,7 +45,7 @@ def _version_dto(item: document_version_service.VersionItem) -> DocumentVersionR
     return DocumentVersionResponseDTO(**vars(item))
 
 
-def job_dto(job: Job) -> JobResponseDTO:
+def job_dto(job: Job, *, queue_ahead: int | None = None, elapsed_seconds: int | None = None) -> JobResponseDTO:
     return JobResponseDTO(
         id=job.id,
         kind=job.kind,
@@ -57,6 +57,22 @@ def job_dto(job: Job) -> JobResponseDTO:
         document_version_id=job.document_version_id,
         created_at=job.created_at,
         finished_at=job.finished_at,
+        progress=job.progress,
+        started_at=job.started_at,
+        elapsed_seconds=elapsed_seconds,
+        queue_ahead=queue_ahead,
+    )
+
+
+async def _job_with_extras(db: AsyncSession, job: Job) -> JobResponseDTO:
+    """Job kèm số việc xếp trước và số giây đã chạy. Số giây do worker tự đo bằng đồng hồ đơn điệu và ghi vào `jobs.progress`
+    (không suy ra từ dấu thời gian của DB: đồng hồ máy ảo Docker/WSL của DB dev từng nhảy lệch 101 giây giữa hai lần đọc)."""
+    progress = job.progress or {}
+    elapsed = progress.get("elapsed_seconds") if isinstance(progress, dict) else None
+    return job_dto(
+        job,
+        queue_ahead=await job_service.queue_ahead(db, job),
+        elapsed_seconds=int(elapsed) if isinstance(elapsed, int | float) else None,
     )
 
 
@@ -224,18 +240,18 @@ async def create_ai_task_proposal_job(
 ) -> JobResponseDTO:
     """Tạo task bằng AI cho nhiều tài liệu, chạy nền có phần trăm; kết quả đề xuất nằm trong `result` của job."""
     job = await ai_task_service.enqueue_proposal_job(db, user=user, version_ids=body.document_version_ids)
-    return job_dto(job)
+    return await _job_with_extras(db, job)
 
 
 @router.get("/jobs/{job_id}", response_model=JobResponseDTO)
 async def get_job(job_id: int, user: StaffUser, db: Db) -> JobResponseDTO:
-    return job_dto(await job_service.get_job_for_user(db, job_id, user))
+    return await _job_with_extras(db, await job_service.get_job_for_user(db, job_id, user))
 
 
 @router.get("/jobs")
 async def list_jobs(user: StaffUser, db: Db, active: bool = False, kind: str | None = None) -> list[JobResponseDTO]:
     jobs = await job_service.list_jobs_for_user(db, user, active_only=active, kind=kind)
-    return [job_dto(job) for job in jobs]
+    return [await _job_with_extras(db, job) for job in jobs]
 
 
 __all__ = ["PortalError", "job_dto", "router"]

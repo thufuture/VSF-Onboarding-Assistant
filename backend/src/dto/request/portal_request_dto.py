@@ -37,7 +37,9 @@ class AcceptAiTaskProposalRequestDTO(BaseModel):
     estimated_minutes: int | None = None
     warnings: list[str] = []
     task_group: Literal["PROFILE", "TRAINING", "DEVICE", "OFFICE"] | None = None
-    depends_on: list[int] = []  # id các task đã tạo trước đó trong cùng lộ trình (giao diện đổi từ tên tiên quyết)
+    depends_on: list[int] = []  # id các task đã tạo trước đó trong cùng bản nháp (giao diện đổi từ tên tiên quyết)
+    # Bản nháp của ngày sẽ nhận task; bỏ trống = bản nháp mới nhất của ngày (chưa có thì tạo từ bản đang áp dụng).
+    stage_version_id: int | None = None
 
 
 class CreateTaskManualRequestDTO(BaseModel):
@@ -97,3 +99,14 @@ class ActivateDocumentVersionRequestDTO(BaseModel):
 
 class CreateAiTaskProposalJobRequestDTO(BaseModel):
     document_version_ids: list[int] = Field(min_length=1, max_length=20)
+
+
+class CreateStageVersionRequestDTO(BaseModel):
+    """Tạo bản nháp mới của một ngày, sao chép từ `from_version_id` (bỏ trống = bản đang áp dụng)."""
+
+    from_version_id: int | None = None
+    note: str | None = None
+
+
+class UpdateStageVersionRequestDTO(BaseModel):
+    note: str | None = None

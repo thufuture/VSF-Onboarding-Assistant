@@ -10,7 +10,6 @@ from __future__ import annotations
 
 import asyncio
 import contextlib
-import math
 import time
 from datetime import UTC, date, datetime
 from typing import Any
@@ -18,6 +17,7 @@ from typing import Any
 from sqlalchemy import func, select
 from sqlalchemy.exc import IntegrityError
 
+from src.infrastructure.ai.chat_completion_port import ChatCompletionPort
 from src.infrastructure.ai.deepseek_adapter import ChatCompletionError
 from src.infrastructure.observability.call_metrics import call_context
 from src.model.document import Document
@@ -46,12 +46,10 @@ from src.services.portal.job_service import (
     JobHandler,
     JobProgress,
 )
+from src.services.portal.proposal_progress import DocumentSteps, ProposalTracker
 
 EMBED_BATCH_SIZE = 32
 STRUCTURE_OPERATION = "ingest.structure"
-# Thang thời gian cho thanh tiến độ "đang chờ AI" (mục 14.5). Đo thật: tài liệu ngày 1 (14 đề xuất) mất ~48 giây, nên chọn 30
-# giây để thanh không chạm trần sớm; tài liệu ngắn xong nhanh hơn thì nhảy thẳng tới 99%.
-LLM_EXPECTED_SECONDS = 30.0
 
 
 async def current_model_version(embedding: EmbeddingPort) -> str:
@@ -267,17 +265,64 @@ async def cleanup_activate_version(ctx: JobContext, claimed: ClaimedJob, message
             await session.commit()
 
 
-async def _tick_progress(progress: JobProgress, *, low: float, high: float, stage: str) -> None:
-    """Trong lúc chờ LLM: thanh chạy chậm dần theo thời gian trung bình đã đo thay vì nhảy bậc (mục 14.5)."""
-    started = time.monotonic()
-    while True:
-        elapsed = time.monotonic() - started
-        fraction = 1 - math.exp(-elapsed / LLM_EXPECTED_SECONDS)
-        await progress.update(low + (high - low) * fraction, f"{stage} ({int(elapsed)} giây)")
-        await asyncio.sleep(1.0)
+async def _document_title(ctx: JobContext, version_id: int) -> tuple[str, str]:
+    async with ctx.session_factory() as session:
+        row = (
+            await session.execute(
+                select(Document.title, DocumentVersion.version_label)
+                .join(DocumentVersion, DocumentVersion.document_id == Document.id)
+                .where(DocumentVersion.id == version_id)
+            )
+        ).one_or_none()
+    return (row[0], row[1]) if row else ("(không rõ)", "")
+
+
+async def _propose_for_document(
+    ctx: JobContext, llm: ChatCompletionPort, version_id: int, steps: DocumentSteps
+) -> dict[str, Any]:
+    """Đề xuất task cho MỘT tài liệu; lỗi biết trước (JSON hỏng, AI không gọi được) chỉ làm hỏng tài liệu đó, không hỏng cả job."""
+    started = time.perf_counter()
+    entry: dict[str, Any] = {
+        "version_id": version_id,
+        "document_title": steps.title,
+        "version_label": steps.version_label,
+    }
+    try:
+        async with ctx.session_factory() as session:
+            detailed = await ai_task_service.propose_tasks_detailed(
+                session, document_version_id=version_id, llm=llm, options=ctx.proposal, progress=steps
+            )
+        entry["status"] = "DONE"
+        entry["proposals"] = [proposal.model_dump() for proposal in detailed.proposals]
+        entry["truncated_sections"] = detailed.truncated
+        entry["uncovered_sections"] = [
+            {"section_id": item.section_id, "heading": item.heading} for item in detailed.uncovered
+        ]
+        # Số liệu của lượt chạy (không có nội dung): để HR/dev biết task được xếp bởi AI hay theo thứ tự tài liệu, và mỗi bước mất bao lâu.
+        entry["skipped_info_sections"] = [
+            {"section_id": item.section_id, "heading": item.heading} for item in detailed.skipped_info
+        ]
+        entry["metrics"] = {
+            "mode": ctx.proposal.mode,
+            "order_source": detailed.order_source,
+            "batches": detailed.batches,
+            "skipped_sections": len(detailed.skipped_info),
+            "seconds": {**detailed.timings, "total": round(time.perf_counter() - started, 2)},
+        }
+    except PortalError as error:
+        entry.update(status="FAILED", error=error.code, proposals=[])
+        steps.failed = True
+    except ChatCompletionError:
+        entry.update(status="FAILED", error="LLM_UNAVAILABLE", proposals=[])
+        steps.failed = True
+    finally:
+        steps.finish_all()
+    return entry
 
 
 async def run_ai_task_proposal(ctx: JobContext, claimed: ClaimedJob, progress: JobProgress) -> dict[str, Any]:
+    """Tạo task bằng AI cho các tài liệu đã chọn. Các tài liệu chạy SONG SONG (bị giới hạn chung bởi `LlmGate`), tiến độ theo
+    bước thật gom thành một thanh (`ProposalTracker`)."""
     version_ids = [int(value) for value in claimed.payload.get("version_ids", [])]
     if not version_ids:
         raise JobFailureError("NO_DOCUMENTS", "chưa chọn tài liệu nào")
@@ -286,48 +331,33 @@ async def run_ai_task_proposal(ctx: JobContext, claimed: ClaimedJob, progress: J
     except RuntimeError as exc:
         raise JobFailureError("LLM_NOT_CONFIGURED", "chưa cấu hình dịch vụ AI") from exc
 
-    documents: list[dict[str, Any]] = []
-    total = len(version_ids)
-    for index, version_id in enumerate(version_ids):
-        base = 100 * index / total
-        share = 100 / total
-        async with ctx.session_factory() as session:
-            row = (
-                await session.execute(
-                    select(Document.title, DocumentVersion.version_label)
-                    .join(DocumentVersion, DocumentVersion.document_id == Document.id)
-                    .where(DocumentVersion.id == version_id)
-                )
-            ).one_or_none()
-        title, label = (row[0], row[1]) if row else ("(không rõ)", "")
-        entry: dict[str, Any] = {"version_id": version_id, "document_title": title, "version_label": label}
-        await progress.update(base + share * 0.1, f"Đọc tài liệu {index + 1}/{total}")
-        ticker = asyncio.create_task(
-            _tick_progress(
-                progress, low=base + share * 0.1, high=base + share * 0.9, stage=f"Đang chờ AI {index + 1}/{total}"
-            )
+    info = [await _document_title(ctx, version_id) for version_id in version_ids]
+    tracker = ProposalTracker(progress, [(v, title) for v, (title, _) in zip(version_ids, info, strict=True)])
+    for steps, (_, label) in zip(tracker.documents, info, strict=True):
+        steps.version_label = label
+    ticker = asyncio.create_task(tracker.run_ticker())
+    try:
+        outcomes = await asyncio.gather(
+            *(
+                _propose_for_document(ctx, llm, version_id, steps)
+                for version_id, steps in zip(version_ids, tracker.documents, strict=True)
+            ),
+            return_exceptions=True,
         )
-        try:
-            async with ctx.session_factory() as session:
-                detailed = await ai_task_service.propose_tasks_detailed(
-                    session, document_version_id=version_id, llm=llm
-                )
-            entry["status"] = "DONE"
-            entry["proposals"] = [proposal.model_dump() for proposal in detailed.proposals]
-            entry["truncated_sections"] = detailed.truncated
-            entry["uncovered_sections"] = [
-                {"section_id": item.section_id, "heading": item.heading} for item in detailed.uncovered
-            ]
-        except PortalError as error:
-            entry.update(status="FAILED", error=error.code, proposals=[])
-        except ChatCompletionError:
-            entry.update(status="FAILED", error="LLM_UNAVAILABLE", proposals=[])
-        finally:
-            ticker.cancel()
-            with contextlib.suppress(asyncio.CancelledError):
-                await ticker
-        documents.append(entry)
-        await progress.update(base + share, f"Xong tài liệu {index + 1}/{total}")
+    finally:
+        ticker.cancel()
+        with contextlib.suppress(asyncio.CancelledError):
+            await ticker
+    for outcome in outcomes:
+        if isinstance(outcome, BaseException):
+            raise outcome  # lỗi không lường trước: để `_run_claimed_job` ghi nhận
+    documents = [outcome for outcome in outcomes if isinstance(outcome, dict)]
+
+    # Mọi tài liệu đều không gọi được AI: nhiều khả năng lỗi tạm (quá tải, mất mạng) nên thử lại một lần trước khi báo thất bại.
+    if all(entry.get("error") == "LLM_UNAVAILABLE" for entry in documents) and claimed.attempts < claimed.max_attempts:
+        raise JobFailureError("LLM_UNAVAILABLE", "dịch vụ AI tạm thời không phản hồi", retryable=True)
+    await tracker.saving()
+    await tracker.saved()
     return {"documents": documents}
 
 

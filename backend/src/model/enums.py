@@ -77,6 +77,30 @@ class JourneyTemplateStatus(StrEnum):
     PUBLISHED = "PUBLISHED"
 
 
+class StageVersionStatus(StrEnum):
+    """Phiên bản của một ngày: DRAFT sửa được, APPLIED là bản đang áp dụng (tối đa một), ARCHIVED là bản từng áp dụng."""
+
+    DRAFT = "DRAFT"
+    APPLIED = "APPLIED"
+    ARCHIVED = "ARCHIVED"
+
+
+class ChangeKind(StrEnum):
+    """Loại thay đổi của một việc khi HR áp dụng bản mới (so theo origin_key)."""
+
+    MODIFIED = "MODIFIED"
+    ADDED = "ADDED"
+    REMOVED = "REMOVED"
+    PREREQUISITES = "PREREQUISITES"
+
+
+class ChangeStatus(StrEnum):
+    PENDING = "PENDING"
+    ACCEPTED = "ACCEPTED"
+    DISMISSED = "DISMISSED"
+    SUPERSEDED = "SUPERSEDED"
+
+
 class EmployeeTaskStatus(StrEnum):
     """Portal — plan-portal/P0A/P0A.md D1/D4: bỏ NOT_APPLICABLE (không lọc applies_when) và
     WAITING_APPROVAL (không còn ai duyệt task, nhân viên tự bấm hoàn thành)."""

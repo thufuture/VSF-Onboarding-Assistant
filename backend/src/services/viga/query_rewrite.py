@@ -13,7 +13,7 @@ from collections.abc import Sequence
 
 from src.infrastructure.ai.chat_completion_port import ChatCompletionPort
 from src.infrastructure.observability.call_metrics import call_context
-from src.services.chat.guardrail_input import INJECTION_DEFENSE_NOTE, wrap_user_input
+from src.services.viga.guardrail_input import INJECTION_DEFENSE_NOTE, wrap_user_input
 
 # Không có ca hợp lệ nào trong hỏi-đáp onboarding cần hơn 5 ý trong một câu hỏi (ví dụ đã gặp thực tế: 2 ý).
 MAX_SUBQUESTIONS = 5

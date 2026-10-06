@@ -19,9 +19,10 @@ from src.infrastructure.persistence.engine import create_session_factory
 from src.main import create_app
 from src.model.employee_journey import EmployeeJourney
 from src.model.employee_task import EmployeeTask
-from src.model.enums import JourneyTemplateStatus
+from src.model.enums import JourneyTemplateStatus, StageVersionStatus
 from src.model.journey_stage import JourneyStage
 from src.model.journey_template import JourneyTemplate
+from src.model.stage_version import StageVersion
 from src.model.task_dependency import TaskDependency
 from src.model.task_template import TaskTemplate
 from src.model.team import Team
@@ -105,8 +106,21 @@ async def published_template(
         stage = JourneyStage(journey_template_id=tpl.id, title="Ngày 1", sort_order=1)
         session.add(stage)
         await session.flush()
-        task1 = TaskTemplate(journey_stage_id=stage.id, title="Nhận laptop", body_markdown="Nhận laptop tầng 12.")
-        task2 = TaskTemplate(journey_stage_id=stage.id, title="Đăng nhập Outlook", body_markdown="Đăng nhập Outlook.")
+        version = StageVersion(journey_stage_id=stage.id, version_no=1, status=StageVersionStatus.APPLIED.value)
+        session.add(version)
+        await session.flush()
+        task1 = TaskTemplate(
+            journey_stage_id=stage.id,
+            stage_version_id=version.id,
+            title="Nhận laptop",
+            body_markdown="Nhận laptop tầng 12.",
+        )
+        task2 = TaskTemplate(
+            journey_stage_id=stage.id,
+            stage_version_id=version.id,
+            title="Đăng nhập Outlook",
+            body_markdown="Đăng nhập Outlook.",
+        )
         session.add_all([task1, task2])
         await session.flush()
         session.add(TaskDependency(task_template_id=task2.id, depends_on_task_template_id=task1.id))
@@ -132,6 +146,13 @@ async def published_template(
         await session.execute(delete(JourneyTemplate).where(JourneyTemplate.id == result.id))
         await session.execute(delete(User).where(User.email == result.creator_email))
         await session.commit()
+
+
+async def start_journey(client: httpx.AsyncClient) -> httpx.Response:
+    """Nhân viên bấm "Tạo lộ trình" (không còn tự tạo khi mở trang), rồi đọc lại lộ trình."""
+    created = await client.post("/api/v1/portal/me/journey")
+    assert created.status_code in (200, 201), created.text
+    return await client.get("/api/v1/portal/me/journey")
 
 
 def app_for(session_factory: async_sessionmaker[AsyncSession]) -> FastAPI:
@@ -163,7 +184,7 @@ async def test_first_view_creates_journey_with_locked_and_ready_tasks(
 
     async with client_for(app) as client:
         await login(client, employee)
-        response = await client.get("/api/v1/portal/me/journey")
+        response = await start_journey(client)
 
     assert response.status_code == 200, response.text
     body = response.json()
@@ -184,7 +205,7 @@ async def test_complete_task_unlocks_dependent_and_is_idempotent(
 
     async with client_for(app) as client:
         await login(client, employee)
-        journey_response = await client.get("/api/v1/portal/me/journey")
+        journey_response = await start_journey(client)
         tasks = journey_response.json()["tasks"]
         task1_employee_id = next(t["id"] for t in tasks if t["task_template_id"] == published_template.task1_id)
         task2_employee_id = next(t["id"] for t in tasks if t["task_template_id"] == published_template.task2_id)
@@ -197,7 +218,7 @@ async def test_complete_task_unlocks_dependent_and_is_idempotent(
         assert again.status_code == 200
         assert again.json()["status"] == "DONE"  # idempotent
 
-        after = await client.get("/api/v1/portal/me/journey")
+        after = await start_journey(client)
         statuses = {t["id"]: t["status"] for t in after.json()["tasks"]}
         assert statuses[task2_employee_id] == "READY"  # đã mở khóa
 
@@ -213,7 +234,7 @@ async def test_complete_locked_task_is_rejected(
 
     async with client_for(app) as client:
         await login(client, employee)
-        journey_response = await client.get("/api/v1/portal/me/journey")
+        journey_response = await start_journey(client)
         task2_employee_id = next(
             t["id"] for t in journey_response.json()["tasks"] if t["task_template_id"] == published_template.task2_id
         )
@@ -237,8 +258,10 @@ async def test_no_team_assigned_is_rejected(
     app = app_for(session_factory)
     async with client_for(app) as client:
         await login(client, SimpleNamespace(email=email, password=PASSWORD))
-        response = await client.get("/api/v1/portal/me/journey")
+        before = await client.get("/api/v1/portal/me/journey")
+        response = await client.post("/api/v1/portal/me/journey")
 
+    assert before.status_code == 404 and before.json()["code"] == "NO_JOURNEY"  # không tự tạo khi mở trang
     assert response.status_code == 409
     assert response.json()["code"] == "NO_TEAM_ASSIGNED"
 
@@ -258,7 +281,7 @@ async def test_journey_exposes_group_stage_and_prerequisites(
 
     async with client_for(app) as client:
         await login(client, employee)
-        tasks = (await client.get("/api/v1/portal/me/journey")).json()["tasks"]
+        tasks = (await start_journey(client)).json()["tasks"]
         second = next(t for t in tasks if t["task_template_id"] == published_template.task2_id)
         first = next(t for t in tasks if t["task_template_id"] == published_template.task1_id)
         assert second["prerequisites"] == [{"title": "Nhận laptop", "done": False}]
@@ -268,7 +291,7 @@ async def test_journey_exposes_group_stage_and_prerequisites(
 
         done = await client.post(f"/api/v1/portal/me/tasks/{first['id']}/complete")
         assert done.status_code == 200
-        refreshed = (await client.get("/api/v1/portal/me/journey")).json()["tasks"]
+        refreshed = (await start_journey(client)).json()["tasks"]
         second_after = next(t for t in refreshed if t["id"] == second["id"])
         assert second_after["prerequisites"] == [{"title": "Nhận laptop", "done": True}]
 
@@ -289,7 +312,7 @@ async def test_profile_progress_update_name_and_change_password(
         assert before["department"] == "Team thử"
         assert before["tasks_total"] == 0 and before["journey_started_at"] is None  # chưa mở lộ trình thì chưa tạo
 
-        await client.get("/api/v1/portal/me/journey")
+        await start_journey(client)
         after = (await client.get("/api/v1/portal/me/profile")).json()
         assert after["tasks_total"] == 2 and after["tasks_done"] == 0
 

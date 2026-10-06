@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import BigInteger, ForeignKey, Index, func
+from sqlalchemy import BigInteger, ForeignKey, Index, func, text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from src.model.base import Base, TimestampTZ, created_at_column, id_column
@@ -14,6 +14,13 @@ class EmployeeJourney(Base):
     __table_args__ = (
         Index("ix_employee_journeys_user_id", "user_id"),
         Index("ix_employee_journeys_team_id", "team_id"),
+        # Mỗi người đúng MỘT lộ trình chưa xóa (tạo lại thì xóa mềm cái cũ trước).
+        Index(
+            "uq_employee_journeys_one_active_per_user",
+            "user_id",
+            unique=True,
+            postgresql_where=text("deleted_at IS NULL"),
+        ),
     )
 
     id: Mapped[int] = id_column()

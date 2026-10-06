@@ -33,4 +33,14 @@ class LlmCall(Base):
     request_id: Mapped[str | None] = mapped_column(String(64))
     # Việc nền sinh ra lời gọi này (không khóa ngoại: xóa job không làm mất số liệu).
     job_id: Mapped[int | None] = mapped_column(BigInteger)
+    # Số đo từng pha (chỉ khi gọi bằng stream); xem call_metrics.CallRecord.
+    first_byte_ms: Mapped[float | None] = mapped_column(Float)
+    first_token_ms: Mapped[float | None] = mapped_column(Float)
+    reasoning_ms: Mapped[float | None] = mapped_column(Float)
+    content_ms: Mapped[float | None] = mapped_column(Float)
+    reasoning_tokens: Mapped[int] = mapped_column(Integer, server_default="0")
+    cached_input_tokens: Mapped[int] = mapped_column(Integer, server_default="0")
+    finish_reason: Mapped[str | None] = mapped_column(String(16))
+    attempt: Mapped[int] = mapped_column(Integer, server_default="1")
+    queue_wait_ms: Mapped[float | None] = mapped_column(Float)
     created_at: Mapped[datetime] = created_at_column()

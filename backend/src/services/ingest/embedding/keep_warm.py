@@ -20,6 +20,10 @@ logger = logging.getLogger(__name__)
 PING_TEXT = "khởi động"
 
 
+# Gọi giữ ấm GPU có tên riêng: là khoản tiền Modal chạy nền, không phải chi phí tải tài liệu của HR.
+KEEP_WARM_OPERATION = "embed.keepwarm"
+
+
 class KeepWarm:
     def __init__(self, embedding: EmbeddingPort, *, window_seconds: float) -> None:
         self._embedding = embedding
@@ -47,7 +51,7 @@ class KeepWarm:
             return
         self._pinging = True
         try:
-            with call_context(operation="ingest.probe"):
+            with call_context(operation=KEEP_WARM_OPERATION):
                 await self._embedding.embed([PING_TEXT])
         except Exception:
             logger.warning("embedding_keep_warm_failed", exc_info=True)

@@ -27,9 +27,10 @@ from src.model.audit_log import AuditLog
 from src.model.content_gap import ContentGap
 from src.model.employee_journey import EmployeeJourney
 from src.model.employee_task import EmployeeTask
-from src.model.enums import JourneyTemplateStatus
+from src.model.enums import JourneyTemplateStatus, StageVersionStatus
 from src.model.journey_stage import JourneyStage
 from src.model.journey_template import JourneyTemplate
+from src.model.stage_version import StageVersion
 from src.model.task_dependency import TaskDependency
 from src.model.task_template import TaskTemplate
 from src.model.team import Team
@@ -62,7 +63,16 @@ class ScriptedLlm:
     def prompts(self, kind: str) -> list[str]:
         return [user for k, _, user in self.calls if k == kind]
 
-    async def complete_json(self, *, system_prompt: str, user_prompt: str, timeout_seconds: float | None = None) -> str:
+    async def complete_json(
+        self,
+        *,
+        system_prompt: str,
+        user_prompt: str,
+        timeout_seconds: float | None = None,
+        reasoning: bool = True,
+        stream: bool = False,
+        temperature: float | None = None,
+    ) -> str:
         if "bộ định tuyến" in system_prompt:
             kind, script = "route", self.route
         elif "nhân sự mới" in system_prompt and "viết lại" in system_prompt:
@@ -205,20 +215,34 @@ async def published_template(
         day2 = JourneyStage(journey_template_id=template.id, title="Ngày 2", sort_order=2)
         session.add_all([day1, day2])
         await session.flush()
+        version1 = StageVersion(journey_stage_id=day1.id, version_no=1, status=StageVersionStatus.APPLIED.value)
+        version2 = StageVersion(journey_stage_id=day2.id, version_no=1, status=StageVersionStatus.APPLIED.value)
+        session.add_all([version1, version2])
+        await session.flush()
         laptop = TaskTemplate(
             journey_stage_id=day1.id,
+            stage_version_id=version1.id,
             title="Nhận laptop",
             body_markdown="## Các bước\n1. Nhận laptop tại tầng 12",
             sort_order=1,
         )
         outlook = TaskTemplate(
-            journey_stage_id=day1.id, title="Đăng nhập Outlook", body_markdown="Đăng nhập.", sort_order=2
+            journey_stage_id=day1.id,
+            stage_version_id=version1.id,
+            title="Đăng nhập Outlook",
+            body_markdown="Đăng nhập.",
+            sort_order=2,
         )
         avatar = TaskTemplate(
-            journey_stage_id=day1.id, title="Ảnh đại diện, chữ ký email", body_markdown="Đặt ảnh.", sort_order=3
+            journey_stage_id=day1.id,
+            stage_version_id=version1.id,
+            title="Ảnh đại diện, chữ ký email",
+            body_markdown="Đặt ảnh.",
+            sort_order=3,
         )
         training = TaskTemplate(
             journey_stage_id=day2.id,
+            stage_version_id=version2.id,
             title="Tham gia đào tạo hội nhập",
             body_markdown="Đến phòng đào tạo.",
             sort_order=1,
@@ -287,6 +311,8 @@ async def login(client: httpx.AsyncClient, user: SimpleNamespace) -> httpx.Respo
 
 async def employee_tasks(client: httpx.AsyncClient) -> dict[str, int]:
     """Mã việc của chính nhân viên đang đăng nhập, theo tên việc (gọi `/me/journey` tạo lộ trình lần đầu)."""
+    created = await client.post("/api/v1/portal/me/journey")
+    assert created.status_code in (200, 201), created.text
     response = await client.get("/api/v1/portal/me/journey")
     assert response.status_code == 200, response.text
     return {task["title"]: task["id"] for task in response.json()["tasks"]}

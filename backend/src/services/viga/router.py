@@ -20,7 +20,7 @@ from typing import Any
 
 from src.infrastructure.ai.chat_completion_port import ChatCompletionPort
 from src.infrastructure.observability.call_metrics import call_context
-from src.services.chat.guardrail_input import INJECTION_DEFENSE_NOTE, wrap_user_input
+from src.services.viga.guardrail_input import INJECTION_DEFENSE_NOTE, wrap_user_input
 from src.services.viga.snapshot import JourneySnapshot
 from src.services.viga.tools import TASK_TOOLS, TOOL_NAMES
 
@@ -43,8 +43,10 @@ Công cụ (chỉ dùng đúng tên):
 - search_documents: câu hỏi về nội quy, chính sách, quy trình, phúc lợi, nghỉ phép... cần tra tài liệu. args: {{"query": "câu hỏi"}}.
 - none: không công cụ nào hợp (chuyện phiếm, ngoài phạm vi).
 
-Quy tắc: chỉ dùng mã việc (id) có trong danh sách <journey>; không biết việc nào thì để task_id là null. Nếu câu hỏi thiếu
-thông tin để chọn việc và không thể suy ra, đặt clarify là MỘT câu hỏi lại ngắn bằng tiếng Việt.
+Quy tắc: chỉ dùng mã việc (id) có trong danh sách <journey>; không biết việc nào thì để task_id là null.
+Câu mô tả một sự cố hay tình huống cụ thể (lỗi đăng nhập, không vào được ứng dụng, thiếu giấy tờ, "thì sao", "phải làm sao"...)
+là câu hỏi về nội dung tài liệu: chọn search_documents, KHÔNG đặt clarify. Chỉ đặt clarify (MỘT câu hỏi lại ngắn bằng tiếng
+Việt) khi người dùng rõ ràng muốn hỏi về MỘT việc trong lộ trình ("việc này", "việc đó", "bước này") mà không thể biết là việc nào.
 {INJECTION_DEFENSE_NOTE}
 Chỉ trả JSON đúng schema, không giải thích:
 {{"tool": "<tên công cụ>", "args": {{...}}, "confidence": 0.0-1.0, "clarify": null | "câu hỏi lại ngắn"}}"""

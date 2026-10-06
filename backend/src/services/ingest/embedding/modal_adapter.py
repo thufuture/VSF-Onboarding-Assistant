@@ -16,7 +16,7 @@ import time
 
 import httpx
 
-from src.infrastructure.observability.call_metrics import CallRecord, emit
+from src.infrastructure.observability.call_metrics import CallObservation, CallRecord, emit, observe_start
 
 
 class EmbeddingServiceError(Exception):
@@ -57,6 +57,9 @@ class ModalEmbeddingAdapter:
         if not texts:
             return []
         vectors: list[list[float]] = []
+        observation = observe_start(
+            "embedding", self._display_model(), {"count": len(texts), "texts": [t[:300] for t in texts[:5]]}
+        )
         started = time.perf_counter()
         try:
             async with httpx.AsyncClient() as client:
@@ -64,22 +67,43 @@ class ModalEmbeddingAdapter:
                     batch = texts[start : start + self.MAX_BATCH_SIZE]
                     vectors.extend(await self._embed_batch(client, batch))
         except EmbeddingServiceError:
-            self._emit(started, len(texts), ok=False, error="embedding_error")
+            self._emit(started, len(texts), ok=False, error="embedding_error", observation=observation)
             raise
-        self._emit(started, len(texts), ok=True)
+        self._emit(
+            started,
+            len(texts),
+            ok=True,
+            observation=observation,
+            output={"vectors": len(vectors), "dimensions": len(vectors[0]) if vectors else 0},
+        )
         return vectors
 
-    def _emit(self, started: float, count: int, *, ok: bool, error: str | None = None) -> None:
+    def _display_model(self) -> str:
+        """Tên mô hình để hiện ở thống kê và Langfuse; `model_version` chỉ biết sau lần gọi đầu tiên."""
+        return "bge-m3" if self.model_version == "unknown" else self.model_version
+
+    def _emit(
+        self,
+        started: float,
+        count: int,
+        *,
+        ok: bool,
+        error: str | None = None,
+        observation: CallObservation | None = None,
+        output: object = None,
+    ) -> None:
         emit(
             CallRecord(
                 kind="embedding",
                 provider="modal",
-                model=self.model_version,
+                model=self._display_model(),
                 latency_ms=(time.perf_counter() - started) * 1000,
                 ok=ok,
                 input_count=count,
                 error=error,
-            )
+            ),
+            observation,
+            output,
         )
 
     async def _embed_batch(self, client: httpx.AsyncClient, batch: list[str]) -> list[list[float]]:

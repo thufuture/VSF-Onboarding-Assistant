@@ -1,9 +1,9 @@
 """Đơn vị cho validate_claim (mục 6, kế hoạch 2-C/2-D mở rộng): quote đúng/sai/thiếu 1 chữ, chunk_id lạ,
 chunk_id thuộc câu hỏi con khác (INV6), NO_BASIS giữ nguyên."""
 
-from src.services.chat.answer_service import Claim, QuestionEvidence
-from src.services.chat.validator import validate_claim, validate_claims
 from src.services.retrieval.hybrid_search import SectionEvidence
+from src.services.viga.answer_service import Claim, QuestionEvidence
+from src.services.viga.validator import validate_claim, validate_claims
 
 _SECTION = SectionEvidence(
     section_id=62,

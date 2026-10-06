@@ -3,10 +3,10 @@ và đề xuất task bị loại oan vì mô hình trích lại bằng chữ li
 
 import pytest
 
-from src.services.chat.answer_service import Claim, QuestionEvidence
-from src.services.chat.validator import validate_claim
 from src.services.retrieval.hybrid_search import SectionEvidence
 from src.services.text_match import quote_matches
+from src.services.viga.answer_service import Claim, QuestionEvidence
+from src.services.viga.validator import validate_claim
 
 HO_SO = (
     "* CV.\n* Lý lịch tư pháp, hoặc giấy hẹn lấy lý lịch tư pháp.\n* Giấy khám sức khỏe\n"

@@ -6,6 +6,9 @@ from typing import Any
 
 from src.infrastructure.ai.fake_chat_completion import FakeChatCompletion
 from src.services.portal.ai_task_service import propose_tasks_detailed
+from src.services.portal.proposal_options import ProposalOptions
+
+LEGACY = ProposalOptions(mode="legacy")  # các test này kiểm đường cũ (suy luận bật, AI chép quote)
 
 
 class _Rows:
@@ -64,7 +67,9 @@ async def test_end_of_day_tasks_go_last_even_when_the_model_orders_them_earlier(
         )
     )
 
-    result = await propose_tasks_detailed(_Session([HOP_DONG, LAPTOP, TU]), document_version_id=1, llm=llm)  # type: ignore[arg-type]
+    result = await propose_tasks_detailed(
+        _Session([HOP_DONG, LAPTOP, TU]), document_version_id=1, llm=llm, options=LEGACY
+    )  # type: ignore[arg-type]
 
     assert [p.title for p in result.proposals] == ["Nhận laptop", "Đăng ký tủ gửi đồ", "Ký hợp đồng lao động"]
     assert [p.order for p in result.proposals] == [1, 2, 3]
@@ -88,7 +93,7 @@ async def test_markdown_escapes_copied_from_the_source_are_cleaned_in_the_propos
         )
     )
 
-    result = await propose_tasks_detailed(_Session([section]), document_version_id=1, llm=llm)  # type: ignore[arg-type]
+    result = await propose_tasks_detailed(_Session([section]), document_version_id=1, llm=llm, options=LEGACY)  # type: ignore[arg-type]
 
     proposal = result.proposals[0]
     assert proposal.instructions_markdown == "Xem tại https://x.vn/VinIT_BO_HRBP/a"

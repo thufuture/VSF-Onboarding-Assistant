@@ -19,6 +19,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.dto.response.analytics_response_dto import (
     AiAnalyticsResponseDTO,
+    CostGroupResponseDTO,
     DocumentAnalyticsResponseDTO,
     GroupTaskStateResponseDTO,
     JobRunResponseDTO,
@@ -26,6 +27,7 @@ from src.dto.response.analytics_response_dto import (
     OperationBreakdownResponseDTO,
     PeopleAnalyticsResponseDTO,
     PortalAnalyticsResponseDTO,
+    ProviderBreakdownResponseDTO,
     TicketAnalyticsResponseDTO,
     VigaAnalyticsResponseDTO,
 )
@@ -40,7 +42,6 @@ from src.model.employee_task import EmployeeTask
 from src.model.enums import ChatRole, DocumentStatus, EmployeeTaskStatus, JobKind, JobStatus, TicketStatus, UserRole
 from src.model.job import Job
 from src.model.llm_call import LlmCall
-from src.model.task_template import TaskTemplate
 from src.model.team import Team
 from src.model.team_member import TeamMember
 from src.model.ticket import Ticket
@@ -108,10 +109,9 @@ async def _people(
     per_journey: dict[int, list[int]] = defaultdict(lambda: [0, 0])  # journey -> [tổng, xong]
     if latest:
         rows = await session.execute(
-            select(EmployeeTask.employee_journey_id, EmployeeTask.status, TaskTemplate.task_group, func.count())
-            .join(TaskTemplate, TaskTemplate.id == EmployeeTask.task_template_id)
+            select(EmployeeTask.employee_journey_id, EmployeeTask.status, EmployeeTask.task_group, func.count())
             .where(EmployeeTask.employee_journey_id.in_(list(latest.values())), EmployeeTask.deleted_at.is_(None))
-            .group_by(EmployeeTask.employee_journey_id, EmployeeTask.status, TaskTemplate.task_group)
+            .group_by(EmployeeTask.employee_journey_id, EmployeeTask.status, EmployeeTask.task_group)
         )
         for journey_id, status, group, count in rows.all():
             state = (
@@ -326,6 +326,9 @@ def _empty_ai(dates: list[date]) -> AiAnalyticsResponseDTO:
         errors_per_day=[0] * len(dates),
         cost_per_day=[0.0] * len(dates),
         by_operation=[],
+        by_provider=[],
+        cost_groups=[],
+        hours=[],
         task_runs=[],
         activation_runs=[],
     )
@@ -395,6 +398,126 @@ async def _runs(
     return runs
 
 
+def _last_hours(timezone: str) -> list[datetime]:
+    """24 đầu giờ gần nhất (theo múi giờ ứng dụng, không có tzinfo), cũ trước mới sau; giờ hiện tại là phần tử cuối."""
+    now = datetime.now(ZoneInfo(timezone)).replace(minute=0, second=0, microsecond=0, tzinfo=None)
+    return [now - timedelta(hours=23 - index) for index in range(24)]
+
+
+async def _cost_groups(
+    session: AsyncSession,
+    *,
+    scope: list[Any],
+    timezone: str,
+    dates: list[date],
+    start: datetime,
+    hours: list[datetime],
+) -> list[CostGroupResponseDTO]:
+    """Chi phí theo ngày và theo giờ của hai khoản: tải tài liệu lên (`ingest.*`: embedding BGE-M3 và đọc cấu trúc) và tạo task."""
+    group = case(
+        (LlmCall.operation.like("ingest.%"), "upload"),
+        (LlmCall.operation == "task.proposal", "tasks"),
+        else_=None,
+    )
+    local = func.timezone(timezone, LlmCall.created_at)
+    day = cast(local, Date)
+    hour = func.date_trunc("hour", local)
+    since = min(start, datetime.now(ZoneInfo(timezone)) - timedelta(hours=25))
+    rows = (
+        await session.execute(
+            select(group, day, hour, func.count(), func.coalesce(func.sum(LlmCall.cost_usd), 0.0))
+            .where(LlmCall.created_at >= since, group.is_not(None), *scope)
+            .group_by(group, day, hour)
+        )
+    ).all()
+    result: list[CostGroupResponseDTO] = []
+    for key in ("upload", "tasks"):
+        mine = [row for row in rows if row[0] == key]
+        in_days = [row for row in mine if row[1] in dates]
+        result.append(
+            CostGroupResponseDTO(
+                key=key,
+                calls=sum(int(row[3]) for row in in_days),
+                cost_usd=sum(float(row[4]) for row in in_days),
+                cost_per_day=[sum(float(row[4]) for row in mine if row[1] == d) for d in dates],
+                cost_per_hour=[sum(float(row[4]) for row in mine if row[2] == slot) for slot in hours],
+            )
+        )
+    return result
+
+
+async def _providers(
+    session: AsyncSession,
+    *,
+    scope: list[Any],
+    day: Any,
+    errors: Any,
+    start: datetime,
+    dates: list[date],
+    hours: list[datetime],
+    timezone: str,
+) -> list[ProviderBreakdownResponseDTO]:
+    totals = (
+        await session.execute(
+            select(
+                LlmCall.provider,
+                LlmCall.kind,
+                func.count(),
+                errors,
+                func.percentile_cont(0.5).within_group(LlmCall.latency_ms),
+                func.percentile_cont(0.95).within_group(LlmCall.latency_ms),
+                func.coalesce(func.sum(LlmCall.prompt_tokens), 0),
+                func.coalesce(func.sum(LlmCall.completion_tokens), 0),
+                func.coalesce(func.sum(LlmCall.input_count), 0),
+                func.coalesce(func.sum(LlmCall.latency_ms), 0.0),
+                func.coalesce(func.sum(LlmCall.cost_usd), 0.0),
+            )
+            .where(LlmCall.created_at >= start, *scope)
+            .group_by(LlmCall.provider, LlmCall.kind)
+            .order_by(LlmCall.kind.desc(), LlmCall.provider)
+        )
+    ).all()
+    daily = (
+        await session.execute(
+            select(LlmCall.provider, day, func.coalesce(func.sum(LlmCall.cost_usd), 0.0))
+            .where(LlmCall.created_at >= start, *scope)
+            .group_by(LlmCall.provider, day)
+        )
+    ).all()
+    hour = func.date_trunc("hour", func.timezone(timezone, LlmCall.created_at))
+    since = datetime.now(ZoneInfo(timezone)) - timedelta(hours=25)
+    hourly = (
+        await session.execute(
+            select(LlmCall.provider, hour, func.coalesce(func.sum(LlmCall.cost_usd), 0.0))
+            .where(LlmCall.created_at >= since, *scope)
+            .group_by(LlmCall.provider, hour)
+        )
+    ).all()
+    result: list[ProviderBreakdownResponseDTO] = []
+    for provider, kind, calls, errs, p50, p95, pt, ct, ic, latency, cost in totals:
+        per_day = _per_day([(d, c) for p, d, c in daily if p == provider], dates, as_float=True)
+        result.append(
+            ProviderBreakdownResponseDTO(
+                provider=provider,
+                kind=kind,
+                calls=int(calls),
+                errors=int(errs or 0),
+                p50_latency_ms=float(p50 or 0),
+                p95_latency_ms=float(p95 or 0),
+                prompt_tokens=int(pt),
+                completion_tokens=int(ct),
+                input_count=int(ic),
+                gpu_seconds=float(latency) / 1000,
+                cost_usd=float(cost),
+                cost_per_day=per_day,
+                cost_per_hour=[
+                    float(next((c for p, h, c in hourly if p == provider and h == slot), 0.0)) for slot in hours
+                ],
+            )
+        )
+    return result
+
+
 async def _ai(
     session: AsyncSession, *, scoped_users: list[int] | None, dates: list[date], start: datetime, timezone: str
 ) -> AiAnalyticsResponseDTO:
@@ -444,6 +567,10 @@ async def _ai(
         )
         for op, kind, calls, errs, p50, p95, pt, ct, ic, cost in by_operation
     ]
+    hours = _last_hours(timezone)
+    providers = await _providers(
+        session, scope=scope, day=day, errors=errors, start=start, dates=dates, hours=hours, timezone=timezone
+    )
     return AiAnalyticsResponseDTO(
         calls=sum(o.calls for o in operations),
         errors=sum(o.errors for o in operations),
@@ -452,6 +579,9 @@ async def _ai(
         errors_per_day=_per_day([(d, e or 0) for d, _, e, _ in daily], dates),
         cost_per_day=_per_day([(d, cost) for d, _, _, cost in daily], dates, as_float=True),
         by_operation=operations,
+        by_provider=providers,
+        cost_groups=await _cost_groups(session, scope=scope, timezone=timezone, dates=dates, start=start, hours=hours),
+        hours=[hour.strftime("%Y-%m-%dT%H:00") for hour in hours],
         task_runs=await _runs(session, JobKind.AI_TASK_PROPOSAL, scoped_users=scoped_users, start=start),
         activation_runs=await _runs(session, JobKind.ACTIVATE_VERSION, scoped_users=scoped_users, start=start),
     )

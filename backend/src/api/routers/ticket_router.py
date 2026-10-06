@@ -10,7 +10,7 @@ from datetime import datetime
 from typing import Annotated, Literal
 from zoneinfo import ZoneInfo
 
-from fastapi import APIRouter, Depends, Response
+from fastapi import APIRouter, Depends, File, Response, UploadFile
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from src.api.dependencies import (
@@ -36,9 +36,11 @@ from src.dto.response.viga_response_dto import (
     RecheckGapResponseDTO,
     SatisfactionSummaryResponseDTO,
     SupplementGapResponseDTO,
+    TicketAttachmentResponseDTO,
     TicketDetailResponseDTO,
     TicketMessageResponseDTO,
     TicketSummaryResponseDTO,
+    TicketUnreadResponseDTO,
 )
 from src.infrastructure.ai.chat_completion_port import ChatCompletionPort
 from src.infrastructure.observability.langfuse_tracer import LangfuseTracer
@@ -47,7 +49,7 @@ from src.model.user import User
 from src.services.ingest.embedding.port import EmbeddingPort
 from src.services.ingest.ingest_service import today_in
 from src.services.ingest.storage import StoragePort
-from src.services.portal import ticket_service
+from src.services.portal import ticket_attachment_service, ticket_service
 from src.services.portal.errors import PortalError
 from src.services.viga import feedback, gaps, supplement
 
@@ -82,8 +84,36 @@ async def create_ticket(
         employee_task_id=body.employee_task_id,
         conversation_id=body.conversation_id,
         timezone=settings.app_timezone,
+        attachment_ids=body.attachment_ids,
     )
     return _summary_dto((await ticket_service.get_ticket_detail(db, user, ticket.id)).summary)
+
+
+@router.post("/ticket-attachments", response_model=TicketAttachmentResponseDTO, status_code=201)
+async def upload_ticket_attachment(
+    file: Annotated[UploadFile, File()],
+    user: CurrentUser,
+    db: Db,
+    storage: Annotated[StoragePort, Depends(get_storage_port)],
+) -> TicketAttachmentResponseDTO:
+    """Tải một ảnh hoặc video lên Cloudinary; trả URL để gắn vào ticket khi gửi. Ảnh tối đa 10 MB, video 50 MB."""
+    limit = ticket_attachment_service.MAX_VIDEO_BYTES + 1
+    content = await file.read(limit)
+    row = await ticket_attachment_service.upload(
+        db,
+        user,
+        storage,
+        filename=file.filename or "tep",
+        content_type=(file.content_type or "").lower(),
+        content=content,
+    )
+    return TicketAttachmentResponseDTO(**ticket_attachment_service.view(row))
+
+
+@router.delete("/ticket-attachments/{attachment_id}", status_code=204)
+async def discard_ticket_attachment(attachment_id: int, user: CurrentUser, db: Db) -> Response:
+    await ticket_attachment_service.discard(db, user, attachment_id)
+    return Response(status_code=204)
 
 
 @router.get("/tickets/mine")
@@ -98,6 +128,21 @@ async def list_staff_tickets(
     return [_summary_dto(s) for s in await ticket_service.list_staff_tickets(db, user, status=status)]
 
 
+@router.get("/tickets/unread", response_model=TicketUnreadResponseDTO)
+async def unread_tickets(user: CurrentUser, db: Db) -> TicketUnreadResponseDTO:
+    """Số ticket có tin chưa xem của người gọi: nhân viên đếm tin HR trả lời, HR và Admin đếm tin của nhân viên."""
+    ids = sorted(await ticket_service.unread_ticket_ids(db, user))
+    return TicketUnreadResponseDTO(count=len(ids), ticket_ids=ids)
+
+
+@router.post("/tickets/{ticket_id}/read", response_model=TicketUnreadResponseDTO)
+async def mark_ticket_read(ticket_id: int, user: CurrentUser, db: Db) -> TicketUnreadResponseDTO:
+    """Đã mở ticket: đánh dấu đã xem tới tin cuối rồi trả số chưa đọc mới (để huy hiệu giảm ngay)."""
+    await ticket_service.mark_read(db, user, ticket_id)
+    ids = sorted(await ticket_service.unread_ticket_ids(db, user))
+    return TicketUnreadResponseDTO(count=len(ids), ticket_ids=ids)
+
+
 @router.get("/tickets/{ticket_id}", response_model=TicketDetailResponseDTO)
 async def get_ticket(ticket_id: int, user: CurrentUser, db: Db) -> TicketDetailResponseDTO:
     return _detail_dto(await ticket_service.get_ticket_detail(db, user, ticket_id))
@@ -107,7 +152,7 @@ async def get_ticket(ticket_id: int, user: CurrentUser, db: Db) -> TicketDetailR
 async def add_ticket_message(
     ticket_id: int, body: AddTicketMessageRequestDTO, user: CurrentUser, db: Db
 ) -> TicketDetailResponseDTO:
-    await ticket_service.add_message(db, user, ticket_id, body.body)
+    await ticket_service.add_message(db, user, ticket_id, body.body, body.attachment_ids)
     return _detail_dto(await ticket_service.get_ticket_detail(db, user, ticket_id))
 
 
@@ -209,6 +254,64 @@ async def resolve_viga_feedback(feedback_id: int, user: StaffUser, db: Db) -> Re
     team_id = None if user.role == UserRole.ADMIN else await gaps.team_of(db, user.id)
     await feedback.resolve_dissatisfied(db, feedback_id=feedback_id, team_id=team_id)
     return Response(status_code=204)
+
+
+@router.post("/viga-feedback/{feedback_id}/supplement", response_model=SupplementGapResponseDTO, status_code=202)
+async def supplement_viga_feedback(
+    feedback_id: int,
+    body: SupplementGapRequestDTO,
+    user: StaffUser,
+    db: Db,
+    settings: Annotated[Settings, Depends(get_settings)],
+    storage: Annotated[StoragePort, Depends(get_storage_port)],
+) -> SupplementGapResponseDTO:
+    """Câu bị 👎: HR viết câu trả lời đúng, vào tài liệu "Hỏi đáp bổ sung" của phòng ban (cùng cách với câu chưa trả lời được)."""
+    team_id = None if user.role == UserRole.ADMIN else await gaps.team_of(db, user.id)
+    row, question = await feedback.scoped_dissatisfied(db, feedback_id=feedback_id, team_id=team_id)
+    result = await supplement.add_answer(
+        db,
+        user=user,
+        team_id=row.team_id,
+        question=body.question or question,
+        answer=body.answer,
+        contact=body.contact,
+        storage=storage,
+        today=today_in(settings.app_timezone),
+    )
+    return SupplementGapResponseDTO(
+        document_id=result.document_id,
+        document_version_id=result.version_id,
+        version_label=result.version_label,
+        job_id=result.job_id,
+    )
+
+
+@router.post("/viga-feedback/{feedback_id}/recheck", response_model=RecheckGapResponseDTO)
+async def recheck_viga_feedback(
+    feedback_id: int,
+    user: StaffUser,
+    db: Db,
+    settings: Annotated[Settings, Depends(get_settings)],
+    session_factory: Annotated[async_sessionmaker[AsyncSession], Depends(get_session_factory)],
+    embedding: Annotated[EmbeddingPort, Depends(get_embedding_port)],
+    llm: Annotated[ChatCompletionPort | None, Depends(get_optional_chat_completion_port)],
+    tracer: Annotated[LangfuseTracer, Depends(get_langfuse_tracer)],
+) -> RecheckGapResponseDTO:
+    """Hỏi lại câu bị 👎 sau khi bổ sung tài liệu; trả lời được thì tự đánh dấu đã xử lý cả nhóm, chưa thì để mở."""
+    if llm is None:
+        raise PortalError(503, "LLM_NOT_CONFIGURED", "portal.llm_not_configured")
+    team_id = None if user.role == UserRole.ADMIN else await gaps.team_of(db, user.id)
+    _, question = await feedback.scoped_dissatisfied(db, feedback_id=feedback_id, team_id=team_id)
+    found, _version = await gaps.ask_again(
+        question,
+        session_factory=session_factory,
+        llm=llm,
+        embedding=embedding,
+        tracer=tracer,
+        today=datetime.now(ZoneInfo(settings.app_timezone)).date(),
+    )
+    closed = await feedback.resolve_dissatisfied(db, feedback_id=feedback_id, team_id=team_id) if found.answered else 0
+    return RecheckGapResponseDTO(**{**vars(found), "closed": closed})
 
 
 @router.post("/content-gaps/{gap_id}/supplement", response_model=SupplementGapResponseDTO, status_code=202)

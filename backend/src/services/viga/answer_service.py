@@ -9,9 +9,9 @@ from dataclasses import dataclass
 
 from src.infrastructure.ai.chat_completion_port import ChatCompletionPort
 from src.infrastructure.observability.call_metrics import call_context
-from src.services.chat.guardrail_input import INJECTION_DEFENSE_NOTE
-from src.services.chat.prompt_builder import build_user_prompt
 from src.services.retrieval.hybrid_search import SectionEvidence
+from src.services.viga.guardrail_input import INJECTION_DEFENSE_NOTE
+from src.services.viga.prompt_builder import build_user_prompt
 
 SYSTEM_PROMPT = f"""Bạn là trợ lý onboarding nội bộ, CHỈ trả lời dựa trên các đoạn tài liệu được cung cấp
 cho từng câu hỏi (mỗi câu hỏi nằm trong tag <question>, đoạn tài liệu tương ứng nằm trong tag <context>

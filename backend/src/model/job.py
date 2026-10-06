@@ -45,6 +45,8 @@ class Job(Base):
     # Tiến độ cho giao diện (không chứa nội dung tài liệu, INV8) và kết quả cuối (vd. danh sách đề xuất task).
     progress_percent: Mapped[int] = mapped_column(Integer, server_default=text("0"))
     stage: Mapped[str | None] = mapped_column(String(96))
+    # Tiến độ theo bước (mục 13 của kế hoạch tối ưu): các bước, trạng thái, số đếm, thời điểm. Chỉ mã bước và số, không nội dung (INV8).
+    progress: Mapped[dict[str, Any] | None] = mapped_column(JSONB)
     result: Mapped[dict[str, Any] | None] = mapped_column(JSONB)
     created_by: Mapped[int | None] = mapped_column(BigInteger, ForeignKey("users.id", ondelete="SET NULL"))
     created_at: Mapped[datetime] = created_at_column()

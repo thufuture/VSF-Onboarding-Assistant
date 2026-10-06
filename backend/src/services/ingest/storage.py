@@ -21,6 +21,10 @@ class StoragePort(Protocol):
         """Lưu file, trả về `storage_key` (đường dẫn tương đối hoặc URL) để ghi vào `document_versions`."""
         ...
 
+    async def store_media(self, content: bytes, *, filename: str, kind: str) -> str:
+        """Lưu ảnh (`kind="IMAGE"`) hoặc video (`"VIDEO"`) đính kèm, trả về URL công khai để hiển thị."""
+        ...
+
 
 class LocalStorageAdapter:
     def __init__(self, storage_path: str) -> None:
@@ -33,6 +37,13 @@ class LocalStorageAdapter:
         target = documents_dir / f"{checksum}{suffix}"
         target.write_bytes(content)
         return str(Path("documents") / target.name)
+
+    async def store_media(self, content: bytes, *, filename: str, kind: str) -> str:
+        raise MediaNotSupportedError("đính kèm ảnh/video cần STORAGE_PROVIDER=cloudinary")
+
+
+class MediaNotSupportedError(Exception):
+    """Nơi lưu hiện tại không cho đính kèm ảnh/video (chỉ Cloudinary có URL công khai)."""
 
 
 class CloudinaryStorageAdapter:
@@ -67,4 +78,24 @@ class CloudinaryStorageAdapter:
             return str(result["secure_url"])
 
         # cloudinary.uploader.upload đồng bộ (chặn); chạy trong thread để không chặn event loop.
+        return await asyncio.to_thread(upload)
+
+    async def store_media(self, content: bytes, *, filename: str, kind: str) -> str:
+        import asyncio
+        from uuid import uuid4
+
+        import cloudinary
+        import cloudinary.uploader
+
+        def upload() -> str:
+            cloudinary.config(cloud_name=self._cloud_name, api_key=self._api_key, api_secret=self._api_secret)
+            result = cloudinary.uploader.upload(
+                content,
+                resource_type="video" if kind == "VIDEO" else "image",
+                folder="vsf-tickets",
+                public_id=uuid4().hex,
+                overwrite=False,
+            )
+            return str(result["secure_url"])
+
         return await asyncio.to_thread(upload)

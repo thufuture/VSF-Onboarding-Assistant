@@ -29,20 +29,23 @@ from portal_docs_fixtures import (  # noqa: F401  (fixture được pytest tìm 
     team,
     upload_form,
 )
-from sqlalchemy import select
+from sqlalchemy import func, select, update
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from src.api.dependencies import get_chat_completion_port
 from src.infrastructure.ai.deepseek_adapter import ChatCompletionError
 from src.infrastructure.ai.fake_chat_completion import FakeChatCompletion
+from src.model.document_section import DocumentSection
 from src.model.document_version import DocumentVersion
 from src.model.enums import Confidentiality, ContentKind
+from src.model.job import Job
 from src.model.task_template import TaskTemplate
 from src.services.ingest.embedding.fake_adapter import FakeEmbeddingAdapter
 from src.services.ingest.ingest_service import ingest_document, today_in
 from src.services.ingest.storage import LocalStorageAdapter
 from src.services.portal import ai_task_service
 from src.services.portal.job_service import JobContext
+from src.services.portal.proposal_options import ProposalOptions
 
 pytestmark = pytest.mark.integration
 
@@ -87,14 +90,22 @@ async def make_active_version(
     return body
 
 
-def with_llm(ctx: JobContext, llm: FakeChatCompletion | None, *, error: Exception | None = None) -> JobContext:
+def with_llm(
+    ctx: JobContext, llm: FakeChatCompletion | None, *, error: Exception | None = None, mode: str = "legacy"
+) -> JobContext:
     def make() -> FakeChatCompletion:
         if error is not None:
             raise error
         assert llm is not None
         return llm
 
-    return JobContext(session_factory=ctx.session_factory, embedding=ctx.embedding, storage=ctx.storage, make_llm=make)
+    return JobContext(
+        session_factory=ctx.session_factory,
+        embedding=ctx.embedding,
+        storage=ctx.storage,
+        make_llm=make,
+        proposal=ProposalOptions(mode="fast" if mode == "fast" else "legacy"),
+    )
 
 
 async def start_proposal_job(client: httpx.AsyncClient, version_ids: list[int]) -> int:
@@ -110,6 +121,7 @@ async def test_proposal_job_reports_per_document_results_and_failures_do_not_blo
     make_member: MakeMember,
     cleanup_documents: list[str],
     job_ctx: JobContext,
+    session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     hr = await make_member("HR", team.id)
     key_a, key_b = f"ai-{uuid4().hex[:8]}", f"ai-{uuid4().hex[:8]}"
@@ -122,11 +134,17 @@ async def test_proposal_job_reports_per_document_results_and_failures_do_not_blo
         job_id = await start_proposal_job(client, [first["document_version_id"], second["document_version_id"]])
 
         # Tài liệu thứ hai nhận phản hồi hỏng: chỉ tài liệu đó lỗi, tài liệu đầu vẫn có đề xuất.
-        calls = {"n": 0}
+        # Hai tài liệu chạy song song nên nhận ra tài liệu bằng mã mục trong prompt, không đếm thứ tự lời gọi.
+        async with session_factory() as session:
+            second_sections = (
+                await session.scalars(
+                    select(DocumentSection.id).where(DocumentSection.version_id == second["document_version_id"])
+                )
+            ).all()
+        second_markers = [f"section_id={section_id} " for section_id in second_sections]
 
         def respond(system: str, user: str) -> str:
-            calls["n"] += 1
-            if calls["n"] == 2:
+            if any(marker in user for marker in second_markers):
                 return "không phải json"
             result: str = proposal_llm().__dict__["_response"](system, user)
             return result
@@ -267,7 +285,9 @@ async def test_proposal_job_marks_document_failed_when_llm_is_unavailable(
     make_member: MakeMember,
     cleanup_documents: list[str],
     job_ctx: JobContext,
+    session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
+    """AI không gọi được ở cả hai lượt: lượt đầu job xếp lại để thử lần nữa, lượt hai mới báo lỗi ở dòng của tài liệu."""
     hr = await make_member("HR", team.id)
     key = f"ai-{uuid4().hex[:8]}"
     cleanup_documents.append(key)
@@ -275,13 +295,20 @@ async def test_proposal_job_marks_document_failed_when_llm_is_unavailable(
     def broken(_system: str, _user: str) -> str:
         raise ChatCompletionError("lỗi mạng khi gọi LLM")
 
+    llm_ctx = with_llm(job_ctx, FakeChatCompletion(broken))
     async with client_for(app) as client:
         await login(client, hr)
         created = await make_active_version(client, job_ctx, category, key)
         job_id = await start_proposal_job(client, [created["document_version_id"]])
-        await run_jobs(with_llm(job_ctx, FakeChatCompletion(broken)))
+        await run_jobs(llm_ctx)
+        first = (await client.get(f"/api/v1/portal/jobs/{job_id}")).json()
+        async with session_factory() as session:  # bỏ qua thời gian chờ chạy lại để test không phải đợi
+            await session.execute(update(Job).where(Job.id == job_id).values(run_after=func.now()))
+            await session.commit()
+        await run_jobs(llm_ctx)
         job = (await client.get(f"/api/v1/portal/jobs/{job_id}")).json()
 
+    assert first["status"] == "PENDING" and "LLM_UNAVAILABLE" in first["error"]
     assert job["status"] == "SUCCEEDED"  # việc nền vẫn xong; lỗi nằm ở dòng của tài liệu đó
     assert job["result"]["documents"][0]["error"] == "LLM_UNAVAILABLE"
 
@@ -419,3 +446,62 @@ async def test_ai_service_failure_in_chat_returns_503_not_500(
     assert response.status_code == 503, response.text
     assert response.json()["code"] == "ASSISTANT_UNAVAILABLE"
     assert response.headers["retry-after"] == "5"
+
+
+def fast_llm() -> FakeChatCompletion:
+    """LLM giả cho đường nhanh: một task trích dòng 1 của mục đầu tiên, các mục còn lại báo "chỉ là thông tin"."""
+
+    def respond(_system: str, user: str) -> str:
+        ids = [int(value) for value in re.findall(r"section_id=(\d+) ---", user)]
+        task = {
+            "title": "Nhận laptop",
+            "summary": "Để làm việc được ngay từ ngày đầu.",
+            "steps": ["Nhận laptop tại tầng 12.", "Đăng nhập Outlook."],
+            "done_criteria": ["Đăng nhập được Outlook"],
+            "estimated_minutes": 30,
+            "sources": [{"section_id": ids[0], "from_line": 1, "to_line": 1}],
+            "task_group": "DEVICE",
+            "needs": [],
+            "warnings": [],
+        }
+        return json.dumps({"tasks": [task], "skipped_sections": ids[1:]}, ensure_ascii=False)
+
+    return FakeChatCompletion(respond)
+
+
+async def test_fast_proposal_job_stores_step_progress_metrics_and_verified_quote(
+    app: FastAPI,
+    team: SimpleNamespace,
+    category: str,
+    make_member: MakeMember,
+    cleanup_documents: list[str],
+    job_ctx: JobContext,
+) -> None:
+    hr = await make_member("HR", team.id)
+    key = f"ai-{uuid4().hex[:8]}"
+    cleanup_documents.append(key)
+
+    async with client_for(app) as client:
+        await login(client, hr)
+        created = await make_active_version(client, job_ctx, category, key)
+        job_id = await start_proposal_job(client, [created["document_version_id"]])
+        waiting = (await client.get(f"/api/v1/portal/jobs/{job_id}")).json()
+        await run_jobs(with_llm(job_ctx, fast_llm(), mode="fast"))
+        job = (await client.get(f"/api/v1/portal/jobs/{job_id}")).json()
+
+    assert waiting["status"] == "PENDING" and isinstance(waiting["queue_ahead"], int)
+    assert job["status"] == "SUCCEEDED", job
+    assert job["progress_percent"] == 100 and job["queue_ahead"] is None
+    assert job["elapsed_seconds"] is not None and job["started_at"] is not None
+    steps = {step["key"]: step["status"] for step in job["progress"]["steps"]}
+    assert steps["read"] == "done" and steps["draft"] == "done" and steps["verify"] == "done"
+    assert steps["cover"] == "skipped" and steps["order"] == "skipped" and steps["save"] == "done"
+    assert job["progress"]["documents"][0]["title"]
+
+    (document,) = job["result"]["documents"]
+    assert document["status"] == "DONE" and document["metrics"]["mode"] == "fast"
+    assert document["metrics"]["order_source"] == "single" and document["metrics"]["batches"] == 1
+    assert document["metrics"]["seconds"]["total"] >= 0
+    (proposal,) = document["proposals"]
+    assert proposal["instructions_markdown"] == "Nhận laptop tại tầng 12.\nĐăng nhập Outlook."
+    assert proposal["source_chunks"][0]["quote"]  # quote do backend dựng từ số dòng, không phải AI chép

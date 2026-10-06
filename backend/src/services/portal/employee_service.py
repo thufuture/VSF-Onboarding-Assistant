@@ -9,10 +9,9 @@ from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.model.employee_journey import EmployeeJourney
+from src.model.employee_stage import EmployeeStage
 from src.model.employee_task import EmployeeTask
 from src.model.enums import EmployeeTaskStatus, UserRole
-from src.model.journey_stage import JourneyStage
-from src.model.task_template import TaskTemplate
 from src.model.team import Team
 from src.model.team_member import TeamMember
 from src.model.user import User
@@ -70,7 +69,9 @@ async def list_employees(session: AsyncSession, *, team_id: int | None) -> list[
         if journey is not None:
             tasks_total = (
                 await session.scalar(
-                    select(func.count(EmployeeTask.id)).where(EmployeeTask.employee_journey_id == journey.id)
+                    select(func.count(EmployeeTask.id)).where(
+                        EmployeeTask.employee_journey_id == journey.id, EmployeeTask.deleted_at.is_(None)
+                    )
                 )
                 or 0
             )
@@ -79,6 +80,7 @@ async def list_employees(session: AsyncSession, *, team_id: int | None) -> list[
                     select(func.count(EmployeeTask.id)).where(
                         EmployeeTask.employee_journey_id == journey.id,
                         EmployeeTask.status == EmployeeTaskStatus.DONE,
+                        EmployeeTask.deleted_at.is_(None),
                     )
                 )
                 or 0
@@ -86,17 +88,20 @@ async def list_employees(session: AsyncSession, *, team_id: int | None) -> list[
             for status in _STATUS_PRIORITY:
                 row = (
                     await session.execute(
-                        select(EmployeeTask, TaskTemplate, JourneyStage)
-                        .join(TaskTemplate, TaskTemplate.id == EmployeeTask.task_template_id)
-                        .join(JourneyStage, JourneyStage.id == TaskTemplate.journey_stage_id)
-                        .where(EmployeeTask.employee_journey_id == journey.id, EmployeeTask.status == status)
-                        .order_by(JourneyStage.sort_order, TaskTemplate.sort_order)
+                        select(EmployeeTask, EmployeeStage)
+                        .join(EmployeeStage, EmployeeStage.id == EmployeeTask.employee_stage_id)
+                        .where(
+                            EmployeeTask.employee_journey_id == journey.id,
+                            EmployeeTask.status == status,
+                            EmployeeTask.deleted_at.is_(None),
+                        )
+                        .order_by(EmployeeStage.sort_order, EmployeeTask.sort_order)
                         .limit(1)
                     )
                 ).first()
                 if row is not None:
-                    _, template, stage = row
-                    current_task_title = template.title
+                    task, stage = row
+                    current_task_title = task.title
                     current_stage_title = stage.title
                     current_status = status.value
                     break

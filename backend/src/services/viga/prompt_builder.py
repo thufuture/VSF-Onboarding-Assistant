@@ -20,8 +20,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from src.services.chat.answer_service import QuestionEvidence
     from src.services.retrieval.hybrid_search import SectionEvidence
+    from src.services.viga.answer_service import QuestionEvidence
 
 
 def _format_section(section: SectionEvidence) -> str:

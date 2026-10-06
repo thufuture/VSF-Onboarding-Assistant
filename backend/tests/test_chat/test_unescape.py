@@ -2,10 +2,10 @@
 
 import pytest
 
-from src.services.chat.answer_service import Claim, QuestionEvidence
-from src.services.chat.validator import validate_claim
 from src.services.retrieval.hybrid_search import SectionEvidence
 from src.services.text_match import unescape_markdown
+from src.services.viga.answer_service import Claim, QuestionEvidence
+from src.services.viga.validator import validate_claim
 
 
 @pytest.mark.parametrize(

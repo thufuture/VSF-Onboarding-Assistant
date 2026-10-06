@@ -86,6 +86,7 @@ async def test_next_step_and_progress_shortcuts(
 
     async with client_for(app) as client:
         await login(client, employee)
+        await employee_tasks(client)  # nhân viên đã bấm "Tạo lộ trình" (Viga không tự tạo nữa)
         next_step = (await ask(client, "Tiếp theo tôi làm gì?")).json()
         progress = (await ask(client, "tiến độ của tôi")).json()
 
@@ -136,6 +137,7 @@ async def test_router_prompt_contains_task_names_but_no_personal_data(
 
     async with client_for(app) as client:
         await login(client, employee)
+        await employee_tasks(client)  # nhân viên đã bấm "Tạo lộ trình" (Viga không tự tạo nữa)
         await ask(client, "mình đã xong bao nhiêu việc rồi nhỉ, cho mình xem tổng quan")
 
     prompt = llm_holder.llm.prompts("route")[0]
@@ -210,6 +212,7 @@ async def test_ambiguity_asks_one_question_with_choices(
 
     async with client_for(app) as client:
         await login(client, employee)
+        await employee_tasks(client)  # nhân viên đã bấm "Tạo lộ trình" (Viga không tự tạo nữa)
         body = (await ask(client, "cái này sao ấy nhỉ")).json()
 
     assert body["response_type"] == "CLARIFY"
@@ -313,6 +316,7 @@ async def test_missing_llm_key_still_serves_shortcuts_and_reports_error_for_docu
 
     async with client_for(app) as client:
         await login(client, employee)
+        await employee_tasks(client)  # nhân viên đã bấm "Tạo lộ trình" (Viga không tự tạo nữa)
         shortcut = (await ask(client, "Hôm nay làm gì?")).json()
         documents = (await ask(client, "Nghỉ phép năm được bao nhiêu ngày?")).json()
 
@@ -444,6 +448,95 @@ async def test_document_answer_has_a_validated_source_and_history_only_feeds_the
             await session.commit()
 
 
+async def test_clarify_for_a_task_tool_is_skipped_when_the_documents_already_answer(
+    app: FastAPI,
+    llm_holder: Any,
+    team: SimpleNamespace,
+    make_member: MakeMember,
+    published_template: SimpleNamespace,
+    session_factory: async_sessionmaker[AsyncSession],
+    tmp_path: Path,
+) -> None:
+    """Câu mô tả sự cố mà LLM định tuyến muốn hỏi lại "việc nào?": tài liệu có đáp án thì trả lời luôn, không hỏi lại."""
+    from src.model.document import Document
+    from src.model.document_category import DocumentCategory
+    from src.model.document_chunk import DocumentChunk
+    from src.model.document_section import DocumentSection
+    from src.model.document_version import DocumentVersion
+    from src.model.enums import Confidentiality, ContentKind
+    from src.services.ingest.embedding.fake_adapter import FakeEmbeddingAdapter
+    from src.services.ingest.ingest_service import ingest_document, today_in
+    from src.services.ingest.storage import LocalStorageAdapter
+
+    hr = await make_member("HR", team.id)
+    employee = await make_member("USER", team.id)
+    slug = f"viga-clarify-{uuid4().hex[:8]}"
+    key = f"viga-{uuid4().hex[:8]}"
+    quote = "Báo ngay cho ITHD để cấp lại tài khoản Teams."
+    path = tmp_path / "teams.md"
+    heading = "# Đăng nhập được Outlook nhưng Teams báo lỗi tài khoản thì sao?"
+    path.write_text("\n\n".join([heading, f"{quote} Đầu mối: ITHD tầng 12. " * 6]), encoding="utf-8")
+    async with session_factory() as session:
+        session.add(DocumentCategory(slug=slug, name="Danh mục thử"))
+        await session.commit()
+        await ingest_document(
+            session,
+            file_path=path,
+            category_slug=slug,
+            owner_email=hr.email,
+            title="Ngoại lệ tài khoản",
+            source_key=key,
+            version_label="1.0",
+            effective_from=today_in(),
+            content_kind=ContentKind.GENERAL.value,
+            confidentiality=Confidentiality.INTERNAL.value,
+            embedding=FakeEmbeddingAdapter(),
+            storage=LocalStorageAdapter(str(tmp_path)),
+        )
+
+    def answer(user_prompt: str) -> str:
+        chunk = int(user_prompt.split("chunk_id=")[1].split(" ")[0].split("]")[0].split("—")[0])
+        question = user_prompt.split('<question id="1">')[1].split("</question>")[0]
+        claim = {
+            "question": question,
+            "response_type": "ANSWER",
+            "text": "Báo ngay cho ITHD để cấp lại tài khoản Teams.",
+            "quote": quote,
+            "chunk_id": chunk,
+        }
+        return json.dumps({"claims": [claim]}, ensure_ascii=False)
+
+    # LLM định tuyến "hỏi lại" dù tài liệu có đáp án
+    llm_holder.llm = ScriptedLlm(
+        route=route_json("explain_lock", clarify="Bạn đang không làm được việc nào?", confidence=0.8), answer=answer
+    )
+    try:
+        async with client_for(app) as client:
+            await login(client, employee)
+            await employee_tasks(client)
+            body = (await ask(client, "tôi đã đăng nhập được outlook nhưng teams không vào được thì sao")).json()
+
+        assert body["response_type"] == "ANSWER", body
+        assert body["claims"][0]["source"]["document_title"] == "Ngoại lệ tài khoản"
+        assert body["route"] == "LLM"
+    finally:
+        async with session_factory() as session:
+            doc = await session.scalar(select(Document).where(Document.source_key == key))
+            if doc is not None:
+                version_ids = list(
+                    (
+                        await session.scalars(select(DocumentVersion.id).where(DocumentVersion.document_id == doc.id))
+                    ).all()
+                )
+                await session.execute(delete(DocumentChunk).where(DocumentChunk.version_id.in_(version_ids)))
+                await session.execute(delete(DocumentSection).where(DocumentSection.version_id.in_(version_ids)))
+                await session.execute(delete(DocumentVersion).where(DocumentVersion.id.in_(version_ids)))
+                await session.execute(delete(Document).where(Document.id == doc.id))
+            await session.execute(delete(DocumentCategory).where(DocumentCategory.slug == slug))
+            await session.execute(delete(AuditLog).where(AuditLog.actor_id == hr.id))
+            await session.commit()
+
+
 async def test_conversations_are_stored_listed_reopened_renamed_and_deleted(
     app: FastAPI,
     team: SimpleNamespace,
@@ -455,6 +548,7 @@ async def test_conversations_are_stored_listed_reopened_renamed_and_deleted(
 
     async with client_for(app) as client:
         await login(client, employee)
+        await employee_tasks(client)  # nhân viên đã bấm "Tạo lộ trình" (Viga không tự tạo nữa)
         first = (await ask(client, "Hôm nay làm gì?")).json()
         await ask(client, "Tiếp theo tôi làm gì?", first["conversation_id"])
         other = (await ask(client, "tiến độ của tôi")).json()
@@ -538,7 +632,7 @@ async def test_expired_conversations_are_purged_after_the_retention_period(
 async def test_rate_limit_applies_to_viga_like_chat(
     app: FastAPI, team: SimpleNamespace, make_member: MakeMember, published_template: SimpleNamespace
 ) -> None:
-    from src.services.chat.chat_throttle import ChatThrottle
+    from src.services.viga.chat_throttle import ChatThrottle
 
     app.state.chat_throttle = ChatThrottle(2, 60)
     employee = await make_member("USER", team.id)

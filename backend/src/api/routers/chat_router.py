@@ -36,12 +36,12 @@ from src.model.document_version import DocumentVersion
 from src.model.enums import DocumentStatus, UserRole, VersionStatus
 from src.model.user import User
 from src.services.auth.errors import AuthError
-from src.services.chat.answer_service import Claim
-from src.services.chat.chat_throttle import ChatThrottle
-from src.services.chat.pipeline import run_document_qa
 from src.services.ingest.embedding.keep_warm import KeepWarm
 from src.services.ingest.embedding.port import EmbeddingPort
 from src.services.retrieval.hybrid_search import SectionEvidence
+from src.services.viga.answer_service import Claim
+from src.services.viga.chat_throttle import ChatThrottle
+from src.services.viga.pipeline import run_document_qa
 
 router = APIRouter(prefix="/api/v1/chat", tags=["chat"])
 

@@ -22,15 +22,17 @@ from src.dto.response.admin_response_dto import (
     AdminUserResponseDTO,
 )
 from src.model.audit_log import AuditLog
-from src.model.enums import JourneyTemplateStatus, UserRole, UserStatus
+from src.model.enums import JourneyTemplateStatus, StageVersionStatus, UserRole, UserStatus
 from src.model.journey_stage import JourneyStage
 from src.model.journey_template import JourneyTemplate
+from src.model.stage_version import StageVersion
 from src.model.task_dependency import TaskDependency
 from src.model.task_template import TaskTemplate
 from src.model.team import Team
 from src.model.team_member import TeamMember
 from src.model.user import User
 from src.services.auth.passwords import hash_password
+from src.services.portal import stage_version_service
 from src.services.portal.errors import PortalError
 
 
@@ -339,8 +341,12 @@ async def template_overview(session: AsyncSession) -> AdminTemplateOverviewRespo
         task_count = (
             await session.scalar(
                 select(func.count(TaskTemplate.id))
+                .join(StageVersion, StageVersion.id == TaskTemplate.stage_version_id)
                 .join(JourneyStage, JourneyStage.id == TaskTemplate.journey_stage_id)
-                .where(JourneyStage.journey_template_id == shared.id)
+                .where(
+                    JourneyStage.journey_template_id == shared.id,
+                    StageVersion.status == StageVersionStatus.APPLIED.value,
+                )
             )
             or 0
         )
@@ -393,14 +399,28 @@ async def _copy_shared_template(session: AsyncSession, actor: User, team: Team, 
         new_stage = JourneyStage(journey_template_id=copy.id, title=stage.title, sort_order=stage.sort_order)
         session.add(new_stage)
         await session.flush()
-        tasks = (
-            await session.scalars(
-                select(TaskTemplate).where(TaskTemplate.journey_stage_id == stage.id).order_by(TaskTemplate.sort_order)
+        # Bản sao nhận v1 ở trạng thái NHÁP (HR của team duyệt rồi mới áp dụng), nội dung lấy từ bản đang áp dụng của ngày chung.
+        new_version = await stage_version_service.create_initial_version(session, new_stage, actor)
+        applied = await session.scalar(
+            select(StageVersion).where(
+                StageVersion.journey_stage_id == stage.id, StageVersion.status == StageVersionStatus.APPLIED.value
             )
-        ).all()
+        )
+        tasks = (
+            (
+                await session.scalars(
+                    select(TaskTemplate)
+                    .where(TaskTemplate.stage_version_id == applied.id)
+                    .order_by(TaskTemplate.sort_order)
+                )
+            ).all()
+            if applied is not None
+            else []
+        )
         for task in tasks:
             new_task = TaskTemplate(
                 journey_stage_id=new_stage.id,
+                stage_version_id=new_version.id,
                 title=task.title,
                 body_markdown=task.body_markdown,
                 sort_order=task.sort_order,

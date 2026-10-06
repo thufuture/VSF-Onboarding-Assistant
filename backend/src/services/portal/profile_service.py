@@ -12,7 +12,6 @@ from src.model.document_section import DocumentSection
 from src.model.employee_journey import EmployeeJourney
 from src.model.employee_task import EmployeeTask
 from src.model.enums import DocumentStatus, EmployeeTaskStatus
-from src.model.task_template import TaskTemplate
 from src.model.user import User
 from src.services.auth.auth_service import department_name, revoke_sessions
 from src.services.auth.passwords import hash_password, verify_password
@@ -44,9 +43,9 @@ async def get_profile(session: AsyncSession, user: User) -> Profile:
     if journey is not None:
         rows = (
             await session.execute(
-                select(EmployeeTask.status, TaskTemplate.required)
-                .join(TaskTemplate, TaskTemplate.id == EmployeeTask.task_template_id)
-                .where(EmployeeTask.employee_journey_id == journey.id)
+                select(EmployeeTask.status, EmployeeTask.required).where(
+                    EmployeeTask.employee_journey_id == journey.id, EmployeeTask.deleted_at.is_(None)
+                )
             )
         ).all()
         for status, required in rows:

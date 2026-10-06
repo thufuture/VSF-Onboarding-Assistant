@@ -7,19 +7,20 @@ luồng upload + AI đề xuất + accept end-to-end.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from datetime import UTC, date, datetime
+from datetime import date, datetime
 from typing import cast
 
-from sqlalchemy import delete, func, select
+from sqlalchemy import delete, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.model.document import Document
 from src.model.document_category import DocumentCategory
 from src.model.document_section import DocumentSection
 from src.model.document_version import DocumentVersion
-from src.model.enums import DocumentStatus, JourneyTemplateStatus, VersionStatus
+from src.model.enums import DocumentStatus, JourneyTemplateStatus, StageVersionStatus, VersionStatus
 from src.model.journey_stage import JourneyStage
 from src.model.journey_template import JourneyTemplate
+from src.model.stage_version import StageVersion
 from src.model.task_dependency import TaskDependency
 from src.model.task_source_mapping import TaskSourceMapping
 from src.model.task_template import TaskTemplate
@@ -27,6 +28,7 @@ from src.model.team_member import TeamMember
 from src.model.user import User
 from src.services.ingest.ingest_service import today_in
 from src.services.ingest.version_lifecycle import get_current_version
+from src.services.portal import stage_version_service
 from src.services.portal.errors import PortalError
 
 
@@ -65,11 +67,14 @@ async def get_journey_template(session: AsyncSession, journey_template_id: int) 
     return template
 
 
-async def add_stage(session: AsyncSession, *, template: JourneyTemplate, title: str, sort_order: int) -> JourneyStage:
-    if template.status != JourneyTemplateStatus.DRAFT:
-        raise PortalError(409, "TEMPLATE_ALREADY_PUBLISHED", "portal.template_already_published")
+async def add_stage(
+    session: AsyncSession, *, template: JourneyTemplate, title: str, sort_order: int, user: User | None = None
+) -> JourneyStage:
+    """Thêm một ngày vào lộ trình; ngày mới có sẵn v1 (nháp) để nhận task. Lộ trình đã áp dụng vẫn thêm ngày được."""
     stage = JourneyStage(journey_template_id=template.id, title=title, sort_order=sort_order)
     session.add(stage)
+    await session.flush()
+    await stage_version_service.create_initial_version(session, stage, user)
     await session.commit()
     return stage
 
@@ -80,25 +85,49 @@ class StageOption:
     journey_template_id: int
     title: str
     template_title: str
+    draft_version_id: int | None = None
+    draft_version_no: int | None = None
+    applied_version_no: int | None = None
 
 
 async def list_stage_options(session: AsyncSession, *, team_id: int | None) -> list[StageOption]:
-    """Giai đoạn có sẵn trong phạm vi HR — cho màn "Tạo task bằng AI" chọn đích thay vì luôn tạo mới."""
+    """Ngày có sẵn trong phạm vi HR — cho màn "Tạo task bằng AI" chọn đích, kèm bản nháp sẽ nhận task (nếu đã có)."""
     template_scope = (JourneyTemplate.team_id == team_id) if team_id is not None else JourneyTemplate.team_id.is_(None)
     rows = (
         await session.execute(
             select(JourneyStage, JourneyTemplate.title)
             .join(JourneyTemplate, JourneyTemplate.id == JourneyStage.journey_template_id)
-            .where(template_scope, JourneyTemplate.status == JourneyTemplateStatus.DRAFT)
+            .where(template_scope)
             .order_by(JourneyStage.journey_template_id, JourneyStage.sort_order)
         )
     ).all()
-    return [
-        StageOption(
-            id=stage.id, journey_template_id=stage.journey_template_id, title=stage.title, template_title=template_title
+    versions = (
+        await session.scalars(
+            select(StageVersion).where(StageVersion.journey_stage_id.in_([stage.id for stage, _ in rows]))
         )
-        for stage, template_title in rows
-    ]
+        if rows
+        else None
+    )
+    by_stage: dict[int, list[StageVersion]] = {}
+    for version in versions.all() if versions is not None else []:
+        by_stage.setdefault(version.journey_stage_id, []).append(version)
+    options: list[StageOption] = []
+    for stage, template_title in rows:
+        items = sorted(by_stage.get(stage.id, []), key=lambda v: v.version_no)
+        drafts = [v for v in items if v.status == StageVersionStatus.DRAFT]
+        applied = next((v for v in items if v.status == StageVersionStatus.APPLIED), None)
+        options.append(
+            StageOption(
+                id=stage.id,
+                journey_template_id=stage.journey_template_id,
+                title=stage.title,
+                template_title=template_title,
+                draft_version_id=drafts[-1].id if drafts else None,
+                draft_version_no=drafts[-1].version_no if drafts else None,
+                applied_version_no=applied.version_no if applied else None,
+            )
+        )
+    return options
 
 
 @dataclass
@@ -121,8 +150,21 @@ async def get_hr_dashboard(session: AsyncSession, *, team_id: int | None) -> HrD
         )
         or 0
     )
-    task_scope = (TaskTemplate.team_id == team_id) if team_id is not None else TaskTemplate.team_id.is_(None)
-    task_count = await session.scalar(select(func.count(TaskTemplate.id)).where(task_scope)) or 0
+    stage_ids = (
+        await session.scalars(
+            select(JourneyStage.id)
+            .join(JourneyTemplate, JourneyTemplate.id == JourneyStage.journey_template_id)
+            .where(template_scope)
+        )
+    ).all()
+    shown = await stage_version_service.default_versions(session, stage_ids)
+    task_count = (
+        await session.scalar(
+            select(func.count(TaskTemplate.id)).where(TaskTemplate.stage_version_id.in_([v.id for v in shown.values()]))
+        )
+        if shown
+        else 0
+    ) or 0
     document_count = await session.scalar(select(func.count(Document.id))) or 0
     return HrDashboard(
         journey_template_count=template_count,
@@ -265,6 +307,7 @@ async def set_document_status(session: AsyncSession, *, document_id: int, status
 class TaskNode:
     id: int
     journey_stage_id: int
+    stage_version_id: int
     title: str
     body_markdown: str
     required: bool
@@ -275,11 +318,26 @@ class TaskNode:
 
 
 @dataclass
+class VersionNode:
+    id: int
+    version_no: int
+    status: str
+    note: str | None
+    based_on_version_id: int | None
+    applied_at: datetime | None
+    created_at: datetime
+    tasks: list[TaskNode]
+
+
+@dataclass
 class StageNode:
     id: int
     title: str
     sort_order: int
+    # `tasks` là việc của bản hiển thị mặc định (đang áp dụng, không thì nháp mới nhất); đủ các bản ở `versions`.
     tasks: list[TaskNode]
+    versions: list[VersionNode] = field(default_factory=list)
+    default_version_id: int | None = None
 
 
 @dataclass
@@ -293,7 +351,7 @@ class TemplateNode:
 
 
 async def list_my_templates(session: AsyncSession, *, team_id: int | None) -> list[TemplateNode]:
-    """Cây lộ trình đầy đủ (giai đoạn + task + phụ thuộc) trong phạm vi HR — cho "Quản lý task"."""
+    """Cây lộ trình đầy đủ (ngày, phiên bản, task, phụ thuộc) trong phạm vi HR — cho "Quản lý task"."""
     template_scope = (JourneyTemplate.team_id == team_id) if team_id is not None else JourneyTemplate.team_id.is_(None)
     templates = (
         await session.scalars(select(JourneyTemplate).where(template_scope).order_by(JourneyTemplate.id))
@@ -315,31 +373,50 @@ async def list_my_templates(session: AsyncSession, *, team_id: int | None) -> li
         ).all()
         stage_nodes: list[StageNode] = []
         for stage in stages:
+            versions = await stage_version_service.versions_of_stage(session, stage.id)
             tasks = (
                 await session.scalars(
                     select(TaskTemplate)
                     .where(TaskTemplate.journey_stage_id == stage.id)
-                    .order_by(TaskTemplate.sort_order)
+                    .order_by(TaskTemplate.sort_order, TaskTemplate.id)
                 )
             ).all()
+            nodes_by_version: dict[int, list[TaskNode]] = {}
+            for t in tasks:
+                nodes_by_version.setdefault(t.stage_version_id, []).append(
+                    TaskNode(
+                        id=t.id,
+                        journey_stage_id=t.journey_stage_id,
+                        stage_version_id=t.stage_version_id,
+                        title=t.title,
+                        body_markdown=t.body_markdown,
+                        required=t.required,
+                        sort_order=t.sort_order,
+                        team_id=t.team_id,
+                        depends_on=deps_by_task.get(t.id, []),
+                        task_group=t.task_group,
+                    )
+                )
+            default = stage_version_service.pick_default(versions)
             stage_nodes.append(
                 StageNode(
                     id=stage.id,
                     title=stage.title,
                     sort_order=stage.sort_order,
-                    tasks=[
-                        TaskNode(
-                            id=t.id,
-                            journey_stage_id=t.journey_stage_id,
-                            title=t.title,
-                            body_markdown=t.body_markdown,
-                            required=t.required,
-                            sort_order=t.sort_order,
-                            team_id=t.team_id,
-                            depends_on=deps_by_task.get(t.id, []),
-                            task_group=t.task_group,
+                    tasks=nodes_by_version.get(default.id, []) if default else [],
+                    default_version_id=default.id if default else None,
+                    versions=[
+                        VersionNode(
+                            id=v.id,
+                            version_no=v.version_no,
+                            status=v.status,
+                            note=v.note,
+                            based_on_version_id=v.based_on_version_id,
+                            applied_at=v.applied_at,
+                            created_at=v.created_at,
+                            tasks=nodes_by_version.get(v.id, []),
                         )
-                        for t in tasks
+                        for v in versions
                     ],
                 )
             )
@@ -356,23 +433,19 @@ async def list_my_templates(session: AsyncSession, *, team_id: int | None) -> li
     return nodes
 
 
-async def _template_task_ids(session: AsyncSession, template_id: int) -> set[int]:
-    rows = await session.scalars(
-        select(TaskTemplate.id)
-        .join(JourneyStage, JourneyStage.id == TaskTemplate.journey_stage_id)
-        .where(JourneyStage.journey_template_id == template_id)
-    )
+async def _version_task_ids(session: AsyncSession, version_id: int) -> set[int]:
+    rows = await session.scalars(select(TaskTemplate.id).where(TaskTemplate.stage_version_id == version_id))
     return set(rows.all())
 
 
 async def apply_dependencies(
-    session: AsyncSession, *, task: TaskTemplate, template_id: int, depends_on: list[int]
+    session: AsyncSession, *, task: TaskTemplate, version_id: int, depends_on: list[int]
 ) -> None:
-    """Tiên quyết chỉ AND (P0A D8): cùng lộ trình, không tự trỏ vào mình, không tạo vòng."""
+    """Tiên quyết chỉ AND (P0A D8): cùng MỘT phiên bản của một ngày, không tự trỏ vào mình, không tạo vòng."""
     wanted = set(depends_on)
     if task.id in wanted:
         raise PortalError(422, "DEPENDENCY_SELF", "portal.dependency_self")
-    if not wanted <= await _template_task_ids(session, template_id):
+    if not wanted <= await _version_task_ids(session, version_id):
         raise PortalError(422, "DEPENDENCY_OUT_OF_TEMPLATE", "portal.dependency_out_of_template")
     edges = (await session.execute(select(TaskDependency))).all()
     graph: dict[int, set[int]] = {}
@@ -395,20 +468,23 @@ async def apply_dependencies(
         session.add(TaskDependency(task_template_id=task.id, depends_on_task_template_id=dep_id))
 
 
-async def place_in_stage(session: AsyncSession, *, task: TaskTemplate, stage_id: int, position: int | None) -> None:
-    """Đặt task vào vị trí `position` (1-based) của giai đoạn rồi đánh số lại 1..n; None = cuối."""
+async def place_in_version(
+    session: AsyncSession, *, task: TaskTemplate, version: StageVersion, position: int | None
+) -> None:
+    """Đặt task vào vị trí `position` (1-based) của phiên bản rồi đánh số lại 1..n; None = cuối."""
     others = list(
         (
             await session.scalars(
                 select(TaskTemplate)
-                .where(TaskTemplate.journey_stage_id == stage_id, TaskTemplate.id != task.id)
+                .where(TaskTemplate.stage_version_id == version.id, TaskTemplate.id != task.id)
                 .order_by(TaskTemplate.sort_order, TaskTemplate.id)
             )
         ).all()
     )
     index = len(others) if position is None else max(0, min(position - 1, len(others)))
     others.insert(index, task)
-    task.journey_stage_id = stage_id
+    task.stage_version_id = version.id
+    task.journey_stage_id = version.journey_stage_id
     for order, item in enumerate(others, start=1):
         item.sort_order = order
 
@@ -417,18 +493,27 @@ async def create_task_manual(
     session: AsyncSession,
     *,
     stage: JourneyStage,
+    user: User,
     title: str,
     body_markdown: str,
     required: bool,
     sort_order: int | None = None,
     depends_on: list[int] | None = None,
     task_group: str | None = None,
+    version: StageVersion | None = None,
 ) -> TaskTemplate:
+    """Thêm task vào một BẢN NHÁP của ngày. Không chỉ định `version` thì dùng bản nháp mới nhất (chưa có thì tạo từ bản đang áp dụng)."""
     template = await session.get(JourneyTemplate, stage.journey_template_id)
-    if template is None or template.status != JourneyTemplateStatus.DRAFT:
-        raise PortalError(409, "TEMPLATE_ALREADY_PUBLISHED", "portal.template_already_published")
+    if template is None:
+        raise PortalError(404, "JOURNEY_TEMPLATE_NOT_FOUND", "portal.journey_template_not_found")
+    if version is None:
+        version = await stage_version_service.working_draft(session, stage, user)
+    elif version.journey_stage_id != stage.id:
+        raise PortalError(422, "STAGE_OUT_OF_TEMPLATE", "portal.stage_out_of_template")
+    stage_version_service.ensure_editable(version)
     task = TaskTemplate(
         journey_stage_id=stage.id,
+        stage_version_id=version.id,
         title=title,
         body_markdown=body_markdown,
         required=required,
@@ -438,8 +523,8 @@ async def create_task_manual(
     )
     session.add(task)
     await session.flush()
-    await place_in_stage(session, task=task, stage_id=stage.id, position=sort_order)
-    await apply_dependencies(session, task=task, template_id=template.id, depends_on=depends_on or [])
+    await place_in_version(session, task=task, version=version, position=sort_order)
+    await apply_dependencies(session, task=task, version_id=version.id, depends_on=depends_on or [])
     await session.commit()
     return task
 
@@ -455,6 +540,7 @@ async def update_task_template(
     session: AsyncSession,
     *,
     task: TaskTemplate,
+    user: User,
     title: str,
     body_markdown: str,
     required: bool,
@@ -463,44 +549,64 @@ async def update_task_template(
     depends_on: list[int] | None = None,
     task_group: str | None = None,
 ) -> TaskTemplate:
+    """Sửa một task: CHỈ khi nó nằm trong bản nháp (sửa bản đang áp dụng sẽ đổi lộ trình mà không ai biết).
+
+    Chuyển sang ngày khác: task sang bản nháp của ngày đó; tiên quyết cũ bị bỏ vì tiên quyết chỉ có trong một bản (Q2).
+    """
+    version = await stage_version_service.get_version(session, task.stage_version_id)
+    stage_version_service.ensure_editable(version)
     current_stage = await session.get(JourneyStage, task.journey_stage_id)
     assert current_stage is not None
     task.title = title
     task.body_markdown = body_markdown
     task.required = required
     task.task_group = task_group
-    target_stage_id = journey_stage_id or task.journey_stage_id
-    if target_stage_id != task.journey_stage_id:
-        target = await session.get(JourneyStage, target_stage_id)
-        if target is None or target.journey_template_id != current_stage.journey_template_id:
+    target_version = version
+    if journey_stage_id is not None and journey_stage_id != task.journey_stage_id:
+        target_stage = await session.get(JourneyStage, journey_stage_id)
+        if target_stage is None or target_stage.journey_template_id != current_stage.journey_template_id:
             raise PortalError(422, "STAGE_OUT_OF_TEMPLATE", "portal.stage_out_of_template")
-    if journey_stage_id is not None or sort_order is not None:
-        await place_in_stage(session, task=task, stage_id=target_stage_id, position=sort_order)
-    if depends_on is not None:
-        await apply_dependencies(
-            session, task=task, template_id=current_stage.journey_template_id, depends_on=depends_on
+        target_version = await stage_version_service.working_draft(session, target_stage, user)
+        await session.execute(
+            delete(TaskDependency).where(
+                or_(TaskDependency.task_template_id == task.id, TaskDependency.depends_on_task_template_id == task.id)
+            )
         )
+        await place_in_version(session, task=task, version=target_version, position=sort_order)
+    elif sort_order is not None:
+        await place_in_version(session, task=task, version=version, position=sort_order)
+    if depends_on is not None:
+        await apply_dependencies(session, task=task, version_id=target_version.id, depends_on=depends_on)
     await session.commit()
     return task
 
 
-async def publish_template(session: AsyncSession, *, template: JourneyTemplate) -> JourneyTemplate:
-    if template.status == JourneyTemplateStatus.PUBLISHED:
-        return template
-    task_count = await session.scalar(
-        select(func.count(TaskTemplate.id))
-        .join(JourneyStage, JourneyStage.id == TaskTemplate.journey_stage_id)
-        .where(JourneyStage.journey_template_id == template.id)
-    )
-    if not task_count:
-        raise PortalError(409, "TEMPLATE_EMPTY", "portal.template_empty")
-    template.status = JourneyTemplateStatus.PUBLISHED.value
-    template.published_at = datetime.now(UTC)
-    await session.commit()
-    return template
-
-
 async def delete_task_template(session: AsyncSession, *, task: TaskTemplate) -> None:
-    """`task_dependencies` có ON DELETE CASCADE trên cả 2 cột nên không cần dọn thủ công."""
+    """`task_dependencies` có ON DELETE CASCADE trên cả 2 cột nên không cần dọn thủ công. Chỉ xóa task trong bản nháp."""
+    version = await stage_version_service.get_version(session, task.stage_version_id)
+    stage_version_service.ensure_editable(version)
     await session.delete(task)
     await session.commit()
+
+
+async def publish_template(session: AsyncSession, *, template: JourneyTemplate, user: User) -> JourneyTemplate:
+    """Tương thích cũ ("Xuất bản"): áp dụng bản nháp mới nhất (có task) của mọi ngày trong lộ trình.
+
+    Lộ trình đã áp dụng mà không còn nháp nào có task thì không làm gì (idempotent như trước).
+    """
+    stages = (await session.scalars(select(JourneyStage).where(JourneyStage.journey_template_id == template.id))).all()
+    applied = 0
+    for stage in stages:
+        versions = await stage_version_service.versions_of_stage(session, stage.id)
+        for version in reversed([v for v in versions if v.status == StageVersionStatus.DRAFT]):
+            count = await session.scalar(
+                select(func.count(TaskTemplate.id)).where(TaskTemplate.stage_version_id == version.id)
+            )
+            if count:
+                await stage_version_service.apply_version(session, version=version, user=user)
+                applied += 1
+                break
+    if not applied and template.status != JourneyTemplateStatus.PUBLISHED:
+        raise PortalError(409, "TEMPLATE_EMPTY", "portal.template_empty")
+    await session.refresh(template)
+    return template

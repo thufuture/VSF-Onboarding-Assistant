@@ -37,6 +37,7 @@ from src.dto.response.portal_response_dto import (
     DocumentCategoryResponseDTO,
     DocumentListItemResponseDTO,
     EmployeeDocumentResponseDTO,
+    EmployeeJourneyCreatedResponseDTO,
     EmployeeJourneyResponseDTO,
     EmployeePrerequisiteResponseDTO,
     EmployeeProfileResponseDTO,
@@ -51,8 +52,10 @@ from src.dto.response.portal_response_dto import (
     TaskSourceResponseDTO,
     TaskTemplateResponseDTO,
     TemplateNodeResponseDTO,
+    VersionNodeResponseDTO,
 )
 from src.infrastructure.ai.chat_completion_port import ChatCompletionPort
+from src.model.employee_journey import EmployeeJourney
 from src.model.enums import DocumentStatus, UserRole
 from src.model.journey_stage import JourneyStage
 from src.model.journey_template import JourneyTemplate
@@ -65,11 +68,13 @@ from src.services.portal import (
     employee_service,
     journey_service,
     profile_service,
+    rollout_service,
     task_sources,
     template_service,
 )
 from src.services.portal.errors import PortalError
 from src.services.portal.ingest_bridge import resolve_original_document
+from src.services.portal.proposal_options import ProposalOptions
 from src.services.viga import snapshot as snapshot_service
 
 router = APIRouter(prefix="/api/v1/portal", tags=["portal"])
@@ -121,25 +126,44 @@ def _employee_task_dto(
     details: journey_service.TaskDetail,
     prerequisites: dict[int, list[tuple[str, bool]]],
     sources: dict[int, list[task_sources.TaskSource]],
+    pending: dict[int, int],
 ) -> EmployeeTaskResponseDTO:
+    task = details.task
     return EmployeeTaskResponseDTO(
-        id=details.task.id,
-        task_template_id=details.template.id,
-        title=details.template.title,
-        body_markdown=details.template.body_markdown,
-        required=details.template.required,
+        id=task.id,
+        task_template_id=task.source_task_template_id,
+        title=task.title,
+        body_markdown=task.body_markdown,
+        required=task.required,
         stage_id=details.stage.id,
         stage_title=details.stage.title,
         stage_sort_order=details.stage.sort_order,
-        sort_order=details.template.sort_order,
-        task_group=details.template.task_group,
-        status=details.task.status,
-        completed_at=details.task.completed_at,
+        sort_order=task.sort_order,
+        task_group=task.task_group,
+        status=task.status,
+        completed_at=task.completed_at,
         prerequisites=[
-            EmployeePrerequisiteResponseDTO(title=title, done=done)
-            for title, done in prerequisites.get(details.task.id, [])
+            EmployeePrerequisiteResponseDTO(title=title, done=done) for title, done in prerequisites.get(task.id, [])
         ],
-        sources=[_source_dto(source) for source in sources.get(details.template.id, [])],
+        sources=[_source_dto(source) for source in sources.get(task.source_task_template_id or 0, [])],
+        pending_change_id=pending.get(task.id),
+    )
+
+
+async def _journey_dto(db: AsyncSession, journey: EmployeeJourney) -> EmployeeJourneyResponseDTO:
+    template = await db.get(JourneyTemplate, journey.journey_template_id)
+    details = await journey_service.list_task_details(db, journey.id)
+    prerequisites = await journey_service.list_prerequisites(db, journey.id)
+    sources = await task_sources.sources_by_task(
+        db, [d.task.source_task_template_id for d in details if d.task.source_task_template_id is not None]
+    )
+    pending = await rollout_service.pending_change_by_task(db, journey.id)
+    return EmployeeJourneyResponseDTO(
+        id=journey.id,
+        journey_template_id=journey.journey_template_id,
+        journey_title=template.title if template else "",
+        started_at=journey.started_at,
+        tasks=[_employee_task_dto(d, prerequisites, sources, pending) for d in details],
     )
 
 
@@ -148,19 +172,23 @@ async def get_my_journey(
     user: Annotated[User, Depends(get_current_user)],
     db: Annotated[AsyncSession, Depends(get_db)],
 ) -> EmployeeJourneyResponseDTO:
-    """Lộ trình đang hoạt động của chính người gọi — tự tạo lần đầu từ template PUBLISHED (P2.md)."""
-    journey = await journey_service.get_or_start_journey(db, user)
-    template = await db.get(JourneyTemplate, journey.journey_template_id)
-    details = await journey_service.list_task_details(db, journey.id)
-    prerequisites = await journey_service.list_prerequisites(db, journey.id)
-    sources = await task_sources.sources_by_task(db, [d.template.id for d in details])
-    return EmployeeJourneyResponseDTO(
-        id=journey.id,
-        journey_template_id=journey.journey_template_id,
-        journey_title=template.title if template else "",
-        started_at=journey.started_at,
-        tasks=[_employee_task_dto(d, prerequisites, sources) for d in details],
-    )
+    """Lộ trình riêng của chính người gọi. Chưa bấm "Tạo lộ trình" thì trả 404 `NO_JOURNEY` (không tự tạo nữa)."""
+    journey = await journey_service.get_journey(db, user)
+    if journey is None:
+        raise PortalError(404, "NO_JOURNEY", "portal.no_journey")
+    return await _journey_dto(db, journey)
+
+
+@router.post("/me/journey", response_model=EmployeeJourneyResponseDTO)
+async def create_my_journey(
+    response: Response,
+    user: Annotated[User, Depends(get_current_user)],
+    db: Annotated[AsyncSession, Depends(get_db)],
+) -> EmployeeJourneyResponseDTO:
+    """Nhân viên bấm "Tạo lộ trình": sao chép các bản đang áp dụng thành lộ trình RIÊNG, có hiệu lực ngay. Idempotent."""
+    journey, created = await journey_service.create_journey(db, user)
+    response.status_code = 201 if created else 200
+    return await _journey_dto(db, journey)
 
 
 @router.post("/me/tasks/{employee_task_id}/opened", status_code=204)
@@ -185,8 +213,11 @@ async def complete_my_task(
     details = await journey_service.list_task_details(db, task.employee_journey_id)
     prerequisites = await journey_service.list_prerequisites(db, task.employee_journey_id)
     current = next(d for d in details if d.task.id == task.id)
-    sources = await task_sources.sources_by_task(db, [current.template.id])
-    return _employee_task_dto(current, prerequisites, sources)
+    sources = await task_sources.sources_by_task(
+        db, [current.task.source_task_template_id] if current.task.source_task_template_id is not None else []
+    )
+    pending = await rollout_service.pending_change_by_task(db, task.employee_journey_id)
+    return _employee_task_dto(current, prerequisites, sources, pending)
 
 
 def _profile_dto(profile: profile_service.Profile) -> EmployeeProfileResponseDTO:
@@ -282,7 +313,13 @@ async def list_stage_options(
     options = await template_service.list_stage_options(db, team_id=team_id)
     return [
         StageOptionResponseDTO(
-            id=o.id, journey_template_id=o.journey_template_id, title=o.title, template_title=o.template_title
+            id=o.id,
+            journey_template_id=o.journey_template_id,
+            title=o.title,
+            template_title=o.template_title,
+            draft_version_id=o.draft_version_id,
+            draft_version_no=o.draft_version_no,
+            applied_version_no=o.applied_version_no,
         )
         for o in options
     ]
@@ -308,7 +345,9 @@ async def create_journey_stage(
     db: Annotated[AsyncSession, Depends(get_db)],
 ) -> JourneyStageResponseDTO:
     template = await _require_template_scope(db, user, template_id)
-    stage = await template_service.add_stage(db, template=template, title=body.title, sort_order=body.sort_order)
+    stage = await template_service.add_stage(
+        db, template=template, title=body.title, sort_order=body.sort_order, user=user
+    )
     return JourneyStageResponseDTO.model_validate(stage, from_attributes=True)
 
 
@@ -333,8 +372,16 @@ async def propose_ai_tasks(
     user: Annotated[User, Depends(require_role(UserRole.HR, UserRole.ADMIN))],
     db: Annotated[AsyncSession, Depends(get_db)],
     llm: Annotated[ChatCompletionPort, Depends(get_chat_completion_port)],
+    settings: Annotated[Settings, Depends(get_settings)],
 ) -> list[AiTaskProposalResponseDTO]:
-    return await ai_task_service.propose_tasks(db, document_version_id=body.document_version_id, llm=llm)
+    options = ProposalOptions(
+        mode=settings.task_proposal_mode,
+        batch_words=settings.task_proposal_batch_words,
+        call_timeout_seconds=settings.task_proposal_call_timeout_seconds,
+    )
+    return await ai_task_service.propose_tasks(
+        db, document_version_id=body.document_version_id, llm=llm, options=options
+    )
 
 
 @router.post("/stages/{stage_id}/tasks/from-proposal", response_model=TaskTemplateResponseDTO)
@@ -348,7 +395,7 @@ async def accept_ai_task_proposal(
     template: JourneyTemplate
     stage, template = await ai_task_service.load_stage_and_template(db, stage_id)
     await _check_template_scope(db, user, template)
-    task = await ai_task_service.create_task_from_proposal(db, stage=stage, template=template, payload=body)
+    task = await ai_task_service.create_task_from_proposal(db, stage=stage, template=template, payload=body, user=user)
     return TaskTemplateResponseDTO.model_validate(task, from_attributes=True)
 
 
@@ -368,15 +415,35 @@ async def set_document_status(
     return _document_item(item)
 
 
+def _task_node_dto(
+    t: template_service.TaskNode, sources: dict[int, list[task_sources.TaskSource]]
+) -> TaskNodeResponseDTO:
+    return TaskNodeResponseDTO(
+        id=t.id,
+        journey_stage_id=t.journey_stage_id,
+        stage_version_id=t.stage_version_id,
+        title=t.title,
+        body_markdown=t.body_markdown,
+        required=t.required,
+        sort_order=t.sort_order,
+        team_id=t.team_id,
+        depends_on=t.depends_on,
+        task_group=t.task_group,
+        sources=[_source_dto(source) for source in sources.get(t.id, [])],
+    )
+
+
 @router.get("/journey-templates/mine")
 async def list_my_templates(
     user: Annotated[User, Depends(require_role(UserRole.HR, UserRole.ADMIN))],
     db: Annotated[AsyncSession, Depends(get_db)],
 ) -> list[TemplateNodeResponseDTO]:
-    """Cây lộ trình đầy đủ trong phạm vi HR — nguồn dữ liệu thật cho "Quản lý task"."""
+    """Cây lộ trình đầy đủ (ngày, phiên bản, task) trong phạm vi HR — nguồn dữ liệu thật cho "Quản lý task"."""
     team_id = await template_service.hr_team_id(db, user) if user.role == UserRole.HR else None
     nodes = await template_service.list_my_templates(db, team_id=team_id)
-    sources = await task_sources.sources_by_task(db, [t.id for n in nodes for s in n.stages for t in s.tasks])
+    sources = await task_sources.sources_by_task(
+        db, [t.id for n in nodes for s in n.stages for v in s.versions for t in v.tasks]
+    )
     return [
         TemplateNodeResponseDTO(
             id=n.id,
@@ -389,20 +456,20 @@ async def list_my_templates(
                     id=s.id,
                     title=s.title,
                     sort_order=s.sort_order,
-                    tasks=[
-                        TaskNodeResponseDTO(
-                            id=t.id,
-                            journey_stage_id=t.journey_stage_id,
-                            title=t.title,
-                            body_markdown=t.body_markdown,
-                            required=t.required,
-                            sort_order=t.sort_order,
-                            team_id=t.team_id,
-                            depends_on=t.depends_on,
-                            task_group=t.task_group,
-                            sources=[_source_dto(source) for source in sources.get(t.id, [])],
+                    default_version_id=s.default_version_id,
+                    tasks=[_task_node_dto(t, sources) for t in s.tasks],
+                    versions=[
+                        VersionNodeResponseDTO(
+                            id=v.id,
+                            version_no=v.version_no,
+                            status=v.status,
+                            note=v.note,
+                            based_on_version_id=v.based_on_version_id,
+                            applied_at=v.applied_at,
+                            created_at=v.created_at,
+                            tasks=[_task_node_dto(t, sources) for t in v.tasks],
                         )
-                        for t in s.tasks
+                        for v in s.versions
                     ],
                 )
                 for s in n.stages
@@ -424,6 +491,7 @@ async def create_task_manual(
     task = await template_service.create_task_manual(
         db,
         stage=stage,
+        user=user,
         title=body.title,
         body_markdown=body.body_markdown,
         required=body.required,
@@ -454,6 +522,7 @@ async def update_task_template(
     task = await template_service.update_task_template(
         db,
         task=task,
+        user=user,
         title=body.title,
         body_markdown=body.body_markdown,
         required=body.required,
@@ -500,6 +569,26 @@ async def list_employees(
     ]
 
 
+@router.post("/employees/{user_id}/journey", response_model=EmployeeJourneyCreatedResponseDTO)
+async def create_employee_journey(
+    user_id: int,
+    response: Response,
+    user: Annotated[User, Depends(require_role(UserRole.HR, UserRole.ADMIN))],
+    db: Annotated[AsyncSession, Depends(get_db)],
+) -> EmployeeJourneyCreatedResponseDTO:
+    """HR thêm lộ trình cho một nhân viên trong team: sao chép các bản đang áp dụng, có hiệu lực ngay. Idempotent."""
+    employee = await db.get(User, user_id)
+    if employee is None or employee.role != UserRole.USER:
+        raise PortalError(404, "EMPLOYEE_NOT_FOUND", "portal.employee_not_found")
+    team_id = await journey_service.team_id_of(db, employee.id)
+    if team_id is None:
+        raise PortalError(409, "NO_TEAM_ASSIGNED", "portal.no_team_assigned")
+    await require_team_scope(team_id, user, db)
+    journey, created = await journey_service.create_journey(db, employee)
+    response.status_code = 201 if created else 200
+    return EmployeeJourneyCreatedResponseDTO(journey_id=journey.id, created=created)
+
+
 def _document_item(item: template_service.DocumentListItem) -> DocumentListItemResponseDTO:
     return DocumentListItemResponseDTO(**vars(item))
 
@@ -534,5 +623,5 @@ async def publish_journey_template(
     db: Annotated[AsyncSession, Depends(get_db)],
 ) -> JourneyTemplateResponseDTO:
     template = await _require_template_scope(db, user, template_id)
-    template = await template_service.publish_template(db, template=template)
+    template = await template_service.publish_template(db, template=template, user=user)
     return JourneyTemplateResponseDTO.model_validate(template, from_attributes=True)

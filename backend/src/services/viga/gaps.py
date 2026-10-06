@@ -24,10 +24,10 @@ from src.model.document_version import DocumentVersion
 from src.model.enums import GapKind
 from src.model.team_member import TeamMember
 from src.model.user import User
-from src.services.chat.pipeline import run_document_qa
 from src.services.ingest.embedding.port import EmbeddingPort
 from src.services.portal.errors import PortalError
 from src.services.viga.guard import normalize_question
+from src.services.viga.pipeline import run_document_qa
 
 QUESTION_MAX_CHARS = 500
 EXCERPT_MAX_CHARS = 600
@@ -180,6 +180,42 @@ class RecheckResult:
     closed: int  # số dòng đã tự đóng (0 nếu chưa trả lời được)
 
 
+async def ask_again(
+    question: str,
+    *,
+    session_factory: async_sessionmaker[AsyncSession],
+    llm: ChatCompletionPort,
+    embedding: EmbeddingPort,
+    tracer: LangfuseTracer,
+    today: date,
+) -> tuple[RecheckResult, int | None]:
+    """Hỏi lại đúng `question` bằng tài liệu hiện tại (chưa đóng gì). Trả kết quả và mã phiên bản tài liệu chứa câu trả lời."""
+    result = await run_document_qa(
+        question,
+        llm=llm,
+        embedding=embedding,
+        session_factory=session_factory,
+        tracer=tracer,
+        as_of=today,
+        history=[],
+    )
+    answers = [c for c in result.claims if c.response_type == "ANSWER" and c.text]
+    if not answers:
+        return RecheckResult(False, None, None, None, None, 0), None
+    first = answers[0]
+    section = result.section_by_chunk.get(first.chunk_id) if first.chunk_id is not None else None
+    texts = list(dict.fromkeys(c.text for c in answers if c.text))
+    found = RecheckResult(
+        answered=True,
+        message=" ".join(texts),
+        document_title=section.document_title if section else None,
+        section_heading=section.heading if section else None,
+        quote=first.quote,
+        closed=0,
+    )
+    return found, section.version_id if section else None
+
+
 async def recheck_group(
     session: AsyncSession,
     *,
@@ -193,29 +229,17 @@ async def recheck_group(
 ) -> RecheckResult:
     """Hỏi lại đúng câu hỏi bằng tài liệu hiện tại. Trả lời được thì đóng cả nhóm và ghi tài liệu đã bổ sung."""
     gap = await scoped_gap(session, gap_id, team_id)
-    result = await run_document_qa(
-        gap.question_text,
-        llm=llm,
-        embedding=embedding,
-        session_factory=session_factory,
-        tracer=tracer,
-        as_of=today,
-        history=[],
+    found, version_id = await ask_again(
+        gap.question_text, session_factory=session_factory, llm=llm, embedding=embedding, tracer=tracer, today=today
     )
-    answers = [c for c in result.claims if c.response_type == "ANSWER" and c.text]
-    if not answers:
-        return RecheckResult(False, None, None, None, None, 0)
-    first = answers[0]
-    section = result.section_by_chunk.get(first.chunk_id) if first.chunk_id is not None else None
-    texts = list(dict.fromkeys(c.text for c in answers if c.text))
-    closed = await resolve_group(
-        session, gap_id=gap_id, team_id=team_id, resolved_by_version_id=section.version_id if section else None
-    )
+    if not found.answered:
+        return found
+    closed = await resolve_group(session, gap_id=gap_id, team_id=team_id, resolved_by_version_id=version_id)
     return RecheckResult(
         answered=True,
-        message=" ".join(texts),
-        document_title=section.document_title if section else None,
-        section_heading=section.heading if section else None,
-        quote=first.quote,
+        message=found.message,
+        document_title=found.document_title,
+        section_heading=found.section_heading,
+        quote=found.quote,
         closed=closed,
     )

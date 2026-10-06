@@ -28,10 +28,10 @@ def clean_metrics_state() -> Iterator[list[CallRecord]]:
     """Mỗi test có sink riêng và bảng giá riêng; trả lại trạng thái trống để không ảnh hưởng test khác."""
     sunk: list[CallRecord] = []
     set_sink(sunk.append)
-    set_prices(llm_input_per_million=0.30, llm_output_per_million=1.20, embedding_per_thousand=0.0)
+    set_prices(llm_input_per_million=0.30, llm_output_per_million=1.20, embedding_per_second=0.0)
     yield sunk
     set_sink(None)
-    set_prices(llm_input_per_million=0.0, llm_output_per_million=0.0, embedding_per_thousand=0.0)
+    set_prices(llm_input_per_million=0.0, llm_output_per_million=0.0, embedding_per_second=0.0)
 
 
 def llm_record(**fields: Any) -> CallRecord:
@@ -54,18 +54,21 @@ def test_cost_uses_the_configured_unit_prices() -> None:
 
 
 def test_cost_is_zero_when_prices_are_unknown() -> None:
-    set_prices(llm_input_per_million=0.0, llm_output_per_million=0.0, embedding_per_thousand=0.0)
+    set_prices(llm_input_per_million=0.0, llm_output_per_million=0.0, embedding_per_second=0.0)
 
     assert estimate_cost(llm_record(prompt_tokens=10_000, completion_tokens=5_000)) == 0.0
     assert estimate_cost(CallRecord("embedding", "modal", "bge", 50.0, True, input_count=40)) == 0.0
 
 
-def test_embedding_cost_is_per_thousand_inputs() -> None:
-    set_prices(llm_input_per_million=0.0, llm_output_per_million=0.0, embedding_per_thousand=0.02)
+def test_embedding_cost_is_gpu_seconds_times_price() -> None:
+    """Modal tính theo thời gian GPU chạy: 18,9 giây khởi động nguội tốn tiền hơn nhiều so với 0,08 giây khi đã ấm."""
+    set_prices(llm_input_per_million=0.0, llm_output_per_million=0.0, embedding_per_second=0.000222)
 
-    record = CallRecord("embedding", "modal", "bge-m3", 80.0, True, input_count=500)
+    cold = CallRecord("embedding", "modal", "bge-m3", 18_900.0, True, input_count=1)
+    warm = CallRecord("embedding", "modal", "bge-m3", 80.0, True, input_count=500)
 
-    assert estimate_cost(record) == pytest.approx(0.01)
+    assert estimate_cost(cold) == pytest.approx(18.9 * 0.000222)
+    assert estimate_cost(warm) == pytest.approx(0.08 * 0.000222)
 
 
 def test_emit_attaches_context_and_cost(clean_metrics_state: list[CallRecord]) -> None:

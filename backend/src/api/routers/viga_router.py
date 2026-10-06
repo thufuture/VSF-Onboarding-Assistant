@@ -44,10 +44,10 @@ from src.infrastructure.observability.langfuse_tracer import LangfuseTracer
 from src.model.enums import FeedbackRating, FeedbackReason
 from src.model.user import User
 from src.services.auth.errors import AuthError
-from src.services.chat.chat_throttle import ChatThrottle
 from src.services.ingest.embedding.keep_warm import KeepWarm
 from src.services.ingest.embedding.port import EmbeddingPort
 from src.services.viga import conversations, feedback
+from src.services.viga.chat_throttle import ChatThrottle
 from src.services.viga.service import VigaResult, ask_viga
 
 router = APIRouter(prefix="/api/v1/viga", tags=["viga"])
@@ -113,16 +113,27 @@ async def ask(
         return llm
 
     today = body.as_of or datetime.now(ZoneInfo(settings.app_timezone)).date()
-    result = await ask_viga(
-        user=user,
-        question=body.question,
-        conversation_id=body.conversation_id,
-        session_factory=session_factory,
-        embedding=embedding,
-        make_llm=make_llm,
-        tracer=tracer,
-        today=today,
-    )
+    with tracer.span(
+        "viga.ask",
+        input=body.question,
+        user_id=user.id,
+        session_id=f"viga-{body.conversation_id}" if body.conversation_id else None,
+        tags=["viga", user.role.value if hasattr(user.role, "value") else str(user.role)],
+    ) as root:
+        result = await ask_viga(
+            user=user,
+            question=body.question,
+            conversation_id=body.conversation_id,
+            session_factory=session_factory,
+            embedding=embedding,
+            make_llm=make_llm,
+            tracer=tracer,
+            today=today,
+        )
+        root.update(
+            output={"response_type": result.response_type, "route": result.route, "message": result.message},
+            metadata={"conversation_id": result.conversation_id, "message_id": result.message_id},
+        )
     return _answer_dto(result)
 
 
