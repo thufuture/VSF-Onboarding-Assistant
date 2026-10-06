@@ -1,0 +1,83 @@
+@use "../../styles/tokens" as *;
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  display: flex;
+  gap: 10px;
+  padding: 10px 11px;
+  border: 1px solid var(--app-border);
+  border-radius: 10px;
+  background: var(--app-surface);
+}
+
+.icon {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  flex: none;
+  place-items: center;
+  border-radius: 9px;
+  background: #e8f0fb;
+  color: #1b6fb8;
+}
+
+.text {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+
+  b {
+    max-width: 100%;
+    overflow: hidden;
+    color: var(--app-ink);
+    font-size: 13px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  small {
+    color: var(--app-ink-3);
+    font-size: 11.5px;
+  }
+  blockquote {
+    margin: 5px 0 2px;
+    padding: 6px 9px;
+    border-left: 3px solid #f0c24a;
+    border-radius: 0 7px 7px 0;
+    background: #fff8e1;
+    color: #5a4a14;
+    font-size: 12.5px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+    white-space: pre-line;
+  }
+}
+
+.view {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 5px;
+  padding: 4px 10px;
+  border: 1px solid var(--app-border);
+  border-radius: 7px;
+  background: var(--app-surface);
+  color: var(--app-accent-strong);
+  cursor: pointer;
+  font: 600 11.5px/1.3 $font;
+
+  &:hover {
+    border-color: var(--app-accent);
+    background: var(--app-accent-soft);
+  }
+}

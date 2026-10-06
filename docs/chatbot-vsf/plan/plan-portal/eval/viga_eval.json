@@ -1,0 +1,405 @@
+[
+ {
+  "id": 1,
+  "doc": "D1",
+  "question": "Hồ sơ cần nộp trong ngày đầu gồm những gì?",
+  "expect": "ANSWER",
+  "status": 200,
+  "type": "NO_BASIS",
+  "route": "LLM",
+  "got": "NO_BASIS",
+  "seconds": 9.2,
+  "missing": [
+   "cv",
+   "lý lịch tư pháp",
+   "khám sức khỏe",
+   "nơi cư trú",
+   "căn cước",
+   "chứng chỉ"
+  ],
+  "message": "Mình chưa có căn cứ trong tài liệu để trả lời câu này.",
+  "claims": [
+   {
+    "type": "NO_BASIS",
+    "text": null,
+    "quote": null,
+    "source": null,
+    "doc": null
+   }
+  ],
+  "bold_marks": false
+ },
+ {
+  "id": 2,
+  "doc": "D1",
+  "question": "Nộp hồ sơ ngày đầu thì liên hệ đầu mối nào?",
+  "expect": "ANSWER",
+  "status": 200,
+  "type": "ANSWER",
+  "route": "LLM",
+  "got": "ANSWER",
+  "seconds": 6.5,
+  "missing": [],
+  "message": "Liên hệ Phòng tuyển dụng.",
+  "claims": [
+   {
+    "type": "ANSWER",
+    "text": "Liên hệ Phòng tuyển dụng.",
+    "quote": "Đầu mối liên hệ: Phòng tuyển dụng.",
+    "source": "Chuẩn bị hồ sơ phải nộp trong ngày đầu:",
+    "doc": "Huong_dan_ngay_1_onboarding"
+   }
+  ],
+  "bold_marks": false
+ },
+ {
+  "id": 3,
+  "doc": "D1",
+  "question": "Chương trình Đào tạo Hội nhập có bắt buộc không và điều kiện hoàn thành là gì?",
+  "expect": "ANSWER",
+  "status": 200,
+  "type": "ANSWER",
+  "route": "LLM",
+  "got": "ANSWER",
+  "seconds": 8.4,
+  "missing": [
+   "bắt buộc"
+  ],
+  "message": "Gồm điểm danh đầu giờ, hoàn thành khảo sát sau chương trình, và đạt từ 80% trở lên ở bài test cuối khóa.",
+  "claims": [
+   {
+    "type": "NO_BASIS",
+    "text": null,
+    "quote": null,
+    "source": null,
+    "doc": null
+   },
+   {
+    "type": "ANSWER",
+    "text": "Gồm điểm danh đầu giờ, hoàn thành khảo sát sau chương trình, và đạt từ 80% trở lên ở bài test cuối khóa.",
+    "quote": "Điều kiện được tính hoàn thành chương trình Đào tạo Hội nhập gồm điểm danh đầu giờ, hoàn thành khảo sát sau chương trình, và đạt từ 80% trở lên ở bài test cuối khóa.",
+    "source": "Tôi làm bài test cuối khóa dưới 80% thì sao?",
+    "doc": "Cac_truong_hop_ngoai_le_ngay_1"
+   }
+  ],
+  "bold_marks": false
+ },
+ {
+  "id": 4,
+  "doc": "D1",
+  "question": "Bài test cuối khóa phải đạt bao nhiêu phần trăm?",
+  "expect": "ANSWER",
+  "status": 200,
+  "type": "ANSWER",
+  "route": "LLM",
+  "got": "ANSWER",
+  "seconds": 5.0,
+  "missing": [],
+  "message": "Đạt từ 80% trở lên.",
+  "claims": [
+   {
+    "type": "ANSWER",
+    "text": "Đạt từ 80% trở lên.",
+    "quote": "Điều kiện được tính hoàn thành chương trình Đào tạo Hội nhập gồm điểm danh đầu giờ, hoàn thành khảo sát sau chương trình, và đạt từ 80% trở lên ở bài test cuối khóa.",
+    "source": "Tôi làm bài test cuối khóa dưới 80% thì sao?",
+    "doc": "Cac_truong_hop_ngoai_le_ngay_1"
+   }
+  ],
+  "bold_marks": false
+ },
+ {
+  "id": 5,
+  "doc": "D1",
+  "question": "Đầu mối của chương trình Đào tạo Hội nhập là ai, email gì?",
+  "expect": "ANSWER",
+  "status": 200,
+  "type": "ANSWER",
+  "route": "LLM",
+  "got": "ANSWER",
+  "seconds": 4.8,
+  "missing": [],
+  "message": "Đầu mối là Phòng ĐT&PTVH, email: v.thudq@vinsmartfuture.tech",
+  "claims": [
+   {
+    "type": "ANSWER",
+    "text": "Đầu mối là Phòng ĐT&PTVH, email: v.thudq@vinsmartfuture.tech",
+    "quote": "Đầu mối: v.thudq@vinsmartfuture.tech (Phòng ĐT&PTVH)",
+    "source": "Tham gia chương trình Đào tạo Hội nhập cùng Phòng đào tạo phát triển văn hóa:(bắt buộc cho CBNV mới)",
+    "doc": "Huong_dan_ngay_1_onboarding"
+   }
+  ],
+  "bold_marks": false
+ },
+ {
+  "id": 6,
+  "doc": "D1",
+  "question": "Khi nào tôi ký hợp đồng lao động?",
+  "expect": "ANSWER",
+  "status": 200,
+  "type": "INFO",
+  "route": "LLM",
+  "got": "ANSWER",
+  "seconds": 1.9,
+  "missing": [],
+  "message": "Hướng dẫn “Ký hợp đồng lao động”:\n## Vì sao phải làm\nCuối ngày sẽ có email hướng dẫn ký hợp đồng lao động, ký trong thời gian quy định.\nLưu ý: Tài liệu không nêu rõ thời gian quy định cụ thể để ký hợp đồng.\n\n## Các bước\n1. CUỐI NGÀY SẼ CÓ EMAIL HƯỚNG DẪN KÝ HỢP ĐỒNG LAO ĐỘNG. KÝ TRONG THỜI GIAN QUY ĐỊNH",
+  "claims": [],
+  "bold_marks": false
+ },
+ {
+  "id": 7,
+  "doc": "D1",
+  "question": "Đăng ký faceid chấm công ở đâu?",
+  "expect": "ANSWER",
+  "status": 200,
+  "type": "INFO",
+  "route": "LLM",
+  "got": "ANSWER",
+  "seconds": 1.0,
+  "missing": [],
+  "message": "Hướng dẫn “Đăng ký faceid tại văn phòng Vincom Đồng Khởi”:\n## Vì sao phải làm\nDành cho văn phòng Vincom Đồng Khởi: Đăng ký faceid chấm công tại tầng 14 và faceid ra vào tòa nhà.\nLưu ý: Chỉ áp dụng cho văn phòng Vincom Đồng Khởi.\n\n## Các bước\n1. Đăng ký faceid chấm công tại tầng 14 theo chỉ dẫn của phòng nhân sự. (Phòng nhân sự)\n2. Đăng ký faceid để ra vào tòa nhà, khi có email (CKSH VPDONGKHOI).",
+  "claims": [],
+  "bold_marks": false
+ },
+ {
+  "id": 8,
+  "doc": "D1",
+  "question": "Tôi nhận laptop ở đâu?",
+  "expect": "ANSWER",
+  "status": 200,
+  "type": "INFO",
+  "route": "LLM",
+  "got": "ANSWER",
+  "seconds": 1.2,
+  "missing": [],
+  "message": "Hướng dẫn “Nhận laptop và đăng nhập Outlook, Teams”:\n## Vì sao phải làm\nNhận laptop tại tầng 12 theo chỉ dẫn của ITHD và HR. Sau khi có laptop, đăng nhập Outlook và Teams.\n\n## Điều kiện hoàn thành\n- Có laptop\n- Đăng nhập được outlook và teams\n\n## Các bước\n1. Nhận laptop tại tầng 12 theo chỉ dẫn của ITHD và HR tại tầng 12.\n2. Sau khi có laptop và đăng nhập được outlook và teams thì mới tiếp tục bước tiếp theo.",
+  "claims": [],
+  "bold_marks": false
+ },
+ {
+  "id": 9,
+  "doc": "D1",
+  "question": "Nhận laptop xong thì làm gì tiếp theo?",
+  "expect": "ANSWER",
+  "status": 200,
+  "type": "NEXT_STEP",
+  "route": "SHORTCUT",
+  "got": "ANSWER",
+  "seconds": 0.0,
+  "missing": [
+   "outlook",
+   "teams"
+  ],
+  "message": "Bạn có thể làm ngay việc “Check-in tại địa điểm làm việc”.",
+  "claims": [],
+  "bold_marks": false
+ },
+ {
+  "id": 10,
+  "doc": "D1",
+  "question": "Viết email hỗ trợ cho ITHD thì gửi tới địa chỉ nào và đặt tiêu đề thế nào?",
+  "expect": "ANSWER",
+  "status": 200,
+  "type": "INFO",
+  "route": "LLM",
+  "got": "ANSWER",
+  "seconds": 1.1,
+  "missing": [],
+  "message": "Hướng dẫn “Cách viết email hỗ trợ ITHD”:\n## Vì sao phải làm\nMẫu email hỗ trợ ITHD.\n\n## Các bước\n1. To: 'support@vinsmartfuture.tech'\n2. Tittle: ITHD [Địa điểm làm việc] + [vắn tắt yêu cầu] ( VD yêu cầu cấp màn hình, ... cài hệ điều hành ubuntu, cài phần mềm.)\n3. Kính gửi bộ phận ITHD\n4. [Nội dung yêu cầu]\n5. Người dùng:\n6. Trân trọng",
+  "claims": [],
+  "bold_marks": false
+ },
+ {
+  "id": 11,
+  "doc": "D1",
+  "question": "Trước khi viết ticket tôi cần kiểm tra gì?",
+  "expect": "ANSWER",
+  "status": 200,
+  "type": "INFO",
+  "route": "LLM",
+  "got": "ANSWER",
+  "seconds": 1.2,
+  "missing": [],
+  "message": "Hướng dẫn “Trước khi viết ticket, kiểm tra Quick access”:\n## Vì sao phải làm\nTrước khi viết ticket xem, kiểm tra nhu cầu hiện tại có Quick access không.\n\n## Các bước\n1. Truy cập https://support.vinsmartfuture.tech/app/vinithelpdesk/HomePage.do\n2. XEM nhu cầu của hiện tại của bạn CÓ Quick access không.",
+  "claims": [],
+  "bold_marks": false
+ },
+ {
+  "id": 12,
+  "doc": "D1",
+  "question": "Muốn dùng VPN hoặc xin exception USB thì cần ai đồng thuận?",
+  "expect": "ANSWER",
+  "status": 200,
+  "type": "ANSWER",
+  "route": "LLM",
+  "got": "ANSWER",
+  "seconds": 7.5,
+  "missing": [],
+  "message": "Cần sự đồng thuận của T3 (ở Khối KD và VH Vinmec là anh Dương Anh Nghi). Cần sự đồng thuận của T3 (ở Khối KD và VH Vinmec là anh Dương Anh Nghi).",
+  "claims": [
+   {
+    "type": "ANSWER",
+    "text": "Cần sự đồng thuận của T3 (ở Khối KD và VH Vinmec là anh Dương Anh Nghi).",
+    "quote": "Tùy nhu cầu, và sự đồng thuận của T3.",
+    "source": "TRƯỜNG HỢP RIÊNG TICKET KHÔNG HỖ TRỢ",
+    "doc": "Huong_dan_ngay_1_onboarding"
+   },
+   {
+    "type": "ANSWER",
+    "text": "Cần sự đồng thuận của T3 (ở Khối KD và VH Vinmec là anh Dương Anh Nghi).",
+    "quote": "Tùy nhu cầu, và sự đồng thuận của T3.",
+    "source": "TRƯỜNG HỢP RIÊNG TICKET KHÔNG HỖ TRỢ",
+    "doc": "Huong_dan_ngay_1_onboarding"
+   }
+  ],
+  "bold_marks": false
+ },
+ {
+  "id": 13,
+  "doc": "D1",
+  "question": "Máy tôi đã dùng sẵn Ubuntu thì xin phê duyệt thế nào?",
+  "expect": "ANSWER",
+  "status": 200,
+  "type": "INFO",
+  "route": "LLM",
+  "got": "ANSWER",
+  "seconds": 1.2,
+  "missing": [],
+  "message": "Hướng dẫn “Trường hợp máy đã có Ubuntu sẵn”:\n## Vì sao phải làm\nTrường hợp máy đã có Ubuntu sẵn, có thể xin phê duyệt qua Team và chụp ảnh.\n\n## Các bước\n1. đang sử dụng sẵn Ubuntu OS , có thể xin phê duyệt qua Team và chụp ảnh / For users already using Ubuntu OS, approval can be requested via Team and a screenshot can be taken.",
+  "claims": [],
+  "bold_marks": false
+ },
+ {
+  "id": 14,
+  "doc": "D1",
+  "question": "Sau khi VinSOC phản hồi email thì tôi làm gì?",
+  "expect": "ANSWER",
+  "status": 200,
+  "type": "INFO",
+  "route": "LLM",
+  "got": "ANSWER",
+  "seconds": 1.1,
+  "missing": [],
+  "message": "Hướng dẫn “Sau khi có email phản hồi của VinSOC”:\n## Vì sao phải làm\nSau khi có email phản hồi của VinSOC, tạo ticket hỗ trợ và thực hiện tại phòng ITHD (tầng 14).\n\n## Các bước\n1. Tạo ticket hỗ trợ như mẫu ở CÁCH VIẾT EMAIL HỖ TRỢ ITHD (ở khối mình là DUCBV5) rồi thực hiện tại phòng ITHD(tầng 14) như bình thường.",
+  "claims": [],
+  "bold_marks": false
+ },
+ {
+  "id": 15,
+  "doc": "D1",
+  "question": "Yêu cầu tủ gửi đồ như thế nào?",
+  "expect": "ANSWER",
+  "status": 200,
+  "type": "INFO",
+  "route": "LLM",
+  "got": "ANSWER",
+  "seconds": 1.1,
+  "missing": [],
+  "message": "Hướng dẫn “Yêu cầu tủ gửi đồ”:\n## Vì sao phải làm\nYêu cầu tủ gửi đồ request tủ gửi đồ (khối mình là NGANNK25).\n\n## Các bước\n1. Yêu cầu tủ gửi đồ request tủ gửi đồ(khối mình là NGANNK25)",
+  "claims": [],
+  "bold_marks": false
+ },
+ {
+  "id": 16,
+  "doc": "D2",
+  "question": "Tôi chưa có lý lịch tư pháp thì sao?",
+  "expect": "ANSWER",
+  "status": 200,
+  "type": "ANSWER",
+  "route": "LLM",
+  "got": "ANSWER",
+  "seconds": 7.4,
+  "missing": [],
+  "message": "Nộp giấy hẹn lấy lý lịch tư pháp thay cho lý lịch tư pháp; đầu mối là Phòng tuyển dụng.",
+  "claims": [
+   {
+    "type": "ANSWER",
+    "text": "Nộp giấy hẹn lấy lý lịch tư pháp thay cho lý lịch tư pháp; đầu mối là Phòng tuyển dụng.",
+    "quote": "Nộp giấy hẹn lấy lý lịch tư pháp thay cho lý lịch tư pháp.",
+    "source": "Tôi chưa có lý lịch tư pháp thì sao?",
+    "doc": "Cac_truong_hop_ngoai_le_ngay_1"
+   }
+  ],
+  "bold_marks": false
+ },
+ {
+  "id": 17,
+  "doc": "D2",
+  "question": "Tôi chỉ có CMND, không có căn cước công dân thì thay được không?",
+  "expect": "NO_BASIS",
+  "status": 200,
+  "type": "ANSWER",
+  "route": "LLM",
+  "got": "ANSWER",
+  "seconds": 9.4,
+  "missing": [],
+  "message": "Chưa có quy định về việc dùng CMND thay CCCD nên chưa thể khẳng định được; cần hỏi Phòng tuyển dụng.",
+  "claims": [
+   {
+    "type": "ANSWER",
+    "text": "Chưa có quy định về việc dùng CMND thay CCCD nên chưa thể khẳng định được; cần hỏi Phòng tuyển dụng.",
+    "quote": "Chưa có quy định nên chưa thể khẳng định được hay không; cần hỏi Phòng tuyển dụng.",
+    "source": "Tôi chỉ có CMND, không có căn cước công dân, có thay được không?",
+    "doc": "Cac_truong_hop_ngoai_le_ngay_1"
+   }
+  ],
+  "bold_marks": false
+ },
+ {
+  "id": 18,
+  "doc": "D2",
+  "question": "T3 chưa trả lời email phê duyệt thì tôi làm sao?",
+  "expect": "ANSWER",
+  "status": 200,
+  "type": "CLARIFY",
+  "route": "LLM",
+  "got": "ANSWER",
+  "seconds": 3.3,
+  "missing": [
+   "1 ngày",
+   "nhắc"
+  ],
+  "message": "Bạn đang hỏi về việc nào trong lộ trình (ví dụ: việc chờ email phản hồi của VinSOC)?",
+  "claims": [],
+  "bold_marks": false
+ },
+ {
+  "id": 19,
+  "doc": "D2",
+  "question": "Có bắt buộc làm chuỗi yêu cầu ngoại lệ như Ubuntu, VPN, USB không?",
+  "expect": "ANSWER",
+  "status": 200,
+  "type": "INFO",
+  "route": "LLM",
+  "got": "ANSWER",
+  "seconds": 2.3,
+  "missing": [
+   "không"
+  ],
+  "message": "Hướng dẫn “Trường hợp máy đã có Ubuntu sẵn”:\n## Vì sao phải làm\nTrường hợp máy đã có Ubuntu sẵn, có thể xin phê duyệt qua Team và chụp ảnh.\n\n## Các bước\n1. đang sử dụng sẵn Ubuntu OS , có thể xin phê duyệt qua Team và chụp ảnh / For users already using Ubuntu OS, approval can be requested via Team and a screenshot can be taken.",
+  "claims": [],
+  "bold_marks": false
+ },
+ {
+  "id": 20,
+  "doc": "D2",
+  "question": "Văn phòng của tôi không phải Vincom Đồng Khởi thì đăng ký faceid thế nào?",
+  "expect": "NO_BASIS",
+  "status": 200,
+  "type": "NO_BASIS",
+  "route": "LLM",
+  "got": "NO_BASIS",
+  "seconds": 7.7,
+  "missing": [],
+  "message": "Mình chưa có căn cứ trong tài liệu để trả lời câu này.",
+  "claims": [
+   {
+    "type": "NO_BASIS",
+    "text": null,
+    "quote": null,
+    "source": null,
+    "doc": null
+   }
+  ],
+  "bold_marks": false
+ }
+]

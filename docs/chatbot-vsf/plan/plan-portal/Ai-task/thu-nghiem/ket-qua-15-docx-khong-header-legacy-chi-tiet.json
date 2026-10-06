@@ -1,0 +1,990 @@
+[
+ [
+  {
+   "order": 1,
+   "title": "Nộp hồ sơ ngày đầu",
+   "summary": "Chuẩn bị và nộp đầy đủ hồ sơ cần thiết trong ngày đầu onboarding cho Phòng tuyển dụng.",
+   "steps": [
+    "- Chuẩn bị các hồ sơ phải nộp trong ngày đầu: CV; lý lịch tư pháp hoặc giấy hẹn lấy lý lịch tư pháp; giấy khám sức khỏe; hình ảnh xác nhận nơi cư trú (bản photo, có thể chụp ảnh VNeID định danh mức 2); căn cước công dân bản photo; chứng chỉ bằng cấp chuyên môn bắt buộc.",
+    "- Liên hệ Phòng tuyển dụng để nộp hồ sơ."
+   ],
+   "done_criteria": [
+    "Hồ sơ được nộp đầy đủ trong ngày đầu onboarding.",
+    "Đã liên hệ Phòng tuyển dụng."
+   ],
+   "prerequisites": [],
+   "sources": [
+    100
+   ],
+   "review_notes": [
+    "Nguồn có “80%” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “v.thudq@vinsmartfuture.tech” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “tầng 14” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại."
+   ],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 2,
+   "title": "Check-in tại địa điểm làm việc",
+   "summary": "Có mặt và check-in tại địa điểm làm việc theo hướng dẫn onboarding của từng nơi.",
+   "steps": [
+    ""
+   ],
+   "done_criteria": [
+    "Đã check-in tại địa điểm làm việc theo hướng dẫn."
+   ],
+   "prerequisites": [],
+   "sources": [
+    100
+   ],
+   "review_notes": [
+    "Nguồn có “80%” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “v.thudq@vinsmartfuture.tech” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “tầng 14” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại."
+   ],
+   "confidence": "LOW"
+  },
+  {
+   "order": 3,
+   "title": "Tham gia chương trình Đào tạo Hội nhập",
+   "summary": "Tham gia bắt buộc chương trình Đào tạo Hội nhập cùng Phòng đào tạo phát triển văn hóa và hoàn thành các điều kiện tính hoàn thành.",
+   "steps": [
+    "- Tham gia chương trình Đào tạo Hội nhập cùng Phòng đào tạo phát triển văn hóa (bắt buộc cho CBNV mới).",
+    "- Điểm danh đầu giờ.",
+    "- Hoàn thành Khảo sát sau chương trình đào tạo.",
+    "- Hoàn thành và đạt >= 80% bài test cuối khóa.",
+    "- Đầu mối: v.thudq@vinsmartfuture.tech (Phòng ĐT&PTVH)."
+   ],
+   "done_criteria": [
+    "Đã điểm danh đầu giờ.",
+    "Đã hoàn thành khảo sát sau chương trình đào tạo.",
+    "Đã hoàn thành và đạt >= 80% bài test cuối khóa."
+   ],
+   "prerequisites": [],
+   "sources": [
+    100
+   ],
+   "review_notes": [
+    "Nguồn có “tầng 14” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “https://vingroupjsc.sharepoint.com/sites/VinIT_BO_HRBP/Sh…” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “tầng 12” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại."
+   ],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 4,
+   "title": "Nghe nội quy công ty",
+   "summary": "Nghe kỹ nội quy công ty trong chương trình Đào tạo Hội nhập.",
+   "steps": [
+    "- Nghe kỹ nội quy công ty ở chương trình Đào tạo Hội nhập cùng Phòng đào tạo phát triển văn hóa.",
+    "- Xem chi tiết hơn tại https://vingroupjsc.sharepoint.com/sites/VinIT_BO_HRBP/Shared%20Documents/Forms/AllItems.aspx?id=%2Fsites%2FVinIT%5FBO%5FHRBP%2FShared%20Documents%2F3%2E%20Internal%2F4%2E%20LnD%2FSharepoint%20sharing%2FT%C3%A0i%20li%E1%BB%87u%20H%E1%BB%99i%20nh%E1%BA%ADp%20%28D%C3%A0nh%20cho%20CBNV%20m%E1%BB%9Bi%29&p=true&ga=1"
+   ],
+   "done_criteria": [
+    "Đã nghe nội quy công ty trong chương trình Đào tạo Hội nhập."
+   ],
+   "prerequisites": [
+    "Tham gia chương trình Đào tạo Hội nhập"
+   ],
+   "sources": [
+    100
+   ],
+   "review_notes": [
+    "Nguồn có “80%” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “v.thudq@vinsmartfuture.tech” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “tầng 14” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại."
+   ],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 5,
+   "title": "Đăng ký faceid chấm công tại tầng 14",
+   "summary": "Dành cho văn phòng Vincom Đồng Khởi: đăng ký faceid chấm công tại tầng 14 theo chỉ dẫn của phòng nhân sự.",
+   "steps": [
+    "- Đăng ký faceid chấm công tại tầng 14 theo chỉ dẫn của Phòng nhân sự."
+   ],
+   "done_criteria": [
+    "Đã đăng ký faceid chấm công tại tầng 14."
+   ],
+   "prerequisites": [],
+   "sources": [
+    100
+   ],
+   "review_notes": [
+    "Nguồn có “80%” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “v.thudq@vinsmartfuture.tech” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “https://vingroupjsc.sharepoint.com/sites/VinIT_BO_HRBP/Sh…” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại."
+   ],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 6,
+   "title": "Đăng ký faceid ra vào tòa nhà",
+   "summary": "Đăng ký faceid để ra vào tòa nhà khi có email hướng dẫn từ CKSH VPDONGKHOI.",
+   "steps": [
+    "- Khi có email, đăng ký faceid để ra vào tòa nhà theo hướng dẫn của CKSH VPDONGKHOI."
+   ],
+   "done_criteria": [
+    "Đã đăng ký faceid ra vào tòa nhà."
+   ],
+   "prerequisites": [],
+   "sources": [
+    100
+   ],
+   "review_notes": [
+    "Nguồn có “80%” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “v.thudq@vinsmartfuture.tech” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “tầng 14” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại."
+   ],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 7,
+   "title": "Nhận laptop tại tầng 12",
+   "summary": "Nhận laptop tại tầng 12 theo chỉ dẫn của ITHD và HR.",
+   "steps": [
+    "- Nhận laptop tại tầng 12 theo chỉ dẫn của ITHD và HR tại tầng 12."
+   ],
+   "done_criteria": [
+    "Đã nhận laptop tại tầng 12."
+   ],
+   "prerequisites": [],
+   "sources": [
+    100
+   ],
+   "review_notes": [
+    "Nguồn có “80%” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “v.thudq@vinsmartfuture.tech” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “tầng 14” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại."
+   ],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 8,
+   "title": "Đăng nhập Outlook và Teams",
+   "summary": "Sau khi có laptop, đăng nhập được Outlook và Teams để tiếp tục các bước tiếp theo.",
+   "steps": [
+    "- Sau khi có laptop, đăng nhập vào Outlook và Teams.",
+    "- Chỉ tiếp tục bước tiếp theo sau khi đăng nhập được Outlook và Teams."
+   ],
+   "done_criteria": [
+    "Đã đăng nhập được Outlook và Teams trên laptop."
+   ],
+   "prerequisites": [
+    "Nhận laptop tại tầng 12"
+   ],
+   "sources": [
+    100
+   ],
+   "review_notes": [
+    "Nguồn có “80%” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “v.thudq@vinsmartfuture.tech” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “tầng 14” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại."
+   ],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 9,
+   "title": "Kiểm tra Quick access trước khi viết ticket",
+   "summary": "Trước khi viết ticket, kiểm tra nhu cầu hiện tại có Quick access không.",
+   "steps": [
+    "- Truy cập https://support.vinsmartfuture.tech/app/vinithelpdesk/HomePage.do.",
+    "- Xem nhu cầu hiện tại của bạn có Quick access không trước khi viết ticket."
+   ],
+   "done_criteria": [
+    "Đã kiểm tra Quick access trước khi viết ticket."
+   ],
+   "prerequisites": [
+    "Đăng nhập Outlook và Teams"
+   ],
+   "sources": [
+    100
+   ],
+   "review_notes": [
+    "Nguồn có “80%” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “v.thudq@vinsmartfuture.tech” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “tầng 14” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại."
+   ],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 10,
+   "title": "Gửi email hỗ trợ ITHD khi cần",
+   "summary": "Khi cần hỗ trợ IT, gửi email đến support@vinsmartfuture.tech theo mẫu.",
+   "steps": [
+    "- Gửi email tới To: 'support@vinsmartfuture.tech'.",
+    "- Tiêu đề: ITHD [Địa điểm làm việc] + [vắn tắt yêu cầu] (VD yêu cầu cấp màn hình, cài hệ điều hành ubuntu, cài phần mềm).",
+    "- Nội dung: Kính gửi bộ phận ITHD; [Nội dung yêu cầu]; Người dùng:; Trân trọng."
+   ],
+   "done_criteria": [
+    "Đã gửi email hỗ trợ ITHD đúng mẫu khi có yêu cầu."
+   ],
+   "prerequisites": [
+    "Kiểm tra Quick access trước khi viết ticket"
+   ],
+   "sources": [
+    101
+   ],
+   "review_notes": [],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 11,
+   "title": "Xử lý các trường hợp ticket ITHD không hỗ trợ",
+   "summary": "Với các trường hợp ITHD không hỗ trợ, viết ticket đến bộ phận liên quan theo mẫu; bao gồm đổi Windows sang Ubuntu, web mail, VPN, Exception, Firewall, PAM.",
+   "steps": [
+    "- Muốn đổi Windows sang Ubuntu và dùng web mail: viết ticket đến bộ phận liên quan theo mẫu.",
+    "- Đăng ký web mail.",
+    "- Đăng ký các dịch vụ: VPN (Checkpoint); Exception (USB, Internet Access, Share data external, Outlook Webmail...); Firewall; PAM."
+   ],
+   "done_criteria": [
+    "Đã gửi ticket/đăng ký tương ứng cho trường hợp ITHD không hỗ trợ."
+   ],
+   "prerequisites": [],
+   "sources": [
+    101
+   ],
+   "review_notes": [
+    "Nguồn có “support@vinsmartfuture.tech” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại."
+   ],
+   "confidence": "MEDIUM"
+  },
+  {
+   "order": 12,
+   "title": "Yêu cầu ZTNA",
+   "summary": "Nếu có nhu cầu ZTNA, xin sự đồng thuận của T3 bằng email trước, điền form VinSOC, tải file, đợi phản hồi rồi tạo ticket ITHD.",
+   "steps": [
+    "- Tùy nhu cầu, xin sự đồng thuận của T3. Ở Khối KD và VH Vinmec, T3 là anh Dương Anh Nghi (v.dir.data3@vinsmartfuture.tech).",
+    "- Trước khi điền form, gửi email xin phê duyệt tới email của T3 (ở Khối KD và VH Vinmec là anh Dương Anh Nghi (v.dir.data3@vinsmartfuture.tech)).",
+    "- Tiêu đề email: Xin phê duyệt [Nội dung cần phê duyệt] - [họ và tên] -[mã nhân viên].",
+    "- Nội dung email theo mẫu: Kính gửi:; Tôi là:; Mã nhân viên:; Vị trí / Bộ phận:; [Nêu yêu cầu]; Thông tin chi tiết: Mục đích sử dụng:; Đơn vị công tác:; Kính mong Lãnh đạo xem xét và phê duyệt để bộ phận CNTT có cơ sở khởi tạo tài khoản; Trân trọng,",
+    "- Điền form VINSOC SECURITY REQUEST FORM Security request form to VINSOC (Form yêu cầu về ANBM VinSOC) tại https://forms.cloud.microsoft/pages/responsepage.aspx?id=OSlq7VPRkk-U-D15DZbJ-DLwMtZwgItEpFo_qNyPLn1URUswRUNLUlRBQVhJWldOVDZYNDROMjVEUC4u&route=shorturl.",
+    "- Upload file theo chỉ dẫn.",
+    "- Đợi email phản hồi của VinSOC rồi liên hệ bộ phận ITHD.",
+    "- Sau khi có email phản hồi của VinSOC, tạo ticket hỗ trợ như mẫu ở CÁCH VIẾT EMAIL HỖ TRỢ ITHD (ở khối mình là DUCBV5) rồi thực hiện tại phòng ITHD (tầng 14) như bình thường.",
+    "- Trường hợp máy đã có Ubuntu sẵn: có thể xin phê duyệt qua Team và chụp ảnh.",
+    "- Trường hợp máy Windows: email phê duyệt thể hiện đủ thông tin luồng Thẩm định (nếu có) và Phê duyệt theo yêu cầu trong CNPQ của Đơn vị."
+   ],
+   "done_criteria": [
+    "Đã có sự đồng thuận của T3 trước khi điền form.",
+    "Đã điền form VINSOC SECURITY REQUEST FORM.",
+    "Đã upload file theo chỉ dẫn.",
+    "Đã nhận email phản hồi của VinSOC.",
+    "Đã tạo ticket hỗ trợ ITHD và thực hiện tại phòng ITHD (tầng 14)."
+   ],
+   "prerequisites": [
+    "Đăng nhập Outlook và Teams"
+   ],
+   "sources": [
+    102,
+    102,
+    102,
+    102,
+    102
+   ],
+   "review_notes": [],
+   "confidence": "MEDIUM"
+  },
+  {
+   "order": 13,
+   "title": "Yêu cầu tủ gửi đồ",
+   "summary": "Yêu cầu tủ gửi đồ theo đầu mối của khối.",
+   "steps": [
+    "- Yêu cầu tủ gửi đồ; request tủ gửi đồ (khối mình là NGANNK25)."
+   ],
+   "done_criteria": [
+    "Đã yêu cầu tủ gửi đồ."
+   ],
+   "prerequisites": [],
+   "sources": [
+    102
+   ],
+   "review_notes": [
+    "Nguồn có “v.dir.data3@vinsmartfuture.tech” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “https://forms.cloud.microsoft/pages/responsepage.aspx?id=…” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “tầng 14” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại."
+   ],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 14,
+   "title": "Ký hợp đồng lao động",
+   "summary": "Ký hợp đồng lao động theo email hướng dẫn vào cuối ngày và trong thời gian quy định.",
+   "steps": [
+    "- Chờ email hướng dẫn ký hợp đồng lao động được gửi vào cuối ngày.",
+    "- Ký hợp đồng lao động trong thời gian quy định."
+   ],
+   "done_criteria": [
+    "Đã ký hợp đồng lao động trong thời gian quy định."
+   ],
+   "prerequisites": [],
+   "sources": [
+    100
+   ],
+   "review_notes": [
+    "Nguồn có “80%” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “v.thudq@vinsmartfuture.tech” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “tầng 14” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại."
+   ],
+   "confidence": "HIGH"
+  }
+ ],
+ [
+  {
+   "order": 1,
+   "title": "Chuẩn bị hồ sơ ngày đầu",
+   "summary": "Nhân viên mới chuẩn bị đầy đủ hồ sơ phải nộp trong ngày đầu onboarding.",
+   "steps": [
+    "- Chuẩn bị CV.",
+    "- Chuẩn bị lý lịch tư pháp, hoặc giấy hẹn lấy lý lịch tư pháp.",
+    "- Chuẩn bị giấy khám sức khỏe.",
+    "- Chuẩn bị hình ảnh xác nhận nơi cư trú (bản photo, có thể chụp ảnh VNeID định danh mức 2).",
+    "- Chuẩn bị căn cước công dân bản Photo.",
+    "- Chuẩn bị chứng chỉ bang cấp chuyên môn bắt buộc.",
+    "- Liên hệ Phòng tuyển dụng nếu cần."
+   ],
+   "done_criteria": [
+    "Các giấy tờ trong danh sách được chuẩn bị đầy đủ",
+    "Hồ sơ được nộp cho Phòng tuyển dụng trong ngày đầu"
+   ],
+   "prerequisites": [],
+   "sources": [
+    100
+   ],
+   "review_notes": [
+    "Nguồn có “80%” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “v.thudq@vinsmartfuture.tech” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “tầng 14” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại."
+   ],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 2,
+   "title": "Check-in tại địa điểm làm việc",
+   "summary": "Check-in tại địa điểm làm việc theo hướng dẫn onboard của từng nơi.",
+   "steps": [
+    "- Check-in tại địa điểm làm việc theo hướng dẫn tùy nơi onboard."
+   ],
+   "done_criteria": [
+    "Đã check-in tại địa điểm làm việc theo hướng dẫn"
+   ],
+   "prerequisites": [],
+   "sources": [
+    100
+   ],
+   "review_notes": [
+    "Nguồn có “80%” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “v.thudq@vinsmartfuture.tech” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “tầng 14” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại."
+   ],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 3,
+   "title": "Tham gia Đào tạo Hội nhập",
+   "summary": "Tham gia bắt buộc chương trình Đào tạo Hội nhập cùng Phòng đào tạo phát triển văn hóa.",
+   "steps": [
+    "- Tham gia chương trình Đào tạo Hội nhập cùng Phòng đào tạo phát triển văn hóa (bắt buộc cho CBNV mới).",
+    "- Điểm danh đầu giờ.",
+    "- Hoàn thành Khảo sát sau chương trình đào tạo.",
+    "- Hoàn thành và đạt >= 80% bài test cuối khóa.",
+    "- Nghe kỹ nội quy công ty trong chương trình; xem chi tiết tại https://vingroupjsc.sharepoint.com/sites/VinIT_BO_HRBP/Shared%20Documents/Forms/AllItems.aspx?id=%2Fsites%2FVinIT%5FBO%5FHRBP%2FShared%20Documents%2F3%2E%20Internal%2F4%2E%20LnD%2FSharepoint%20sharing%2FT%C3%A0i%20li%E1%BB%87u%20H%E1%BB%99i%20nh%E1%BA%ADp%20%28D%C3%A0nh%20cho%20CBNV%20m%E1%BB%9Bi%29&p=true&ga=1.",
+    "- Liên hệ đầu mối v.thudq@vinsmartfuture.tech (Phòng ĐT&PTVH) khi cần."
+   ],
+   "done_criteria": [
+    "Điểm danh đầu giờ",
+    "Hoàn thành khảo sát sau chương trình",
+    "Đạt >= 80% bài test cuối khóa"
+   ],
+   "prerequisites": [],
+   "sources": [
+    100,
+    100
+   ],
+   "review_notes": [
+    "Nguồn có “tầng 14” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “https://vingroupjsc.sharepoint.com/sites/VinIT_BO_HRBP/Sh…” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “tầng 12” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại."
+   ],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 4,
+   "title": "Đăng ký faceid chấm công",
+   "summary": "Nhân viên văn phòng Vincom Đồng Khởi đăng ký faceid chấm công tại tầng 14 theo chỉ dẫn của phòng nhân sự.",
+   "steps": [
+    "- Dành cho văn phòng Vincom Đồng Khởi.",
+    "- Đăng ký faceid chấm công tại tầng 14 theo chỉ dẫn của phòng nhân sự."
+   ],
+   "done_criteria": [
+    "Đã đăng ký faceid chấm công tại tầng 14"
+   ],
+   "prerequisites": [],
+   "sources": [
+    100
+   ],
+   "review_notes": [
+    "Nguồn có “80%” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “v.thudq@vinsmartfuture.tech” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “https://vingroupjsc.sharepoint.com/sites/VinIT_BO_HRBP/Sh…” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại."
+   ],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 5,
+   "title": "Đăng ký faceid ra vào tòa nhà",
+   "summary": "Đăng ký faceid ra vào tòa nhà khi có email hướng dẫn từ CKSH VPDONGKHOI.",
+   "steps": [
+    "- Khi có email, đăng ký faceid để ra vào tòa nhà theo hướng dẫn của CKSH VPDONGKHOI."
+   ],
+   "done_criteria": [
+    "Đã đăng ký faceid ra vào tòa nhà"
+   ],
+   "prerequisites": [],
+   "sources": [
+    100
+   ],
+   "review_notes": [
+    "Nguồn có “80%” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “v.thudq@vinsmartfuture.tech” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “tầng 14” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại."
+   ],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 6,
+   "title": "Nhận laptop",
+   "summary": "Nhận laptop tại tầng 12 theo chỉ dẫn của ITHD và HR.",
+   "steps": [
+    "- Nhận laptop tại tầng 12 theo chỉ dẫn của ITHD và HR tại tầng 12."
+   ],
+   "done_criteria": [
+    "Đã nhận laptop tại tầng 12"
+   ],
+   "prerequisites": [],
+   "sources": [
+    100
+   ],
+   "review_notes": [
+    "Nguồn có “80%” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “v.thudq@vinsmartfuture.tech” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “tầng 14” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại."
+   ],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 7,
+   "title": "Đăng nhập Outlook và Teams",
+   "summary": "Sau khi nhận laptop, đăng nhập được Outlook và Teams để tiếp tục các bước tiếp theo.",
+   "steps": [
+    "- Sau khi có laptop, đăng nhập vào Outlook và Teams.",
+    "- Chỉ tiếp tục bước tiếp theo sau khi đăng nhập được Outlook và Teams."
+   ],
+   "done_criteria": [
+    "Đã đăng nhập được Outlook và Teams trên laptop"
+   ],
+   "prerequisites": [
+    "Nhận laptop"
+   ],
+   "sources": [
+    100
+   ],
+   "review_notes": [
+    "Nguồn có “80%” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “v.thudq@vinsmartfuture.tech” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “tầng 14” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại."
+   ],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 8,
+   "title": "Kiểm tra Quick access trước khi viết ticket",
+   "summary": "Trước khi viết ticket, kiểm tra trang hỗ trợ xem nhu cầu hiện tại có Quick access không.",
+   "steps": [
+    "- Trước khi viết ticket, truy cập https://support.vinsmartfuture.tech/app/vinithelpdesk/HomePage.do.",
+    "- Xem nhu cầu hiện tại của bạn có Quick access không."
+   ],
+   "done_criteria": [
+    "Đã kiểm tra Quick access trên trang hỗ trợ trước khi viết ticket"
+   ],
+   "prerequisites": [],
+   "sources": [
+    100
+   ],
+   "review_notes": [
+    "Nguồn có “80%” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “v.thudq@vinsmartfuture.tech” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “tầng 14” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại."
+   ],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 9,
+   "title": "Viết email hỗ trợ ITHD",
+   "summary": "Viết email hỗ trợ ITHD theo mẫu khi cần hỗ trợ.",
+   "steps": [
+    "- Gửi email tới 'support@vinsmartfuture.tech'.",
+    "- Tiêu đề: ITHD [Địa điểm làm việc] + [vắn tắt yêu cầu] (ví dụ yêu cầu cấp màn hình, cài hệ điều hành ubuntu, cài phần mềm).",
+    "- Nội dung: Kính gửi bộ phận ITHD; [Nội dung yêu cầu]; Người dùng:; Trân trọng."
+   ],
+   "done_criteria": [
+    "Email hỗ trợ ITHD được gửi đúng mẫu tới support@vinsmartfuture.tech"
+   ],
+   "prerequisites": [],
+   "sources": [
+    101
+   ],
+   "review_notes": [],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 10,
+   "title": "Viết ticket cho trường hợp riêng không hỗ trợ",
+   "summary": "Với các trường hợp ITHD không hỗ trợ (đổi Windows sang Ubuntu/web mail, web mail, VPN, Exception, Firewall, PAM), viết ticket đến bộ phận liên quan theo mẫu.",
+   "steps": [
+    "- Trường hợp muốn đổi Windows sang Ubuntu và dùng web mail: viết ticket đến bộ phận liên quan theo mẫu.",
+    "- Với các dịch vụ đăng ký web mail, VPN (Checkpoint), Exception (USB, Internet Access, Share data external, Outlook Webmail...), Firewall, PAM: viết ticket đến bộ phận liên quan theo mẫu."
+   ],
+   "done_criteria": [
+    "Ticket đã được gửi đến bộ phận liên quan theo mẫu cho trường hợp riêng"
+   ],
+   "prerequisites": [],
+   "sources": [
+    101
+   ],
+   "review_notes": [
+    "Nguồn có “support@vinsmartfuture.tech” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại."
+   ],
+   "confidence": "MEDIUM"
+  },
+  {
+   "order": 11,
+   "title": "Xin phê duyệt T3",
+   "summary": "Trước khi điền form cho ZTNA/WAF/Cloud (Wiz), cần có sự đồng thuận của T3 bằng email.",
+   "steps": [
+    "- Tùy nhu cầu ZTNA, WAF, Cloud (Wiz), cần sự đồng thuận của T3.",
+    "- Gửi email tới T3: ở Khối KD và VH Vinmec là anh Dương Anh Nghi (v.dir.data3@vinsmartfuture.tech).",
+    "- Tiêu đề email: Xin phê duyệt [Nội dung cần phê duyệt] - [họ và tên] -[mã nhân viên].",
+    "- Nội dung email: Kính gửi:; Tôi là:; Mã nhân viên:; Vị trí / Bộ phận:; [Nêu yêu cầu]; Thông tin chi tiết: Mục đích sử dụng:; Đơn vị công tác:; Kính mong Lãnh đạo xem xét và phê duyệt để bộ phận CNTT có cơ sở khởi tạo tài khoản.; Trân trọng.",
+    "- Trường hợp máy Windows, email phê duyệt phải thể hiện đủ thông tin luồng Thẩm định (nếu có) và Phê duyệt theo yêu cầu trong CNPQ của Đơn vị."
+   ],
+   "done_criteria": [
+    "Có email đồng thuận/phê duyệt của T3 trước khi điền form"
+   ],
+   "prerequisites": [],
+   "sources": [
+    102,
+    102
+   ],
+   "review_notes": [
+    "Nguồn có “https://forms.cloud.microsoft/pages/responsepage.aspx?id=…” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “tầng 14” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại."
+   ],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 12,
+   "title": "Xin phê duyệt qua Team cho máy Ubuntu sẵn",
+   "summary": "Nếu máy đã có Ubuntu sẵn, có thể xin phê duyệt qua Team và chụp ảnh.",
+   "steps": [
+    "- Trường hợp đang sử dụng sẵn Ubuntu OS, xin phê duyệt qua Team và chụp ảnh."
+   ],
+   "done_criteria": [
+    "Đã xin phê duyệt qua Team và chụp ảnh cho máy Ubuntu sẵn"
+   ],
+   "prerequisites": [],
+   "sources": [
+    102
+   ],
+   "review_notes": [
+    "Nguồn có “v.dir.data3@vinsmartfuture.tech” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “https://forms.cloud.microsoft/pages/responsepage.aspx?id=…” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “tầng 14” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại."
+   ],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 13,
+   "title": "Điền form VINSOC Security Request",
+   "summary": "Điền form yêu cầu ANBM VinSOC và upload file theo chỉ dẫn.",
+   "steps": [
+    "- Điền form VINSOC SECURITY REQUEST FORM (Form yêu cầu về ANBM VinSOC) tại https://forms.cloud.microsoft/pages/responsepage.aspx?id=OSlq7VPRkk-U-D15DZbJ-DLwMtZwgItEpFo_qNyPLn1URUswRUNLUlRBQVhJWldOVDZYNDROMjVEUC4u&route=shorturl.",
+    "- Upload file theo chỉ dẫn."
+   ],
+   "done_criteria": [
+    "Form VINSOC đã được điền và file được upload theo chỉ dẫn"
+   ],
+   "prerequisites": [
+    "Xin phê duyệt T3"
+   ],
+   "sources": [
+    102,
+    102
+   ],
+   "review_notes": [
+    "Nguồn có “v.dir.data3@vinsmartfuture.tech” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “tầng 14” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại."
+   ],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 14,
+   "title": "Liên hệ ITHD và tạo ticket sau phản hồi VinSOC",
+   "summary": "Sau khi có email phản hồi của VinSOC, liên hệ ITHD, tạo ticket hỗ trợ theo mẫu và thực hiện tại phòng ITHD tầng 14.",
+   "steps": [
+    "- Đợi email phản hồi của VinSOC.",
+    "- Sau khi có email phản hồi của VinSOC, liên hệ bộ phận ITHD.",
+    "- Tạo ticket hỗ trợ như mẫu ở CÁCH VIẾT EMAIL HỖ TRỢ ITHD (ở khối mình là DUCBV5).",
+    "- Thực hiện tại phòng ITHD (tầng 14) như bình thường."
+   ],
+   "done_criteria": [
+    "Đã liên hệ ITHD và tạo ticket sau phản hồi VinSOC",
+    "Đã thực hiện tại phòng ITHD tầng 14"
+   ],
+   "prerequisites": [
+    "Điền form VINSOC Security Request"
+   ],
+   "sources": [
+    102
+   ],
+   "review_notes": [
+    "Nguồn có “v.dir.data3@vinsmartfuture.tech” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “https://forms.cloud.microsoft/pages/responsepage.aspx?id=…” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại."
+   ],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 15,
+   "title": "Yêu cầu tủ gửi đồ",
+   "summary": "Yêu cầu tủ gửi đồ, đầu mối tại khối mình là NGANNK25.",
+   "steps": [
+    "- Yêu cầu tủ gửi đồ.",
+    "- Liên hệ đầu mối NGANNK25."
+   ],
+   "done_criteria": [
+    "Đã yêu cầu tủ gửi đồ"
+   ],
+   "prerequisites": [],
+   "sources": [
+    102
+   ],
+   "review_notes": [
+    "Nguồn có “v.dir.data3@vinsmartfuture.tech” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “https://forms.cloud.microsoft/pages/responsepage.aspx?id=…” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “tầng 14” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại."
+   ],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 16,
+   "title": "Ký hợp đồng lao động",
+   "summary": "Ký hợp đồng lao động khi nhận email hướng dẫn vào cuối ngày và trong thời gian quy định.",
+   "steps": [
+    "- Chờ email hướng dẫn ký hợp đồng lao động vào cuối ngày.",
+    "- Ký hợp đồng lao động trong thời gian quy định."
+   ],
+   "done_criteria": [
+    "Hợp đồng lao động được ký trong thời gian quy định"
+   ],
+   "prerequisites": [],
+   "sources": [
+    100
+   ],
+   "review_notes": [
+    "Nguồn có “80%” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “v.thudq@vinsmartfuture.tech” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “tầng 14” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại."
+   ],
+   "confidence": "HIGH"
+  }
+ ],
+ [
+  {
+   "order": 1,
+   "title": "Chuẩn bị và nộp hồ sơ trong ngày đầu",
+   "summary": "Nhân viên mới tập hợp đủ các giấy tờ bắt buộc và nộp cho Phòng tuyển dụng trong ngày đầu tiên.",
+   "steps": [
+    "Nhân viên mới chuẩn bị đủ các giấy tờ sau để nộp trong ngày đầu: CV; lý lịch tư pháp (hoặc giấy hẹn lấy lý lịch tư pháp); giấy khám sức khỏe; hình ảnh xác nhận nơi cư trú (bản photo, có thể chụp ảnh VNeID định danh mức 2); căn cước công dân bản photo; chứng chỉ bằng cấp chuyên môn bắt buộc.",
+    "Nộp hồ sơ cho đầu mối Phòng tuyển dụng."
+   ],
+   "done_criteria": [
+    "Nộp đủ CV, lý lịch tư pháp (hoặc giấy hẹn), giấy khám sức khỏe, ảnh xác nhận nơi cư trú, căn cước công dân photo và chứng chỉ bằng cấp chuyên môn cho Phòng tuyển dụng trong ngày đầu."
+   ],
+   "prerequisites": [],
+   "sources": [
+    100
+   ],
+   "review_notes": [
+    "Nguồn có “80%” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “v.thudq@vinsmartfuture.tech” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “tầng 14” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại."
+   ],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 2,
+   "title": "Check-in tại địa điểm làm việc",
+   "summary": "Nhân viên mới có mặt và check-in tại địa điểm làm việc theo hướng dẫn của nơi onboard.",
+   "steps": [
+    "Nhân viên mới check-in tại địa điểm làm việc theo hướng dẫn tùy nơi onboard."
+   ],
+   "done_criteria": [
+    "Đã check-in tại địa điểm làm việc theo hướng dẫn của nơi onboard."
+   ],
+   "prerequisites": [],
+   "sources": [
+    100
+   ],
+   "review_notes": [
+    "Nguồn có “80%” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “v.thudq@vinsmartfuture.tech” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “tầng 14” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại."
+   ],
+   "confidence": "MEDIUM"
+  },
+  {
+   "order": 3,
+   "title": "Tham gia chương trình Đào tạo Hội nhập",
+   "summary": "Nhân viên mới tham gia chương trình Đào tạo Hội nhập bắt buộc cùng Phòng đào tạo phát triển văn hóa và hoàn thành đủ các điều kiện tính hoàn thành.",
+   "steps": [
+    "Nhân viên mới tham gia chương trình Đào tạo Hội nhập cùng Phòng đào tạo phát triển văn hóa (bắt buộc cho CBNV mới).",
+    "Điểm danh đầu giờ.",
+    "Hoàn thành Khảo sát sau chương trình đào tạo.",
+    "Hoàn thành và đạt >= 80% bài test cuối khóa.",
+    "Liên hệ đầu mối Phòng ĐT&PTVH qua email v.thudq@vinsmartfuture.tech khi cần hỗ trợ."
+   ],
+   "done_criteria": [
+    "Điểm danh đầu giờ.",
+    "Hoàn thành Khảo sát sau chương trình đào tạo.",
+    "Hoàn thành và đạt >= 80% bài test cuối khóa."
+   ],
+   "prerequisites": [],
+   "sources": [
+    100
+   ],
+   "review_notes": [
+    "Nguồn có “tầng 14” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “https://vingroupjsc.sharepoint.com/sites/VinIT_BO_HRBP/Sh…” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “tầng 12” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại."
+   ],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 4,
+   "title": "Nghe nội quy công ty tại chương trình đào tạo hội nhập",
+   "summary": "Nhân viên mới nắm nội quy công ty được phổ biến trong chương trình Đào tạo Hội nhập và xem tài liệu chi tiết theo link được cung cấp.",
+   "steps": [
+    "Nghe kỹ nội quy công ty tại chương trình Đào tạo Hội nhập cùng Phòng đào tạo phát triển văn hóa.",
+    "Xem tài liệu Hội nhập chi tiết tại https://vingroupjsc.sharepoint.com/sites/VinIT_BO_HRBP/Shared%20Documents/Forms/AllItems.aspx?id=%2Fsites%2FVinIT%5FBO%5FHRBP%2FShared%20Documents%2F3%2E%20Internal%2F4%2E%20LnD%2FSharepoint%20sharing%2FT%C3%A0i%20li%E1%BB%87u%20H%E1%BB%99i%20nh%E1%BA%ADp%20%28D%C3%A0nh%20cho%20CBNV%20m%E1%BB%9Bi%29&p=true&ga=1"
+   ],
+   "done_criteria": [
+    "Đã tham dự phần phổ biến nội quy công ty trong chương trình Đào tạo Hội nhập."
+   ],
+   "prerequisites": [
+    "Tham gia chương trình Đào tạo Hội nhập"
+   ],
+   "sources": [
+    100
+   ],
+   "review_notes": [
+    "Nguồn có “80%” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “v.thudq@vinsmartfuture.tech” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “tầng 14” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại."
+   ],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 5,
+   "title": "Đăng ký faceid chấm công và ra vào tòa nhà",
+   "summary": "Nhân viên văn phòng Vincom Đồng Khởi đăng ký faceid chấm công tại tầng 14 và đăng ký faceid ra vào tòa nhà khi có email.",
+   "steps": [
+    "Dành cho nhân viên văn phòng Vincom Đồng Khởi: đăng ký faceid chấm công tại tầng 14 theo chỉ dẫn của Phòng nhân sự.",
+    "Đăng ký faceid để ra vào tòa nhà khi nhận được email từ CKSH VPDONGKHOI."
+   ],
+   "done_criteria": [
+    "Hoàn tất đăng ký faceid chấm công tại tầng 14.",
+    "Hoàn tất đăng ký faceid ra vào tòa nhà khi có email từ CKSH VPDONGKHOI."
+   ],
+   "prerequisites": [],
+   "sources": [
+    100
+   ],
+   "review_notes": [
+    "Nguồn có “80%” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “v.thudq@vinsmartfuture.tech” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “https://vingroupjsc.sharepoint.com/sites/VinIT_BO_HRBP/Sh…” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại."
+   ],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 6,
+   "title": "Nhận laptop tại tầng 12",
+   "summary": "Nhân viên mới nhận laptop tại tầng 12 theo chỉ dẫn của ITHD và HR.",
+   "steps": [
+    "Nhân viên mới nhận laptop tại tầng 12 theo chỉ dẫn của ITHD và HR tại tầng 12."
+   ],
+   "done_criteria": [
+    "Đã nhận laptop tại tầng 12 theo chỉ dẫn của ITHD và HR."
+   ],
+   "prerequisites": [],
+   "sources": [
+    100
+   ],
+   "review_notes": [
+    "Nguồn có “80%” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “v.thudq@vinsmartfuture.tech” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “tầng 14” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại."
+   ],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 7,
+   "title": "Đăng nhập Outlook và Teams trên laptop",
+   "summary": "Sau khi nhận laptop, nhân viên mới đăng nhập được Outlook và Teams trước khi tiếp tục các bước tiếp theo.",
+   "steps": [
+    "Nhân viên mới đăng nhập Outlook và Teams trên laptop đã nhận.",
+    "Chỉ tiếp tục các bước tiếp theo sau khi đã đăng nhập được Outlook và Teams."
+   ],
+   "done_criteria": [
+    "Đã đăng nhập được Outlook và Teams trên laptop."
+   ],
+   "prerequisites": [
+    "Nhận laptop tại tầng 12"
+   ],
+   "sources": [
+    100
+   ],
+   "review_notes": [
+    "Nguồn có “80%” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “v.thudq@vinsmartfuture.tech” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “tầng 14” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại."
+   ],
+   "confidence": "MEDIUM"
+  },
+  {
+   "order": 8,
+   "title": "Xin phê duyệt của T3 qua email trước khi điền form",
+   "summary": "Nhân viên mới gửi email xin sự đồng thuận của T3 trước khi điền form yêu cầu cấp tài khoản/truy cập.",
+   "steps": [
+    "Gửi email xin sự đồng thuận của T3 trước khi điền form, tới email của T3 (ở Khối KD và VH Vinmec là anh Dương Anh Nghi - v.dir.data3@vinsmartfuture.tech).",
+    "Đặt tiêu đề email theo mẫu: Xin phê duyệt [Nội dung cần phê duyệt] - [họ và tên] -[mã nhân viên].",
+    "Nội dung email theo mẫu: Kính gửi; Tôi là; Mã nhân viên; Vị trí / Bộ phận; [Nêu yêu cầu]; Thông tin chi tiết (Mục đích sử dụng, Đơn vị công tác); Kính mong Lãnh đạo xem xét và phê duyệt để bộ phận CNTT có cơ sở khởi tạo tài khoản; Trân trọng.",
+    "Đảm bảo email phê duyệt thể hiện đủ thông tin luồng Thẩm định (nếu có) và Phê duyệt theo yêu cầu trong CNPQ của Đơn vị.",
+    "Nếu máy đã có sẵn Ubuntu OS, có thể xin phê duyệt qua Team kèm ảnh chụp màn hình."
+   ],
+   "done_criteria": [
+    "Có email đồng thuận/phê duyệt của T3 trước khi điền form."
+   ],
+   "prerequisites": [],
+   "sources": [
+    102,
+    102,
+    102
+   ],
+   "review_notes": [
+    "Nguồn có “https://forms.cloud.microsoft/pages/responsepage.aspx?id=…” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “tầng 14” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại."
+   ],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 9,
+   "title": "Điền form VINSOC và upload file",
+   "summary": "Sau khi có sự đồng thuận của T3, nhân viên mới điền VINSOC Security Request Form, upload file theo chỉ dẫn và đợi email phản hồi của VinSOC.",
+   "steps": [
+    "Điền VINSOC Security Request Form (Form yêu cầu về ANBM VinSOC) tại https://forms.cloud.microsoft/pages/responsepage.aspx?id=OSlq7VPRkk-U-D15DZbJ-DLwMtZwgItEpFo_qNyPLn1URUswRUNLUlRBQVhJWldOVDZYNDROMjVEUC4u&route=shorturl.",
+    "Upload file theo chỉ dẫn.",
+    "Đợi email phản hồi của VinSOC rồi liên hệ bộ phận ITHD."
+   ],
+   "done_criteria": [
+    "Đã điền và gửi form VINSOC kèm file upload theo chỉ dẫn.",
+    "Đã nhận email phản hồi của VinSOC."
+   ],
+   "prerequisites": [
+    "Xin phê duyệt của T3 qua email trước khi điền form"
+   ],
+   "sources": [
+    102,
+    102
+   ],
+   "review_notes": [
+    "Nguồn có “v.dir.data3@vinsmartfuture.tech” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “tầng 14” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại."
+   ],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 10,
+   "title": "Tạo ticket hỗ trợ ITHD sau khi VinSOC phản hồi",
+   "summary": "Sau khi có email phản hồi của VinSOC, nhân viên mới kiểm tra Quick access, tạo ticket hỗ trợ theo mẫu email ITHD và thực hiện tại phòng ITHD tầng 14.",
+   "steps": [
+    "Trước khi viết ticket, kiểm tra nhu cầu hiện tại của bạn có Quick access tại https://support.vinsmartfuture.tech/app/vinithelpdesk/HomePage.do không.",
+    "Sau khi có email phản hồi của VinSOC, tạo ticket hỗ trợ theo mẫu ở mục CÁCH VIẾT EMAIL HỖ TRỢ ITHD (đầu mối ở khối là DUCBV5) và gửi tới support@vinsmartfuture.tech.",
+    "Đặt tiêu đề email theo mẫu: ITHD [Địa điểm làm việc] + [vắn tắt yêu cầu].",
+    "Nội dung email theo mẫu: Kính gửi bộ phận ITHD; [Nội dung yêu cầu]; Người dùng:; Trân trọng.",
+    "Thực hiện tại phòng ITHD (tầng 14) như bình thường."
+   ],
+   "done_criteria": [
+    "Đã tạo ticket hỗ trợ ITHD theo mẫu sau khi có email phản hồi của VinSOC.",
+    "Đã thực hiện tại phòng ITHD (tầng 14)."
+   ],
+   "prerequisites": [
+    "Điền form VINSOC và upload file",
+    "Đăng nhập Outlook và Teams trên laptop"
+   ],
+   "sources": [
+    102,
+    101,
+    100
+   ],
+   "review_notes": [
+    "Nguồn có “v.dir.data3@vinsmartfuture.tech” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “https://forms.cloud.microsoft/pages/responsepage.aspx?id=…” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “80%” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại."
+   ],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 11,
+   "title": "Yêu cầu tủ gửi đồ",
+   "summary": "Nhân viên mới gửi yêu cầu cấp tủ gửi đồ tới đầu mối của khối.",
+   "steps": [
+    "Nhân viên mới gửi yêu cầu tủ gửi đồ tới đầu mối NGANNK25 của khối."
+   ],
+   "done_criteria": [
+    "Đã gửi yêu cầu tủ gửi đồ tới đầu mối NGANNK25."
+   ],
+   "prerequisites": [],
+   "sources": [
+    102
+   ],
+   "review_notes": [
+    "Nguồn có “v.dir.data3@vinsmartfuture.tech” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “https://forms.cloud.microsoft/pages/responsepage.aspx?id=…” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “tầng 14” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại."
+   ],
+   "confidence": "MEDIUM"
+  },
+  {
+   "order": 12,
+   "title": "Ký hợp đồng lao động theo email hướng dẫn",
+   "summary": "Cuối ngày đầu, nhân viên mới nhận email hướng dẫn ký hợp đồng lao động và phải ký trong thời gian quy định.",
+   "steps": [
+    "Nhân viên mới nhận email hướng dẫn ký hợp đồng lao động vào cuối ngày.",
+    "Ký hợp đồng lao động trong thời gian quy định."
+   ],
+   "done_criteria": [
+    "Ký hợp đồng lao động trong thời gian quy định sau khi nhận email hướng dẫn."
+   ],
+   "prerequisites": [],
+   "sources": [
+    100
+   ],
+   "review_notes": [
+    "Nguồn có “80%” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “v.thudq@vinsmartfuture.tech” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại.",
+    "Nguồn có “tầng 14” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại."
+   ],
+   "confidence": "MEDIUM"
+  }
+ ]
+]

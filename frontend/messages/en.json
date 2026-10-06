@@ -1,7 +1,7 @@
 {
   "metadata": {
     "title": "VSF Onboarding Assistant",
-    "description": "Onboarding assistant for new hires: answers from approved documents, with cited sources."
+    "description": "VSF Onboarding Portal: a roadmap of tasks for new hires, sourced documents and processes, and Viga to help when you're stuck."
   },
   "landing": {
     "skipLink": "Skip to content",
@@ -15,60 +15,60 @@
     },
     "hero": {
       "line1": "New to the company,",
-      "line2": "just ask and know the next step",
-      "description": "The assistant answers from approved documents and points you to the right process and contact. When something has no source, it says so instead of guessing.",
+      "line2": "get a roadmap, know what's next",
+      "description": "VSF Onboarding Portal gives you a roadmap of tasks in the right order, sourced guidance for each one, and Viga alongside you when you're stuck.",
       "primary": "Start asking",
       "secondary": "See how it works",
       "checkSources": "Answers come with sources",
-      "checkProcess": "Right process, contact and form",
+      "checkProcess": "Roadmap, tasks and tickets being built",
       "photoAlt": "Vincom Center Dong Khoi building seen from the park, Ho Chi Minh City"
     },
     "services": {
       "chat": {
-        "title": "Sourced answers",
+        "title": "Ask Viga, with sources",
         "sub": "With quotes from the exact passage"
       },
       "process": {
-        "title": "Step-by-step processes",
-        "sub": "With approved links, contacts and forms"
+        "title": "Onboarding roadmap",
+        "sub": "Being built — right order, mark done yourself"
       },
       "clarify": {
-        "title": "Asks when details are missing",
-        "sub": "Never guesses your unit or role"
+        "title": "Ask Viga when stuck",
+        "sub": "Being built — Viga knows which task you're on"
       },
       "ticket": {
-        "title": "Internal tickets",
-        "sub": "Drafts only, sent when you confirm"
+        "title": "Tickets when you need help",
+        "sub": "Being built — only sent when you confirm"
       }
     },
     "intro": {
-      "heading": "One place to ask when you are new here.",
-      "text": "The assistant brings approved documents, processes and contacts into a single place to ask: sourced, using the version in force, and honest when there is no basis."
+      "heading": "One place to know what to do when you're new here.",
+      "text": "The Portal brings the onboarding roadmap, approved documents and contacts into one place: tasks in the right order, sourced answers, and Viga saying so honestly when there is no basis instead of guessing."
     },
     "features": {
       "chat": {
-        "label": "Sourced answers",
-        "sub": "You ask, it answers from the documents",
+        "label": "Ask Viga, with sources",
+        "sub": "You ask, Viga answers from the documents",
         "titleStart": "Answers cite",
         "titleAccent": "real documents",
         "titleEnd": "in force on the day you ask.",
-        "body": "Ask about house rules, leave, benefits or security. The assistant only uses approved documents that are in force and answers with verbatim quotes so you can check for yourself. With no basis, it says so."
+        "body": "Ask about house rules, leave, benefits or security. Viga only uses approved documents that are in force and answers with verbatim quotes so you can check for yourself. With no basis, Viga says so."
       },
       "process": {
-        "label": "Processes and contacts",
-        "sub": "Step by step, right person, right form",
-        "titleStart": "Points you to the right",
-        "titleAccent": "process",
-        "titleEnd": "with approved links and contacts.",
-        "body": "For things you need to do, such as installing software, requesting access or registering a parking card, the assistant lists the steps from the owning team's process. Links, contacts and forms come from the approved catalogue, never invented by the assistant."
+        "label": "Onboarding roadmap",
+        "sub": "Being built alongside the Portal",
+        "titleStart": "Coming soon: tasks in the",
+        "titleAccent": "right order",
+        "titleEnd": ", marked done yourself.",
+        "body": "Each task in the roadmap has clear guidance, with contacts and related documents; mark it \"Done\" yourself when finished, and dependent tasks unlock automatically. No heavy approval process. This feature is being built alongside the VSF Onboarding Portal."
       },
       "ticket": {
-        "label": "Follow-up and tickets",
-        "sub": "You confirm before anything is sent",
-        "titleStart": "Missing details? It",
-        "titleAccent": "asks back",
-        "titleEnd": ", and drafts a ticket when action is needed.",
-        "body": "When the answer depends on your unit or role, the assistant asks instead of guessing. If another team must act, it drafts a ticket from the form; the ticket is sent only after you confirm."
+        "label": "Viga and tickets",
+        "sub": "Being built alongside the Portal",
+        "titleStart": "Coming soon: stuck? Just",
+        "titleAccent": "ask Viga",
+        "titleEnd": ", open a ticket if you need help.",
+        "body": "When you're stuck on a task in the roadmap, ask Viga right there in context. If Viga has no basis, it says so and offers to open a ticket to HR — only after you confirm. This feature is being built."
       }
     },
     "mock": {
@@ -78,7 +78,7 @@
         "badge": "Approved documents",
         "label": "SOURCED Q&A",
         "question": "How many days of annual leave do permanent employees get?",
-        "assistant": "Assistant",
+        "assistant": "Viga",
         "answer": "Permanent employees get 12 days of annual leave, according to the 2024 annual leave policy.",
         "cite": "Annual leave policy (2024)",
         "sources": "1 source checked and in force",
@@ -130,25 +130,25 @@
       }
     },
     "roles": {
-      "lead": "For everyone who shapes the onboarding experience.",
+      "lead": "For everyone who builds the VSF Onboarding Portal.",
       "flow": "From approved documents to answers for newcomers",
       "asker": {
         "tag": "01 · Q&A",
         "title": "New employee",
-        "body": "Ask in everyday language, get sourced answers, follow processes step by step and open a ticket when needed.",
+        "body": "Ask Viga in everyday language, get sourced answers. A day-by-day roadmap you mark done yourself, plus a ticket when you're stuck, is being built into the Portal.",
         "cta": "Sign in to ask"
       },
       "hr": {
         "tag": "02 · Content",
         "title": "HR",
-        "body": "Upload documents and approve new versions, review differences between versions, manage processes, links and contacts, and track questions with no document yet.",
+        "body": "Upload documents and approve new versions, manage contacts and links, and track questions Viga couldn't answer. Authoring the onboarding roadmap, tasks per team and handling tickets is being built into the Portal.",
         "cta": "Sign in to manage"
       },
       "team": {
-        "tag": "03 · Handling",
-        "title": "Ticket-handling teams",
-        "body": "Receive tickets the user has confirmed, see all details from the form and update the handling status.",
-        "cta": "Sign in to handle"
+        "tag": "03 · Roadmap",
+        "title": "Onboarding Portal",
+        "body": "A day-by-day roadmap with clear prerequisites, ask Viga right inside each task, and open a ticket when stuck — being built on top of this Q&A assistant.",
+        "cta": "Sign in to preview"
       },
       "admin": {
         "tag": "04 · System",
@@ -200,7 +200,7 @@
       "button": "Sign in"
     },
     "footer": {
-      "tagline": "Onboarding assistant for new hires. Internship demo, not an official product.",
+      "tagline": "VSF Onboarding Portal: a task roadmap and the Viga assistant for new hires. Internship demo, not an official product.",
       "email": "onboarding@vsf-demo.example",
       "aboutTitle": "About",
       "how": "How it works",
@@ -209,7 +209,7 @@
       "contactTitle": "Contact",
       "contactLine": "Internship demo",
       "contactNote": "The contact address is a placeholder.",
-      "copyright": "© 2026 VSF Onboarding Assistant. Internship demo.",
+      "copyright": "© 2026 VSF Onboarding Assistant.",
       "photoLead": "Illustrative photos of Vincom Center Dong Khoi, Ho Chi Minh City. Photos by: ",
       "photoSource": "via Wikimedia Commons",
       "photoEdited": "cropped and compressed",
@@ -237,19 +237,19 @@
       "unavailable": "Sign-in is unavailable right now. Please try again later.",
       "inactive": "This account is locked. Please contact HR or Admin."
     },
-    "welcomeLine1": "Just ask and know the next step.",
+    "welcomeLine1": "Get a roadmap, don't lose your way.",
     "welcomeLine2": "Start with confidence.",
-    "welcomeDescription": "The assistant answers from approved documents, points you to the right process and contact, and says so when it has no basis.",
+    "welcomeDescription": "VSF Onboarding Portal gives you a roadmap of tasks, sourced documents and processes, and Viga to help when you're stuck.",
     "benefits": {
       "sources": "Answers come with cited sources",
-      "approved": "Approved processes, links and contacts",
+      "approved": "Only uses documents that are approved and in force",
       "noGuess": "It never guesses your personal data"
     },
     "firstTime": "Signing in for the first time?",
     "support": "Support",
     "showPassword": "Show password",
     "hidePassword": "Hide password",
-    "quote": "“Where there is no source, the assistant says so.”"
+    "quote": "“No source, no guess.”"
   },
   "common": {
     "language": "Language",
@@ -262,6 +262,7 @@
       "HR": "HR",
       "ADMIN": "Administrator"
     },
+    "brandSub": "New joiner portal",
     "signOut": "Sign out",
     "signingOut": "Signing out…",
     "signOutFailed": "Could not sign out right now. Please try again.",
@@ -272,11 +273,38 @@
     "darkMode": "Switch to dark theme",
     "nav": {
       "chat": "Q&A assistant",
+      "roadmap": "My roadmap",
       "documents": "Documents",
-      "contacts": "Contacts",
       "tickets": "Support requests",
-      "admin": "Admin area",
-      "soon": "Soon"
+      "admin": "Overview",
+      "employees": "Employees",
+      "hrTickets": "Incident tickets",
+      "vigaFeedback": "Viga feedback",
+      "taskManagement": "Task management",
+      "aiTasks": "Create tasks with AI",
+      "soon": "Soon",
+      "adminUsers": "Users",
+      "adminTeams": "Departments",
+      "adminMembers": "Members",
+      "adminAudit": "Audit log",
+      "adminMetrics": "AI cost",
+      "ticketsUnread": "{count} ticket(s) with unseen messages"
+    },
+    "footer": {
+      "brand": "VSF Onboarding Portal",
+      "note": "Content is shown to employees only after it is approved and published.",
+      "help": "Help",
+      "privacy": "Privacy policy",
+      "terms": "Terms of use",
+      "contact": "Contact IT",
+      "copy": "© 2026 VSF · v4.1"
+    },
+    "collapseSidebar": "Collapse sidebar",
+    "expandSidebar": "Expand sidebar",
+    "brandSubByRole": {
+      "USER": "New joiner portal",
+      "HR": "HR portal",
+      "ADMIN": "System administration"
     }
   },
   "chat": {
@@ -332,9 +360,1684 @@
     "description": "The admin area is under construction. For now you can view the chat page as a new joiner.",
     "upcoming": {
       "documents": "Document and version management",
-      "registry": "Contact and link registry",
       "tickets": "Support requests from new joiners"
     },
     "openChat": "Open chat"
+  },
+  "portalTasks": {
+    "title": "Manage onboarding journey",
+    "description": "Each day has several versions: edit a draft, apply it when ready. Journeys employees already created never change by themselves.",
+    "defaultTemplateTitle": "Onboarding journey",
+    "createWithAi": "Create with AI",
+    "addStageShort": "Add stage",
+    "addStage": "Add stage",
+    "addTask": "Add task",
+    "loading": "Loading…",
+    "noStagesTitle": "No stages yet",
+    "noStages": "Create the first stage to start adding tasks.",
+    "emptyTitle": "No tasks",
+    "emptyTasks": "No tasks in this stage yet.",
+    "taskCount": "{count} tasks",
+    "taskNo": "Task {n}",
+    "prereq": "{count} prerequisites",
+    "required": "Required",
+    "optional": "Optional",
+    "start": "Start",
+    "viewTask": "View content",
+    "finish": "Finish",
+    "view": {
+      "stage": "Stage",
+      "completion": "Completion",
+      "kind": "Type",
+      "prereq": "Prerequisites",
+      "none": "None",
+      "steps": "Steps",
+      "sources": "Document sources"
+    },
+    "edit": "Edit",
+    "duplicate": "Duplicate",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "editTitle": "Edit task",
+    "copySuffix": "(copy)",
+    "deleteConfirmTitle": "Delete task “{title}”?",
+    "deleteConfirmBody": "The task will be removed from the journey. Tasks that depend on it lose that prerequisite. This cannot be undone.",
+    "searchPlaceholder": "Search tasks in {stage}…",
+    "backToOverview": "HR overview",
+    "sideTitle": "Onboarding journey",
+    "sideHint": "Pick a stage to manage tasks",
+    "sideCount": "{total} tasks · {published} published",
+    "sideAdd": "Add a day or stage",
+    "kpi": {
+      "total": "Total tasks",
+      "totalSub": "In the current journey",
+      "draft": "Draft",
+      "draftSub": "Nobody received it yet, editable",
+      "missing": "Needs attention",
+      "missingSub": "Tasks missing instructions",
+      "applied": "Applied",
+      "appliedSub": "The version new hires receive"
+    },
+    "legend": {
+      "title": "Milestone color by task group"
+    },
+    "form": {
+      "title": "Task title",
+      "body": "Instructions",
+      "required": "Required",
+      "submit": "Create task",
+      "save": "Save",
+      "stageTitle": "Stage title",
+      "createStage": "Create stage",
+      "saveDraft": "Save to draft",
+      "order": "Order in stage (1 to {max})",
+      "day": "Day / stage",
+      "completion": "How completion is confirmed",
+      "selfConfirm": "Self-complete",
+      "requiredLong": "Required, counts toward progress",
+      "why": "Why do it",
+      "done": "Completion condition",
+      "steps": "Steps (one per line)",
+      "prereqHint": "Pick the tasks that must be done before this one.",
+      "stageHint": "Create an empty stage, then add tasks manually or with AI.",
+      "stageNumber": "Day number",
+      "dayWord": "Day",
+      "group": "Task group (milestone color)"
+    },
+    "notice": {
+      "created": "Task created.",
+      "updated": "Changes saved.",
+      "deleted": "Task deleted.",
+      "duplicated": "Task duplicated.",
+      "stageCreated": "Stage created.",
+      "draftCreated": "Draft {n} created.",
+      "applied": "Version {n} applied. {count} employee(s) will be notified of the edit.",
+      "draftDeleted": "Draft deleted."
+    },
+    "errors": {
+      "unauthorized": "Please sign in again.",
+      "forbidden": "You do not have permission for this action.",
+      "unavailable": "Something went wrong, try again later.",
+      "network": "Could not reach the server.",
+      "published": "The journey is published, so it cannot be edited.",
+      "empty": "Add at least one task before publishing.",
+      "cycle": "Prerequisites form a loop or point to the task itself.",
+      "stageOutOfTemplate": "You can only move to a stage of the same journey.",
+      "versionNotEditable": "Only a draft can be edited. Create a new draft from this version.",
+      "versionEmpty": "The draft has no task yet, so it cannot be applied.",
+      "lastVersion": "The last version of a day cannot be deleted."
+    },
+    "close": "Close",
+    "closeButton": "Close",
+    "tabs": {
+      "info": "Info",
+      "guide": "Instructions",
+      "prereq": "Prerequisites"
+    },
+    "deleteConfirmButton": "Delete task",
+    "duplicateConfirmTitle": "Duplicate task “{title}”?",
+    "duplicateConfirmBody": "Creates a copy right after this task in the same stage, keeping its content and prerequisites.",
+    "duplicateConfirmButton": "Duplicate",
+    "backToTemplate": "Shared journey",
+    "group": {
+      "PROFILE": "Documents",
+      "TRAINING": "Training",
+      "DEVICE": "Devices",
+      "OFFICE": "Office",
+      "none": "No group"
+    },
+    "tagPublished": "Live",
+    "tagDraft": "Draft",
+    "sourceAction": "Document source",
+    "versions": {
+      "label": "Versions of the day",
+      "name": "Version {n}",
+      "status": {
+        "DRAFT": "Draft",
+        "APPLIED": "Applied",
+        "ARCHIVED": "Archived"
+      },
+      "hint": {
+        "DRAFT": "Draft: edit freely, nobody is affected. Press Apply when ready.",
+        "APPLIED": "Applied: view only. Whoever creates a journey gets this version; to edit, create a draft.",
+        "ARCHIVED": "Old archived version: view only."
+      },
+      "createDraft": "Create draft from this version",
+      "apply": "Apply",
+      "deleteDraft": "Delete draft",
+      "rollout": "Track rollout",
+      "readonly": "View only: only a draft can be edited",
+      "deleteTitle": "Delete draft {n}?",
+      "deleteBody": "The tasks in this draft will be lost. The applied version and employees' journeys are not affected.",
+      "deleteConfirm": "Delete draft",
+      "taskCount": "{count} task(s)",
+      "createDraftTitle": "Create draft {n} from version {from}?",
+      "createDraftBody": "The new draft copies every task of the version you are viewing so you can edit it. Nobody is affected until you press Apply.",
+      "createDraftConfirm": "Create draft"
+    },
+    "apply": {
+      "title": "Apply version {n} of {day}?",
+      "body": "Tasks edited: {modified}, added: {added}, removed: {removed}. This becomes the applied version and the old one is archived. The journeys of {employees} employee(s) do NOT change by themselves: they get a notice and choose Update or Keep my version.",
+      "confirm": "Apply"
+    },
+    "rollout": {
+      "title": "Rollout of version {n}",
+      "subtitle": "Who has seen it, updated, or kept the old version (view only).",
+      "empty": "No employee has been notified of this version yet.",
+      "failed": "Could not load the rollout.",
+      "summary": "{total} employee(s): {unseen} not seen, {seen} seen, {updated} updated, {kept} kept the old version.",
+      "col": {
+        "employee": "Employee",
+        "state": "Status",
+        "pending": "Waiting",
+        "accepted": "Updated",
+        "dismissed": "Kept old"
+      },
+      "state": {
+        "UNSEEN": "Not seen",
+        "SEEN": "Seen",
+        "UPDATED": "Updated",
+        "KEPT_OLD": "Kept old",
+        "SUPERSEDED": "Newer version exists"
+      }
+    }
+  },
+  "portalEmployees": {
+    "viewTask": "View task",
+    "count": "{count} employees",
+    "title": "Employees",
+    "description": "All employees you're responsible for and their onboarding progress.",
+    "searchPlaceholder": "Search employees…",
+    "loading": "Loading…",
+    "empty": "No matching employees.",
+    "noCurrentTask": "Journey not started",
+    "filters": {
+      "all": "All",
+      "attn": "Needs attention",
+      "wait": "Waiting",
+      "ok": "Normal"
+    },
+    "table": {
+      "employee": "Employee",
+      "stage": "Stage",
+      "progress": "Progress",
+      "currentTask": "Current task",
+      "status": "Status"
+    },
+    "status": {
+      "NOT_STARTED": "Not started",
+      "DONE": "Done",
+      "READY": "In progress",
+      "IN_PROGRESS": "In progress",
+      "WAITING_EXTERNAL": "Waiting externally",
+      "BLOCKED": "Blocked"
+    },
+    "errors": {
+      "unauthorized": "Please sign in again.",
+      "forbidden": "You do not have permission for this action.",
+      "unavailable": "Something went wrong, try again later.",
+      "network": "Could not reach the server.",
+      "NO_JOURNEY_TEMPLATE": "No version is applied for this team yet, so a journey cannot be added. Apply a version in Task management.",
+      "NO_TEAM_ASSIGNED": "This employee is not in a team yet."
+    },
+    "addJourney": "Add journey",
+    "addJourneyTitle": "Add a journey for {name}?",
+    "addJourneyBody": "The employee receives a copy of the applied versions, effective immediately and their own. When you apply a newer version later, they get a notice and choose whether to update.",
+    "addJourneyConfirm": "Add journey",
+    "cancel": "Cancel",
+    "close": "Close"
+  },
+  "hrDashboard": {
+    "greeting": "Hello, {name}",
+    "description": "No onboarding journey yet — start in Create tasks with AI.",
+    "journeyHint": "The onboarding journey is being built.",
+    "kpi": {
+      "templates": "Journeys",
+      "templatesSub": "Currently set up",
+      "stages": "Stages",
+      "stagesSub": "In the journey",
+      "tasks": "Tasks in journeys",
+      "tasksSub": "Visible to employees",
+      "documents": "Documents",
+      "documentsSub": "Ingested"
+    },
+    "actions": {
+      "documents": {
+        "title": "Upload documents"
+      },
+      "aiTasks": {
+        "title": "Add task"
+      }
+    },
+    "errors": {
+      "unauthorized": "Please sign in again.",
+      "forbidden": "You do not have permission for this action.",
+      "unavailable": "Something went wrong, try again later.",
+      "network": "Could not reach the server."
+    }
+  },
+  "portalDocuments": {
+    "title": "Source documents",
+    "description": "Manage original files, parsed content and ingest status.",
+    "addDocument": "Add document",
+    "loading": "Loading…",
+    "empty": "No documents yet.",
+    "viewOriginal": "View original file",
+    "archive": "Stop using",
+    "reactivate": "Reactivate",
+    "sectionCount": "{count} sections",
+    "searchPlaceholder": "Search by document title…",
+    "filterAllStatus": "All statuses",
+    "filterAllCategory": "All groups",
+    "pagerLabel": "Showing {from}-{to} of {total}",
+    "kpi": {
+      "total": "Total documents",
+      "ready": "Ready",
+      "pending": "Needs review",
+      "sections": "Total sections",
+      "used": "In use"
+    },
+    "table": {
+      "document": "Document",
+      "category": "Group",
+      "sections": "Content processing",
+      "status": "Status",
+      "updated": "Updated",
+      "tasks": "Used by tasks",
+      "version": "Version"
+    },
+    "status": {
+      "ACTIVE": "Ready",
+      "ARCHIVED": "Archived",
+      "NO_CURRENT": "Not activated"
+    },
+    "upload": {
+      "file": "Choose a file (.docx, .pdf, .md)",
+      "title": "Upload document",
+      "category": "Category",
+      "sourceKey": "Source key",
+      "version": "Version label",
+      "effectiveFrom": "Effective from",
+      "submit": "Upload",
+      "name": "Document name",
+      "drop": "Drag and drop or click to choose a file",
+      "dropHint": "docx, pdf, md, txt · up to 20 MB",
+      "structurePoor": "The document has almost no headings, so Viga will cite sources less precisely. Open the version and add headings (lines starting with ##) before activating; otherwise the system may ask AI to split it into sections.",
+      "structureMedium": "Headings were inferred or long sections were split. Open the version to review the table of contents.",
+      "startedBackground": "File uploaded; activating in the background.",
+      "reused": "This version already exists (same label and content); nothing new was created.",
+      "draftCreated": "Draft created. Open “Versions” to review it, then activate.",
+      "progressTitle": "Activating the document…",
+      "failedBackground": "Activation failed",
+      "activateNow": "Upload and activate now",
+      "activateNowHint": "Chunk, embed and make it the current version right away (background job with progress).",
+      "draftOnlyHint": "Create a draft only: Viga is unaffected until you review and activate it."
+    },
+    "errors": {
+      "unauthorized": "Please sign in again.",
+      "forbidden": "You don't have permission for this action.",
+      "unavailable": "Something went wrong, try again later.",
+      "network": "Could not reach the server.",
+      "ingestFailed": "Could not read this file (wrong format or too short).",
+      "categoryNotFound": "Document group does not exist."
+    },
+    "close": "Close",
+    "closeButton": "Close",
+    "cancel": "Cancel",
+    "save": "Save",
+    "view": "Versions and content",
+    "edit": "Edit details",
+    "newVersion": "Upload new version",
+    "editTitle": "Edit document",
+    "viewFailed": "Could not load the document content.",
+    "toc": "Contents",
+    "archiveConfirmTitle": "Stop using document “{title}”?",
+    "archiveConfirmBody": "The document becomes Archived (not deleted): it is no longer used for AI task proposals but keeps its content and history. You can reactivate it any time.",
+    "archiveConfirmButton": "Stop using",
+    "reactivateConfirmTitle": "Reactivate document “{title}”?",
+    "reactivateConfirmBody": "The document goes back to Ready and can be used for AI task proposals.",
+    "reactivateConfirmButton": "Reactivate",
+    "notice": {
+      "updated": "Document details saved.",
+      "archived": "Document is no longer in use.",
+      "reactivated": "Document reactivated."
+    },
+    "parsedIngested": "Parsed · Ingested",
+    "noTasks": "No tasks yet",
+    "moreTasks": "+{count} tasks",
+    "filter": {
+      "status": "Status",
+      "statusAllHint": "Show everything",
+      "activeHint": "Parsed and ingested",
+      "archivedHint": "No longer in use",
+      "usage": "Usage",
+      "usageAll": "All sources",
+      "usageAllHint": "With and without tasks",
+      "usageUsed": "In use",
+      "usageUsedHint": "Linked to tasks",
+      "usageUnused": "Not linked",
+      "usageUnusedHint": "No task uses it",
+      "category": "Category",
+      "from": "From",
+      "to": "To",
+      "clearDates": "Clear dates"
+    },
+    "version": {
+      "none": "No current version",
+      "count": "{count} versions",
+      "drafts": "{count} draft"
+    },
+    "versions": {
+      "subtitle": "{count} versions",
+      "listLabel": "Version list",
+      "state": {
+        "DRAFT": "Draft",
+        "PROCESSING": "Processing",
+        "SCHEDULED": "Scheduled",
+        "CURRENT": "Current",
+        "SUPERSEDED": "Superseded",
+        "FAILED": "Failed"
+      },
+      "source": {
+        "UPLOAD": "Uploaded file",
+        "EDITED": "Edited"
+      },
+      "effective": {
+        "range": "Effective {from} – {to}",
+        "from": "Effective from {from}",
+        "none": "No effective date"
+      },
+      "tasks": "{count} tasks use it",
+      "fromParent": "copied from {label}",
+      "originalNote": "The original file “{name}” belongs to the copied version and does not reflect edits.",
+      "uploadNew": "Upload a file as a new version",
+      "copy": "Create a new version from this one",
+      "edit": "Edit draft",
+      "activate": "Activate",
+      "setCurrent": "Make current version",
+      "deleteDraft": "Delete draft",
+      "lastFailure": "The last activation failed: {error}",
+      "structure": {
+        "POOR": "The document has almost no headings: Viga will cite sources less precisely. Add headings (lines starting with ##) before activating, or let the system ask AI to split it on activation.",
+        "MEDIUM": "Headings were inferred or long sections were split: review the table of contents before activating.",
+        "aiApplied": "This version's table of contents was proposed by AI (the document text is unchanged). Create a new version from it to adjust."
+      },
+      "editor": {
+        "label": "Version label",
+        "effective": "Planned effective date",
+        "write": "Write",
+        "preview": "Preview",
+        "markdown": "Markdown content",
+        "hint": "Saving as often as you like costs no embedding. A draft does not affect Viga until it is activated.",
+        "saveFirst": "Save the draft before activating or deleting"
+      },
+      "confirm": {
+        "activateTitle": "Activate “{label}”?",
+        "activateBody": "Viga and tasks will use this version from the effective date; the current version ends the day before. This runs in the background and may take tens of seconds (chunking and embedding).",
+        "setCurrentBody": "Return to “{label}” as the current version from the effective date; the current version becomes superseded. It already has data, so this usually costs no embedding.",
+        "effectiveFrom": "Effective from",
+        "deleteTitle": "Delete draft “{label}”?",
+        "deleteBody": "The draft is deleted permanently. Other versions are not affected."
+      },
+      "progress": {
+        "title": "Activating…",
+        "waiting": "Waiting",
+        "lost": "Lost connection while checking progress; reload the page to see the result.",
+        "done": "Activated — {sections} sections, {chunks} chunks.",
+        "reused": "Reused existing embeddings.",
+        "failed": "Activation failed ({error}). The previous version keeps serving as before."
+      },
+      "errors": {
+        "unauthorized": "You need to sign in again.",
+        "forbidden": "You do not have permission for this action.",
+        "unavailable": "Something went wrong, try again later.",
+        "network": "Cannot reach the server.",
+        "VERSION_CONFLICT": "Someone else just saved this draft. Close and reopen the version to get the latest content.",
+        "VERSION_NOT_EDITABLE": "Only drafts can be edited. Create a new version from this one, then edit it.",
+        "VERSION_LABEL_EXISTS": "This version label already exists; pick another.",
+        "VERSION_LABEL_REQUIRED": "A version label is required.",
+        "VERSION_LABEL_TOO_LONG": "Version labels are at most 32 characters.",
+        "VERSION_CONTENT_TOO_SHORT": "Content is too short (at least 200 characters).",
+        "VERSION_ALREADY_CURRENT": "This version is already the current one.",
+        "VERSION_NOT_ACTIVATABLE": "This version is being processed or cannot be activated.",
+        "VERSION_NOT_DELETABLE": "Only drafts that were never activated can be deleted.",
+        "DOCUMENT_ARCHIVED": "The document is retired: reactivate the document first."
+      }
+    },
+    "category": {
+      "hint": {
+        "onboarding": "First day, paperwork, equipment, rules to know",
+        "other": "Everything else"
+      }
+    }
+  },
+  "portalHr": {
+    "title": "Create tasks with AI",
+    "description": "Pick a document and target stage; AI proposes tasks linked to the exact source passage.",
+    "safeBadge": "AI never auto-publishes",
+    "sectionCount": "{count} sections",
+    "steps": {
+      "step1": "Pick source and target",
+      "step2": "AI builds the roadmap",
+      "step3": "HR accepts",
+      "step4": "Add to task management"
+    },
+    "template": {
+      "code": "Journey code",
+      "title": "Journey title"
+    },
+    "stage": {
+      "heading": "Target stage",
+      "hint": "Pick an existing stage or create one",
+      "title": "Stage title",
+      "create": "Create stage",
+      "addNew": "Create a new day or stage",
+      "addNewHint": "Use this when the journey needs another stage",
+      "empty": "There are no days yet. Create the first day of the journey in the form below, then pick documents so AI can propose tasks.",
+      "createFirst": "Create the first day",
+      "cancel": "Cancel",
+      "close": "Close",
+      "toDraft": "AI tasks go to draft {n}",
+      "toNewDraft": "AI tasks go to a new draft"
+    },
+    "document": {
+      "heading": "Source document",
+      "selectedCount": "{count} document selected",
+      "pick": "Pick a document",
+      "remove": "Remove",
+      "empty": "No document selected",
+      "loading": "Loading list…",
+      "noneAvailable": "No documents yet — upload one in Documents first.",
+      "collapse": "Collapse",
+      "pickerTitle": "Pick ready documents",
+      "pickerHint": "You can pick several sources for one analysis",
+      "pickedBadge": "{count} picked",
+      "searchPlaceholder": "Search by name, group or owner…",
+      "pickedFoot": "{count} documents picked",
+      "done": "Done picking",
+      "emptyHint": "Press “Pick documents” to choose one or more ready documents; AI proposes tasks with source passages for you to review."
+    },
+    "audience": {
+      "label": "Applies to",
+      "fallback": "No department assigned",
+      "sub": "Based on your department"
+    },
+    "run": {
+      "needDoc": "Pick at least one document",
+      "needStage": "Pick a target stage",
+      "loading": "Working…",
+      "submit": "AI propose tasks",
+      "footnote": "AI proposes tasks into the chosen stage; HR accepts each one.",
+      "submitCount": "Analyze {count} documents and propose a roadmap",
+      "errors": {
+        "LLM_NOT_CONFIGURED": "The AI service is not configured, so proposals cannot be created yet.",
+        "NO_DOCUMENTS": "No document selected.",
+        "JOB_ERROR": "Creating proposals failed, try again later.",
+        "JOB_INTERRUPTED": "Creating proposals was interrupted, try again later."
+      }
+    },
+    "progress": {
+      "steps": {
+        "read": "Read the document",
+        "draft": "AI drafts tasks",
+        "verify": "Check the quoted sources",
+        "cover": "Fill in missing sections",
+        "order": "Order and prerequisites",
+        "save": "Save the result"
+      },
+      "skipped": "not needed",
+      "seconds": "{seconds}s",
+      "waiting": "Waiting",
+      "queued": "Queued",
+      "queueAhead": "{count} jobs are waiting ahead of yours.",
+      "elapsed": "Running for {seconds}s",
+      "remaining": "about {seconds}s left",
+      "creating": "Creating tasks {done}/{total}",
+      "lost": "Could not fetch progress right now. The job keeps running in the background: reload the page to continue."
+    },
+    "propose": {
+      "heading": "AI task proposals",
+      "hint": "Calls the real language model — each click costs a small fee.",
+      "empty": "No proposal had enough basis to show.",
+      "confidence": "Confidence",
+      "sources": "Cited sources",
+      "accept": "Accept, create task",
+      "accepted": "Created task #{id} in the stage.",
+      "acceptAll": "Accept all ({count})",
+      "acceptedAll": "Created {count} tasks in the stage.",
+      "group": {
+        "PROFILE": "Profile",
+        "TRAINING": "Training",
+        "DEVICE": "Devices",
+        "OFFICE": "Office"
+      },
+      "summary": {
+        "proposed": "Proposed tasks",
+        "accepted": "Accepted",
+        "pending": "To review"
+      },
+      "acceptPending": "Accept all",
+      "addToTasks": "Add to Task management",
+      "reset": "Pick sources again",
+      "roadSub": "{count} AI-proposed tasks · not visible to employees yet",
+      "minutes": "{n} min",
+      "copySuffix": "(copy)",
+      "status": {
+        "pending": "To review",
+        "accepted": "Accepted",
+        "edited": "Edited"
+      },
+      "confidenceLevel": {
+        "HIGH": "High confidence",
+        "MEDIUM": "Medium confidence",
+        "LOW": "Low confidence"
+      },
+      "actions": {
+        "accept": "Accept",
+        "source": "See the exact source passage",
+        "edit": "Edit",
+        "duplicate": "Duplicate",
+        "remove": "Remove from roadmap"
+      },
+      "road": {
+        "start": "Start",
+        "finish": "Done",
+        "taskNo": "Task {n}"
+      },
+      "remove": {
+        "title": "Remove the proposal from the roadmap?",
+        "body": "“{title}” will be removed from the AI roadmap. Run the analysis again to see it again.",
+        "confirm": "Remove proposal"
+      },
+      "edit": {
+        "title": "Edit proposal",
+        "name": "Task name",
+        "summary": "Why it matters",
+        "minutes": "Duration (minutes)",
+        "steps": "Steps",
+        "done": "Completion criteria (one per line)",
+        "save": "Save",
+        "position": "Position (1–{max})",
+        "positionHint": "Type a number to move it, or drag the card on the roadmap.",
+        "minutesHint": "Leave empty if unknown.",
+        "stepsHint": "One step per line, done from top to bottom."
+      },
+      "prerequisites": "Needs to be done first",
+      "needsCheck": "Needs a check",
+      "reviewNotes": "HR should check",
+      "reorder": {
+        "hint": "Drag a card to reorder",
+        "dropped": "{count} prerequisite(s) dropped because they now come after the task that needs them. A prerequisite must come first."
+      }
+    },
+    "errors": {
+      "unauthorized": "Please sign in again.",
+      "forbidden": "You don't have permission for this action.",
+      "unavailable": "Something went wrong, try again later.",
+      "network": "Could not reach the server."
+    },
+    "result": {
+      "heading": "Result per document",
+      "done": "{count} proposals",
+      "failed": "Could not create proposals",
+      "retry": "Retry",
+      "truncated": "Long document: the last {count} sections were not analysed.",
+      "errors": {
+        "AI_INVALID_JSON": "The AI returned data in the wrong format",
+        "LLM_UNAVAILABLE": "The AI service is temporarily unavailable",
+        "DOCUMENT_VERSION_NOT_FOUND": "Could not read the document content"
+      },
+      "uncovered": "{count} sections without a task: {names}",
+      "skippedInfo": "AI treated {count} sections as information only and created no task: {names}"
+    }
+  },
+  "portalAdmin": {
+    "common": {
+      "loading": "Loading…",
+      "empty": "No data yet.",
+      "close": "Close",
+      "cancel": "Cancel",
+      "save": "Save",
+      "count": "{count} items"
+    },
+    "roles": {
+      "all": "All",
+      "USER": "Employee",
+      "HR": "HR",
+      "ADMIN": "Admin"
+    },
+    "errors": {
+      "unauthorized": "Please sign in again.",
+      "forbidden": "You are not allowed to do this.",
+      "unavailable": "Something went wrong, try again later.",
+      "network": "Cannot reach the server.",
+      "USER_NOT_FOUND": "User not found.",
+      "EMAIL_TAKEN": "This email already has an account.",
+      "CANNOT_DEMOTE_SELF": "You cannot lower your own role.",
+      "CANNOT_LOCK_SELF": "You cannot lock your own account.",
+      "TEAM_NOT_FOUND": "Department not found.",
+      "NOT_AN_HR_USER": "The selected person is not an HR user.",
+      "TEAM_CODE_TAKEN": "This department code already exists.",
+      "ADMIN_HAS_NO_TEAM": "Admin accounts do not belong to a department.",
+      "ALREADY_MEMBER": "This person is already in the department.",
+      "MEMBERSHIP_NOT_FOUND": "Membership not found.",
+      "NO_SHARED_TEMPLATE": "There is no published shared journey to copy yet.",
+      "TEAM_ALREADY_HAS_JOURNEY": "This department already has a journey."
+    },
+    "dashboard": {
+      "title": "System administration",
+      "description": "Departments, accounts and members. Journey content is managed by each department's HR.",
+      "byTeam": "New hires by department",
+      "byTeamSub": "New hires in each active department",
+      "recent": "Recent activity",
+      "viewAudit": "View audit log",
+      "kpi": {
+        "teams": "Departments",
+        "teamsSub": "{count} archived",
+        "hr": "HR",
+        "hrSub": "owning departments",
+        "employees": "New hires",
+        "employeesNoTeam": "{count} not in a department",
+        "employeesAllInTeam": "all assigned to a department",
+        "attention": "Needs attention",
+        "attentionSub": "{locked} locked accounts · {noTeam} without a department"
+      }
+    },
+    "users": {
+      "title": "Users",
+      "description": "Accounts and system roles (Admin, HR, Employee). Department membership is managed under Members.",
+      "add": "Add user",
+      "search": "Search by name or email…",
+      "empty": "No matching users.",
+      "noTeam": "Unassigned",
+      "active": "Active",
+      "inactive": "Locked",
+      "neverLoggedIn": "Never signed in",
+      "edit": "Edit",
+      "resetPassword": "Reset password",
+      "lock": "Lock account",
+      "unlock": "Unlock",
+      "editTitle": "Edit user",
+      "saved": "User saved.",
+      "locked": "Account locked.",
+      "unlocked": "Account unlocked.",
+      "table": {
+        "user": "User",
+        "role": "System role",
+        "team": "Department",
+        "status": "Status",
+        "lastLogin": "Last sign-in"
+      },
+      "form": {
+        "name": "Full name",
+        "email": "Email",
+        "role": "System role",
+        "team": "Department (optional)",
+        "noTeam": "Unassigned",
+        "tempHint": "A temporary password is created on save; the user must change it at first sign-in."
+      },
+      "resetTitle": "Reset {name}'s password?",
+      "resetBody": "A new temporary password is generated for {name} and shown once so you can pass it on.",
+      "resetWarning": "The old password and all current sessions stop working immediately.",
+      "resetConfirm": "Reset password",
+      "lockTitle": "Lock {name}'s account?",
+      "lockBody": "{name} will be signed out and cannot sign in until you unlock the account. Data and journey are kept.",
+      "unlockTitle": "Unlock {name}'s account?",
+      "unlockBody": "{name} can sign in again.",
+      "secretTitle": "Temporary password for {name}",
+      "secretLabel": "Temporary password:",
+      "secretHint": "Shown once and not stored in readable form. The user must change it at first sign-in."
+    },
+    "teams": {
+      "title": "Departments",
+      "description": "Each department has its own HR owner, new hires and journey. HR only sees the departments they own.",
+      "add": "Create department",
+      "search": "Search department name or code…",
+      "empty": "No matching departments.",
+      "active": "Active",
+      "archived": "Archived",
+      "noHr": "No HR yet",
+      "noJourney": "No journey yet",
+      "memberCount": "{employees} new hires · {hr} HR",
+      "detail": "Details and members",
+      "edit": "Edit",
+      "archive": "Archive",
+      "restore": "Restore",
+      "editTitle": "Edit department",
+      "saved": "Department saved.",
+      "created": "Department created.",
+      "filter": {
+        "all": "All",
+        "ACTIVE": "Active",
+        "ARCHIVED": "Archived"
+      },
+      "table": {
+        "team": "Department",
+        "status": "Status",
+        "hr": "HR owner",
+        "members": "Members",
+        "journey": "Journey"
+      },
+      "journeyStatus": {
+        "DRAFT": "draft",
+        "PUBLISHED": "published"
+      },
+      "form": {
+        "name": "Department name",
+        "code": "Code (uppercase)",
+        "hr": "Primary HR owner",
+        "noHr": "Not selected",
+        "copyShared": "Create the department's journey by copying the shared journey. The department's HR edits this copy."
+      },
+      "archiveTitle": "Archive department “{name}”?",
+      "archiveBody": "The department becomes Archived (not deleted): members lose department access but data is kept. You can restore it any time.",
+      "archiveWarning": "Access for every member of this department will be closed.",
+      "restoreTitle": "Restore department “{name}”?",
+      "restoreBody": "The department is active again and members regain access.",
+      "archivedDone": "Department archived.",
+      "restoredDone": "Department restored.",
+      "copyTitle": "Create a journey for “{name}”?",
+      "copyBody": "Copies the shared journey (stages, tasks, prerequisites) into a separate draft for “{name}”. The department's HR edits and publishes the copy; the shared journey is not affected.",
+      "copyConfirm": "Create copy from shared journey",
+      "copiedDone": "Journey copy created for the department.",
+      "detailSub": "Code {code} · created {date} · {state}"
+    },
+    "members": {
+      "title": "Members",
+      "pageTitle": "Department members",
+      "description": "Assign users to departments. Department role follows the system role (HR owner or new hire). Access closes when the account is locked or the department is archived.",
+      "search": "Search person or department…",
+      "empty": "No matching members.",
+      "add": "Add member",
+      "assign": "Assign",
+      "assignTitle": "Assign to department",
+      "user": "User",
+      "pickUser": "Choose a user…",
+      "roleHint": "The department role follows the user's system role.",
+      "remove": "Remove from department",
+      "removeTitle": "Remove {user} from the department?",
+      "removeBody": "{user} will no longer belong to “{team}” and loses access to this department's data. The account is kept.",
+      "removedDone": "Removed from department.",
+      "addedDone": "Assigned to department.",
+      "table": {
+        "team": "Department",
+        "teamRole": "Department role",
+        "access": "Access",
+        "joined": "Joined"
+      },
+      "teamRole": {
+        "HR": "HR owner",
+        "EMPLOYEE": "New hire"
+      },
+      "access": {
+        "ACTIVE": "Active",
+        "BLOCKED_USER": "Account locked",
+        "BLOCKED_TEAM": "Department archived"
+      }
+    },
+    "template": {
+      "title": "Shared journey",
+      "description": "The company's master copy. When a department is created the journey is copied for it; the department's HR only edits their own copy.",
+      "edit": "Edit shared journey",
+      "byTeam": "Journey by department",
+      "usingCopy": "Using its own copy",
+      "kpi": {
+        "shared": "Shared journey",
+        "noShared": "No published version yet",
+        "tasks": "Tasks",
+        "tasksSub": "in the shared journey",
+        "teams": "Departments with a copy",
+        "teamsSub": "of {total} active"
+      }
+    },
+    "audit": {
+      "title": "Audit log",
+      "description": "Who did what and when — recorded from real admin actions.",
+      "empty": "No activity yet.",
+      "system": "System",
+      "table": {
+        "time": "Time",
+        "actor": "Actor",
+        "action": "Action",
+        "target": "Target"
+      },
+      "actions": {
+        "CREATE_USER": "Add user",
+        "UPDATE_USER": "Edit user",
+        "RESET_PASSWORD": "Reset password",
+        "LOCK_USER": "Lock account",
+        "UNLOCK_USER": "Unlock account",
+        "CREATE_TEAM": "Create department",
+        "UPDATE_TEAM": "Edit department",
+        "ARCHIVE_TEAM": "Archive department",
+        "RESTORE_TEAM": "Restore department",
+        "ADD_MEMBER": "Add member to department",
+        "REMOVE_MEMBER": "Remove member from department",
+        "COPY_TEMPLATE": "Copy shared journey",
+        "PUBLISH_TEMPLATE": "Publish journey",
+        "INGEST_DOCUMENT": "Publish document"
+      },
+      "entities": {
+        "user": "User",
+        "team": "Department",
+        "document_version": "Document version",
+        "journey_template": "Journey",
+        "document": "Document"
+      }
+    },
+    "metrics": {
+      "title": "AI cost and performance",
+      "description": "Calls, errors, latency, tokens and estimated cost of the LLM and embedding services per operation. Numbers only, no content.",
+      "period": "Time range",
+      "lastDays": "Last {count} days",
+      "kpi": {
+        "calls": "Calls",
+        "errors": "Failed calls",
+        "errorRate": "{percent}% of calls",
+        "cost": "Estimated cost",
+        "costNote": "At the configured unit prices; embedding has no price yet so it counts as 0"
+      },
+      "table": {
+        "operation": "Operation",
+        "calls": "Calls",
+        "errors": "Errors",
+        "tokensIn": "Tokens in",
+        "tokensOut": "Tokens out",
+        "embedded": "Embedded",
+        "cost": "USD"
+      },
+      "operations": {
+        "chat_rewrite": "Question rewrite",
+        "chat_embed": "Question embedding",
+        "chat_answer": "Answer from documents",
+        "viga_route": "Viga tool routing",
+        "ingest_embed": "Embedding on document activation",
+        "ingest_reembed": "Re-embedding after a model change",
+        "ingest_probe": "Embedding service check",
+        "ingest_structure": "AI document sectioning",
+        "task_proposal": "AI task generation",
+        "embed_keepwarm": "Keeping the embedding service warm (background GPU)"
+      },
+      "empty": "No calls in this range yet.",
+      "note": "p50 and p95 are per call (not per whole question). DeepSeek prices were looked up on 01/10/2026 and may change: verify before using them as financial figures."
+    }
+  },
+  "employee": {
+    "brand": "VSF Onboarding",
+    "brandSub": "New joiner portal",
+    "navLabel": "Main navigation",
+    "accountMenu": "My account",
+    "darkMode": "Switch to dark theme",
+    "lightMode": "Switch to light theme",
+    "askViga": "Ask Viga",
+    "nav": {
+      "overview": "Overview",
+      "tasks": "Tasks",
+      "progress": "Progress",
+      "documents": "Documents",
+      "notifications": "Notifications",
+      "tickets": "Requests",
+      "ticketsUnread": "{count} ticket(s) with unseen messages"
+    },
+    "menu": {
+      "profile": "My profile",
+      "logout": "Sign out",
+      "appearance": "Appearance"
+    },
+    "task": {
+      "close": "Close",
+      "markDone": "Mark as done",
+      "alreadyDone": "You have completed this task",
+      "required": "Required",
+      "optional": "Optional",
+      "view": "View details",
+      "noBody": "This task has no detailed guidance yet.",
+      "lockedTitle": "Finish these first:",
+      "prereqTitle": "Prerequisites",
+      "state": {
+        "done": "Done",
+        "ready": "Ready",
+        "locked": "Locked"
+      },
+      "group": {
+        "PROFILE": "Paperwork",
+        "TRAINING": "Training",
+        "DEVICE": "Devices",
+        "OFFICE": "Office",
+        "NONE": "Ungrouped"
+      }
+    },
+    "overview": {
+      "greeting": "Hello, {name}",
+      "subtitle": "These are your tasks, in order. Locked tasks open automatically once their prerequisites are done.",
+      "heroProgressLabel": "Your progress",
+      "heroProgressHint": "{done}/{total} tasks done",
+      "openRoadmap": "Open journey",
+      "kpi": {
+        "done": "Done",
+        "doneHint": "of {total} tasks",
+        "ready": "Ready now",
+        "readyHint": "nothing blocking them",
+        "locked": "Locked",
+        "lockedHint": "waiting on prerequisites",
+        "required": "Required tasks",
+        "requiredHint": "of {total} required tasks"
+      },
+      "next": {
+        "title": "Ready to do now",
+        "hint": "Open a task to read the guidance and mark it done",
+        "all": "See all",
+        "emptyTitle": "Nothing is open right now",
+        "emptyBody": "The remaining tasks wait on prerequisites, or you have finished the whole journey."
+      },
+      "recent": {
+        "title": "Recently completed",
+        "empty": "No task has been marked done yet.",
+        "locked": "{count} tasks are locked and open once their prerequisites are done."
+      },
+      "shortcuts": {
+        "title": "Shortcuts",
+        "tasks": "Tasks",
+        "tasksHint": "Browse day by day",
+        "documents": "Documents",
+        "documentsHint": "Read inside the portal",
+        "progress": "Progress",
+        "progressHint": "Detailed breakdown",
+        "profile": "Profile",
+        "profileHint": "Details and password"
+      },
+      "completed": "Completed: {title}",
+      "completeFailed": "Could not save that. Please try again.",
+      "currentDay": "On {day}",
+      "chart": {
+        "title": "Your progress",
+        "hint": "By task status",
+        "center": "done"
+      }
+    },
+    "tasks": {
+      "title": "Journey, day by day",
+      "subtitle": "Pick a day on the left to see its tasks. Work through them in order; locked tasks open once prerequisites are done.",
+      "heroProgress": "{done}/{total} tasks done",
+      "sideTitle": "Days",
+      "sideHint": "Pick a day to see its tasks",
+      "start": "Start",
+      "finish": "Finish",
+      "dayCount": "{done}/{total} tasks done",
+      "stat": {
+        "done": "Done",
+        "ready": "Ready",
+        "locked": "Locked"
+      },
+      "modeRoad": "Journey",
+      "modeList": "List",
+      "taskNo": "Task {n}",
+      "prereq": "{count} prerequisites",
+      "needFirst": "Finish first: {titles}",
+      "legendTitle": "Milestone colour by task group",
+      "emptyTitle": "No journey yet",
+      "emptyBody": "HR has not published a journey for your team. Tasks will appear here once they do.",
+      "emptyDayTitle": "No tasks on this day",
+      "emptyDayBody": "Pick another day in the left column.",
+      "completed": "Completed: {title}",
+      "completeFailed": "Could not save that. Please try again.",
+      "changed": "Edited"
+    },
+    "progress": {
+      "title": "Detailed progress",
+      "subtitle": "Tasks by day and by group, plus what you have just completed.",
+      "kpi": {
+        "overall": "Overall",
+        "overallHint": "{done}/{total} tasks done",
+        "required": "Required tasks",
+        "requiredHint": "done out of total",
+        "ready": "Ready now",
+        "readyHint": "nothing blocking them",
+        "locked": "Locked",
+        "lockedHint": "waiting on prerequisites"
+      },
+      "byDay": {
+        "title": "By day",
+        "hint": "Tasks done out of the day's total"
+      },
+      "byGroup": {
+        "title": "By task group",
+        "hint": "Bar height is the group's total",
+        "legend": "The filled part is how many tasks in the group are done."
+      },
+      "recent": {
+        "title": "Recent activity",
+        "empty": "No task has been marked done yet."
+      },
+      "noData": "Nothing to show yet."
+    },
+    "documents": {
+      "title": "Documents",
+      "subtitle": "Documents published by HR and other departments. Read them here, no download needed.",
+      "searchPlaceholder": "Search documents…",
+      "allCategories": "All groups",
+      "sections": "{count} sections",
+      "read": "Read document",
+      "emptyTitle": "No matching documents",
+      "emptyBody": "Try clearing a filter or searching for something else.",
+      "failed": "Could not load the document list. Please reload the page."
+    },
+    "notifications": {
+      "title": "Notifications",
+      "subtitle": "Reminders live in the portal and come from your own journey. Read state is kept on this device.",
+      "filterAll": "All ({count})",
+      "filterUnread": "Unread ({count})",
+      "markAll": "Mark all as read",
+      "emptyTitle": "No notifications",
+      "emptyBody": "When a task unlocks or needs attention, it shows up here.",
+      "kind": {
+        "unlocked": "Task unlocked",
+        "done": "Completed",
+        "reminder": "Reminder",
+        "welcome": "System",
+        "ticket": "HR reply",
+        "change": "Edited"
+      },
+      "welcomeTitle": "Welcome to VSF!",
+      "welcomeBody": "Start from the Overview page; you can ask Viga at any time.",
+      "unlockedTitle": "Ready now: {title}",
+      "unlockedBody": "Nothing is blocking this task any more.",
+      "doneTitle": "Completed: {title}",
+      "doneBody": "This task is recorded in your journey.",
+      "reminderTitle": "{day} still has open tasks",
+      "reminderBody": "{count} required tasks left on this day.",
+      "unreadMark": "Unread",
+      "ticketTitle": "HR replied: {subject}",
+      "ticketBody": "Open the request to read the reply.",
+      "changeTitle": "{stage} was edited",
+      "changeBody": "HR updated the journey. {count} task(s) wait for you to update or keep your version."
+    },
+    "profile": {
+      "title": "My profile",
+      "subtitle": "Account details, journey progress and your sign-in password.",
+      "failed": "Could not load your profile. Please reload the page.",
+      "role": {
+        "USER": "New joiner",
+        "HR": "People team (HR)",
+        "ADMIN": "System administrator"
+      },
+      "facts": {
+        "joined": "Account created",
+        "started": "Journey started",
+        "notStarted": "Not started",
+        "lastLogin": "Last sign-in"
+      },
+      "progressLabel": "Journey progress",
+      "progressHint": "{done}/{total} tasks done, including {requiredDone}/{requiredTotal} required ones.",
+      "nameTitle": "Display name",
+      "nameHint": "This name appears in the portal and in HR's lists.",
+      "nameLabel": "Display name",
+      "save": "Save",
+      "nameSaved": "Display name saved.",
+      "nameFailed": "Could not save the display name. Please try again.",
+      "password": {
+        "title": "Change password",
+        "hint": "Enter your current password, then a new one of at least 8 characters.",
+        "current": "Current password",
+        "new": "New password",
+        "confirm": "Repeat new password",
+        "submit": "Change password",
+        "note": "Other devices will have to sign in again; this device stays signed in.",
+        "saved": "Password changed.",
+        "mismatch": "The two new passwords do not match.",
+        "tooShort": "The new password needs at least 8 characters.",
+        "wrongCurrent": "That current password is not right.",
+        "unchanged": "The new password is the same as the old one.",
+        "failed": "Could not change the password. Please try again."
+      }
+    },
+    "viga": {
+      "title": "Viga",
+      "subtitle": "Vin Intelligent Guidance Assistant",
+      "close": "Close",
+      "inputLabel": "Question for Viga",
+      "placeholder": "Ask about your tasks…",
+      "send": "Send",
+      "sourcesLabel": "Source:",
+      "quick": {
+        "q1": "What should I do today?",
+        "q2": "Which tasks are locked?",
+        "q3": "How do I collect my laptop?",
+        "q4": "Which documents must I hand in?"
+      },
+      "type": {
+        "ANSWER": "Answer with source",
+        "NO_BASIS": "No basis yet",
+        "OUT_OF_SCOPE": "Outside shared documents",
+        "NEXT_STEP": "Next step",
+        "PREREQUISITE_REQUIRED": "Do this first",
+        "DAY_PLAN": "Day plan",
+        "INFO": "Information",
+        "NOT_IN_JOURNEY": "Not in your journey",
+        "CLARIFY": "Need clarification",
+        "ERROR": "Temporarily unavailable"
+      },
+      "reply": {
+        "notInJourney": "This task is not in your journey.",
+        "allDone": "You have completed every task in your journey.",
+        "taskDone": "You have completed “{title}”.",
+        "taskReady": "“{title}” is open: you can do it right now.",
+        "nextStep": "You can do “{title}” right now. Open it for step-by-step instructions.",
+        "locked": "You cannot do “{title}” yet because you must finish “{blocker}” first.",
+        "dayPlan": "{day}: you can do {ready} of {total} tasks right now.",
+        "dayPlanEmpty": "{day}: no task is available right now; the rest are waiting on prerequisites.",
+        "dayNotFound": "I could not find that day in your journey.",
+        "progress": "You have completed {done}/{total} tasks ({percent}%).",
+        "taskDetail": "Instructions for “{title}”:\n{detail}",
+        "clarifyTask": "Which task do you mean?",
+        "noJourney": "You do not have an onboarding journey yet, so I cannot look up your tasks.",
+        "noTaskNow": "No task is available right now.",
+        "noBasis": "I have no basis in the documents to answer this, so I will not guess.",
+        "outOfScope": "This information is not in the shared documents. Please ask your HR contact; I can help send your question to HR.",
+        "assistantUnavailable": "Viga is temporarily unable to answer, please try again later. If it is urgent you can send the question to HR.",
+        "smalltalk": "I am Viga. I guide you through your onboarding journey and look things up in the documents HR published. Ask me about your tasks or company rules.",
+        "assumed": "I am assuming you mean the task “{title}”."
+      },
+      "action": {
+        "openTask": "Open: {title}",
+        "openDay": "View {day}"
+      },
+      "source": {
+        "task": "task “{title}” in your journey",
+        "day": "{day} in your journey"
+      },
+      "hello": "Hello {name}, I am Viga. Day to day, just follow your journey. Ask me when you are unsure where to start, when a task is locked, or when you need something from the documents HR published.",
+      "infoLabel": "How Viga works",
+      "infoLink": "What can Viga do, and not do?",
+      "infoTitle": "Viga — your guide assistant",
+      "infoIntro": "Viga works from your own onboarding journey and the documents HR published in the portal. Viga only guides you: it never decides for you and never changes a task's status.",
+      "canTitle": "Viga can",
+      "can": {
+        "a1": "Tell you which task to do next",
+        "a2": "Explain why a task is locked and what to finish first",
+        "a3": "Summarise the plan for the day you are on"
+      },
+      "cannotTitle": "Viga cannot",
+      "cannot": {
+        "b1": "Mark a task done on your behalf",
+        "b2": "Guess when there is no source — it says so plainly instead",
+        "b3": "Grant access, approve anything, or decide in HR's place"
+      },
+      "claim": {
+        "quote": "Quoted verbatim",
+        "part": "Part {n}",
+        "partNoBasis": "I have no basis in the documents to answer this part.",
+        "partialNoBasis": "Some parts of the question have no basis in the documents, so I did not answer them.",
+        "unansweredTitle": "Not covered by the documents",
+        "unansweredHint": "I have no basis to answer this part, so I will not guess. You can send the question to HR."
+      },
+      "thinking": "Viga is looking it up…",
+      "errors": {
+        "throttled": "You are asking too fast, try again in {seconds} seconds.",
+        "unavailable": "Viga is temporarily unable to answer, please try again later.",
+        "network": "Cannot reach the server. Check your connection and try again."
+      },
+      "history": {
+        "title": "Conversation history",
+        "new": "New conversation",
+        "loading": "Loading…",
+        "empty": "No conversations yet.",
+        "rename": "Rename",
+        "delete": "Delete conversation",
+        "retention": "Conversations are kept for 90 days after the last message; only you can see and delete them."
+      },
+      "report": {
+        "button": "Send this question to HR",
+        "sent": "Sent to HR (ticket #{id}). Follow the reply under Requests.",
+        "title": "Send the question to HR",
+        "newTitle": "Create a ticket for HR",
+        "newIntro": "Describe your problem or question. You can attach images or videos to help HR support you.",
+        "newPlaceholder": "Example: I cannot sign in to Outlook on my phone",
+        "subtitle": "HR in your department will receive and answer it",
+        "intro": "Review and edit the question if needed. It is only sent after you press “Send”; Viga never sends it on its own.",
+        "question": "Question",
+        "note": "Extra note (optional)",
+        "notePlaceholder": "For example: I followed the instructions but still fail at step 2",
+        "limits": "At most 5 requests per day; the same question within 10 minutes is not sent again.",
+        "send": "Send",
+        "cancel": "Cancel",
+        "close": "Close",
+        "errors": {
+          "TICKET_DAILY_LIMIT": "You have used your 5 requests for today. Try again tomorrow.",
+          "TICKET_DUPLICATE": "You just sent this question. HR will reply soon.",
+          "NO_TEAM_ASSIGNED": "You are not assigned to a department yet, so it cannot be sent. Contact HR or an administrator.",
+          "generic": "Could not send. Please try again."
+        },
+        "attachments": "Photos or videos (optional)"
+      },
+      "expand": "Open full page",
+      "feedback": {
+        "question": "Was this answer helpful?",
+        "up": "Helpful",
+        "down": "Not right",
+        "thanks": "Thanks for your feedback",
+        "reasonLabel": "What was wrong? (optional)",
+        "reasons": {
+          "WRONG": "Wrong information",
+          "MISSING": "Missing information",
+          "UNCLEAR": "Hard to follow",
+          "OFF_TOPIC": "Not what I asked"
+        },
+        "commentPlaceholder": "Add a note for HR (optional)",
+        "send": "Send",
+        "failed": "Could not send your rating. Please try again.",
+        "editAgain": "Edit feedback"
+      },
+      "page": {
+        "title": "Chat with Viga",
+        "listTitle": "Conversations",
+        "collapse": "Back to the Viga panel",
+        "greetingTitle": "What would you like to ask today?",
+        "greetingHint": "Ask about your tasks, a locked task, or look something up in the HR documents. Viga only answers when it has a basis.",
+        "emptyList": "No conversations yet. Ask your first question."
+      },
+      "resize": "Drag to resize the chat panel",
+      "resizeHint": "Drag the left edge to resize, double-click to reset"
+    },
+    "taskPage": {
+      "breadcrumb": "Breadcrumb",
+      "allTasks": "Tasks",
+      "backToTasks": "Back to tasks",
+      "notFoundTitle": "Task not found",
+      "notFoundBody": "This task is not in your journey, or HR removed it from the journey.",
+      "lockedTitle": "This task is locked",
+      "lockedBody": "Finish the prerequisite on the right first; this task then opens by itself.",
+      "why": "Why it matters",
+      "steps": "Steps",
+      "stepsHint": "Work through them top to bottom",
+      "doneWhen": "Done when",
+      "guide": "Guidance",
+      "noBody": "This task has no detailed guidance yet.",
+      "statusTitle": "Do this task",
+      "readyHint": "You can do this now. Once finished, use the button below to record it.",
+      "lockedHint": "You cannot mark this done yet: a prerequisite is still open.",
+      "doneAt": "Completed at {at}",
+      "unlockedAfter": "{count} further tasks are now open.",
+      "askViga": "Ask Viga about this task",
+      "askVigaQuestion": "How do I do {title}?",
+      "prereqTitle": "Finish first",
+      "unlocksTitle": "Opens next",
+      "unlocksHint": "Tasks that open once this one is done",
+      "completed": "Completed: {title}",
+      "completeFailed": "Could not save that. Please try again.",
+      "heroSubtitle": "{group} · {required} · {day}",
+      "railTitle": "Tasks in {day}",
+      "railHint": "{done}/{total} tasks done",
+      "sourcesTitle": "Source documents",
+      "sourcesHint": "The document passage this task is based on"
+    },
+    "tickets": {
+      "title": "My requests",
+      "subtitle": "Questions you sent to HR and the replies you received."
+    },
+    "changes": {
+      "title": "Journey changes",
+      "subtitlePending": "{count} task(s) edited by HR are waiting for your decision.",
+      "subtitleNone": "Nothing is waiting. Your journey is the version you chose.",
+      "emptyTitle": "No changes yet",
+      "emptyBody": "When HR applies a new version of a day, the changed tasks show up here. Your journey never changes by itself.",
+      "noticeTitle": "{stage} · version {version}",
+      "acceptAll": "Update all {count} tasks",
+      "banner": "HR edited the journey: {count} task(s) wait for your decision.",
+      "bannerLink": "See changes",
+      "changed": "Edited",
+      "kind": {
+        "MODIFIED": "Content changed",
+        "ADDED": "New task",
+        "REMOVED": "Task removed",
+        "PREREQUISITES": "Prerequisites changed"
+      },
+      "field": {
+        "title": "Task name",
+        "body_markdown": "Instructions",
+        "required": "Required",
+        "task_group": "Group",
+        "prerequisites": "Do first"
+      },
+      "before": "Your version",
+      "after": "HR's new version",
+      "empty": "(empty)",
+      "noPrerequisites": "None",
+      "alreadyDone": "You finished it",
+      "keptDone": "You already finished this task, so it stays in your journey even though HR removed it in the new version.",
+      "noteTitle": "When you press Update:",
+      "noteKeepStatus": "The task content is replaced by HR's latest version; your status stays and you continue where you are.",
+      "noteKeepsDone": "You already finished this task: it stays Done, only the content changes.",
+      "noteRemoves": "This task will be removed from your journey.",
+      "noteAlsoUpdate": "Related tasks are added or updated too: {titles}.",
+      "noteLockedUntil": "This task will be locked until you finish: {titles}.",
+      "noteKeepOld": "If you press Keep my version, nothing changes in your journey.",
+      "accept": "Update",
+      "keepOld": "Keep my version",
+      "openTask": "Open task",
+      "status": {
+        "ACCEPTED": "You updated this task.",
+        "DISMISSED": "You chose to keep your version.",
+        "SUPERSEDED": "A newer version replaced this edit."
+      }
+    },
+    "journeyProblem": {
+      "needsCreateTitle": "You have no journey yet",
+      "needsCreateBody": "HR will add your onboarding journey. Once it exists, your tasks show up here.",
+      "noJourney": "You are not assigned an onboarding journey, or HR has not applied a version yet. Please contact your HR.",
+      "unavailable": "Could not load the journey. Please reload the page."
+    }
+  },
+  "viga": {
+    "ticket": {
+      "loading": "Loading…",
+      "listLabel": "Ticket list",
+      "create": "New ticket",
+      "filterAll": "All",
+      "status": {
+        "OPEN": "New",
+        "IN_PROGRESS": "In progress",
+        "RESOLVED": "Resolved",
+        "CLOSED": "Closed"
+      },
+      "messages": "{count} messages",
+      "hrReplied": "HR replied",
+      "unclaimed": "No HR assigned",
+      "emptyMine": "You have not sent any request",
+      "emptyMineHint": "Press “New ticket” to send HR a request, or “Send this question to HR” when Viga cannot answer.",
+      "emptyStaff": "No tickets yet",
+      "emptyStaffHint": "Tickets employees send to your department appear here.",
+      "pick": "Pick a ticket to read the conversation.",
+      "relatedTask": "task: {title}",
+      "assigned": "Assigned HR: {name}",
+      "staffTag": "HR",
+      "resolution": "Outcome: {note}",
+      "closedNote": "This ticket is closed, so no more replies can be added.",
+      "replyLabel": "Reply text",
+      "replyPlaceholder": "Type your message…",
+      "send": "Send",
+      "claim": "Take it",
+      "statusLabel": "Status",
+      "noteLabel": "Outcome note",
+      "saveStatus": "Save status",
+      "taskUnchanged": "Closing a ticket does not change the employee's task status; handle the task separately if needed.",
+      "errors": {
+        "generic": "Something went wrong, try again later.",
+        "closed": "The ticket is closed, no more replies.",
+        "claimed": "Another HR member already took this ticket."
+      },
+      "searchLabel": "Search tickets",
+      "searchPlaceholderStaff": "Search by name, email, subject…",
+      "searchPlaceholderMine": "Search by subject…",
+      "filterLabel": "Filter by status",
+      "noMatch": "No matching tickets",
+      "noMatchHint": "Try another keyword or change the status filter.",
+      "pickHint": "Select a ticket on the left to read and reply.",
+      "showing": "Showing {shown} of {total} tickets",
+      "unread": "Unseen messages"
+    },
+    "hrTickets": {
+      "title": "Incident tickets",
+      "description": "Questions employees send to HR when Viga cannot answer. Shared department queue: take a ticket to avoid duplicates."
+    },
+    "feedback": {
+      "title": "Viga feedback",
+      "description": "Questions Viga could not answer and answers employees marked 👎. Add documents and Viga will re-ask to check.",
+      "showResolved": "Include handled questions",
+      "loading": "Loading…",
+      "error": "Could not load the list, try again later.",
+      "emptyTitle": "Nothing to follow up",
+      "emptyHint": "When Viga has no basis or an employee marks 👎, the question shows up here.",
+      "question": "Question",
+      "times": "{count}×",
+      "lastAsked": "Latest",
+      "addDocument": "Add a document",
+      "resolve": "Mark handled",
+      "resolved": "Handled",
+      "privacy": "Questions are anonymous and limited to your department; employees' personal conversations are not visible to HR.",
+      "satisfaction": "Satisfied, 7 days",
+      "openDown": "Not satisfied",
+      "openGaps": "No basis",
+      "searchLabel": "Search questions",
+      "searchPlaceholder": "Search by question text…",
+      "kindLabel": "Filter by type",
+      "kind": {
+        "ALL": "All types",
+        "NO_BASIS": "No basis",
+        "PARTIAL": "Partly answered",
+        "DOWN": "Not satisfied"
+      },
+      "rowKind": {
+        "NO_BASIS": "No basis",
+        "PARTIAL": "Partly answered",
+        "DOWN": "Not satisfied"
+      },
+      "statusLabel": "Filter by status",
+      "status": {
+        "open": "Open",
+        "resolved": "Resolved",
+        "all": "All"
+      },
+      "sortLabel": "Sort",
+      "sort": {
+        "count": "Most asked",
+        "recent": "Newest"
+      },
+      "partialAnswered": "Viga could answer:",
+      "answeredWas": "Viga answered:",
+      "reasons": {
+        "WRONG": "Wrong information",
+        "MISSING": "Missing information",
+        "UNCLEAR": "Hard to follow",
+        "OFF_TOPIC": "Not what was asked"
+      },
+      "resolvedBy": "Added in: {title}",
+      "recheck": "Re-check",
+      "rechecking": "Asking Viga again…",
+      "recheckOk": "Viga can answer now",
+      "recheckFail": "Viga still has no basis to answer. Write it more clearly or add a document.",
+      "recheckError": "Could not re-ask, try again later.",
+      "noMatch": "No matching items",
+      "noMatchHint": "Try another keyword or change the filters.",
+      "supplement": {
+        "title": "Add an answer",
+        "subtitle": "Added to the team's “Supplementary Q&A” document",
+        "hint": "Write the correct answer. It is added to the Supplementary Q&A document and Viga is asked again; the question only closes when Viga can answer it.",
+        "question": "Question (edit to make it clearer if needed)",
+        "answer": "Correct answer",
+        "answerPlaceholder": "Example: If you do not have the criminal record certificate yet, submit the issuing office's receipt and bring the original within 30 days.",
+        "contact": "Point of contact (optional)",
+        "contactPlaceholder": "Example: Recruitment team, recruitment@vinsmartfuture.tech",
+        "submit": "Save and check",
+        "cancel": "Cancel",
+        "close": "Close",
+        "edit": "Edit the answer",
+        "working": "Adding to the document and updating it so Viga can look it up…",
+        "starting": "Starting",
+        "checking": "Asking Viga this question again…",
+        "checkingStage": "Re-asking Viga",
+        "okTitle": "Viga can answer now",
+        "closed": "The question was marked as resolved.",
+        "missTitle": "Viga still cannot answer",
+        "missBody": "The answer is saved but Viga did not find enough basis. Rephrase the question the way employees ask, or write a fuller answer.",
+        "errors": {
+          "save": "Could not save the answer. Please try again.",
+          "activation": "Could not update the document. Please try again later.",
+          "recheck": "Saved, but Viga could not be re-asked. Use “Re-check” on the question row."
+        }
+      },
+      "pager": {
+        "count": "{count} items",
+        "label": "Pagination",
+        "prev": "Previous page",
+        "next": "Next page"
+      }
+    }
+  },
+  "analytics": {
+    "title": "Metrics over time",
+    "loading": "Loading metrics…",
+    "updatedAt": "Updated at {time}",
+    "scopeAll": "Whole system",
+    "scopeTeam": "Team: {team}",
+    "scopeNoTeam": "Not in any team",
+    "period": "Time range",
+    "lastDays": "Last {count} days",
+    "empty": "No data in this range yet.",
+    "viewTable": "View as table",
+    "viewChart": "View as chart",
+    "errors": {
+      "unauthorized": "Your session has expired, please sign in again.",
+      "forbidden": "You are not allowed to view these metrics.",
+      "unavailable": "Could not load the metrics. Please try again later.",
+      "network": "Could not reach the server."
+    },
+    "table": {
+      "date": "Date",
+      "state": "Status",
+      "count": "Count",
+      "operation": "Operation",
+      "hour": "Hour"
+    },
+    "progress": {
+      "title": "Employee progress",
+      "sub": "Each employee is in exactly one group",
+      "center": "employees",
+      "states": {
+        "NO_JOURNEY": "No journey yet",
+        "NOT_STARTED": "Not started",
+        "IN_PROGRESS": "In progress",
+        "COMPLETED": "Completed"
+      }
+    },
+    "activity": {
+      "title": "Activity per day",
+      "sub": "Tasks completed, Viga questions and new tickets, by day",
+      "completed": "Tasks completed",
+      "questions": "Viga questions",
+      "tickets": "New tickets"
+    },
+    "outcome": {
+      "title": "Viga answer outcomes",
+      "sub": "Answers with content versus questions without a source",
+      "center": "answered",
+      "names": {
+        "answer": "Answer with sources",
+        "guidance": "Guidance on what to do",
+        "no_basis": "No source found",
+        "out_of_scope": "Out of scope",
+        "error": "Error"
+      }
+    },
+    "costDay": {
+      "title": "AI cost per day",
+      "sub": "USD, estimated from the configured prices",
+      "series": "Cost (USD)"
+    },
+    "costOp": {
+      "title": "Cost by operation",
+      "sub": "Which operation costs the most",
+      "other": "Other",
+      "none": "No cost yet"
+    },
+    "operations": {
+      "chat_rewrite": "Rewrite question",
+      "chat_embed": "Embed question",
+      "chat_answer": "Answer with sources",
+      "viga_route": "Viga tool routing",
+      "ingest_embed": "Embed document",
+      "ingest_reembed": "Re-embed document",
+      "ingest_probe": "Embedding service check",
+      "ingest_structure": "Structure detection",
+      "task_proposal": "AI task generation",
+      "job": "Other background work",
+      "embed_keepwarm": "Keeping the embedding service warm (background GPU)"
+    },
+    "runs": {
+      "taskTitle": "Each AI task-generation run",
+      "average": "Average of the last {count} successful runs: {seconds} per run, {cost} USD, {items} proposals.",
+      "noRuns": "No task-generation runs recently.",
+      "title": "Each task-creation run",
+      "tabLatency": "Latency",
+      "tabCost": "Cost",
+      "latencyTitle": "Latency per task-generation run",
+      "latencySub": "Total run time versus time spent waiting for the AI model (seconds)",
+      "costTitle": "Cost per task-generation run",
+      "costSub": "USD per run, summed by job",
+      "run": "Run",
+      "status": "Status",
+      "statuses": {
+        "SUCCEEDED": "Succeeded",
+        "FAILED": "Failed"
+      },
+      "duration": "Run time",
+      "llmLatency": "Waiting for AI model",
+      "documents": "Documents",
+      "proposals": "Proposals",
+      "llmCalls": "AI calls",
+      "tokensIn": "Input tokens",
+      "tokensOut": "Output tokens",
+      "cost": "Cost (USD)"
+    },
+    "taskCost": {
+      "title": "AI cost of the team",
+      "sub": "Estimated for the selected period, split into the two items HR triggers",
+      "upload": "Uploading documents",
+      "uploadHint": "Reading document structure with the LLM (self-hosted embedding is not billed)",
+      "tasks": "AI task generation",
+      "runs": "DeepSeek, {count} generation run(s)"
+    },
+    "providers": {
+      "sub": "DeepSeek LLM cost, billed per token",
+      "title": "Cost and performance by provider",
+      "none": "No calls in the selected period",
+      "provider": "Provider",
+      "calls": "Calls",
+      "errors": "{count} errors",
+      "errorsHead": "Errors",
+      "tokensIn": "Input tokens",
+      "tokensOut": "Output tokens",
+      "strings": "Strings embedded",
+      "gpuSeconds": "GPU seconds",
+      "names": {
+        "deepseek": "DeepSeek LLM",
+        "modal": "BGE-M3 embedding (Modal)"
+      },
+      "kinds": {
+        "llm": "Language model",
+        "embedding": "Vector model"
+      }
+    },
+    "costHour": {
+      "title": "AI cost per hour",
+      "sub": "USD over the last 24 hours, DeepSeek LLM cost"
+    },
+    "costGroups": {
+      "names": {
+        "upload": "Uploading documents",
+        "tasks": "AI task generation"
+      },
+      "daySub": "USD per day, document uploads and AI task generation apart",
+      "hourSub": "USD over the last 24 hours, document uploads and AI task generation apart"
+    }
+  },
+  "taskSources": {
+    "view": "View in document"
+  },
+  "attachments": {
+    "add": "Attach photos or videos",
+    "pick": "Choose photos or videos",
+    "hint": "Photos up to 10 MB, videos up to 50 MB, at most {max} files",
+    "uploading": "Uploading",
+    "remove": "Remove {name}",
+    "listLabel": "Attachments",
+    "errors": {
+      "type": "Only JPG, PNG, WebP, GIF images and MP4, WebM, MOV videos",
+      "tooLargeImage": "Photo is over 10 MB",
+      "tooLargeVideo": "Video is over 50 MB",
+      "tooMany": "Too many files",
+      "unavailable": "Attachments are not available",
+      "failed": "Upload failed, try again"
+    }
   }
 }

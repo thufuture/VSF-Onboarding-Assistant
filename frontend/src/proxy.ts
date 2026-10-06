@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { LOCALE_HEADER, isLocale, routing, stripLocale } from "@/i18n/routing";
 
 // Khu cần đăng nhập; đường dẫn không kèm tiền tố ngôn ngữ.
-const PROTECTED_AREAS = ["/chat", "/admin"];
+const PROTECTED_AREAS = ["/chat", "/admin", "/me"];
 const SESSION_COOKIE = "vsf_session";
 
 function isProtected(pathWithoutLocale: string): boolean {

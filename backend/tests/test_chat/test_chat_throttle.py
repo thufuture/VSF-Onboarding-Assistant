@@ -1,4 +1,4 @@
-from src.services.chat.chat_throttle import ChatThrottle
+from src.services.viga.chat_throttle import ChatThrottle
 
 
 def test_allows_questions_under_the_limit() -> None:

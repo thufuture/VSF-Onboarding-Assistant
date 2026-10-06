@@ -1,0 +1,193 @@
+.picker {
+  display: grid;
+  gap: 8px;
+}
+// Dạng gọn trong ô soạn tin: hộp biến mất khỏi bố cục (display: contents) để nút kẹp giấy nằm cùng hàng với ô nhập,
+// còn hàng ảnh thu nhỏ chiếm cả chiều ngang phía trên (order âm trong flex-wrap của ô soạn).
+.pickerCompact {
+  display: contents;
+
+  .thumbs {
+    order: -1;
+    flex-basis: 100%;
+    padding: 2px 4px 0;
+  }
+  .bar {
+    display: contents;
+  }
+}
+.clip {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  flex: none;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--app-accent-strong);
+  cursor: pointer;
+  transition: background-color 0.15s;
+
+  &:hover:not(:disabled) {
+    background: var(--app-accent-soft);
+  }
+  &:focus-visible {
+    outline: 2px solid var(--app-accent);
+    outline-offset: 1px;
+  }
+  &:disabled {
+    cursor: default;
+    opacity: 0.45;
+  }
+}
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+
+  small {
+    color: var(--app-ink-3);
+    font-size: 12px;
+  }
+}
+.add {
+  display: inline-flex;
+  height: 30px;
+  align-items: center;
+  gap: 6px;
+  padding: 0 12px;
+  border: 1px dashed var(--app-border-strong);
+  border-radius: 5px;
+  background: var(--app-surface);
+  color: var(--app-ink);
+  cursor: pointer;
+  font-size: 12.5px;
+  font-weight: 600;
+
+  &:hover:not(:disabled) {
+    border-color: var(--app-accent);
+    color: var(--app-accent-strong);
+  }
+  &:disabled {
+    cursor: default;
+    opacity: 0.55;
+  }
+}
+.thumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.thumb {
+  position: relative;
+  width: 84px;
+  height: 84px;
+  overflow: hidden;
+  border: 1px solid var(--app-border);
+  border-radius: 6px;
+  background: var(--app-surface-2);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  &[data-status="error"] {
+    border-color: #e3b1b1;
+  }
+}
+.file {
+  display: grid;
+  height: 100%;
+  place-items: center;
+  align-content: center;
+  gap: 4px;
+  padding: 6px;
+  color: var(--app-ink-2);
+
+  small {
+    max-width: 100%;
+    overflow: hidden;
+    font-size: 10.5px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 2px;
+  padding: 4px;
+  background: rgb(255 255 255 / 72%);
+  color: var(--app-ink-2);
+  text-align: center;
+
+  small {
+    font-size: 10px;
+    line-height: 1.2;
+  }
+}
+.bad {
+  background: rgb(253 241 241 / 92%);
+  color: #8f2f2f;
+}
+.remove {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  display: grid;
+  width: 20px;
+  height: 20px;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: rgb(16 24 40 / 66%);
+  color: #fff;
+  cursor: pointer;
+}
+.spin {
+  animation: attachSpin 1s linear infinite;
+}
+@keyframes attachSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .spin {
+    animation: none;
+  }
+}
+
+.gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+
+  img {
+    display: block;
+    max-width: 220px;
+    max-height: 160px;
+    border: 1px solid var(--app-border);
+    border-radius: 6px;
+    object-fit: cover;
+  }
+  video {
+    display: block;
+    max-width: 300px;
+    max-height: 200px;
+    border-radius: 6px;
+    background: #000;
+  }
+}

@@ -1,0 +1,546 @@
+"use client";
+
+import {
+  AlertTriangle,
+  CheckCircle2,
+  Copy,
+  FileText,
+  History,
+  Pencil,
+  PlayCircle,
+  RotateCcw,
+  Save,
+  Sparkles,
+  Trash2,
+  UploadCloud,
+} from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useCallback, useEffect, useMemo, useState } from "react";
+
+import { JobProgress } from "@/components/job-progress/JobProgress";
+import { ConfirmModal, modalStyles as m, PortalModal } from "@/components/portal-modal/PortalModal";
+import { portalHrApi, PortalError } from "@/features/portal-hr/api";
+import type {
+  DocumentListItemResponseDTO,
+  DocumentVersionDetailResponseDTO,
+  DocumentVersionResponseDTO,
+  DocumentVersionStateDTO,
+  JobResponseDTO,
+} from "@/features/portal-hr/dto/responseDTO/portal.response";
+
+import { DocumentReader } from "./DocumentReader";
+import styles from "./DocumentVersionsModal.module.scss";
+import { isJobFinished, useJob } from "./useJob";
+
+type Translate = (key: string, values?: Record<string, string | number>) => string;
+
+const KNOWN_ERRORS = new Set([
+  "VERSION_CONFLICT",
+  "VERSION_NOT_EDITABLE",
+  "VERSION_LABEL_EXISTS",
+  "VERSION_LABEL_REQUIRED",
+  "VERSION_LABEL_TOO_LONG",
+  "VERSION_CONTENT_TOO_SHORT",
+  "VERSION_ALREADY_CURRENT",
+  "VERSION_NOT_ACTIVATABLE",
+  "VERSION_NOT_DELETABLE",
+  "DOCUMENT_ARCHIVED",
+]);
+
+/** Khóa dịch của lỗi (dịch lúc hiển thị): hàm `t` của next-intl đổi tham chiếu mỗi lần render nên không đưa vào effect. */
+function errorKey(error: unknown): string {
+  if (error instanceof PortalError) {
+    if (error.apiCode && KNOWN_ERRORS.has(error.apiCode)) return `errors.${error.apiCode}`;
+    return `errors.${error.code}`;
+  }
+  return "errors.unavailable";
+}
+
+function formatDay(iso: string | null): string {
+  return iso ? new Date(`${iso}T00:00:00`).toLocaleDateString("vi-VN") : "";
+}
+
+function effectiveText(t: Translate, v: DocumentVersionResponseDTO): string {
+  if (v.effective_from && v.effective_to) {
+    return t("effective.range", { from: formatDay(v.effective_from), to: formatDay(v.effective_to) });
+  }
+  if (v.effective_from) return t("effective.from", { from: formatDay(v.effective_from) });
+  return t("effective.none");
+}
+
+const ACTIVATE_STATES: DocumentVersionStateDTO[] = ["DRAFT", "SUPERSEDED"];
+
+type Confirm = { kind: "activate"; version: DocumentVersionResponseDTO } | { kind: "delete"; version: DocumentVersionResponseDTO };
+
+/** Quản lý phiên bản của một tài liệu (mục 16): xem bản bất kỳ, sao chép thành bản nháp, sửa nháp (khóa lạc quan),
+ * kích hoạt chạy nền có phần trăm, đặt lại bản cũ làm bản áp dụng. Bản đang áp dụng và đã thay thế không sửa tại chỗ. */
+export function DocumentVersionsModal({
+  doc,
+  onClose,
+  onChanged,
+  onUploadNewVersion,
+}: {
+  doc: DocumentListItemResponseDTO;
+  onClose: () => void;
+  onChanged: () => void;
+  onUploadNewVersion: () => void;
+}) {
+  const t = useTranslations("portalDocuments.versions") as unknown as Translate;
+  const tt = useTranslations("portalDocuments");
+
+  const [versions, setVersions] = useState<DocumentVersionResponseDTO[] | null>(null);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [detailState, setDetailState] = useState<{ id: number; data: DocumentVersionDetailResponseDTO } | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [confirm, setConfirm] = useState<Confirm | null>(null);
+  const [activateFrom, setActivateFrom] = useState(() => new Date().toISOString().slice(0, 10));
+
+  // Đang sửa đúng phiên bản nào; đổi sang phiên bản khác thì `editing` tự thành false.
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editTab, setEditTab] = useState<"write" | "preview">("write");
+  // Phần người dùng đã sửa của đúng phiên bản đang soạn; chưa sửa trường nào thì lấy nguyên giá trị đang lưu.
+  const [draftEdit, setDraftEdit] = useState<{ id: number; markdown?: string; label?: string; effective?: string } | null>(
+    null,
+  );
+
+  const [jobId, setJobId] = useState<number | null>(null);
+  const [finishedJob, setFinishedJob] = useState<JobResponseDTO | null>(null);
+
+  const selected = useMemo(() => versions?.find((v) => v.id === selectedId) ?? null, [versions, selectedId]);
+  const detail = detailState !== null && detailState.id === selectedId ? detailState.data : null;
+  const editing = editingId !== null && editingId === selectedId;
+  const overrides = draftEdit !== null && draftEdit.id === selectedId ? draftEdit : null;
+  const draftMarkdown = overrides?.markdown ?? detail?.markdown ?? "";
+  const draftLabel = overrides?.label ?? detail?.version.version_label ?? "";
+  const draftEffective = overrides?.effective ?? detail?.version.effective_from ?? "";
+
+  function patchDraft(patch: { markdown?: string; label?: string; effective?: string }) {
+    if (selectedId === null) return;
+    setDraftEdit((current) => ({ ...(current?.id === selectedId ? current : {}), id: selectedId, ...patch }));
+  }
+
+  const loadVersions = useCallback(
+    async (keepSelection?: number | null) => {
+      try {
+        const result = await portalHrApi.listDocumentVersions(doc.id);
+        setVersions(result);
+        setSelectedId((current) => {
+          const wanted = keepSelection ?? current;
+          if (wanted !== null && result.some((v) => v.id === wanted)) return wanted;
+          return (result.find((v) => v.state === "CURRENT") ?? result[0])?.id ?? null;
+        });
+        return result;
+      } catch (caught) {
+        setError(errorKey(caught));
+        return null;
+      }
+    },
+    [doc.id],
+  );
+
+  // Mở lại modal giữa lúc một bản đang được kích hoạt: nối lại đúng job để thanh phần trăm tiếp tục chạy.
+  useEffect(() => {
+    void (async () => {
+      const result = await loadVersions();
+      const processing = result?.find((v) => v.state === "PROCESSING");
+      if (processing) {
+        try {
+          const jobs = await portalHrApi.listActiveJobs("ACTIVATE_VERSION");
+          const job = jobs.find((j) => j.document_version_id === processing.id);
+          if (job) setJobId(job.id);
+        } catch {
+          /* không nối lại được thì thôi, danh sách vẫn hiện trạng thái đang xử lý */
+        }
+      }
+    })();
+  }, [loadVersions]);
+
+  useEffect(() => {
+    if (selectedId === null) return;
+    let cancelled = false;
+    portalHrApi
+      .getDocumentVersion(doc.id, selectedId)
+      .then((result) => !cancelled && setDetailState({ id: selectedId, data: result }))
+      .catch((caught: unknown) => !cancelled && setError(errorKey(caught)));
+    return () => {
+      cancelled = true;
+    };
+  }, [doc.id, selectedId, versions]);
+
+  const { job, lost } = useJob(jobId, (done) => {
+    setFinishedJob(done);
+    void loadVersions().then(() => onChanged());
+  });
+  const activating = jobId !== null && !isJobFinished(job) && !lost;
+
+  async function startActivation(version: DocumentVersionResponseDTO) {
+    setBusy(true);
+    setError(null);
+    setFinishedJob(null);
+    try {
+      const created = await portalHrApi.activateDocumentVersion(doc.id, version.id, {
+        effective_from: activateFrom || null,
+      });
+      setConfirm(null);
+      setJobId(created.id);
+      await loadVersions(version.id);
+    } catch (caught) {
+      setConfirm(null);
+      setError(errorKey(caught));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function copyVersion(version: DocumentVersionResponseDTO) {
+    setBusy(true);
+    setError(null);
+    try {
+      const created = await portalHrApi.copyDocumentVersion(doc.id, version.id, {});
+      await loadVersions(created.id);
+      onChanged();
+      setDraftEdit(null);
+      setEditTab("write");
+      setEditingId(created.id);
+    } catch (caught) {
+      setError(errorKey(caught));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function removeDraft(version: DocumentVersionResponseDTO) {
+    setBusy(true);
+    setError(null);
+    try {
+      await portalHrApi.deleteDocumentVersion(doc.id, version.id);
+      setConfirm(null);
+      setSelectedId(null);
+      await loadVersions(null);
+      onChanged();
+    } catch (caught) {
+      setConfirm(null);
+      setError(errorKey(caught));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  function startEdit() {
+    if (!detail) return;
+    setDraftEdit(null);
+    setEditTab("write");
+    setEditingId(detail.version.id);
+  }
+
+  async function saveEdit() {
+    if (!detail) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const body = {
+        expected_updated_at: detail.version.updated_at,
+        markdown: draftMarkdown !== detail.markdown ? draftMarkdown : null,
+        label: draftLabel !== detail.version.version_label ? draftLabel : null,
+        effective_from: draftEffective && draftEffective !== detail.version.effective_from ? draftEffective : null,
+        clear_effective_from: !draftEffective && detail.version.effective_from !== null,
+      };
+      const updated = await portalHrApi.updateDocumentVersion(doc.id, detail.version.id, body);
+      await loadVersions(updated.id);
+      setEditingId(null);
+      setDraftEdit(null);
+      onChanged();
+    } catch (caught) {
+      setError(errorKey(caught));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  const structureNote =
+    detail?.version.structure_quality === "POOR"
+      ? t("structure.POOR")
+      : detail?.version.structure_quality === "MEDIUM"
+        ? t("structure.MEDIUM")
+        : null;
+
+  return (
+    <>
+      <PortalModal
+        closeLabel={tt("close")}
+        footer={
+          <button className={m.btnSec} onClick={onClose} type="button">
+            {tt("closeButton")}
+          </button>
+        }
+        headerActions={
+          <>
+            <button className={styles.headBtn} disabled={busy || activating} onClick={onUploadNewVersion} type="button">
+              <UploadCloud aria-hidden="true" size={14} /> {t("uploadNew")}
+            </button>
+            {selected ? (
+              <button className={styles.headBtn} disabled={busy || activating} onClick={() => copyVersion(selected)} type="button">
+                <Copy aria-hidden="true" size={14} /> {t("copy")}
+              </button>
+            ) : null}
+          </>
+        }
+        icon={History}
+        onClose={onClose}
+        subtitle={t("subtitle", { count: versions?.length ?? doc.version_count })}
+        title={doc.title}
+        tone="indigo"
+        vwide
+      >
+        {error ? (
+          <p className={styles.bannerError} role="alert">
+            <AlertTriangle aria-hidden="true" size={14} /> {t(error)}
+          </p>
+        ) : null}
+
+        <div className={styles.layout}>
+          <aside aria-label={t("listLabel")} className={styles.list}>
+            {versions === null ? (
+              <p className={m.faint}>{tt("loading")}</p>
+            ) : (
+              versions.map((v) => (
+                <button
+                  className={`${styles.vcard} ${v.id === selectedId ? styles.vcardOn : ""}`}
+                  key={v.id}
+                  onClick={() => setSelectedId(v.id)}
+                  type="button"
+                >
+                  <span className={styles.vtop}>
+                    <b>{v.version_label}</b>
+                    <i className={styles.chip} data-state={v.state}>
+                      {t(`state.${v.state}`)}
+                    </i>
+                  </span>
+                  <small>{effectiveText(t, v)}</small>
+                  <small>
+                    {t(`source.${v.source}`)}
+                    {v.uploaded_by_name ? ` · ${v.uploaded_by_name}` : ""}
+                    {v.task_count > 0 ? ` · ${t("tasks", { count: v.task_count })}` : ""}
+                  </small>
+                </button>
+              ))
+            )}
+          </aside>
+
+          <section className={styles.pane}>
+            {jobId !== null && !finishedJob ? (
+              <div className={styles.progressBox}>
+                <b>{t("progress.title")}</b>
+                <JobProgress
+                  percent={job?.progress_percent ?? 0}
+                  stage={job?.stage ?? t("progress.waiting")}
+                  state={job?.status === "FAILED" ? "failed" : job?.status === "SUCCEEDED" ? "done" : "running"}
+                />
+                {lost ? <small>{t("progress.lost")}</small> : null}
+              </div>
+            ) : null}
+            {finishedJob ? (
+              <p className={finishedJob.status === "SUCCEEDED" ? styles.bannerOk : styles.bannerError} role="status">
+                {finishedJob.status === "SUCCEEDED" ? (
+                  <>
+                    <CheckCircle2 aria-hidden="true" size={14} />{" "}
+                    {t("progress.done", {
+                      sections: Number(finishedJob.result?.section_count ?? 0),
+                      chunks: Number(finishedJob.result?.chunk_count ?? 0),
+                    })}
+                    {finishedJob.result?.reused_embeddings ? ` ${t("progress.reused")}` : ""}
+                  </>
+                ) : (
+                  <>
+                    <AlertTriangle aria-hidden="true" size={14} /> {t("progress.failed", { error: finishedJob.error ?? "" })}
+                  </>
+                )}
+              </p>
+            ) : null}
+
+            {detail && selected ? (
+              <>
+                <div className={styles.paneHead}>
+                  <div>
+                    <h3>
+                      {detail.version.version_label}{" "}
+                      <i className={styles.chip} data-state={detail.version.state}>
+                        {t(`state.${detail.version.state}`)}
+                      </i>
+                    </h3>
+                    <small>
+                      {effectiveText(t, detail.version)}
+                      {detail.version.parent_version_id
+                        ? ` · ${t("fromParent", {
+                            label: versions?.find((v) => v.id === detail.version.parent_version_id)?.version_label ?? "…",
+                          })}`
+                        : ""}
+                    </small>
+                  </div>
+                  <div className={styles.actions}>
+                    {detail.can_edit ? (
+                      <button className={m.btnSec} disabled={busy || activating || editing} onClick={startEdit} type="button">
+                        <Pencil aria-hidden="true" size={14} /> {t("edit")}
+                      </button>
+                    ) : null}
+                    {ACTIVATE_STATES.includes(detail.version.state) ? (
+                      <button
+                        className={m.btn}
+                        disabled={busy || activating || editing}
+                        onClick={() => setConfirm({ kind: "activate", version: detail.version })}
+                        title={editing ? t("editor.saveFirst") : undefined}
+                        type="button"
+                      >
+                        {detail.version.state === "DRAFT" ? (
+                          <PlayCircle aria-hidden="true" size={14} />
+                        ) : (
+                          <RotateCcw aria-hidden="true" size={14} />
+                        )}{" "}
+                        {detail.version.state === "DRAFT" ? t("activate") : t("setCurrent")}
+                      </button>
+                    ) : null}
+                    {detail.version.state === "DRAFT" ? (
+                      <button
+                        className={m.btnSec}
+                        disabled={busy || activating || editing}
+                        onClick={() => setConfirm({ kind: "delete", version: detail.version })}
+                        title={editing ? t("editor.saveFirst") : undefined}
+                        type="button"
+                      >
+                        <Trash2 aria-hidden="true" size={14} /> {t("deleteDraft")}
+                      </button>
+                    ) : null}
+                    <a
+                      className={m.btnSec}
+                      href={portalHrApi.originalDocumentUrl(detail.version.id)}
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
+                      <FileText aria-hidden="true" size={14} /> {tt("viewOriginal")}
+                    </a>
+                  </div>
+                </div>
+
+                {detail.version.failure_reason ? (
+                  <p className={styles.bannerError}>
+                    <AlertTriangle aria-hidden="true" size={14} /> {t("lastFailure", { error: detail.version.failure_reason })}
+                  </p>
+                ) : null}
+                {structureNote ? (
+                  <p className={styles.bannerWarn}>
+                    <AlertTriangle aria-hidden="true" size={14} /> {structureNote}
+                  </p>
+                ) : null}
+                {detail.version.ai_split === "APPLIED" ? (
+                  <p className={styles.bannerInfo}>
+                    <Sparkles aria-hidden="true" size={14} /> {t("structure.aiApplied")}
+                  </p>
+                ) : null}
+                {detail.version.original_filename && detail.version.source === "EDITED" ? (
+                  <p className={styles.hint}>{t("originalNote", { name: detail.version.original_filename })}</p>
+                ) : null}
+
+                {editing ? (
+                  <div className={styles.editor}>
+                    <div className={styles.editGrid}>
+                      <label>
+                        {t("editor.label")}
+                        <input maxLength={32} onChange={(e) => patchDraft({ label: e.target.value })} value={draftLabel} />
+                      </label>
+                      <label>
+                        {t("editor.effective")}
+                        <input onChange={(e) => patchDraft({ effective: e.target.value })} type="date" value={draftEffective} />
+                      </label>
+                    </div>
+                    <div className={styles.tabs} role="tablist">
+                      <button aria-selected={editTab === "write"} onClick={() => setEditTab("write")} role="tab" type="button">
+                        {t("editor.write")}
+                      </button>
+                      <button aria-selected={editTab === "preview"} onClick={() => setEditTab("preview")} role="tab" type="button">
+                        {t("editor.preview")}
+                      </button>
+                    </div>
+                    {editTab === "write" ? (
+                      <textarea
+                        aria-label={t("editor.markdown")}
+                        className={styles.textarea}
+                        onChange={(e) => patchDraft({ markdown: e.target.value })}
+                        spellCheck={false}
+                        value={draftMarkdown}
+                      />
+                    ) : (
+                      <div className={styles.previewBox}>
+                        <DocumentReader compact markdown={draftMarkdown} tocLabel={tt("toc")} />
+                      </div>
+                    )}
+                    <p className={styles.hint}>{t("editor.hint")}</p>
+                    <div className={styles.actions}>
+                      <button className={m.btnSec} disabled={busy} onClick={() => setEditingId(null)} type="button">
+                        {tt("cancel")}
+                      </button>
+                      <button className={m.btn} disabled={busy} onClick={saveEdit} type="button">
+                        <Save aria-hidden="true" size={14} /> {tt("save")}
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <DocumentReader markdown={detail.markdown} tocLabel={tt("toc")} />
+                )}
+              </>
+            ) : (
+              <p className={m.faint}>{tt("loading")}</p>
+            )}
+          </section>
+        </div>
+      </PortalModal>
+
+      {confirm?.kind === "activate" ? (
+        <PortalModal
+          closeLabel={tt("close")}
+          footer={
+            <>
+              <button className={m.btnSec} onClick={() => setConfirm(null)} type="button">
+                {tt("cancel")}
+              </button>
+              <button className={m.btn} disabled={busy} onClick={() => startActivation(confirm.version)} type="button">
+                <PlayCircle aria-hidden="true" size={14} />{" "}
+                {confirm.version.state === "SUPERSEDED" ? t("setCurrent") : t("activate")}
+              </button>
+            </>
+          }
+          icon={PlayCircle}
+          onClose={() => setConfirm(null)}
+          title={t("confirm.activateTitle", { label: confirm.version.version_label })}
+          tone="indigo"
+        >
+          <p className={styles.confirmText}>
+            {confirm.version.state === "SUPERSEDED"
+              ? t("confirm.setCurrentBody", { label: confirm.version.version_label })
+              : t("confirm.activateBody", { label: confirm.version.version_label })}
+          </p>
+          <label className={styles.confirmDate}>
+            {t("confirm.effectiveFrom")}
+            <input onChange={(e) => setActivateFrom(e.target.value)} type="date" value={activateFrom} />
+          </label>
+        </PortalModal>
+      ) : null}
+
+      {confirm?.kind === "delete" ? (
+        <ConfirmModal
+          body={t("confirm.deleteBody")}
+          busy={busy}
+          cancelLabel={tt("cancel")}
+          closeLabel={tt("close")}
+          confirmIcon={Trash2}
+          confirmLabel={t("deleteDraft")}
+          danger
+          icon={Trash2}
+          onCancel={() => setConfirm(null)}
+          onConfirm={() => removeDraft(confirm.version)}
+          title={t("confirm.deleteTitle", { label: confirm.version.version_label })}
+        />
+      ) : null}
+    </>
+  );
+}

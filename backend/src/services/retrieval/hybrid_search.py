@@ -51,8 +51,10 @@ async def _bm25_search(
             SELECT c.id AS chunk_id, c.section_id
             FROM document_chunks c
             JOIN document_versions v ON v.id = c.version_id
+            JOIN documents d ON d.id = v.document_id
             WHERE c.lexical_text @@@ :lexical_query
               AND v.status = 'ACTIVE'
+              AND d.status = 'ACTIVE'
               AND v.effective_from <= :as_of
               AND (v.effective_to IS NULL OR v.effective_to >= :as_of)
               AND c.embedding_model_version = :model_version
@@ -75,7 +77,9 @@ async def _dense_search(
             SELECT c.id AS chunk_id, c.section_id
             FROM document_chunks c
             JOIN document_versions v ON v.id = c.version_id
+            JOIN documents d ON d.id = v.document_id
             WHERE v.status = 'ACTIVE'
+              AND d.status = 'ACTIVE'
               AND v.effective_from <= :as_of
               AND (v.effective_to IS NULL OR v.effective_to >= :as_of)
               AND c.embedding_model_version = :model_version
@@ -146,6 +150,7 @@ async def search_to_sections(
                 JOIN document_versions v ON v.id = s.version_id
                 JOIN documents d ON d.id = v.document_id
                 WHERE s.id = ANY(:ids)
+                  AND d.status = 'ACTIVE'
                 """
             ).bindparams(ids=ordered_section_ids)
         )

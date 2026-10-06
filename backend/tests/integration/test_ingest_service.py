@@ -225,7 +225,7 @@ async def test_same_version_label_different_content_is_rejected(
     cleanup_document.append(source_key)
 
     other_doc = tmp_path / "khac.md"
-    other_doc.write_text("# Tài liệu khác\n\n" + "Nội dung hoàn toàn khác D03b. " * 30)
+    other_doc.write_text("# Tài liệu khác\n\n" + "Nội dung hoàn toàn khác D03b. " * 30, encoding="utf-8")
 
     async with session_factory() as session:
         await ingest_document(

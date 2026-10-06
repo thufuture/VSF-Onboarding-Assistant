@@ -1,0 +1,493 @@
+@use "../../styles/tokens" as *;
+
+// Cột bên phải vùng làm việc (như view `chat` của v15), theo bảng màu và bo góc của portal.
+.panel {
+  position: sticky;
+  top: var(--emp-header);
+  display: flex;
+  width: var(--viga-w, 440px);
+  height: calc(100dvh - var(--emp-header));
+  flex: none;
+  flex-direction: column;
+  border-left: 1px solid var(--app-border);
+  background: var(--app-surface);
+
+  @media (max-width: 1180px) {
+    position: fixed;
+    top: var(--emp-header);
+    right: 0;
+    z-index: 35;
+    width: min(var(--viga-w, 440px), 100vw);
+    box-shadow: -14px 0 40px rgb(10 24 46 / 18%);
+  }
+}
+.panelOpen {
+  animation: slideIn 0.22s cubic-bezier(0.22, 0.8, 0.3, 1) both;
+}
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.mark {
+  flex: none;
+}
+
+.head {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--app-border);
+
+  b {
+    display: block;
+    color: var(--app-ink);
+    font-size: 14px;
+    font-weight: 600;
+  }
+  small {
+    color: var(--app-ink-3);
+    font-size: 11.5px;
+  }
+  > div {
+    flex: 1;
+  }
+}
+.iconButton {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border: 1px solid var(--app-border);
+  border-radius: 5px;
+  background: var(--app-surface);
+  color: var(--app-ink-2);
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    color 0.15s ease;
+
+  &:hover {
+    border-color: var(--app-accent);
+    color: var(--app-accent-strong);
+  }
+}
+
+.body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 14px;
+  background: var(--app-surface);
+}
+
+.intro {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+// gợi ý câu hỏi ở màn chào: mỗi câu một dòng cho dễ đọc
+.quickColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  button {
+    padding: 9px 14px;
+    border: 1px solid var(--app-border);
+    border-radius: 14px;
+    background: var(--app-surface);
+    color: var(--app-ink-2);
+    cursor: pointer;
+    font: 400 12.5px/1.4 $font;
+    text-align: left;
+    transition:
+      border-color 0.15s ease,
+      color 0.15s ease,
+      transform 0.15s ease;
+
+    &:hover {
+      border-color: var(--app-accent);
+      color: var(--app-accent-strong);
+      transform: translateX(2px);
+    }
+  }
+}
+.infoLink {
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--app-accent-strong);
+  cursor: pointer;
+  font: 500 12.5px/1 $font;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+// hộp giới thiệu "Viga làm được gì"
+.info {
+  color: var(--app-ink);
+  font-size: 13.5px;
+  line-height: 1.65;
+
+  > p {
+    margin: 0 0 14px;
+  }
+}
+.infoCols {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+
+  section {
+    padding: 12px 14px;
+    border: 1px solid var(--app-border);
+    border-radius: 5px;
+    background: var(--app-surface-2);
+  }
+  h3 {
+    margin: 0 0 8px;
+    color: var(--app-ink);
+    font-size: 13px;
+    font-weight: 600;
+  }
+  ul {
+    margin: 0;
+    padding-left: 18px;
+    color: var(--app-ink-2);
+    font-size: 12.5px;
+  }
+  li + li {
+    margin-top: 5px;
+  }
+
+  @media (max-width: 620px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.infoNote {
+  margin: 14px 0 0;
+  padding: 9px 12px;
+  border: 1px dashed var(--app-border-strong);
+  border-radius: 5px;
+  color: var(--app-ink-3);
+  font-size: 12px;
+}
+
+.turn {
+  margin-bottom: 14px;
+  animation: turnIn 0.28s cubic-bezier(0.22, 0.8, 0.3, 1) both;
+}
+@keyframes turnIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+// Bong bóng kiểu ứng dụng nhắn tin: của mình bên phải (màu nhấn, tự co theo độ dài chữ), của Viga bên trái có avatar.
+.user {
+  width: fit-content;
+  max-width: 82%;
+  margin: 0 0 8px auto;
+  padding: 8px 14px;
+  border-radius: 18px 18px 5px 18px;
+  background: linear-gradient(135deg, var(--app-accent), var(--app-accent-strong));
+  color: #fff;
+  font-size: 14px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  white-space: pre-line;
+}
+.row {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+
+  > :first-child {
+    flex: none;
+  }
+}
+.bot {
+  min-width: 0;
+  max-width: calc(100% - 36px);
+  margin: 0;
+  padding: 9px 14px;
+  color: var(--app-ink);
+  font-size: 14px;
+  line-height: 1.55;
+  border-radius: 18px 18px 18px 5px;
+  background: var(--app-surface-2);
+
+  p {
+    margin: 0;
+    color: var(--app-ink);
+    font-size: 14px;
+    line-height: 1.55;
+  }
+}
+
+.foot {
+  flex: none;
+  padding: 10px 14px 14px;
+  border-top: 1px solid var(--app-border);
+}
+.quick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 9px;
+
+  button {
+    padding: 6px 12px;
+    border: 1px solid var(--app-border);
+    border-radius: 999px;
+    background: var(--app-surface);
+    color: var(--app-ink-2);
+    cursor: pointer;
+    font: 400 12px/1 $font;
+    transition:
+      border-color 0.15s ease,
+      color 0.15s ease;
+
+    &:hover {
+      border-color: var(--app-accent);
+      color: var(--app-accent-strong);
+    }
+  }
+}
+.form {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 4px 4px 6px;
+  border: 1px solid var(--app-border-strong);
+  border-radius: 24px;
+  background: var(--app-surface);
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+
+  &:focus-within {
+    border-color: var(--app-accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--app-accent) 16%, transparent);
+  }
+
+  input {
+    flex: 1;
+    min-width: 0;
+    height: 38px;
+    padding: 0 10px;
+    border: 0;
+    background: transparent;
+    color: var(--app-ink);
+    font: 400 14px/1 $font;
+    outline: none;
+  }
+  button {
+    display: grid;
+    width: 36px;
+    height: 36px;
+    flex: none;
+    place-items: center;
+    border: 0;
+    border-radius: 50%;
+    background: var(--app-accent);
+    color: var(--app-on-accent);
+    cursor: pointer;
+    transition:
+      background 0.15s ease,
+      transform 0.15s ease;
+
+    &:hover:not(:disabled) {
+      background: var(--app-accent-strong);
+      transform: translateY(-1px);
+    }
+    &:disabled {
+      background: var(--app-surface-2);
+      color: var(--app-ink-3);
+      cursor: default;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panelOpen,
+  .turn {
+    animation: none;
+  }
+}
+
+// ── Lịch sử cuộc trò chuyện (mở lại, đổi tên, xóa) ──
+.history {
+  display: flex;
+  max-height: 46%;
+  flex: none;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 14px;
+  overflow-y: auto;
+  border-bottom: 1px solid var(--app-border);
+  background: var(--app-surface-2);
+
+  > b {
+    color: var(--app-ink);
+    font-size: 12.5px;
+  }
+  ul {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  li {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    border-radius: 5px;
+
+    form {
+      flex: 1;
+    }
+    input {
+      width: 100%;
+      height: 30px;
+      padding: 0 8px;
+      border: 1px solid var(--app-accent);
+      border-radius: 5px;
+      background: var(--app-surface);
+      color: var(--app-ink);
+      font: 400 12.5px/1 $font;
+    }
+  }
+}
+.historyOn {
+  background: var(--app-accent-soft);
+}
+.historyOpen {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 1px;
+  padding: 6px 8px;
+  border: 0;
+  background: none;
+  color: var(--app-ink);
+  cursor: pointer;
+  font: 500 12.5px/1.3 $font;
+  text-align: left;
+
+  span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  small {
+    color: var(--app-ink-3);
+    font-size: 11px;
+    font-weight: 400;
+  }
+  &:hover span {
+    color: var(--app-accent-strong);
+  }
+}
+.historyIcon {
+  display: grid;
+  width: 24px;
+  height: 24px;
+  flex: none;
+  place-items: center;
+  border: 0;
+  border-radius: 5px;
+  background: none;
+  color: var(--app-ink-3);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--app-surface);
+    color: var(--app-accent-strong);
+  }
+}
+.historyEmpty,
+.historyNote {
+  margin: 0;
+  color: var(--app-ink-3);
+  font-size: 11.5px;
+}
+
+.errorText {
+  color: #a3121f !important;
+}
+.thinking {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--app-ink-3) !important;
+}
+.spin {
+  animation: vigaSpin 1s linear infinite;
+}
+@keyframes vigaSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .spin {
+    animation: none;
+  }
+}
+
+// Mép trái kéo được để đổi chiều rộng ngăn.
+.resizer {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -4px;
+  z-index: 5;
+  width: 8px;
+  cursor: col-resize;
+  touch-action: none;
+
+  &::after {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 3px;
+    width: 2px;
+    background: transparent;
+    content: "";
+    transition: background 0.15s ease;
+  }
+  &:hover::after,
+  &:focus-visible::after,
+  &.resizerOn::after {
+    background: var(--app-accent);
+  }
+}
+// Đang kéo: không chọn chữ, không chuyển động thừa.
+.panelResizing {
+  user-select: none;
+}

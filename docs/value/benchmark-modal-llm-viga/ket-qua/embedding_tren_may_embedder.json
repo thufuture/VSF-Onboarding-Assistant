@@ -1,0 +1,24 @@
+{
+ "latency_ms_mot_cau": {
+  "tu_host": {
+   "p50": 298,
+   "p95": 343,
+   "mean": 303,
+   "n": 50
+  },
+  "modal": {
+   "p50": 1379,
+   "p95": 1418,
+   "mean": 1383,
+   "n": 50
+  }
+ },
+ "latency_ms_lo_32_doan": {
+  "tu_host": 16168,
+  "modal": 3119
+ },
+ "cosine_giua_hai_nguon": {
+  "mean": 1.0,
+  "min": 1.0
+ }
+}

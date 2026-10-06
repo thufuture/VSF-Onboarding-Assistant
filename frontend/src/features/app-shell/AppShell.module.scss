@@ -1,29 +1,31 @@
 @use "../../styles/tokens" as *;
 
 // Khung khu đã đăng nhập. Bộ biến màu dưới đây dùng chung cho mọi trang trong khung (chat, admin) và đổi theo data-theme.
-$sidebar-width: 268px;
+$sidebar-width: 248px;
+$header-height: 64px;
 
 .shell {
-  --app-bg: #f3f7fc;
-  --app-surface: #fff;
-  --app-surface-2: #eaf1f9;
-  --app-border: #dbe6f2;
-  --app-border-strong: #c3d4e8;
-  --app-ink: #0b1f3a;
-  --app-ink-2: #4b5b70;
-  --app-ink-3: #7a8aa0;
-  --app-accent: #1090cb;
-  --app-accent-strong: #0877ac;
-  --app-accent-soft: #e5f3fb;
+  --app-bg: #e9edf3;
+  --app-surface: #f7f9fc;
+  --app-surface-2: #eef2f7;
+  --app-border: #d9e0ea;
+  --app-border-strong: #c3ccd9;
+  --app-ink: #2a3646;
+  --app-ink-2: #566275;
+  --app-ink-3: #8592a4;
+  --app-accent: #1f74b5;
+  --app-accent-strong: #185f95;
+  --app-accent-soft: #e8f1f9;
   --app-on-accent: #fff;
   --app-user-bubble: #0c2d5b;
-  --app-success: #157f53;
-  --app-success-soft: #e1f5ec;
-  --app-shadow: 0 10px 30px rgb(15 48 86 / 10%);
+  --app-success: #2f7d5b;
+  --app-success-soft: #e4f2ea;
+  --app-shadow: 0 6px 20px rgb(15 30 55 / 8%);
 
   display: flex;
   min-height: 100dvh;
   background: var(--app-bg);
+  --sidebar-w: #{$sidebar-width};
   color: var(--app-ink);
   font-family: $font;
   color-scheme: light;
@@ -56,18 +58,14 @@ $sidebar-width: 268px;
   z-index: 30;
   top: 0;
   display: flex;
-  width: $sidebar-width;
+  width: var(--sidebar-w, #{$sidebar-width});
   height: 100dvh;
   flex: none;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
   padding: 18px 14px 16px;
   border-right: 1px solid var(--app-border);
   background: var(--app-surface);
-
-  // Logo dùng chữ "Assistant" theo màu chữ của khung (sáng/tối).
-  --vsf-brand-accent: var(--app-ink);
-  --vsf-brand-primary: var(--app-accent-strong);
   color: var(--app-ink);
 
   @include tablet-down {
@@ -93,9 +91,15 @@ $sidebar-width: 268px;
 
 .sidebarHead {
   display: flex;
+  flex: none;
   align-items: center;
   justify-content: space-between;
-  padding: 2px 6px 14px;
+  // Logo cao đúng bằng thanh trên: đường kẻ dưới logo thẳng hàng với đường kẻ dưới thanh trên.
+  box-sizing: border-box;
+  height: $header-height;
+  margin: -18px -14px 8px;
+  padding: 0 20px;
+  border-bottom: 1px solid var(--app-border);
 
   [data-mobile-only] {
     display: none;
@@ -106,57 +110,172 @@ $sidebar-width: 268px;
   }
 }
 
-.nav {
+.brand {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.navItem {
-  display: flex;
-  min-height: 42px;
+  min-width: 0;
   align-items: center;
   gap: 12px;
-  padding: 0 12px;
-  border-radius: 10px;
-  color: var(--app-ink-2);
-  font-size: 14px;
-  font-weight: 600;
+  color: inherit;
   text-decoration: none;
+}
 
-  > span {
-    min-width: 0;
-    flex: 1;
+// Logo: ô vuông hai màu chia chéo (xanh dương / xanh ngọc), chữ V trắng — phẳng, không chuyển sắc.
+.mark {
+  flex: none;
+}
+
+.brandText {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 2px;
+  line-height: 1.2;
+
+  b {
     overflow: hidden;
+    font-size: 15.5px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
   small {
-    padding: 2px 8px;
-    border-radius: 999px;
+    color: var(--app-ink-3);
+    font-size: 11.5px;
+  }
+}
+
+.roleBadge {
+  flex: none;
+  margin: 8px 8px 6px;
+  color: var(--app-ink-3);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
+.nav {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0 -14px;
+  overflow-y: auto;
+  padding: 2px 14px 8px;
+}
+
+.nav[hidden] {
+  display: none;
+}
+
+// Mỗi mục có một tông màu riêng cho ô icon; mục đang mở tô đặc ô icon và có vạch dọc bên trái.
+.tone_blue {
+  --nav-tone: #1f74b5;
+}
+.tone_teal {
+  --nav-tone: #1f8f86;
+}
+.tone_indigo {
+  --nav-tone: #5b67bd;
+}
+.tone_amber {
+  --nav-tone: #c98720;
+}
+.tone_rose {
+  --nav-tone: #c2506a;
+}
+.tone_slate {
+  --nav-tone: #64748b;
+}
+.tone_green {
+  --nav-tone: #1f8a5f;
+}
+.tone_red {
+  --nav-tone: #cf3a43;
+}
+.tone_violet {
+  --nav-tone: #7a4fb0;
+}
+
+.navItem {
+  position: relative;
+  display: flex;
+  min-height: 44px;
+  flex: none;
+  align-items: center;
+  gap: 12px;
+  padding: 0 10px 0 8px;
+  border-radius: 5px;
+  color: var(--app-ink-2);
+  font-size: 13.5px;
+  font-weight: 500;
+  text-decoration: none;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+
+  > span {
+    min-width: 0;
+    flex: 1;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+  }
+
+  small {
+    padding: 2px 7px;
+    border-radius: 5px;
     background: var(--app-surface-2);
     color: var(--app-ink-3);
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 600;
     white-space: nowrap;
   }
 }
 
+.navIcon {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  flex: none;
+  place-items: center;
+  transition: transform 0.15s ease;
+}
+
 a.navItem:hover {
   background: var(--app-surface-2);
   color: var(--app-ink);
+
+  .navIcon {
+    transform: scale(1.06);
+  }
 }
 
 .navActive,
 a.navActive:hover {
-  background: var(--app-accent-soft);
-  color: var(--app-accent-strong);
+  background: color-mix(in srgb, var(--nav-tone, var(--app-accent)) 10%, var(--app-surface));
+  color: var(--app-ink);
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 9px;
+    bottom: 9px;
+    left: -14px;
+    width: 4px;
+    border-radius: 0 5px 5px 0;
+    background: var(--nav-tone, var(--app-accent));
+  }
 }
 
 .navSoon {
   cursor: not-allowed;
-  opacity: 0.7;
+
+  > span,
+  .navIcon {
+    opacity: 0.6;
+  }
 }
 
 .navItem:focus-visible,
@@ -169,6 +288,7 @@ a.navActive:hover {
 // ── Thẻ người dùng và đăng xuất ──
 .account {
   display: flex;
+  flex: none;
   flex-direction: column;
   gap: 10px;
   margin-top: auto;
@@ -180,21 +300,11 @@ a.navActive:hover {
   display: flex;
   min-width: 0;
   align-items: center;
-  gap: 10px;
-  padding: 4px 6px;
-}
-
-.avatar {
-  display: grid;
-  width: 38px;
-  height: 38px;
-  flex: none;
-  place-items: center;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #ef4b55, #b3141f);
-  color: #fff;
-  font-size: 13px;
-  font-weight: 700;
+  gap: 11px;
+  padding: 10px;
+  border: 1px solid var(--app-border);
+  border-radius: 5px;
+  background: var(--app-surface-2);
 }
 
 .userText {
@@ -223,7 +333,7 @@ a.navActive:hover {
   justify-content: center;
   gap: 8px;
   border: 1px solid var(--app-border-strong);
-  border-radius: 10px;
+  border-radius: 5px;
   background: transparent;
   color: var(--app-ink);
   cursor: pointer;
@@ -264,7 +374,9 @@ a.navActive:hover {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 24px;
+  box-sizing: border-box;
+  height: $header-height;
+  padding: 0 16px;
   border-bottom: 1px solid var(--app-border);
   background: color-mix(in srgb, var(--app-surface) 92%, transparent);
   backdrop-filter: blur(8px);
@@ -293,7 +405,7 @@ a.navActive:hover {
   height: 40px;
   place-items: center;
   border: 1px solid var(--app-border-strong);
-  border-radius: 10px;
+  border-radius: 5px;
   background: var(--app-surface);
   color: var(--app-ink);
   cursor: pointer;
@@ -311,11 +423,24 @@ a.navActive:hover {
   align-items: center;
   gap: 12px;
 
+  .crumb {
+    color: var(--app-ink-3);
+    font-size: 13px;
+    white-space: nowrap;
+
+    &::after {
+      content: "/";
+      margin-left: 10px;
+      color: var(--app-border-strong);
+    }
+  }
+
   b {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    font-size: 16px;
+    font-size: 15px;
+    font-weight: 600;
     white-space: nowrap;
 
     svg {
@@ -333,11 +458,11 @@ a.navActive:hover {
   align-items: center;
   gap: 6px;
   padding: 4px 10px;
-  border-radius: 999px;
+  border-radius: 5px;
   background: var(--app-success-soft);
   color: var(--app-success);
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
   white-space: nowrap;
 }
 
@@ -366,4 +491,179 @@ a.navActive:hover {
   flex: 1;
   flex-direction: column;
   overflow-y: auto;
+}
+// Mọi trang (trừ khung chat): nội dung lấp đầy vùng làm việc và thẻ cuối chạm tới sát chân trang (chỉ cách 2px), dù trang ngắn
+// hay dài. Gốc mỗi trang là cột flex; bỏ khoảng đệm đáy 16px của từng trang và cho phần tử cuối (thẻ chính) giãn ra.
+.page[data-fill="true"] > * {
+  flex: 1 0 auto;
+  padding-bottom: 2px;
+}
+.page[data-fill="true"] > * > :last-child {
+  flex: 1 1 auto;
+}
+
+// ── Thanh bên thu gọn (máy tính): chỉ còn logo, icon menu, avatar và nút đăng xuất ──
+.sideTop {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: space-between;
+  margin: 6px 4px 2px 8px;
+
+  .roleBadge {
+    margin: 0;
+  }
+}
+
+// Nút thu/mở thanh bên nằm cuối dòng vai trò ("Nhân sự (HR)"), chỉ có trên máy tính.
+.collapseButton {
+  display: inline-grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--app-ink-3);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--app-surface-2);
+    color: var(--app-ink);
+  }
+
+  @include tablet-down {
+    display: none;
+  }
+}
+
+.shell[data-collapsed="true"] {
+  --sidebar-w: 68px;
+
+  .sidebar {
+    align-items: center;
+    padding: 18px 8px 16px;
+
+    @include tablet-down {
+      align-items: stretch;
+      padding: 18px 14px 16px;
+    }
+  }
+
+  @media (min-width: 1025px) {
+    .brandText,
+    .roleBadge,
+    .navItem > span,
+    .navItem small,
+    .userText,
+    .logout span {
+      display: none;
+    }
+
+    .sidebarHead {
+      justify-content: center;
+      padding: 0;
+    }
+
+    .sideTop {
+      justify-content: center;
+      margin: 6px 0 2px;
+    }
+
+    .nav {
+      align-items: center;
+      margin: 0;
+      padding: 2px 0 8px;
+    }
+
+    .navItem {
+      justify-content: center;
+      width: 44px;
+      min-height: 44px;
+      padding: 0;
+    }
+
+    .navActive::before {
+      left: -8px;
+    }
+
+    .account {
+      align-items: center;
+    }
+
+    .userCard {
+      padding: 6px;
+    }
+
+    .logout {
+      width: 44px;
+      padding: 0;
+      justify-content: center;
+    }
+  }
+}
+
+// ── hiệu ứng khi trỏ chuột (nút, thẻ, dòng bảng) ──
+
+.logout {
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+}
+
+.logout:not(:disabled):hover {
+  border-color: var(--app-accent);
+  background: var(--app-accent-soft);
+  color: var(--app-accent-strong);
+}
+.logout:not(:disabled):active {
+  transform: translateY(1px);
+}
+
+.iconButton {
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+}
+
+.iconButton:not(:disabled):hover {
+  border-color: var(--app-accent);
+  background: var(--app-accent-soft);
+  color: var(--app-accent-strong);
+}
+.iconButton:not(:disabled):active {
+  transform: translateY(1px);
+}
+
+.userCard {
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+}
+.userCard:hover {
+  border-color: var(--app-border-strong);
+  box-shadow: 0 3px 10px rgb(16 24 40 / 8%);
+  transform: translateY(-1px);
+}
+
+// Huy hiệu số ticket có tin chưa xem cạnh mục "Ticket sự cố" (đẩy sang mép phải của hàng).
+.navBadge {
+  min-width: 18px;
+  height: 18px;
+  margin-left: auto;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: #c0392f;
+  color: #fff;
+  font-size: 10.5px;
+  font-weight: 600;
+  line-height: 18px;
+  text-align: center;
 }

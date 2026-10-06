@@ -1,0 +1,969 @@
+// Giá trị lấy nguyên từ CSS đã render của view h-tasks (v15): .ent-title, .hr14-kpi, .ent-journey, .road13-*, .hr14-road-*.
+.page {
+  display: flex;
+  flex-direction: column;
+  padding: 5px 5px 16px;
+}
+
+.row {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.entTitle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 11px 16px;
+  margin-bottom: 5px;
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-radius: 5px;
+  color: var(--app-ink);
+  box-shadow: 0 6px 18px rgba(24, 50, 78, 0.055);
+  flex-wrap: wrap;
+}
+
+.entTitleCopy {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+
+  h1 {
+    margin: 0 0 2px;
+    font-size: 18px;
+    font-weight: 600;
+  }
+  p {
+    margin: 0;
+    max-width: 720px;
+    color: var(--app-ink-2);
+    font-size: 12.5px;
+  }
+}
+
+.entTitleIcon {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  flex: none;
+  place-items: center;
+  border-radius: 5px;
+  background: #e8f3fa;
+  color: #087fb8;
+}
+
+.btn,
+.btnSec,
+.btnSecSm,
+.btnDanger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  height: 34px;
+  padding: 0 14px;
+  border-radius: 5px;
+  font-weight: 600;
+  font-size: 13px;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+}
+.btn {
+  border: 1px solid var(--app-accent);
+  background: var(--app-accent);
+  color: var(--app-on-accent);
+
+  &:hover:not(:disabled) {
+    background: var(--app-accent-strong);
+  }
+  &:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+}
+.btnSec,
+.btnSecSm {
+  border: 1px solid var(--app-border-strong);
+  background: var(--app-surface);
+  color: var(--app-ink);
+
+  &:hover {
+    border-color: var(--app-accent);
+    color: var(--app-accent-strong);
+  }
+}
+.btnSecSm {
+  height: 28px;
+  padding: 0 10px;
+  font-size: 12.5px;
+}
+.btnDanger {
+  border: 1px solid #b23a3a;
+  background: #b23a3a;
+  color: #fff;
+}
+
+.banner {
+  margin: 0 0 8px;
+  padding: 10px 14px;
+  border-radius: 5px;
+  font-size: 14px;
+}
+.bannerError {
+  background: #fdecec;
+  color: #a3121f;
+}
+.bannerOk {
+  background: var(--app-success-soft);
+  color: var(--app-success);
+}
+
+// ── KPI (.hr14-kpi) ──
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 5px;
+  margin-bottom: 5px;
+
+  @media (max-width: 1050px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.kpi {
+  display: grid;
+  grid-template-columns: 38px 1fr;
+  gap: 11px;
+  align-items: center;
+  padding: 13px 14px;
+  border: 1px solid var(--app-border);
+  border-radius: 5px;
+  background: var(--app-surface);
+
+  > span {
+    display: grid;
+    width: 38px;
+    height: 38px;
+    place-items: center;
+    border-radius: 5px;
+  }
+  small {
+    display: block;
+    color: var(--app-ink-2);
+    font-size: 11px;
+    font-weight: 600;
+  }
+  b {
+    display: block;
+    margin: 1px 0;
+    color: var(--app-ink);
+    font-size: 21px;
+  }
+  p {
+    margin: 0;
+    color: var(--app-ink-3);
+    font-size: 10.5px;
+  }
+}
+.kpiBlue {
+  background: #e8f3fa;
+  color: #0877ac;
+}
+.kpiAmber {
+  background: #fbf1df;
+  color: #a66b12;
+}
+.kpiTeal {
+  background: #e5f3ed;
+  color: #237d5c;
+}
+.kpiRose {
+  background: #faeaea;
+  color: #b43e3e;
+}
+
+// ── thanh tìm kiếm (.hr-ent-toolbar.hr14-search-only) ──
+.toolbar {
+  display: flex;
+  align-items: center;
+  padding: 11px 12px;
+  margin-bottom: 5px;
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-radius: 5px;
+}
+
+.search {
+  display: flex;
+  width: min(460px, 100%);
+  align-items: center;
+  gap: 5px;
+  padding: 0 10px;
+  border: 1px solid var(--app-border-strong);
+  border-radius: 5px;
+  background: var(--app-surface-2);
+  color: var(--app-ink-3);
+
+  input {
+    flex: 1;
+    min-width: 0;
+    height: 34px;
+    border: none;
+    background: none;
+    color: var(--app-ink);
+    font-size: 13px;
+
+    &:focus {
+      outline: none;
+    }
+  }
+}
+
+// ── khung hành trình (.ent-journey.hr14-journey) ──
+.journey {
+  overflow: hidden;
+  border: 1px solid var(--app-border);
+  border-radius: 5px;
+  background: var(--app-surface);
+}
+
+.journeyHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--app-border);
+}
+
+.journeyTitle {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+
+  h2 {
+    margin: 2px 0 0;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--app-ink);
+  }
+  small {
+    display: block;
+    margin-top: 3px;
+    color: var(--app-ink-3);
+    font-size: 11px;
+  }
+}
+
+// Ô "Ngày N": số ngày là điểm nhấn đầu tiên của tiêu đề, nền chuyển sắc xanh nhạt.
+.dayNum {
+  display: flex;
+  width: 58px;
+  height: 58px;
+  flex: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  background: linear-gradient(150deg, #e3f2fb 0%, #cfe7f6 100%);
+  box-shadow: inset 0 0 0 1px rgb(16 144 203 / 16%);
+  color: #0877ac;
+  line-height: 1;
+
+  small {
+    margin: 0 0 3px;
+    color: #4a90b6;
+    font-size: 9.5px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+  }
+  b {
+    font-size: 24px;
+    font-weight: 600;
+  }
+}
+
+.emptyRoad {
+  display: flex;
+  min-height: 270px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  color: var(--app-ink-3);
+  text-align: center;
+
+  > svg {
+    color: #168dc4;
+  }
+  > b {
+    color: var(--app-ink);
+    font-size: 14px;
+  }
+  > span {
+    font-size: 11px;
+  }
+}
+
+.faint {
+  color: var(--app-ink-3);
+  font-size: 13px;
+}
+
+// ── roadmap: đường nhựa mềm, nút tròn có icon, thẻ có dải màu đầu thẻ ──
+.roadScroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 10px 18px 4px;
+  background: var(--app-surface);
+}
+
+.canvas {
+  position: relative;
+  width: 100%;
+  margin: auto;
+}
+
+.roadSvg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.roadBed,
+.roadLine,
+.roadDash {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+// nền đường (lề sáng) → mặt đường navy → vạch trắng đứt ở giữa
+.roadBed {
+  stroke: #e6ebf1;
+  stroke-width: 30;
+}
+.roadLine {
+  stroke: #2b4462;
+  stroke-width: 18;
+}
+.roadDash {
+  stroke: rgb(255 255 255 / 85%);
+  stroke-dasharray: 9 11;
+  stroke-width: 2;
+}
+
+// Nút đầu và cuối nằm trên đường như mọi nút khác: vòng tròn trắng viền màu, nhãn nhỏ bên dưới.
+.endNode {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+
+  em {
+    position: absolute;
+    width: 80px;
+    color: var(--app-ink-2);
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 500;
+    text-align: center;
+    transition: color 0.15s ease;
+  }
+}
+.endCircle {
+  position: absolute;
+  z-index: 5;
+  display: grid;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  border: 4px solid var(--end, #1f8a5f);
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 4px rgb(16 24 40 / 16%);
+  cursor: pointer;
+  pointer-events: auto;
+  transition:
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+
+  &:hover {
+    box-shadow:
+      0 0 0 5px color-mix(in srgb, var(--end) 22%, transparent),
+      0 3px 8px rgb(16 24 40 / 22%);
+    transform: scale(1.1);
+  }
+}
+.endNode:hover em {
+  color: var(--end);
+}
+.end_start {
+  --end: #cf3a43;
+}
+.end_finish {
+  --end: #7a4fb0;
+}
+
+.roadItem {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+// đường nối thẻ → nút: nét liền mảnh cùng màu nhóm, có chấm ở đầu thẻ
+.tether {
+  position: absolute;
+  z-index: 1;
+  width: 2px;
+  margin-left: -1px;
+  border-radius: 5px;
+  background: color-mix(in srgb, var(--node, #1b6fb8) 40%, #fff);
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    width: 8px;
+    height: 8px;
+    margin-left: -4px;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    background: var(--node, #168dc4);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--node, #168dc4) 50%, #fff);
+  }
+}
+
+// chấm ở phía thẻ: đầu trên với thẻ nằm trên, đầu dưới với thẻ nằm dưới
+.tetherTop::before {
+  top: -4px;
+}
+.tetherBottom::before {
+  bottom: -4px;
+}
+
+// nút: vòng tròn màu nhóm, viền trắng dày, icon nhóm ở giữa, số thứ tự làm huy hiệu góc trên
+.node {
+  position: absolute;
+  z-index: 4;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 4px solid var(--node, #1b6fb8);
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 4px rgb(16 24 40 / 16%);
+  pointer-events: auto;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+
+  &:hover {
+    transform: translateY(-1px) scale(1.05);
+    box-shadow: 0 3px 8px rgb(16 24 40 / 22%);
+  }
+}
+
+.nodeNum {
+  position: absolute;
+  top: -9px;
+  right: -9px;
+  display: grid;
+  width: 22px;
+  height: 22px;
+  place-items: center;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: var(--node, #1b6fb8);
+  color: #fff;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 600;
+}
+
+// Bảng màu mốc theo nhóm task (Hồ sơ lục, Đào tạo lam, Thiết bị tím, Văn phòng vàng, chưa phân nhóm xám).
+.catC1 {
+  --node: #1f8a5f;
+}
+.catC2 {
+  --node: #1b6fb8;
+}
+.catC3 {
+  --node: #4457b3;
+}
+.catC4 {
+  --node: #d18a12;
+}
+.catC5 {
+  --node: #8a5a86;
+}
+.catC6 {
+  --node: #1a8a84;
+}
+.catC7 {
+  --node: #6b7a8c;
+}
+
+// thẻ: dải màu nhóm ở đầu (như thẻ roadmap trong ảnh mẫu), thân trắng, nhãn dạng viên thuốc
+.card {
+  position: absolute;
+  z-index: 3;
+  display: flex;
+  box-sizing: border-box;
+  height: 138px;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--app-border);
+  border-radius: 5px;
+  background: var(--app-surface);
+  box-shadow: 0 1px 3px rgb(16 24 40 / 8%);
+  pointer-events: auto;
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+
+  &:hover {
+    box-shadow: 0 3px 10px rgb(16 24 40 / 12%);
+  }
+}
+
+.cardBand {
+  display: flex;
+  height: 30px;
+  flex: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 0 8px 0 6px;
+  background: var(--node, #1b6fb8);
+  color: #fff;
+
+  small {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+}
+
+.bandIcon {
+  display: grid;
+  width: 20px;
+  height: 20px;
+  place-items: center;
+  border-radius: 5px;
+  background: #fff;
+}
+
+.bandPill {
+  padding: 2px 7px;
+  border-radius: 5px;
+  background: rgb(255 255 255 / 24%);
+  color: #fff;
+  font-size: 9.5px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.cardBody {
+  flex: 1;
+  min-height: 0;
+  padding: 8px 10px 0;
+
+  h3 {
+    display: -webkit-box;
+    margin: 0;
+    overflow: hidden;
+    color: var(--app-ink);
+    font-size: 12.5px;
+    font-weight: 600;
+    line-height: 1.35;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+}
+
+.chips {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 5px;
+  margin-top: 7px;
+
+  span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 7px;
+    border-radius: 5px;
+    background: var(--app-surface-2);
+    color: var(--app-ink-2);
+    font-size: 10px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+}
+
+.actions {
+  display: flex;
+  flex: none;
+  justify-content: flex-end;
+  gap: 4px;
+  padding: 0 8px 8px;
+
+  button {
+    display: grid;
+    width: 26px;
+    height: 26px;
+    place-items: center;
+    border: 1px solid var(--app-border);
+    border-radius: 5px;
+    background: var(--app-surface);
+    color: var(--app-ink-2);
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+      border-color: var(--node, #1b6fb8);
+      background: var(--app-surface-2);
+      color: var(--node, #1b6fb8);
+    }
+    &:disabled {
+      opacity: 0.45;
+      cursor: default;
+    }
+  }
+}
+.danger {
+  color: #ad3e3e !important;
+
+  &:hover:not(:disabled) {
+    border-color: #d49a9a !important;
+    background: #fff5f5 !important;
+    color: #a72f2f !important;
+  }
+}
+
+.legend {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 18px;
+  padding: 12px 20px;
+  border-top: 1px solid var(--app-border);
+  background: var(--app-surface);
+  color: var(--app-ink-2);
+  font-size: 11.5px;
+
+  b {
+    color: var(--app-ink-2);
+    font-size: 11.5px;
+  }
+  span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+  }
+  i {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    box-shadow: 0 0 0 2px rgb(255 255 255 / 90%);
+  }
+}
+
+// ── modal + form ──
+.taskForm {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+
+  label {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 12px;
+    color: var(--app-ink-2);
+  }
+  input:not([type="checkbox"]),
+  textarea {
+    padding: 7px 9px;
+    border: 1px solid var(--app-border-strong);
+    border-radius: 5px;
+    background: var(--app-surface);
+    color: var(--app-ink);
+    font-size: 13px;
+    font-family: inherit;
+  }
+}
+
+.checkboxRow {
+  flex-direction: row !important;
+  align-items: center;
+  gap: 8px !important;
+}
+
+.modalBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(9, 20, 40, 0.55);
+}
+
+.modal {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  max-height: 80vh;
+  overflow: auto;
+  padding: 24px;
+  border-radius: 5px;
+  background: var(--app-surface);
+  box-shadow: var(--app-shadow);
+
+  h2 {
+    margin: 0 0 8px;
+    font-size: 18px;
+    color: var(--app-ink);
+  }
+}
+
+.modalClose {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  border: none;
+  background: none;
+  color: var(--app-ink-2);
+  cursor: pointer;
+}
+
+.modalBody {
+  margin: 0 0 8px;
+  white-space: pre-wrap;
+  font-size: 14px;
+  color: var(--app-ink-2);
+  line-height: 1.6;
+}
+
+.legendNote {
+  margin-left: auto;
+  color: #946512;
+  font-weight: 600;
+}
+
+// ── modal xem task (mô phỏng ô tóm tắt + các mục của v15) ──
+.viewSummary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-bottom: 5px;
+  border: 1px solid var(--app-border);
+  border-radius: 5px;
+
+  > div {
+    min-width: 0;
+    padding: 12px 14px;
+    border-right: 1px solid var(--app-border);
+
+    &:last-child {
+      border-right: 0;
+    }
+  }
+  small {
+    display: block;
+    color: var(--app-ink-3);
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+  b {
+    display: block;
+    margin-top: 3px;
+    color: var(--app-ink);
+    font-size: 13px;
+  }
+
+  @media (max-width: 720px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.viewSection {
+  padding: 14px 0;
+  border-top: 1px solid var(--app-border);
+
+  h3 {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin: 0 0 8px;
+    color: var(--app-ink);
+    font-size: 14px;
+    font-weight: 600;
+  }
+  p {
+    margin: 0;
+    color: var(--app-ink-2);
+    font-size: 14px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+  }
+  ol {
+    margin: 0;
+    padding-left: 20px;
+    color: var(--app-ink-2);
+    font-size: 14px;
+    line-height: 1.7;
+  }
+}
+
+// Tiêu đề ngày: biểu tượng + tên ngày ở trái; bên phải là các ô thống kê (mỗi ô một dòng) sát nút Thêm task.
+.journeyHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 12px 16px;
+}
+
+.journeyIcon {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  flex: none;
+  place-items: center;
+  border-radius: 5px;
+  background: color-mix(in srgb, #1b6fb8 10%, var(--app-surface));
+}
+
+.journeyRight {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.journeyStats {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin: 0;
+
+  > div {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 5px 12px 5px 8px;
+    border: 1px solid var(--app-border);
+    border-radius: 5px;
+    background: var(--app-surface);
+    white-space: nowrap;
+  }
+  dt {
+    color: var(--app-ink-3);
+    font-size: 12px;
+    font-weight: 500;
+  }
+  dd {
+    margin: 0;
+    color: var(--app-ink);
+    font-size: 15px;
+    font-weight: 600;
+  }
+}
+
+// ── hiệu ứng khi trỏ chuột (nút, thẻ, dòng bảng) ──
+
+.btn {
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+}
+
+.btn:not(:disabled):hover {
+  background: var(--app-accent-strong);
+  box-shadow: 0 3px 8px rgb(31 116 181 / 28%);
+  transform: translateY(-1px);
+}
+.btn:not(:disabled):active {
+  box-shadow: none;
+  transform: translateY(0);
+}
+
+.btnSec {
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+}
+
+.btnSec:not(:disabled):hover {
+  border-color: var(--app-accent);
+  background: var(--app-accent-soft);
+  color: var(--app-accent-strong);
+}
+.btnSec:not(:disabled):active {
+  transform: translateY(1px);
+}
+
+.btnSecSm {
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+}
+
+.btnSecSm:not(:disabled):hover {
+  border-color: var(--app-accent);
+  background: var(--app-accent-soft);
+  color: var(--app-accent-strong);
+}
+.btnSecSm:not(:disabled):active {
+  transform: translateY(1px);
+}
+
+.btnDanger {
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+}
+
+.btnDanger:not(:disabled):hover {
+  filter: brightness(0.92);
+  box-shadow: 0 3px 8px rgb(173 62 62 / 30%);
+  transform: translateY(-1px);
+}
+
+.journeyStats > div {
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+}
+.journeyStats > div:hover {
+  border-color: var(--app-border-strong);
+  box-shadow: 0 3px 10px rgb(16 24 40 / 8%);
+  transform: translateY(-1px);
+}

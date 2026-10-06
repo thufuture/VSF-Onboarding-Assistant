@@ -1,0 +1,79 @@
+{
+ "model": "deepseek-flash",
+ "sections": 16,
+ "ghi_chu": "Số in từ log lần chạy 02/10/2026 (script thu_nghiem_toi_uu.py so-sanh). Chạy trước khi script có cổng giới hạn 9 lời gọi cùng lúc: tối đa 10 lời gọi cùng lúc, không gặp 429.",
+ "variants": {
+  "A. một lời gọi, suy luận mặc định (hiện trạng)": {
+   "calls": 1,
+   "wall_seconds": 125.9,
+   "sum_seconds": 125.9,
+   "tokens_in": 3101,
+   "tokens_out": 34825,
+   "reasoning_tokens": 29216,
+   "raw_items": 16,
+   "valid_proposals": 16,
+   "sections_covered": "16/16",
+   "facts_found": "14/15",
+   "per_call_seconds": [
+    125.9
+   ]
+  },
+  "B. một lời gọi, tắt suy luận": {
+   "calls": 1,
+   "wall_seconds": 21.2,
+   "sum_seconds": 21.2,
+   "tokens_in": 3076,
+   "tokens_out": 6224,
+   "reasoning_tokens": 0,
+   "raw_items": 16,
+   "valid_proposals": 16,
+   "sections_covered": "16/16",
+   "facts_found": "14/15",
+   "per_call_seconds": [
+    21.2
+   ]
+  },
+  "C. 4 lời gọi song song, suy luận mặc định": {
+   "calls": 4,
+   "wall_seconds": 131.7,
+   "sum_seconds": 218.0,
+   "tokens_in": 5922,
+   "tokens_out": 53073,
+   "reasoning_tokens": 46592,
+   "raw_items": 16,
+   "valid_proposals": 16,
+   "sections_covered": "16/16",
+   "facts_found": "14/15",
+   "per_call_seconds": [
+    19.0,
+    131.7,
+    49.5,
+    17.8
+   ],
+   "per_call_reasoning": [
+    2929,
+    30823,
+    10388,
+    2452
+   ]
+  },
+  "D. 4 lời gọi song song, tắt suy luận": {
+   "calls": 4,
+   "wall_seconds": 8.0,
+   "sum_seconds": 25.5,
+   "tokens_in": 5822,
+   "tokens_out": 5797,
+   "reasoning_tokens": 0,
+   "raw_items": 18,
+   "valid_proposals": 16,
+   "sections_covered": "15/16",
+   "facts_found": "13/15",
+   "per_call_seconds": [
+    6.8,
+    5.2,
+    8.0,
+    5.4
+   ]
+  }
+ }
+}

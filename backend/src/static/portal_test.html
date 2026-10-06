@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8" />
+<title>Portal API — trang test nội bộ</title>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 900px; margin: 24px auto; padding: 0 16px; color: #12233d; }
+  h2 { border-bottom: 2px solid #1090cb; padding-bottom: 4px; margin-top: 32px; }
+  fieldset { border: 1px solid #cfd8e3; border-radius: 8px; margin-bottom: 16px; padding: 12px 16px; }
+  label { display: block; margin: 8px 0 2px; font-size: 13px; color: #555; }
+  input, select { width: 100%; padding: 6px 8px; border: 1px solid #cfd8e3; border-radius: 5px; box-sizing: border-box; }
+  button { margin-top: 10px; padding: 8px 14px; background: #1090cb; color: #fff; border: none; border-radius: 5px; cursor: pointer; }
+  button:hover { background: #0c2d5b; }
+  pre { background: #0c2d5b; color: #d7ecf7; padding: 12px; border-radius: 6px; max-height: 260px; overflow: auto; white-space: pre-wrap; }
+  .row { display: flex; gap: 10px; }
+  .row > div { flex: 1; }
+  .note { font-size: 12px; color: #888; }
+</style>
+</head>
+<body>
+<h1>Portal API — trang test nội bộ</h1>
+<p class="note">Trang này chỉ gọi API thật cùng origin (cookie đăng nhập tự dùng chung). Chỉ dùng nội bộ để test tay, không phải UI thật.</p>
+
+<fieldset>
+  <legend><b>1. Đăng nhập</b></legend>
+  <div class="row">
+    <div><label>Email</label><input id="loginEmail" value="hr1@vsf-demo.example" /></div>
+    <div><label>Mật khẩu</label><input id="loginPassword" type="password" value="ChangeMe!123" /></div>
+  </div>
+  <button onclick="login()">Đăng nhập</button>
+  <button onclick="whoAmI()">Kiểm tra /portal/me</button>
+</fieldset>
+
+<fieldset>
+  <legend><b>2. Tạo Journey Template</b></legend>
+  <label>Code</label><input id="tplCode" value="tpl-thu-nghiem" />
+  <label>Title</label><input id="tplTitle" value="Lộ trình thử nghiệm" />
+  <button onclick="createTemplate()">Tạo template</button>
+  <label>template_id vừa tạo (dùng cho bước 3)</label><input id="tplId" />
+</fieldset>
+
+<fieldset>
+  <legend><b>3. Thêm Stage</b></legend>
+  <label>Stage title</label><input id="stageTitle" value="Ngày 1" />
+  <button onclick="createStage()">Thêm stage</button>
+  <label>stage_id vừa tạo (dùng cho bước 6)</label><input id="stageId" />
+</fieldset>
+
+<fieldset>
+  <legend><b>4. Upload tài liệu</b></legend>
+  <label>File (.docx/.pdf/.md)</label><input id="docFile" type="file" />
+  <div class="row">
+    <div><label>Title</label><input id="docTitle" value="Tài liệu thử" /></div>
+    <div><label>category_slug</label><input id="docCategory" value="onboarding-ngay-dau" /></div>
+  </div>
+  <div class="row">
+    <div><label>source_key (duy nhất mỗi lần thử)</label><input id="docSourceKey" value="portal-test-doc" /></div>
+    <div><label>version_label</label><input id="docVersion" value="1.0" /></div>
+  </div>
+  <label>effective_from</label><input id="docEffective" type="date" value="2024-01-01" />
+  <button onclick="uploadDocument()">Upload</button>
+  <label>document_version_id vừa tạo (dùng cho bước 5, 6)</label><input id="docVersionId" />
+  <button onclick="openOriginal()">Mở file gốc</button>
+</fieldset>
+
+<fieldset>
+  <legend><b>5. AI đề xuất task</b></legend>
+  <p class="note">Gọi LLM thật (DeepSeek) — tốn phí nhỏ mỗi lần bấm.</p>
+  <button onclick="proposeTasks()">Đề xuất task từ tài liệu ở bước 4</button>
+</fieldset>
+
+<fieldset>
+  <legend><b>6. Chấp nhận 1 đề xuất (điền tay từ kết quả bước 5)</b></legend>
+  <label>Title</label><input id="acceptTitle" value="" />
+  <label>Instructions markdown</label><input id="acceptBody" value="" />
+  <label>document_section_id (từ source_chunks)</label><input id="acceptSectionId" />
+  <label>quote (nguyên văn, copy đúng từ đề xuất)</label><input id="acceptQuote" />
+  <button onclick="acceptProposal()">Chấp nhận vào stage ở bước 3</button>
+</fieldset>
+
+<h2>Log</h2>
+<pre id="log">Chưa có gì.</pre>
+
+<script>
+function log(label, data) {
+  const el = document.getElementById('log');
+  el.textContent = `[${label}]\n` + JSON.stringify(data, null, 2) + '\n\n' + el.textContent;
+}
+async function call(path, opts = {}) {
+  const res = await fetch(path, { credentials: 'include', ...opts });
+  let body;
+  try { body = await res.json(); } catch { body = await res.text(); }
+  log(`${opts.method || 'GET'} ${path} -> ${res.status}`, body);
+  return { status: res.status, body };
+}
+
+async function login() {
+  await call('/api/v1/auth/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      email: document.getElementById('loginEmail').value,
+      password: document.getElementById('loginPassword').value,
+    }),
+  });
+}
+async function whoAmI() { await call('/api/v1/portal/me'); }
+
+async function createTemplate() {
+  const { body } = await call('/api/v1/portal/journey-templates', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ code: document.getElementById('tplCode').value, title: document.getElementById('tplTitle').value }),
+  });
+  if (body && body.id) document.getElementById('tplId').value = body.id;
+}
+
+async function createStage() {
+  const templateId = document.getElementById('tplId').value;
+  const { body } = await call(`/api/v1/portal/journey-templates/${templateId}/stages`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ title: document.getElementById('stageTitle').value, sort_order: 1 }),
+  });
+  if (body && body.id) document.getElementById('stageId').value = body.id;
+}
+
+async function uploadDocument() {
+  const file = document.getElementById('docFile').files[0];
+  if (!file) { alert('Chọn file trước'); return; }
+  const form = new FormData();
+  form.append('file', file);
+  form.append('title', document.getElementById('docTitle').value);
+  form.append('category_slug', document.getElementById('docCategory').value);
+  form.append('source_key', document.getElementById('docSourceKey').value + '-' + Date.now());
+  form.append('version_label', document.getElementById('docVersion').value);
+  form.append('effective_from', document.getElementById('docEffective').value);
+  const { body } = await call('/api/v1/portal/documents', { method: 'POST', body: form });
+  if (body && body.document_version_id) document.getElementById('docVersionId').value = body.document_version_id;
+}
+
+function openOriginal() {
+  const id = document.getElementById('docVersionId').value;
+  window.open(`/api/v1/portal/documents/${id}/original`, '_blank');
+}
+
+async function proposeTasks() {
+  const versionId = parseInt(document.getElementById('docVersionId').value, 10);
+  await call('/api/v1/portal/ai/task-proposals', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ document_version_id: versionId }),
+  });
+}
+
+async function acceptProposal() {
+  const stageId = document.getElementById('stageId').value;
+  await call(`/api/v1/portal/stages/${stageId}/tasks/from-proposal`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      title: document.getElementById('acceptTitle').value,
+      instructions_markdown: document.getElementById('acceptBody').value,
+      required: true,
+      source_chunks: [{
+        document_section_id: parseInt(document.getElementById('acceptSectionId').value, 10),
+        quote: document.getElementById('acceptQuote').value,
+      }],
+    }),
+  });
+}
+</script>
+</body>
+</html>

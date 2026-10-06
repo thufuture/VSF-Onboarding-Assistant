@@ -52,7 +52,7 @@ def test_rejects_missing_file(tmp_path: Path) -> None:
 
 def test_rejects_empty_file(tmp_path: Path) -> None:
     empty = tmp_path / "rong.md"
-    empty.write_text("")
+    empty.write_text("", encoding="utf-8")
 
     with pytest.raises(ParseError, match="rỗng"):
         parse_document(empty)
@@ -63,7 +63,7 @@ def test_rejects_file_over_size_limit(tmp_path: Path, monkeypatch: pytest.Monkey
 
     monkeypatch.setattr(parser_module, "MAX_FILE_SIZE_BYTES", 10)
     big = tmp_path / "to.md"
-    big.write_text("nội dung dài hơn mười byte rất nhiều")
+    big.write_text("nội dung dài hơn mười byte rất nhiều", encoding="utf-8")
 
     with pytest.raises(ParseError, match="vượt giới hạn"):
         parse_document(big)
@@ -71,7 +71,7 @@ def test_rejects_file_over_size_limit(tmp_path: Path, monkeypatch: pytest.Monkey
 
 def test_rejects_text_shorter_than_minimum_length(tmp_path: Path) -> None:
     short = tmp_path / "ngan.md"
-    short.write_text("Chào bạn.")
+    short.write_text("Chào bạn.", encoding="utf-8")
 
     with pytest.raises(ParseError, match="quá ngắn"):
         parse_document(short)

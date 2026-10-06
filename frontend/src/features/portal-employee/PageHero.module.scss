@@ -1,0 +1,193 @@
+@use "../../styles/tokens" as *;
+
+.hero {
+  position: relative;
+  overflow: hidden;
+  background: #0b2a4d;
+  color: #fff;
+}
+
+// Ba ảnh nối nhau: mỗi ảnh hiện 9 giây, trôi ngang chậm (Ken Burns) và chồng mờ sang ảnh kế.
+.slides {
+  position: absolute;
+  inset: 0;
+}
+.slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  animation: slideCycle 27s ease-in-out infinite;
+}
+.photo {
+  object-fit: cover;
+  object-position: 50% 45%;
+}
+@keyframes slideCycle {
+  0% {
+    opacity: 0;
+    transform: scale(1.08) translateX(1.5%);
+  }
+  6%,
+  30% {
+    opacity: 1;
+  }
+  36% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.14) translateX(-2%);
+  }
+}
+// ảnh đầu hiện ngay khi vào trang thay vì chờ chu kỳ
+.slide:first-child {
+  animation-name: slideCycleFirst;
+}
+@keyframes slideCycleFirst {
+  0% {
+    opacity: 1;
+    transform: scale(1.08) translateX(1.5%);
+  }
+  30% {
+    opacity: 1;
+  }
+  36% {
+    opacity: 0;
+  }
+  94% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1.14) translateX(-2%);
+  }
+}
+.tint {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(100deg, rgb(8 32 62 / 90%) 0%, rgb(10 44 84 / 72%) 48%, rgb(14 60 110 / 38%) 100%),
+    linear-gradient(0deg, rgb(8 24 48 / 45%), transparent 55%);
+}
+
+.inner {
+  position: relative;
+  display: flex;
+  width: 100%;
+  min-height: 206px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  padding: 28px var(--emp-gutter, 16px) 62px;
+}
+.compact .inner {
+  min-height: 150px;
+  padding: 22px var(--emp-gutter, 16px) 56px;
+}
+
+.text {
+  display: flex;
+  max-width: 720px;
+  align-items: center;
+  gap: 16px;
+  animation: heroText 0.7s 0.1s cubic-bezier(0.22, 0.8, 0.3, 1) both;
+
+  h1 {
+    margin: 6px 0 0;
+    font-size: clamp(26px, 3.4vw, 38px);
+    font-weight: 600;
+    line-height: 1.18;
+    letter-spacing: -0.01em;
+  }
+  p {
+    margin: 12px 0 0;
+    color: rgb(255 255 255 / 84%);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+}
+.avatar {
+  flex: none;
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px rgb(255 255 255 / 26%);
+}
+.textBody {
+  min-width: 0;
+}
+
+.compact .text h1 {
+  font-size: clamp(22px, 2.6vw, 30px);
+}
+@keyframes heroText {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+
+.aside {
+  flex: none;
+  animation: heroText 0.7s 0.25s cubic-bezier(0.22, 0.8, 0.3, 1) both;
+}
+
+// Sóng nước chạy ngang ở đáy ảnh, màu sóng trùng nền trang nên ảnh "chìm" mượt vào nội dung.
+.waves {
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 56px;
+  overflow: hidden;
+  pointer-events: none;
+
+  svg {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 200%;
+    height: 100%;
+    fill: var(--app-bg);
+  }
+}
+.waveBack {
+  opacity: 0.45;
+  animation: wave 16s linear infinite;
+}
+.waveFront {
+  animation: wave 11s linear infinite reverse;
+}
+@keyframes wave {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@include phone-down {
+  .inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 18px;
+    padding-bottom: 64px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slide,
+  .waveBack,
+  .waveFront,
+  .text,
+  .aside {
+    animation: none;
+  }
+  .slide:first-child {
+    opacity: 1;
+  }
+}

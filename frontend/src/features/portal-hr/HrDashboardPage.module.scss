@@ -1,0 +1,207 @@
+// Cổng đúng .pagehead.hero + kpi()/.kh/.kpi.k-* của prototype v15 (mục Tổng quan) — chỉ hiện số thật.
+$tn-blue: #0e7fb3;
+$tn-teal: #1f7f7a;
+$tn-indigo: #4f5bbf;
+$tn-amber: #a8681a;
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 5px 5px 16px;
+}
+
+.pageheadHero {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 18px 20px;
+  background: linear-gradient(100deg, color-mix(in srgb, var(--app-accent) 11%, var(--app-surface)) 0%, var(--app-surface) 62%);
+  border: 1px solid var(--app-border);
+  border-radius: 5px;
+  flex-wrap: wrap;
+}
+
+.pageheadText {
+  flex: 1;
+  min-width: 220px;
+
+  h1 {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--app-ink);
+  }
+  p {
+    margin: 2px 0 0;
+    color: var(--app-ink-2);
+    font-size: 12.5px;
+  }
+}
+
+.row {
+  display: flex;
+  gap: 5px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  height: 34px;
+  padding: 0 14px;
+  border-radius: 5px;
+  border: 1px solid var(--app-accent);
+  background: var(--app-accent);
+  color: var(--app-on-accent);
+  font-weight: 600;
+  font-size: 13px;
+  white-space: nowrap;
+  text-decoration: none;
+
+  &:hover {
+    background: var(--app-accent-strong);
+  }
+}
+
+.btnSec {
+  background: var(--app-surface);
+  color: var(--app-ink);
+  border-color: var(--app-border-strong);
+
+  &:hover {
+    background: var(--app-surface);
+    border-color: var(--app-accent);
+    color: var(--app-accent-strong);
+  }
+}
+
+.banner {
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 5px;
+  background: #fdecec;
+  color: #a3121f;
+  font-size: 14px;
+}
+
+.kpiGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+
+  @media (max-width: 760px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.kpi {
+  display: flex;
+  flex-direction: column;
+  padding: 14px 16px;
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-top: 2px solid var(--kbc, var(--app-border));
+  border-radius: 5px;
+}
+.toneBlue {
+  --kbc: #{$tn-blue};
+}
+.toneIndigo {
+  --kbc: #{$tn-indigo};
+}
+.toneTeal {
+  --kbc: #{$tn-teal};
+}
+.toneAmber {
+  --kbc: #{$tn-amber};
+}
+
+.kh {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 5px;
+
+  small {
+    color: var(--app-ink-3);
+    font-size: 12px;
+    font-weight: 500;
+  }
+}
+
+.ichip {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  flex: none;
+  place-items: center;
+  border-radius: 5px;
+  color: var(--kbc);
+  background: color-mix(in srgb, var(--kbc) 13%, var(--app-surface));
+}
+
+.kpi b {
+  margin: 2px 0;
+  font-size: 26px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--app-ink);
+}
+
+.s {
+  color: var(--app-ink-2);
+  font-size: 12px;
+}
+
+// ── hiệu ứng khi trỏ chuột (nút, thẻ, dòng bảng) ──
+
+.btn {
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+}
+
+.btn:not(:disabled):hover {
+  background: var(--app-accent-strong);
+  box-shadow: 0 3px 8px rgb(31 116 181 / 28%);
+  transform: translateY(-1px);
+}
+.btn:not(:disabled):active {
+  box-shadow: none;
+  transform: translateY(0);
+}
+
+.btnSec {
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+}
+
+.btnSec:not(:disabled):hover {
+  border-color: var(--app-accent);
+  background: var(--app-accent-soft);
+  color: var(--app-accent-strong);
+}
+.btnSec:not(:disabled):active {
+  transform: translateY(1px);
+}
+
+.kpi {
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+}
+.kpi:hover {
+  border-color: var(--app-border-strong);
+  box-shadow: 0 3px 10px rgb(16 24 40 / 8%);
+  transform: translateY(-1px);
+}

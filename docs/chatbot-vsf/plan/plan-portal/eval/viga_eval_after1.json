@@ -1,0 +1,704 @@
+[
+ {
+  "id": 1,
+  "doc": "D1",
+  "question": "Hồ sơ cần nộp trong ngày đầu gồm những gì?",
+  "expect": "ANSWER",
+  "status": 200,
+  "type": "ANSWER",
+  "route": "FALLBACK",
+  "got": "ANSWER",
+  "verdict": "✓",
+  "seconds": 8.7,
+  "missing": [],
+  "task_dump": false,
+  "raw_markdown": false,
+  "unanswered": [],
+  "can_report": false,
+  "message": "Hồ sơ nộp trong ngày đầu gồm: CV; lý lịch tư pháp (hoặc giấy hẹn lấy lý lịch tư pháp); giấy khám sức khỏe; hình ảnh xác nhận nơi cư trú (bản photo, có thể chụp ảnh VNeID định danh mức 2); căn cước công dân bản photo; chứng chỉ bằng cấp chuyên môn bắt buộc. Đầu mối liên hệ: Phòng tuyển dụng.",
+  "claims": [
+   {
+    "type": "ANSWER",
+    "text": "Hồ sơ nộp trong ngày đầu gồm: CV; lý lịch tư pháp (hoặc giấy hẹn lấy lý lịch tư pháp); giấy khám sức khỏe; hình ảnh xác nhận nơi cư trú (bản photo, có thể chụp ảnh VNeID định danh mức 2); căn cước công dân bản photo; chứng chỉ bằng cấp chuyên môn bắt buộc. Đầu mối liên hệ: Phòng tuyển dụng.",
+    "quote": "• CV. • Lý lịch tư pháp, hoặc giấy hẹn lấy lý lịch tư pháp. • Giấy khám sức khỏe • Hình ảnh xác nhận nơi cư trú (bản photo, có thể chụp ảnh VNeID định danh mức 2). • Căn cước công dân bản Photo. • Chứng chỉ bang cấp chuyên môn bắt buộc. • Đầu mối liên hệ: Phòng tuyển dụng.",
+    "source": "Chuẩn bị hồ sơ phải nộp trong ngày đầu:",
+    "doc": "Huong_dan_ngay_1_onboarding"
+   }
+  ]
+ },
+ {
+  "id": 2,
+  "doc": "D1",
+  "question": "Nộp hồ sơ ngày đầu thì liên hệ đầu mối nào?",
+  "expect": "ANSWER",
+  "status": 200,
+  "type": "ANSWER",
+  "route": "FALLBACK",
+  "got": "ANSWER",
+  "verdict": "✓",
+  "seconds": 6.9,
+  "missing": [],
+  "task_dump": false,
+  "raw_markdown": false,
+  "unanswered": [],
+  "can_report": false,
+  "message": "Liên hệ Phòng tuyển dụng.",
+  "claims": [
+   {
+    "type": "ANSWER",
+    "text": "Liên hệ Phòng tuyển dụng.",
+    "quote": "Đầu mối liên hệ: Phòng tuyển dụng.",
+    "source": "Chuẩn bị hồ sơ phải nộp trong ngày đầu:",
+    "doc": "Huong_dan_ngay_1_onboarding"
+   }
+  ]
+ },
+ {
+  "id": 3,
+  "doc": "D1",
+  "question": "Chương trình Đào tạo Hội nhập có bắt buộc không và điều kiện hoàn thành là gì?",
+  "expect": "ANSWER",
+  "status": 200,
+  "type": "ANSWER",
+  "route": "LLM",
+  "got": "ANSWER",
+  "verdict": "~",
+  "seconds": 11.0,
+  "missing": [
+   "bắt buộc"
+  ],
+  "task_dump": false,
+  "raw_markdown": false,
+  "unanswered": [
+   "Chương trình Đào tạo Hội nhập có bắt buộc không?"
+  ],
+  "can_report": true,
+  "message": "Gồm điểm danh đầu giờ, hoàn thành khảo sát sau chương trình, và đạt từ 80% trở lên ở bài test cuối khóa.",
+  "claims": [
+   {
+    "type": "ANSWER",
+    "text": "Gồm điểm danh đầu giờ, hoàn thành khảo sát sau chương trình, và đạt từ 80% trở lên ở bài test cuối khóa.",
+    "quote": "Điều kiện được tính hoàn thành chương trình Đào tạo Hội nhập gồm điểm danh đầu giờ, hoàn thành khảo sát sau chương trình, và đạt từ 80% trở lên ở bài test cuối khóa.",
+    "source": "Tôi làm bài test cuối khóa dưới 80% thì sao?",
+    "doc": "Cac_truong_hop_ngoai_le_ngay_1"
+   }
+  ]
+ },
+ {
+  "id": 4,
+  "doc": "D1",
+  "question": "Bài test cuối khóa phải đạt bao nhiêu phần trăm?",
+  "expect": "ANSWER",
+  "status": 200,
+  "type": "ANSWER",
+  "route": "LLM",
+  "got": "ANSWER",
+  "verdict": "✓",
+  "seconds": 4.8,
+  "missing": [],
+  "task_dump": false,
+  "raw_markdown": false,
+  "unanswered": [],
+  "can_report": false,
+  "message": "Phải đạt từ 80% trở lên (>= 80%) ở bài test cuối khóa.",
+  "claims": [
+   {
+    "type": "ANSWER",
+    "text": "Phải đạt từ 80% trở lên (>= 80%) ở bài test cuối khóa.",
+    "quote": "Hoàn thành và đạt >= 80% bài test cuối khóa.",
+    "source": "Tham gia chương trình Đào tạo Hội nhập cùng Phòng đào tạo phát triển văn hóa:(bắt buộc cho CBNV mới)",
+    "doc": "Huong_dan_ngay_1_onboarding"
+   }
+  ]
+ },
+ {
+  "id": 5,
+  "doc": "D1",
+  "question": "Đầu mối của chương trình Đào tạo Hội nhập là ai, email gì?",
+  "expect": "ANSWER",
+  "status": 200,
+  "type": "ANSWER",
+  "route": "LLM",
+  "got": "ANSWER",
+  "verdict": "✓",
+  "seconds": 5.5,
+  "missing": [],
+  "task_dump": false,
+  "raw_markdown": false,
+  "unanswered": [],
+  "can_report": false,
+  "message": "Đầu mối là Phòng ĐT&PTVH (Phòng đào tạo và phát triển văn hóa), email liên hệ: v.thudq@vinsmartfuture.tech.",
+  "claims": [
+   {
+    "type": "ANSWER",
+    "text": "Đầu mối là Phòng ĐT&PTVH (Phòng đào tạo và phát triển văn hóa), email liên hệ: v.thudq@vinsmartfuture.tech.",
+    "quote": "Đầu mối: v.thudq@vinsmartfuture.tech (Phòng ĐT&PTVH)",
+    "source": "Tham gia chương trình Đào tạo Hội nhập cùng Phòng đào tạo phát triển văn hóa:(bắt buộc cho CBNV mới)",
+    "doc": "Huong_dan_ngay_1_onboarding"
+   }
+  ]
+ },
+ {
+  "id": 6,
+  "doc": "D1",
+  "question": "Khi nào tôi ký hợp đồng lao động?",
+  "expect": "ANSWER",
+  "status": 200,
+  "type": "ANSWER",
+  "route": "FALLBACK",
+  "got": "ANSWER",
+  "verdict": "✓",
+  "seconds": 5.7,
+  "missing": [],
+  "task_dump": false,
+  "raw_markdown": false,
+  "unanswered": [],
+  "can_report": false,
+  "message": "Cuối ngày đầu tiên sẽ có email hướng dẫn ký hợp đồng lao động và bạn phải ký trong thời gian quy định.",
+  "claims": [
+   {
+    "type": "ANSWER",
+    "text": "Cuối ngày đầu tiên sẽ có email hướng dẫn ký hợp đồng lao động và bạn phải ký trong thời gian quy định.",
+    "quote": "CUỐI NGÀY SẼ CÓ EMAIL HƯỚNG DẪN KÝ HỢP ĐỒNG LAO ĐỘNG. KÝ TRONG THỜI GIAN QUY ĐỊNH",
+    "source": "CUỐI NGÀY SẼ CÓ EMAIL HƯỚNG DẪN KÝ HỢP ĐỒNG LAO ĐỘNG. KÝ TRONG THỜI GIAN QUY ĐỊNH",
+    "doc": "Huong_dan_ngay_1_onboarding"
+   }
+  ]
+ },
+ {
+  "id": 7,
+  "doc": "D1",
+  "question": "Đăng ký faceid chấm công ở đâu?",
+  "expect": "ANSWER",
+  "status": 200,
+  "type": "ANSWER",
+  "route": "FALLBACK",
+  "got": "ANSWER",
+  "verdict": "~",
+  "seconds": 6.3,
+  "missing": [
+   "vincom"
+  ],
+  "task_dump": false,
+  "raw_markdown": false,
+  "unanswered": [],
+  "can_report": false,
+  "message": "Đăng ký faceid chấm công tại tầng 14 theo chỉ dẫn của phòng nhân sự.",
+  "claims": [
+   {
+    "type": "ANSWER",
+    "text": "Đăng ký faceid chấm công tại tầng 14 theo chỉ dẫn của phòng nhân sự.",
+    "quote": "Đăng ký faceid chấm công tại tầng 14 theo chỉ dẫn của phòng nhân sự.(Phòng nhân sự)",
+    "source": "Dành cho văn phòng Vincom Đồng Khởi:",
+    "doc": "Huong_dan_ngay_1_onboarding"
+   }
+  ]
+ },
+ {
+  "id": 8,
+  "doc": "D1",
+  "question": "Tôi nhận laptop ở đâu?",
+  "expect": "ANSWER",
+  "status": 200,
+  "type": "ANSWER",
+  "route": "FALLBACK",
+  "got": "ANSWER",
+  "verdict": "✓",
+  "seconds": 5.5,
+  "missing": [],
+  "task_dump": false,
+  "raw_markdown": false,
+  "unanswered": [],
+  "can_report": false,
+  "message": "Nhận laptop tại tầng 12 theo chỉ dẫn của ITHD và HR.",
+  "claims": [
+   {
+    "type": "ANSWER",
+    "text": "Nhận laptop tại tầng 12 theo chỉ dẫn của ITHD và HR.",
+    "quote": "Nhận laptop tại tầng 12 theo chỉ dẫn của ITHD và HR tại tầng 12.",
+    "source": "Tôi chưa nhận được laptop thì có làm tiếp được không?",
+    "doc": "Cac_truong_hop_ngoai_le_ngay_1"
+   }
+  ]
+ },
+ {
+  "id": 9,
+  "doc": "D1",
+  "question": "Nhận laptop xong thì làm gì tiếp theo?",
+  "expect": "ANSWER",
+  "status": 200,
+  "type": "ANSWER",
+  "route": "FALLBACK",
+  "got": "ANSWER",
+  "verdict": "✓",
+  "seconds": 6.7,
+  "missing": [],
+  "task_dump": false,
+  "raw_markdown": false,
+  "unanswered": [],
+  "can_report": false,
+  "message": "Đăng nhập Outlook và Teams, sau đó mới tiếp tục bước tiếp theo.",
+  "claims": [
+   {
+    "type": "ANSWER",
+    "text": "Đăng nhập Outlook và Teams, sau đó mới tiếp tục bước tiếp theo.",
+    "quote": "Chỉ khi đã có laptop và đăng nhập được Outlook và Teams thì mới tiếp tục bước tiếp theo.",
+    "source": "Tôi chưa nhận được laptop thì có làm tiếp được không?",
+    "doc": "Cac_truong_hop_ngoai_le_ngay_1"
+   }
+  ]
+ },
+ {
+  "id": 10,
+  "doc": "D1",
+  "question": "Viết email hỗ trợ cho ITHD thì gửi tới địa chỉ nào và đặt tiêu đề thế nào?",
+  "expect": "ANSWER",
+  "status": 200,
+  "type": "ANSWER",
+  "route": "FALLBACK",
+  "got": "ANSWER",
+  "verdict": "✓",
+  "seconds": 10.0,
+  "missing": [],
+  "task_dump": false,
+  "raw_markdown": false,
+  "unanswered": [],
+  "can_report": false,
+  "message": "Gửi tới support@vinsmartfuture.tech. Tiêu đề theo mẫu: ITHD [Địa điểm làm việc] + [vắn tắt yêu cầu].",
+  "claims": [
+   {
+    "type": "ANSWER",
+    "text": "Gửi tới support@vinsmartfuture.tech.",
+    "quote": "To:'support@vinsmartfuture.tech'",
+    "source": "CÁCH VIẾT EMAIL HỖ TRỢ ITHD",
+    "doc": "Huong_dan_ngay_1_onboarding"
+   },
+   {
+    "type": "ANSWER",
+    "text": "Tiêu đề theo mẫu: ITHD [Địa điểm làm việc] + [vắn tắt yêu cầu].",
+    "quote": "Tittle: ITHD [Địa điểm làm việc] + [vắn tắt yêu cầu] ( VD yêu cầu cấp màn hình, ... cài hệ điều hành ubuntu, cài phần mềm.)",
+    "source": "CÁCH VIẾT EMAIL HỖ TRỢ ITHD",
+    "doc": "Huong_dan_ngay_1_onboarding"
+   }
+  ]
+ },
+ {
+  "id": 11,
+  "doc": "D1",
+  "question": "Trước khi viết ticket tôi cần kiểm tra gì?",
+  "expect": "ANSWER",
+  "status": 200,
+  "type": "ANSWER",
+  "route": "FALLBACK",
+  "got": "ANSWER",
+  "verdict": "✓",
+  "seconds": 6.0,
+  "missing": [],
+  "task_dump": false,
+  "raw_markdown": false,
+  "unanswered": [],
+  "can_report": false,
+  "message": "Cần xem nhu cầu hiện tại của bạn có Quick access không.",
+  "claims": [
+   {
+    "type": "ANSWER",
+    "text": "Cần xem nhu cầu hiện tại của bạn có Quick access không.",
+    "quote": "XEM nhu cầu của hiện tại của bạn CÓ Quick access không",
+    "source": "TRƯỚC KHI VIẾT TICKET XEM",
+    "doc": "Huong_dan_ngay_1_onboarding"
+   }
+  ]
+ },
+ {
+  "id": 12,
+  "doc": "D1",
+  "question": "Muốn dùng VPN hoặc xin exception USB thì cần ai đồng thuận?",
+  "expect": "ANSWER",
+  "status": 200,
+  "type": "ANSWER",
+  "route": "LLM",
+  "got": "ANSWER",
+  "verdict": "✓",
+  "seconds": 11.2,
+  "missing": [],
+  "task_dump": false,
+  "raw_markdown": false,
+  "unanswered": [],
+  "can_report": false,
+  "message": "Cần sự phê duyệt/đồng thuận của T3 (ở Khối KD và VH Vinmec là anh Dương Anh Nghi, v.dir.data3@vinsmartfuture.tech).",
+  "claims": [
+   {
+    "type": "ANSWER",
+    "text": "Cần sự phê duyệt/đồng thuận của T3 (ở Khối KD và VH Vinmec là anh Dương Anh Nghi, v.dir.data3@vinsmartfuture.tech).",
+    "quote": "Phải xin phê duyệt của T3, điền form VinSOC rồi mới tạo ticket ITHD.",
+    "source": "Yêu cầu của tôi ticket ITHD không hỗ trợ (đổi Windows sang Ubuntu, VPN, USB...) thì làm sao?",
+    "doc": "Cac_truong_hop_ngoai_le_ngay_1"
+   }
+  ]
+ },
+ {
+  "id": 13,
+  "doc": "D1",
+  "question": "Máy tôi đã dùng sẵn Ubuntu thì xin phê duyệt thế nào?",
+  "expect": "ANSWER",
+  "status": 200,
+  "type": "ANSWER",
+  "route": "FALLBACK",
+  "got": "ANSWER",
+  "verdict": "✓",
+  "seconds": 5.8,
+  "missing": [],
+  "task_dump": false,
+  "raw_markdown": false,
+  "unanswered": [],
+  "can_report": false,
+  "message": "Nếu đang sử dụng sẵn Ubuntu OS, có thể xin phê duyệt qua Team và chụp ảnh.",
+  "claims": [
+   {
+    "type": "ANSWER",
+    "text": "Nếu đang sử dụng sẵn Ubuntu OS, có thể xin phê duyệt qua Team và chụp ảnh.",
+    "quote": "Nếu đang sử dụng sẵn Ubuntu OS, có thể xin phê duyệt qua Team và chụp ảnh.",
+    "source": "Máy của tôi đã dùng sẵn Ubuntu thì cần làm gì?",
+    "doc": "Cac_truong_hop_ngoai_le_ngay_1"
+   }
+  ]
+ },
+ {
+  "id": 14,
+  "doc": "D1",
+  "question": "Sau khi VinSOC phản hồi email thì tôi làm gì?",
+  "expect": "ANSWER",
+  "status": 200,
+  "type": "ANSWER",
+  "route": "FALLBACK",
+  "got": "ANSWER",
+  "verdict": "✓",
+  "seconds": 5.7,
+  "missing": [],
+  "task_dump": false,
+  "raw_markdown": false,
+  "unanswered": [],
+  "can_report": false,
+  "message": "Sau khi có email phản hồi của VinSOC, bạn tạo ticket hỗ trợ theo mẫu CÁCH VIẾT EMAIL HỖ TRỢ ITHD rồi thực hiện tại phòng ITHD (tầng 14).",
+  "claims": [
+   {
+    "type": "ANSWER",
+    "text": "Sau khi có email phản hồi của VinSOC, bạn tạo ticket hỗ trợ theo mẫu CÁCH VIẾT EMAIL HỖ TRỢ ITHD rồi thực hiện tại phòng ITHD (tầng 14).",
+    "quote": "Tạo ticket hỗ trợ như mẫu ở CÁCH VIẾT EMAIL HỖ TRỢ ITHD (ở khối mình là DUCBV5) rồi thực hiện tại phòng ITHD(tầng 14) như bình thường.",
+    "source": "SAU KHI CÓ EMAIL PHẢN HỒI CỦA VINSOC",
+    "doc": "Huong_dan_ngay_1_onboarding"
+   }
+  ]
+ },
+ {
+  "id": 15,
+  "doc": "D1",
+  "question": "Yêu cầu tủ gửi đồ như thế nào?",
+  "expect": "ANSWER",
+  "status": 200,
+  "type": "ANSWER",
+  "route": "FALLBACK",
+  "got": "ANSWER",
+  "verdict": "✓",
+  "seconds": 7.4,
+  "missing": [],
+  "task_dump": false,
+  "raw_markdown": false,
+  "unanswered": [],
+  "can_report": false,
+  "message": "Yêu cầu tủ gửi đồ qua đầu mối request tủ gửi đồ (ở khối mình là NGANNK25).",
+  "claims": [
+   {
+    "type": "ANSWER",
+    "text": "Yêu cầu tủ gửi đồ qua đầu mối request tủ gửi đồ (ở khối mình là NGANNK25).",
+    "quote": "Yêu cầu tủ gửi đồ qua đầu mối request tủ gửi đồ (ở khối mình là NGANNK25).",
+    "source": "Tôi cần tủ gửi đồ thì làm sao?",
+    "doc": "Cac_truong_hop_ngoai_le_ngay_1"
+   }
+  ]
+ },
+ {
+  "id": 16,
+  "doc": "D2",
+  "question": "Tôi chưa có lý lịch tư pháp thì sao?",
+  "expect": "ANSWER",
+  "status": 200,
+  "type": "ANSWER",
+  "route": "LLM",
+  "got": "ANSWER",
+  "verdict": "✓",
+  "seconds": 9.1,
+  "missing": [],
+  "task_dump": false,
+  "raw_markdown": false,
+  "unanswered": [],
+  "can_report": false,
+  "message": "Nếu chưa có lý lịch tư pháp, bạn nộp giấy hẹn lấy lý lịch tư pháp thay thế; đầu mối là Phòng tuyển dụng.",
+  "claims": [
+   {
+    "type": "ANSWER",
+    "text": "Nếu chưa có lý lịch tư pháp, bạn nộp giấy hẹn lấy lý lịch tư pháp thay thế; đầu mối là Phòng tuyển dụng.",
+    "quote": "Nộp giấy hẹn lấy lý lịch tư pháp thay cho lý lịch tư pháp.",
+    "source": "Tôi chưa có lý lịch tư pháp thì sao?",
+    "doc": "Cac_truong_hop_ngoai_le_ngay_1"
+   }
+  ]
+ },
+ {
+  "id": 17,
+  "doc": "D2",
+  "question": "Tôi chỉ có CMND, không có căn cước công dân thì thay được không?",
+  "expect": "ANY",
+  "status": 200,
+  "type": "NO_BASIS",
+  "route": "LLM",
+  "got": "NO_BASIS",
+  "verdict": "✓",
+  "seconds": 8.2,
+  "missing": [],
+  "task_dump": false,
+  "raw_markdown": false,
+  "unanswered": [],
+  "can_report": true,
+  "message": "Mình chưa có căn cứ trong tài liệu để trả lời câu này.",
+  "claims": [
+   {
+    "type": "NO_BASIS",
+    "text": null,
+    "quote": null,
+    "source": null,
+    "doc": null
+   }
+  ]
+ },
+ {
+  "id": 18,
+  "doc": "D2",
+  "question": "T3 chưa trả lời email phê duyệt thì tôi làm sao?",
+  "expect": "ANSWER",
+  "status": 200,
+  "type": "INFO",
+  "route": "LLM",
+  "got": "NO_BASIS",
+  "verdict": "✗",
+  "seconds": 3.9,
+  "missing": [
+   "1 ngày",
+   "nhắc"
+  ],
+  "task_dump": true,
+  "raw_markdown": false,
+  "unanswered": [],
+  "can_report": false,
+  "message": "Hướng dẫn “Xin đồng thuận T3 và điền form yêu cầu ANBM VinSOC”:\n## Vì sao phải làm\nTrước khi điền form, nhân viên mới gửi email xin sự đồng thuận của T3 theo mẫu, sau đó điền VINSOC SECURITY REQUEST FORM.\n\n## Điều kiện hoàn thành\n- Email xin đồng thuận của T3 đã gửi đúng mẫu.\n- Form VINSOC SECURITY REQUEST FORM đã điền.\n\n## Các bước\n1. Nhân viên mới gửi email xin sự đồng thuận của T3 theo phương thức gửi email tới email của T3 (ở Khối KD và VH Vinmec là anh Dương Anh Nghi, v.dir.data3@vinsmartfuture.tech).\n2. Tiêu đề email: Xin phê duyệt [Nội dung cần phê duyệt] - [họ và tên] -[mã nhân viên].\n3. Nội dung email: Kính gửi:; Tôi là; Mã nhân viên:; Vị trí / Bộ phận:; [Nêu yêu cầu]; Thông tin chi tiết (Mục đích sử dụng, Đơn vị công tác); Kính mong Lãnh đạo xe…",
+  "claims": []
+ },
+ {
+  "id": 19,
+  "doc": "D2",
+  "question": "Có bắt buộc làm chuỗi yêu cầu ngoại lệ như Ubuntu, VPN, USB không?",
+  "expect": "ANSWER",
+  "status": 200,
+  "type": "ANSWER",
+  "route": "LLM",
+  "got": "ANSWER",
+  "verdict": "✓",
+  "seconds": 5.9,
+  "missing": [],
+  "task_dump": false,
+  "raw_markdown": false,
+  "unanswered": [],
+  "can_report": false,
+  "message": "Không. Chỉ làm khi bạn có nhu cầu.",
+  "claims": [
+   {
+    "type": "ANSWER",
+    "text": "Không. Chỉ làm khi bạn có nhu cầu.",
+    "quote": "Không. Chỉ làm khi bạn có nhu cầu.",
+    "source": "Có bắt buộc làm chuỗi yêu cầu ngoại lệ (Ubuntu, VPN, USB...) không?",
+    "doc": "Cac_truong_hop_ngoai_le_ngay_1"
+   }
+  ]
+ },
+ {
+  "id": 20,
+  "doc": "D2",
+  "question": "Văn phòng của tôi không phải Vincom Đồng Khởi thì đăng ký faceid thế nào?",
+  "expect": "ANY",
+  "status": 200,
+  "type": "NO_BASIS",
+  "route": "FALLBACK",
+  "got": "NO_BASIS",
+  "verdict": "✓",
+  "seconds": 5.8,
+  "missing": [],
+  "task_dump": false,
+  "raw_markdown": false,
+  "unanswered": [],
+  "can_report": true,
+  "message": "Mình chưa có căn cứ trong tài liệu để trả lời câu này.",
+  "claims": [
+   {
+    "type": "NO_BASIS",
+    "text": null,
+    "quote": null,
+    "source": null,
+    "doc": null
+   }
+  ]
+ },
+ {
+  "id": 21,
+  "doc": "D1",
+  "question": "tôi ở hồ chí minh checkin ở đâu á",
+  "expect": "ANY",
+  "status": 200,
+  "type": "ANSWER",
+  "route": "FALLBACK",
+  "got": "ANSWER",
+  "verdict": "✓",
+  "seconds": 8.1,
+  "missing": [],
+  "task_dump": false,
+  "raw_markdown": false,
+  "unanswered": [],
+  "can_report": false,
+  "message": "Check-in tại địa điểm làm việc, theo hướng dẫn tùy nơi onboard.",
+  "claims": [
+   {
+    "type": "ANSWER",
+    "text": "Check-in tại địa điểm làm việc, theo hướng dẫn tùy nơi onboard.",
+    "quote": "Check-in tại địa điểm làm việc, theo hướng dẫn tùy nơi onboard",
+    "source": "Check-in tại địa điểm làm việc, theo hướng dẫn tùy nơi onboard",
+    "doc": "Huong_dan_ngay_1_onboarding"
+   }
+  ]
+ },
+ {
+  "id": 22,
+  "doc": "D2",
+  "question": "Tôi chỉ có CMND, không có căn cước công dân, có thay được không?",
+  "expect": "ANY",
+  "status": 200,
+  "type": "NO_BASIS",
+  "route": "LLM",
+  "got": "NO_BASIS",
+  "verdict": "✓",
+  "seconds": 12.1,
+  "missing": [],
+  "task_dump": false,
+  "raw_markdown": false,
+  "unanswered": [],
+  "can_report": true,
+  "message": "Mình chưa có căn cứ trong tài liệu để trả lời câu này.",
+  "claims": [
+   {
+    "type": "NO_BASIS",
+    "text": null,
+    "quote": null,
+    "source": null,
+    "doc": null
+   }
+  ]
+ },
+ {
+  "id": 23,
+  "doc": "D2",
+  "question": "tôi không có căn cước công dân sài vnid được không",
+  "expect": "ANY",
+  "status": 200,
+  "type": "ANSWER",
+  "route": "LLM",
+  "got": "ANSWER",
+  "verdict": "✓",
+  "seconds": 16.2,
+  "missing": [],
+  "task_dump": false,
+  "raw_markdown": false,
+  "unanswered": [],
+  "can_report": false,
+  "message": "Chưa có quy định nên chưa thể khẳng định được; tài liệu ngày 1 chỉ yêu cầu căn cước công dân bản photo, cần hỏi Phòng tuyển dụng.",
+  "claims": [
+   {
+    "type": "ANSWER",
+    "text": "Chưa có quy định nên chưa thể khẳng định được; tài liệu ngày 1 chỉ yêu cầu căn cước công dân bản photo, cần hỏi Phòng tuyển dụng.",
+    "quote": "Tài liệu ngày 1 chỉ yêu cầu căn cước công dân bản photo và không nói về việc dùng chứng minh nhân dân (CMND) thay thế. Chưa có quy định nên chưa thể khẳng định được hay không; cần hỏi Phòng tuyển dụng.",
+    "source": "Tôi chỉ có CMND, không có căn cước công dân, có thay được không?",
+    "doc": "Cac_truong_hop_ngoai_le_ngay_1"
+   }
+  ]
+ },
+ {
+  "id": 24,
+  "doc": "D1",
+  "question": "Check-in ngày đầu làm thế nào?",
+  "expect": "ANY",
+  "status": 200,
+  "type": "INFO",
+  "route": "LLM",
+  "got": "NO_BASIS",
+  "verdict": "~",
+  "seconds": 1.3,
+  "missing": [],
+  "task_dump": true,
+  "raw_markdown": false,
+  "unanswered": [],
+  "can_report": false,
+  "message": "Hướng dẫn “Check-in tại địa điểm làm việc”:\n## Vì sao phải làm\nNhân viên mới check-in tại địa điểm làm việc theo hướng dẫn của từng nơi onboard.\nLưu ý: Tài liệu không nêu rõ cách thức check-in, chỉ nói thực hiện theo hướng dẫn tùy nơi onboard.\n\n## Điều kiện hoàn thành\n- Đã check-in tại địa điểm làm việc theo hướng dẫn của nơi onboard.",
+  "claims": []
+ },
+ {
+  "id": 25,
+  "doc": "D1",
+  "question": "Tôi làm ở Hà Nội thì check-in ở đâu?",
+  "expect": "ANY",
+  "status": 200,
+  "type": "ANSWER",
+  "route": "FALLBACK",
+  "got": "ANSWER",
+  "verdict": "✓",
+  "seconds": 7.5,
+  "missing": [],
+  "task_dump": false,
+  "raw_markdown": false,
+  "unanswered": [],
+  "can_report": false,
+  "message": "Check-in tại địa điểm làm việc, theo hướng dẫn tùy nơi onboard.",
+  "claims": [
+   {
+    "type": "ANSWER",
+    "text": "Check-in tại địa điểm làm việc, theo hướng dẫn tùy nơi onboard.",
+    "quote": "Check-in tại địa điểm làm việc, theo hướng dẫn tùy nơi onboard",
+    "source": "Check-in tại địa điểm làm việc, theo hướng dẫn tùy nơi onboard",
+    "doc": "Huong_dan_ngay_1_onboarding"
+   }
+  ]
+ },
+ {
+  "id": 26,
+  "doc": "D1",
+  "question": "Tôi không có VNeID thì nộp giấy xác nhận nơi cư trú thế nào?",
+  "expect": "ANSWER",
+  "status": 200,
+  "type": "ANSWER",
+  "route": "LLM",
+  "got": "ANSWER",
+  "verdict": "✓",
+  "seconds": 5.5,
+  "missing": [],
+  "task_dump": false,
+  "raw_markdown": false,
+  "unanswered": [],
+  "can_report": false,
+  "message": "Nếu không có VNeID, bạn nộp bản photo giấy xác nhận nơi cư trú cho Phòng tuyển dụng trong ngày đầu.",
+  "claims": [
+   {
+    "type": "ANSWER",
+    "text": "Nếu không có VNeID, bạn nộp bản photo giấy xác nhận nơi cư trú cho Phòng tuyển dụng trong ngày đầu.",
+    "quote": "Hình ảnh xác nhận nơi cư trú có thể là bản photo, hoặc ảnh VNeID định danh mức 2. Không có VNeID thì nộp bản photo.",
+    "source": "Tôi không có VNeID thì nộp giấy xác nhận nơi cư trú thế nào?",
+    "doc": "Cac_truong_hop_ngoai_le_ngay_1"
+   }
+  ]
+ }
+]

@@ -15,14 +15,15 @@ from sqlalchemy import (
 from sqlalchemy.dialects.postgresql import ARRAY, JSONB, ExcludeConstraint
 from sqlalchemy.orm import Mapped, mapped_column
 
-from src.model.base import Base, TimestampTZ, created_at_column, id_column
-from src.model.enums import VersionStatus, check_in
+from src.model.base import Base, TimestampTZ, created_at_column, id_column, updated_at_column
+from src.model.enums import VersionSource, VersionStatus, check_in
 
 
 class DocumentVersion(Base):
     __tablename__ = "document_versions"
     __table_args__ = (
         check_in("status", VersionStatus),
+        check_in("source", VersionSource),
         # INV5: cùng nhãn phiên bản không có nội dung khác.
         UniqueConstraint("document_id", "version_label"),
         UniqueConstraint("document_id", "revision_no"),
@@ -72,4 +73,12 @@ class DocumentVersion(Base):
     reviewed_by: Mapped[int | None] = mapped_column(BigInteger, ForeignKey("users.id", ondelete="RESTRICT"))
     reviewed_at: Mapped[datetime | None] = mapped_column(TimestampTZ)
     activated_at: Mapped[datetime | None] = mapped_column(TimestampTZ)
+    # Bản sao chép từ bản nào (rỗng nếu tải file); `source` cho biết nội dung do file hay do HR sửa.
+    parent_version_id: Mapped[int | None] = mapped_column(
+        BigInteger, ForeignKey("document_versions.id", ondelete="SET NULL")
+    )
+    source: Mapped[str] = mapped_column(String(16), server_default=VersionSource.UPLOAD.value)
+    updated_by: Mapped[int | None] = mapped_column(BigInteger, ForeignKey("users.id", ondelete="RESTRICT"))
     created_at: Mapped[datetime] = created_at_column()
+    # Khóa lạc quan khi sửa bản nháp: client gửi lại giá trị đã đọc, lệch thì từ chối.
+    updated_at: Mapped[datetime] = updated_at_column()

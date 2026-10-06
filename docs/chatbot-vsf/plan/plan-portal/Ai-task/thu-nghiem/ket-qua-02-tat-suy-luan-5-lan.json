@@ -1,0 +1,55 @@
+{
+ "model": "deepseek-flash",
+ "variant": "một lời gọi, tắt suy luận, 5 lần chạy song song",
+ "runs": [
+  {
+   "tasks": 0,
+   "seconds": 17.3,
+   "tokens_out": 5581
+  },
+  {
+   "tasks": 9,
+   "raw_items": 16,
+   "covered": "9/16",
+   "dependencies": 1,
+   "tasks_after_laptop": 1,
+   "last_task": "Ký hợp đồng lao động theo email hướng dẫn",
+   "review_notes": 1,
+   "seconds": 20.5,
+   "tokens_out": 6655
+  },
+  {
+   "tasks": 13,
+   "raw_items": 13,
+   "covered": "12/16",
+   "dependencies": 2,
+   "tasks_after_laptop": 0,
+   "last_task": "Ký hợp đồng lao động",
+   "review_notes": 2,
+   "seconds": 15.6,
+   "tokens_out": 5007
+  },
+  {
+   "tasks": 16,
+   "raw_items": 16,
+   "covered": "16/16",
+   "dependencies": 4,
+   "tasks_after_laptop": 2,
+   "last_task": "Ký hợp đồng lao động theo email hướng dẫn",
+   "review_notes": 0,
+   "seconds": 19.8,
+   "tokens_out": 6622
+  },
+  {
+   "tasks": 16,
+   "raw_items": 17,
+   "covered": "15/16",
+   "dependencies": 5,
+   "tasks_after_laptop": 3,
+   "last_task": "Ký hợp đồng lao động theo email hướng dẫn",
+   "review_notes": 1,
+   "seconds": 21.5,
+   "tokens_out": 7229
+  }
+ ]
+}

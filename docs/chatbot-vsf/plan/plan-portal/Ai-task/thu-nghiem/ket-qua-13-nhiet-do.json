@@ -1,0 +1,392 @@
+{
+ "docx-ngay1|None": [
+  {
+   "seconds": 11.6,
+   "tasks": 12,
+   "covered": "1/1",
+   "dependencies": 1,
+   "empty_steps": 0,
+   "quotes_all_verbatim": true,
+   "order_source": "ai"
+  },
+  {
+   "seconds": 15.4,
+   "tasks": 20,
+   "covered": "1/1",
+   "dependencies": 12,
+   "empty_steps": 1,
+   "quotes_all_verbatim": true,
+   "order_source": "ai"
+  },
+  {
+   "seconds": 14.8,
+   "tasks": 17,
+   "covered": "1/1",
+   "dependencies": 7,
+   "empty_steps": 0,
+   "quotes_all_verbatim": true,
+   "order_source": "ai"
+  },
+  {
+   "seconds": 19.5,
+   "tasks": 29,
+   "covered": "1/1",
+   "dependencies": 29,
+   "empty_steps": 10,
+   "quotes_all_verbatim": true,
+   "order_source": "ai"
+  },
+  {
+   "seconds": 12.7,
+   "tasks": 15,
+   "covered": "1/1",
+   "dependencies": 1,
+   "empty_steps": 0,
+   "quotes_all_verbatim": true,
+   "order_source": "ai"
+  },
+  {
+   "seconds": 10.1,
+   "tasks": 12,
+   "covered": "1/1",
+   "dependencies": 1,
+   "empty_steps": 0,
+   "quotes_all_verbatim": true,
+   "order_source": "ai"
+  },
+  {
+   "seconds": 12.6,
+   "tasks": 13,
+   "covered": "1/1",
+   "dependencies": 2,
+   "empty_steps": 0,
+   "quotes_all_verbatim": true,
+   "order_source": "ai"
+  },
+  {
+   "seconds": 13.3,
+   "tasks": 18,
+   "covered": "1/1",
+   "dependencies": 5,
+   "empty_steps": 0,
+   "quotes_all_verbatim": true,
+   "order_source": "ai"
+  }
+ ],
+ "docx-ngay1|0": [
+  {
+   "seconds": 17.8,
+   "tasks": 13,
+   "covered": "1/1",
+   "dependencies": 6,
+   "empty_steps": 0,
+   "quotes_all_verbatim": true,
+   "order_source": "ai"
+  },
+  {
+   "seconds": 17.8,
+   "tasks": 13,
+   "covered": "1/1",
+   "dependencies": 1,
+   "empty_steps": 0,
+   "quotes_all_verbatim": true,
+   "order_source": "ai"
+  },
+  {
+   "seconds": 12.4,
+   "tasks": 13,
+   "covered": "1/1",
+   "dependencies": 1,
+   "empty_steps": 0,
+   "quotes_all_verbatim": true,
+   "order_source": "ai"
+  },
+  {
+   "seconds": 17.7,
+   "tasks": 13,
+   "covered": "1/1",
+   "dependencies": 1,
+   "empty_steps": 0,
+   "quotes_all_verbatim": true,
+   "order_source": "ai"
+  },
+  {
+   "seconds": 10.9,
+   "tasks": 12,
+   "covered": "1/1",
+   "dependencies": 4,
+   "empty_steps": 0,
+   "quotes_all_verbatim": true,
+   "order_source": "ai"
+  },
+  {
+   "seconds": 18.4,
+   "tasks": 14,
+   "covered": "1/1",
+   "dependencies": 4,
+   "empty_steps": 0,
+   "quotes_all_verbatim": true,
+   "order_source": "ai"
+  },
+  {
+   "seconds": 18.2,
+   "tasks": 13,
+   "covered": "1/1",
+   "dependencies": 5,
+   "empty_steps": 0,
+   "quotes_all_verbatim": true,
+   "order_source": "ai"
+  },
+  {
+   "seconds": 11.1,
+   "tasks": 13,
+   "covered": "1/1",
+   "dependencies": 2,
+   "empty_steps": 0,
+   "quotes_all_verbatim": true,
+   "order_source": "ai"
+  }
+ ],
+ "docx-ngay1|0.3": [
+  {
+   "seconds": 12.3,
+   "tasks": 13,
+   "covered": "1/1",
+   "dependencies": 2,
+   "empty_steps": 0,
+   "quotes_all_verbatim": true,
+   "order_source": "ai"
+  },
+  {
+   "seconds": 13.9,
+   "tasks": 20,
+   "covered": "1/1",
+   "dependencies": 2,
+   "empty_steps": 0,
+   "quotes_all_verbatim": true,
+   "order_source": "ai"
+  },
+  {
+   "seconds": 12.9,
+   "tasks": 17,
+   "covered": "1/1",
+   "dependencies": 3,
+   "empty_steps": 0,
+   "quotes_all_verbatim": true,
+   "order_source": "ai"
+  },
+  {
+   "seconds": 18.5,
+   "tasks": 13,
+   "covered": "1/1",
+   "dependencies": 6,
+   "empty_steps": 0,
+   "quotes_all_verbatim": true,
+   "order_source": "ai"
+  },
+  {
+   "seconds": 13.6,
+   "tasks": 14,
+   "covered": "1/1",
+   "dependencies": 3,
+   "empty_steps": 0,
+   "quotes_all_verbatim": true,
+   "order_source": "ai"
+  },
+  {
+   "seconds": 15.3,
+   "tasks": 20,
+   "covered": "1/1",
+   "dependencies": 4,
+   "empty_steps": 0,
+   "quotes_all_verbatim": true,
+   "order_source": "ai"
+  },
+  {
+   "seconds": 13.7,
+   "tasks": 14,
+   "covered": "1/1",
+   "dependencies": 6,
+   "empty_steps": 0,
+   "quotes_all_verbatim": true,
+   "order_source": "ai"
+  },
+  {
+   "seconds": 13.5,
+   "tasks": 13,
+   "covered": "1/1",
+   "dependencies": 2,
+   "empty_steps": 0,
+   "quotes_all_verbatim": true,
+   "order_source": "ai"
+  }
+ ],
+ "ngay1|None": [
+  {
+   "seconds": 14.5,
+   "tasks": 16,
+   "covered": "16/16",
+   "dependencies": 4,
+   "empty_steps": 0,
+   "quotes_all_verbatim": true,
+   "order_source": "ai"
+  },
+  {
+   "seconds": 14.6,
+   "tasks": 16,
+   "covered": "16/16",
+   "dependencies": 3,
+   "empty_steps": 0,
+   "quotes_all_verbatim": true,
+   "order_source": "ai"
+  },
+  {
+   "seconds": 13.7,
+   "tasks": 15,
+   "covered": "16/16",
+   "dependencies": 18,
+   "empty_steps": 2,
+   "quotes_all_verbatim": true,
+   "order_source": "ai"
+  },
+  {
+   "seconds": 12.8,
+   "tasks": 13,
+   "covered": "13/16",
+   "dependencies": 7,
+   "empty_steps": 0,
+   "quotes_all_verbatim": true,
+   "order_source": "ai"
+  },
+  {
+   "seconds": 14.1,
+   "tasks": 16,
+   "covered": "16/16",
+   "dependencies": 4,
+   "empty_steps": 0,
+   "quotes_all_verbatim": true,
+   "order_source": "ai"
+  },
+  {
+   "seconds": 15.2,
+   "tasks": 16,
+   "covered": "16/16",
+   "dependencies": 4,
+   "empty_steps": 0,
+   "quotes_all_verbatim": true,
+   "order_source": "ai"
+  }
+ ],
+ "ngay1|0": [
+  {
+   "seconds": 15.1,
+   "tasks": 17,
+   "covered": "16/16",
+   "dependencies": 2,
+   "empty_steps": 0,
+   "quotes_all_verbatim": true,
+   "order_source": "ai"
+  },
+  {
+   "seconds": 14.7,
+   "tasks": 16,
+   "covered": "16/16",
+   "dependencies": 2,
+   "empty_steps": 0,
+   "quotes_all_verbatim": true,
+   "order_source": "ai"
+  },
+  {
+   "seconds": 14.3,
+   "tasks": 16,
+   "covered": "16/16",
+   "dependencies": 7,
+   "empty_steps": 0,
+   "quotes_all_verbatim": true,
+   "order_source": "ai"
+  },
+  {
+   "seconds": 14.3,
+   "tasks": 16,
+   "covered": "16/16",
+   "dependencies": 16,
+   "empty_steps": 0,
+   "quotes_all_verbatim": true,
+   "order_source": "ai"
+  },
+  {
+   "seconds": 14.8,
+   "tasks": 16,
+   "covered": "16/16",
+   "dependencies": 16,
+   "empty_steps": 0,
+   "quotes_all_verbatim": true,
+   "order_source": "ai"
+  },
+  {
+   "seconds": 15.9,
+   "tasks": 17,
+   "covered": "16/16",
+   "dependencies": 2,
+   "empty_steps": 0,
+   "quotes_all_verbatim": true,
+   "order_source": "ai"
+  }
+ ],
+ "ngay1|0.3": [
+  {
+   "seconds": 15.2,
+   "tasks": 18,
+   "covered": "16/16",
+   "dependencies": 5,
+   "empty_steps": 0,
+   "quotes_all_verbatim": true,
+   "order_source": "ai"
+  },
+  {
+   "seconds": 15.4,
+   "tasks": 17,
+   "covered": "16/16",
+   "dependencies": 2,
+   "empty_steps": 0,
+   "quotes_all_verbatim": true,
+   "order_source": "ai"
+  },
+  {
+   "seconds": 14.5,
+   "tasks": 16,
+   "covered": "16/16",
+   "dependencies": 2,
+   "empty_steps": 0,
+   "quotes_all_verbatim": true,
+   "order_source": "ai"
+  },
+  {
+   "seconds": 14.1,
+   "tasks": 16,
+   "covered": "16/16",
+   "dependencies": 2,
+   "empty_steps": 0,
+   "quotes_all_verbatim": true,
+   "order_source": "ai"
+  },
+  {
+   "seconds": 14.0,
+   "tasks": 16,
+   "covered": "16/16",
+   "dependencies": 2,
+   "empty_steps": 0,
+   "quotes_all_verbatim": true,
+   "order_source": "ai"
+  },
+  {
+   "seconds": 13.3,
+   "tasks": 16,
+   "covered": "16/16",
+   "dependencies": 5,
+   "empty_steps": 0,
+   "quotes_all_verbatim": true,
+   "order_source": "ai"
+  }
+ ]
+}

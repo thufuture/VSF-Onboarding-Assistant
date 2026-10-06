@@ -1,0 +1,706 @@
+@use "../../styles/tokens" as *;
+
+// Khung nhân viên mới: cùng bộ biến --app-* với khung HR/Admin (nên chat, modal, roadmap dùng chung được).
+.shell {
+  --app-bg: #eef2f7;
+  --app-surface: #fbfcfe;
+  --app-surface-2: #f0f4f9;
+  --app-border: #dde4ed;
+  --app-border-strong: #c6cfdc;
+  --app-ink: #2a3646;
+  --app-ink-2: #566275;
+  --app-ink-3: #8592a4;
+  --app-accent: #1f74b5;
+  --app-accent-strong: #185f95;
+  --app-accent-soft: #e8f1f9;
+  --app-on-accent: #fff;
+  --app-user-bubble: #0c2d5b;
+  --app-success: #2f7d5b;
+  --app-success-soft: #e4f2ea;
+  --app-shadow: 0 6px 20px rgb(15 30 55 / 8%);
+  --emp-header: 60px;
+  --emp-gutter: 16px;
+  // Khoảng cách giữa các thẻ trong khu nhân viên.
+  --emp-gap: 12px;
+
+  display: flex;
+  min-height: 100dvh;
+  flex-direction: column;
+  background: var(--app-bg);
+  color: var(--app-ink);
+  font-family: $font;
+  color-scheme: light;
+
+  &[data-theme="dark"] {
+    --app-bg: #071426;
+    --app-surface: #0d2038;
+    --app-surface-2: #12294a;
+    --app-border: #223c5c;
+    --app-border-strong: #33547a;
+    --app-ink: #eef4fd;
+    --app-ink-2: #a9bbd2;
+    --app-ink-3: #7f93ad;
+    --app-accent: #35b0e6;
+    --app-accent-strong: #6cc6ef;
+    --app-accent-soft: #0f3554;
+    --app-on-accent: #04182d;
+    --app-user-bubble: #1a4f8c;
+    --app-success: #4cd39a;
+    --app-success-soft: #0e3a2c;
+    --app-shadow: 0 10px 30px rgb(0 0 0 / 40%);
+
+    color-scheme: dark;
+  }
+}
+
+// vệt tiến trình mảnh chạy ngang đỉnh trang mỗi lần đổi trang
+.routeBar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 60;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, #1090cb, #4fc3f0 60%, #d9343f);
+  transform-origin: left center;
+  pointer-events: none;
+  animation: bar 0.9s cubic-bezier(0.22, 0.8, 0.3, 1) both;
+}
+@keyframes bar {
+  0% {
+    opacity: 1;
+    transform: scaleX(0);
+  }
+  70% {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scaleX(1);
+  }
+}
+
+// ── thanh tiêu đề: trải hết bề ngang, chỉ chừa lề nhỏ ──
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  flex: none;
+  border-bottom: 1px solid var(--app-border);
+  background: var(--app-surface);
+}
+
+.headerIn {
+  display: flex;
+  height: var(--emp-header);
+  align-items: center;
+  gap: 18px;
+  padding: 0 var(--emp-gutter);
+}
+
+.brand {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 9px;
+  color: inherit;
+  text-decoration: none;
+}
+.mark {
+  flex: none;
+}
+.brandText {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+
+  b {
+    color: var(--app-ink);
+    font-size: 14.5px;
+    font-weight: 600;
+  }
+  small {
+    color: var(--app-ink-3);
+    font-size: 11px;
+    font-weight: 500;
+  }
+}
+
+.nav {
+  // Nhóm mục chức năng nằm giữa thanh tiêu đề: logo bên trái, công cụ bên phải.
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+.navLink {
+  position: relative;
+  display: inline-flex;
+  height: 38px;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  border-radius: 5px;
+  color: var(--app-ink-2);
+  font-size: 13.5px;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background 0.18s ease,
+    color 0.18s ease;
+
+  &::after {
+    content: "";
+    position: absolute;
+    right: 12px;
+    bottom: -11px;
+    left: 12px;
+    height: 3px;
+    border-radius: 3px 3px 0 0;
+    background: var(--app-accent);
+    transform: scaleX(0);
+    transition: transform 0.25s cubic-bezier(0.22, 0.8, 0.3, 1);
+  }
+  &:hover {
+    background: var(--app-surface-2);
+    color: var(--app-ink);
+  }
+}
+.navOn {
+  color: var(--app-accent-strong);
+  font-weight: 600;
+
+  &::after {
+    transform: scaleX(1);
+  }
+}
+
+.tools {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 8px;
+}
+
+// nút mở ngăn Hỏi Viga
+.vigaButton {
+  display: inline-flex;
+  height: 36px;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  border: 1px solid var(--app-border);
+  border-radius: 5px;
+  background: var(--app-surface);
+  color: var(--app-ink);
+  cursor: pointer;
+  font: 500 13px/1 $font;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+
+  &:hover {
+    border-color: var(--app-accent);
+    box-shadow: 0 3px 10px rgb(31 116 181 / 18%);
+    transform: translateY(-1px);
+  }
+
+  @media (max-width: 1180px) {
+    padding: 0 9px;
+
+    span {
+      display: none;
+    }
+  }
+}
+.vigaOn {
+  border-color: var(--app-accent);
+  background: var(--app-accent-soft);
+  color: var(--app-accent-strong);
+}
+
+.iconButton {
+  position: relative;
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border: 1px solid var(--app-border);
+  border-radius: 5px;
+  background: var(--app-surface);
+  color: var(--app-ink-2);
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    color 0.15s ease,
+    background 0.15s ease;
+
+  &:hover {
+    border-color: var(--app-accent);
+    background: var(--app-accent-soft);
+    color: var(--app-accent-strong);
+  }
+}
+.iconOn {
+  border-color: var(--app-accent);
+  background: var(--app-accent-soft);
+  color: var(--app-accent-strong);
+}
+.badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border: 2px solid var(--app-surface);
+  border-radius: 9px;
+  background: #c0392f;
+  color: #fff;
+  font-size: 10.5px;
+  font-weight: 600;
+  line-height: 14px;
+  text-align: center;
+}
+
+.avatarButton {
+  display: flex;
+  height: 38px;
+  align-items: center;
+  gap: 8px;
+  padding: 0 9px 0 3px;
+  border: 1px solid var(--app-border);
+  border-radius: 999px;
+  background: var(--app-surface);
+  color: var(--app-ink);
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+
+  &:hover,
+  &[aria-expanded="true"] {
+    border-color: var(--app-accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--app-accent) 16%, transparent);
+  }
+}
+.avatarName {
+  max-width: 130px;
+  overflow: hidden;
+  font-size: 13px;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.chev {
+  color: var(--app-ink-3);
+  transition: transform 0.2s ease;
+}
+.avatarButton[aria-expanded="true"] .chev {
+  transform: rotate(180deg);
+}
+
+// ── thẻ mở xuống dùng chung cho chuông và tài khoản ──
+.dropWrap {
+  position: relative;
+}
+.card {
+  position: absolute;
+  top: calc(100% + 9px);
+  right: 0;
+  z-index: 40;
+  overflow: hidden;
+  border: 1px solid var(--app-border);
+  border-radius: 5px;
+  background: var(--app-surface);
+  box-shadow: 0 18px 44px rgb(15 30 55 / 20%);
+  transform-origin: top right;
+  animation: cardIn 0.18s cubic-bezier(0.22, 0.8, 0.3, 1) both;
+}
+@keyframes cardIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.bellCard {
+  width: 366px;
+}
+.cardHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--app-border);
+
+  b {
+    color: var(--app-ink);
+    font-size: 13.5px;
+    font-weight: 600;
+  }
+  button {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    border: 0;
+    background: none;
+    color: var(--app-accent-strong);
+    cursor: pointer;
+    font: 500 12px/1 $font;
+
+    &:disabled {
+      color: var(--app-ink-3);
+      cursor: default;
+    }
+  }
+}
+.cardEmpty {
+  margin: 0;
+  padding: 22px 14px;
+  color: var(--app-ink-3);
+  font-size: 12.5px;
+  text-align: center;
+}
+.bellTabs {
+  display: flex;
+  gap: 6px;
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--app-border);
+
+  button {
+    height: 28px;
+    padding: 0 11px;
+    border: 1px solid var(--app-border);
+    border-radius: 5px;
+    background: var(--app-surface);
+    color: var(--app-ink-2);
+    cursor: pointer;
+    font: 500 12px/1 $font;
+    transition:
+      border-color 0.15s ease,
+      color 0.15s ease;
+
+    &:hover {
+      border-color: var(--app-accent);
+      color: var(--app-accent-strong);
+    }
+  }
+}
+.bellTabOn {
+  border-color: var(--app-accent) !important;
+  background: var(--app-accent-soft) !important;
+  color: var(--app-accent-strong) !important;
+}
+
+.bellList {
+  max-height: 420px;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+
+  li + li .bellItem {
+    border-top: 1px solid var(--app-border);
+  }
+}
+.bellItem {
+  position: relative;
+  display: flex;
+  width: 100%;
+  align-items: flex-start;
+  gap: 11px;
+  padding: 12px 14px 12px 17px;
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: var(--app-surface-2);
+  }
+}
+// Chưa xem: nền ngả xanh, vạch xanh bên trái, chữ đậm, chấm xanh bên phải. Đã xem: nhạt hẳn, icon và chữ mờ đi.
+.bellUnread {
+  background: color-mix(in srgb, var(--app-accent) 7%, var(--app-surface));
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 3px;
+    background: var(--app-accent);
+  }
+  .bellTitle {
+    font-weight: 600;
+  }
+}
+.bellRead {
+  .bellIcon {
+    filter: grayscale(0.7);
+    opacity: 0.6;
+  }
+  .bellTitle,
+  .bellBody,
+  .bellKind {
+    color: var(--app-ink-3);
+  }
+}
+.bellDot {
+  width: 9px;
+  height: 9px;
+  flex: none;
+  align-self: center;
+  border-radius: 50%;
+  background: var(--app-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--app-accent) 20%, transparent);
+}
+.bellIcon {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  flex: none;
+  place-items: center;
+  border-radius: 50%;
+}
+.kind_unlocked {
+  background: #e3eefb;
+  color: #1b6fb8;
+}
+.kind_done {
+  background: var(--app-success-soft);
+  color: #2f9a6f;
+}
+.kind_reminder {
+  background: #fdf1d8;
+  color: #c27d0e;
+}
+.kind_welcome {
+  background: #ece6f7;
+  color: #7a4fb0;
+}
+.kind_change {
+  background: #fdeede;
+  color: #b5671b;
+}
+.kind_ticket {
+  background: #e0f3f1;
+  color: #1f7f7a;
+}
+.bellText {
+  min-width: 0;
+  flex: 1;
+}
+.bellKind {
+  display: block;
+  color: var(--app-ink-3);
+  font-size: 11px;
+  font-weight: 600;
+}
+.bellTitle {
+  display: block;
+  margin-top: 2px;
+  color: var(--app-ink);
+  font-size: 13px;
+  font-weight: 500;
+}
+.bellBody {
+  display: block;
+  margin-top: 2px;
+  color: var(--app-ink-2);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+// ── thẻ tài khoản ──
+.menu {
+  width: 282px;
+}
+.menuHead {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 14px;
+  border-bottom: 1px solid var(--app-border);
+  background: linear-gradient(180deg, var(--app-accent-soft), transparent);
+
+  div {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 2px;
+  }
+  b {
+    color: var(--app-ink);
+    font-size: 14px;
+    font-weight: 600;
+  }
+  small {
+    overflow: hidden;
+    color: var(--app-ink-2);
+    font-size: 11.5px;
+    text-overflow: ellipsis;
+  }
+}
+.dept {
+  align-self: flex-start;
+  margin-top: 4px;
+  padding: 2px 8px;
+  border-radius: 5px;
+  background: var(--app-surface);
+  color: var(--app-accent-strong);
+  font-size: 11px;
+  font-weight: 500;
+  box-shadow: inset 0 0 0 1px var(--app-border);
+}
+.menuGroup {
+  padding: 6px 0;
+  border-top: 1px solid var(--app-border);
+}
+.menuLabel {
+  display: block;
+  padding: 4px 14px;
+  color: var(--app-ink-3);
+  font-size: 11px;
+  font-weight: 600;
+}
+.menuItem {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 14px;
+  border: 0;
+  background: none;
+  color: var(--app-ink);
+  cursor: pointer;
+  font: 500 13px/1.2 $font;
+  text-align: left;
+  text-decoration: none;
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: var(--app-surface-2);
+  }
+  svg {
+    flex: none;
+  }
+}
+.menuItemOn {
+  color: var(--app-accent-strong);
+}
+.menuCheck {
+  margin-left: auto;
+}
+.menuLogout {
+  border-top: 1px solid var(--app-border);
+  color: #b0404a;
+}
+
+// ── vùng làm việc: nội dung + ngăn Viga ──
+.body {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  align-items: stretch;
+}
+.main {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  animation: pageIn 0.5s cubic-bezier(0.22, 0.8, 0.3, 1) both;
+}
+// Mọi trang nhân viên gồm PageHero, khối nội dung (.container) rồi chân trang. Chân trang luôn ở đáy; khối nội dung giãn ra và
+// thẻ cuối chạm sát chân trang (chỉ cách 2px), dù trang ngắn hay dài.
+.main > :nth-last-child(2) {
+  display: flex;
+  flex: 1 0 auto;
+  flex-direction: column;
+  padding-bottom: 2px;
+}
+.main > :nth-last-child(2) > :last-child {
+  flex: 1 1 auto;
+}
+@keyframes pageIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (max-width: 980px) {
+  .shell {
+    --emp-header: auto;
+  }
+  .headerIn {
+    height: auto;
+    flex-wrap: wrap;
+    gap: 6px 12px;
+    padding: 8px var(--emp-gutter) 0;
+  }
+  .nav {
+    order: 3;
+    flex: 1 0 100%;
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding-bottom: 8px;
+  }
+  .navLink::after {
+    bottom: -4px;
+  }
+  .avatarName,
+  .chev {
+    display: none;
+  }
+  .avatarButton {
+    padding: 0 3px;
+  }
+  .bellCard,
+  .menu {
+    width: min(340px, calc(100vw - 24px));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .main,
+  .routeBar,
+  .card {
+    animation: none;
+  }
+}
+
+// Huy hiệu số ticket có tin chưa xem cạnh mục "Yêu cầu".
+.navBadge {
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: #c0392f;
+  color: #fff;
+  font-size: 10.5px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 18px;
+  text-align: center;
+}

@@ -20,7 +20,8 @@ const nextConfig: NextConfig = {
   // Proxy rewrite (/api/* bên dưới) tự ngắt kết nối (ECONNRESET) nếu backend trả lời quá lâu; câu hỏi chat
   // nhiều ý (tách nhiều câu con, tìm kiếm + LLM song song) có thể mất >10s — nâng thời gian chờ để không bị
   // ngắt giữa chừng. Chỉ ảnh hưởng dev (production qua Caddy, không qua rewrite này).
-  experimental: { proxyTimeout: 60_000 },
+  // Video đính kèm ticket tối đa 50 MB: nâng giới hạn thân yêu cầu qua proxy (mặc định 10 MB, vượt thì trả 500 trước khi tới backend).
+  experimental: { proxyTimeout: 60_000, proxyClientMaxBodySize: "60mb" },
 
   /**
    * Đưa API về cùng origin với trang để cookie phiên là first-party — cả dev lẫn Vercel (nơi frontend

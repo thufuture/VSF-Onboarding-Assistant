@@ -1,0 +1,952 @@
+$tn-blue: #0e7fb3;
+$tn-teal: #1f7f7a;
+$tn-indigo: #4f5bbf;
+$tn-amber: #a8681a;
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 5px 5px 16px;
+}
+
+.pagehead {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 11px 16px;
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-radius: 5px;
+  flex-wrap: wrap;
+}
+
+.phi {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  flex: none;
+  place-items: center;
+  border-radius: 5px;
+  background: color-mix(in srgb, #{$tn-indigo} 13%, var(--app-surface));
+  color: $tn-indigo;
+}
+
+.pageheadText {
+  flex: 1;
+  min-width: 0;
+
+  h1 {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--app-ink);
+  }
+  p {
+    margin: 2px 0 0;
+    color: var(--app-ink-2);
+    font-size: 12.5px;
+  }
+}
+
+.banner {
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 5px;
+  font-size: 14px;
+}
+.bannerError {
+  background: #fdecec;
+  color: #a3121f;
+}
+.bannerOk {
+  background: var(--app-success-soft);
+  color: var(--app-success);
+}
+
+.card {
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+}
+
+.cardBody {
+  padding: 16px;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+
+  label {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 12px;
+    color: var(--app-ink-2);
+  }
+}
+
+.full {
+  grid-column: 1 / -1;
+}
+
+.page input {
+  padding: 8px 10px;
+  border: 1px solid var(--app-border-strong);
+  border-radius: 5px;
+  background: var(--app-surface);
+  color: var(--app-ink);
+  font-size: 13px;
+  min-height: 34px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  height: 34px;
+  padding: 0 14px;
+  border-radius: 5px;
+  border: 1px solid var(--app-accent);
+  background: var(--app-accent);
+  color: var(--app-on-accent);
+  font-weight: 600;
+  font-size: 13px;
+  white-space: nowrap;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background: var(--app-accent-strong);
+  }
+  &:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+}
+
+// ── KPI ──
+.kpiGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 5px;
+
+  @media (max-width: 760px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.kpi {
+  display: flex;
+  flex-direction: column;
+  padding: 14px 16px;
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-radius: 5px;
+}
+
+.kh {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 5px;
+
+  small {
+    color: var(--app-ink-3);
+    font-size: 12px;
+    font-weight: 500;
+  }
+}
+
+.ichip {
+  display: grid;
+  width: 26px;
+  height: 26px;
+  flex: none;
+  place-items: center;
+  border-radius: 5px;
+}
+.toneBlue {
+  color: $tn-blue;
+  background: color-mix(in srgb, #{$tn-blue} 13%, var(--app-surface));
+}
+.toneTeal {
+  color: $tn-teal;
+  background: color-mix(in srgb, #{$tn-teal} 13%, var(--app-surface));
+}
+.toneIndigo {
+  color: $tn-indigo;
+  background: color-mix(in srgb, #{$tn-indigo} 13%, var(--app-surface));
+}
+.toneAmber {
+  color: $tn-amber;
+  background: color-mix(in srgb, #{$tn-amber} 14%, var(--app-surface));
+}
+
+.kpi b {
+  margin: 2px 0 0;
+  font-size: 26px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--app-ink);
+}
+
+// ── Tìm kiếm + lọc ──
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.search {
+  display: flex;
+  flex: 1 1 260px;
+  align-items: center;
+  gap: 5px;
+  padding: 0 10px;
+  border: 1px solid var(--app-border-strong);
+  border-radius: 5px;
+  background: var(--app-surface);
+  color: var(--app-ink-3);
+
+  input {
+    flex: 1;
+    border: none;
+    background: none;
+    padding: 8px 0;
+    font-size: 13px;
+    color: var(--app-ink);
+
+    &:focus {
+      outline: none;
+    }
+  }
+}
+
+.filters select {
+  padding: 8px 10px;
+  border: 1px solid var(--app-border-strong);
+  border-radius: 5px;
+  background: var(--app-surface);
+  color: var(--app-ink);
+  font-size: 13px;
+  min-height: 34px;
+}
+
+// ── Bảng ──
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+
+  th {
+    text-align: left;
+    color: #fff;
+    font-weight: 600;
+    font-size: 12.5px;
+    padding: 10px 12px;
+    border-bottom: 0;
+    background: var(--app-accent);
+    white-space: nowrap;
+  }
+
+  td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--app-border);
+    vertical-align: middle;
+    color: var(--app-ink-2);
+
+    b {
+      color: var(--app-ink);
+      font-weight: 600;
+    }
+
+    a {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--app-accent);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+  }
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 5px;
+  background: var(--app-surface-2);
+  color: var(--app-ink-2);
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.rowActions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.iconBtn {
+  display: inline-grid;
+  width: 26px;
+  height: 26px;
+  place-items: center;
+  border: 1px solid var(--app-border-strong);
+  border-radius: 5px;
+  background: var(--app-surface);
+  color: var(--app-ink-2);
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    border-color: var(--app-accent);
+    color: var(--app-accent-strong);
+  }
+  &:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 8px;
+  border-radius: 5px;
+  font-size: 11.5px;
+  font-weight: 500;
+  white-space: nowrap;
+  background: var(--app-surface-2);
+  color: var(--app-ink-2);
+
+  &[data-status="ACTIVE"] {
+    background: var(--app-success-soft);
+    color: var(--app-success);
+  }
+}
+
+// ── Phân trang ──
+.pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 5px;
+  padding: 10px 16px;
+  border-top: 1px solid var(--app-border);
+  font-size: 12.5px;
+  color: var(--app-ink-3);
+}
+
+.pagerButtons {
+  display: flex;
+  gap: 4px;
+
+  button {
+    display: inline-grid;
+    width: 28px;
+    height: 28px;
+    place-items: center;
+    border: 1px solid var(--app-border-strong);
+    border-radius: 5px;
+    background: var(--app-surface);
+    color: var(--app-ink);
+    font-size: 12.5px;
+    cursor: pointer;
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: default;
+    }
+  }
+}
+
+.pagerOn {
+  background: var(--app-user-bubble) !important;
+  border-color: var(--app-user-bubble) !important;
+  color: #fff !important;
+}
+
+.rowOff td {
+  opacity: 0.6;
+
+  &:last-child {
+    opacity: 1;
+  }
+}
+
+.iconDanger {
+  color: #ad3e3e;
+
+  &:hover:not(:disabled) {
+    border-color: #d49a9a;
+    color: #a72f2f;
+  }
+}
+.iconOk {
+  color: #237d5c;
+
+  &:hover:not(:disabled) {
+    border-color: #75b69b;
+    color: #176a4d;
+  }
+}
+
+// ── Thanh lọc dạng dropdown có icon (v15: doc-filter-*) ──
+.filterBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--app-border);
+
+  .search {
+    flex: 1 1 260px;
+    min-height: 44px;
+  }
+}
+
+.dropRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.drop {
+  position: relative;
+}
+
+.dropTrigger {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 190px;
+  padding: 6px 12px 6px 8px;
+  border: 1px solid var(--app-border-strong);
+  border-radius: 5px;
+  background: var(--app-surface);
+  color: var(--app-ink-3);
+  cursor: pointer;
+  text-align: left;
+
+  &:hover {
+    border-color: var(--app-accent);
+  }
+}
+
+.dropActive {
+  border-color: var(--app-accent);
+}
+
+.dropIcon {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  flex: none;
+  place-items: center;
+  border-radius: 5px;
+  background: color-mix(in srgb, var(--tone) 14%, var(--app-surface));
+  color: var(--tone);
+}
+
+// Mỗi ô lọc một tông màu riêng (trạng thái xanh dương, mức sử dụng tím, nhóm tài liệu lục).
+.drop_blue {
+  --tone: #{$tn-blue};
+}
+.drop_indigo {
+  --tone: #{$tn-indigo};
+}
+.drop_teal {
+  --tone: #{$tn-teal};
+}
+.drop_amber {
+  --tone: #{$tn-amber};
+}
+.drop_rose {
+  --tone: #b23a48;
+}
+.drop_slate {
+  --tone: #58657a;
+}
+
+.dropTrigger {
+  &:hover,
+  &[aria-expanded="true"] {
+    border-color: var(--tone);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--tone) 14%, transparent);
+  }
+}
+.dropActive {
+  border-color: var(--tone) !important;
+  background: color-mix(in srgb, var(--tone) 5%, var(--app-surface));
+}
+.dropCaretOpen {
+  transform: rotate(180deg);
+}
+
+// Icon nhỏ trước từng lựa chọn trong menu thả xuống, đổi màu theo ý nghĩa của lựa chọn.
+.optIcon {
+  display: grid;
+  width: 26px;
+  height: 26px;
+  flex: none;
+  place-items: center;
+  border-radius: 5px;
+  font-style: normal;
+}
+
+.dropText {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+
+  small {
+    font-size: 11px;
+    color: var(--app-ink-3);
+  }
+  b {
+    font-size: 13px;
+    color: var(--app-ink);
+    font-weight: 600;
+  }
+}
+
+.dropMenu {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 4px);
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  min-width: 250px;
+  padding: 5px;
+  border: 1px solid var(--app-border);
+  border-radius: 5px;
+  background: var(--app-surface);
+  box-shadow: 0 8px 24px rgb(15 23 42 / 14%);
+
+  button {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 8px 10px;
+    border: 0;
+    border-radius: 5px;
+    background: transparent;
+    text-align: left;
+    cursor: pointer;
+    white-space: nowrap;
+
+    > span {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      gap: 1px;
+    }
+    > svg {
+      color: var(--app-accent);
+    }
+
+    b {
+      font-size: 13px;
+      color: var(--app-ink);
+    }
+    small {
+      font-size: 11.5px;
+      color: var(--app-ink-3);
+    }
+    &:hover {
+      background: var(--app-surface-2);
+    }
+  }
+}
+
+.dropOn {
+  background: var(--app-accent-soft) !important;
+}
+
+.tableWrap {
+  flex: 1 1 auto;
+  overflow-x: auto;
+}
+
+// ── Ô tài liệu / nhóm / xử lý / task / ngày ──
+.docName {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 260px;
+
+  b {
+    display: block;
+    color: var(--app-ink);
+    font-weight: 600;
+  }
+  small {
+    display: block;
+    margin-top: 2px;
+    color: var(--app-ink-3);
+    font-size: 12px;
+  }
+}
+
+.docIcon {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  flex: none;
+  place-items: center;
+  border-radius: 5px;
+}
+
+.kind {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 24px;
+  padding: 0 8px;
+  border-radius: 5px;
+  font-size: 11.5px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.tone_blue {
+  color: $tn-blue;
+  background: color-mix(in srgb, #{$tn-blue} 13%, var(--app-surface));
+}
+.tone_indigo {
+  color: $tn-indigo;
+  background: color-mix(in srgb, #{$tn-indigo} 13%, var(--app-surface));
+}
+.tone_teal {
+  color: $tn-teal;
+  background: color-mix(in srgb, #{$tn-teal} 13%, var(--app-surface));
+}
+.tone_rose {
+  color: #b23a48;
+  background: color-mix(in srgb, #b23a48 12%, var(--app-surface));
+}
+.tone_amber {
+  color: $tn-amber;
+  background: color-mix(in srgb, #{$tn-amber} 14%, var(--app-surface));
+}
+.tone_slate {
+  color: #58657a;
+  background: color-mix(in srgb, #58657a 12%, var(--app-surface));
+}
+
+.process {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  white-space: nowrap;
+
+  b {
+    color: var(--app-ink);
+    font-weight: 600;
+  }
+  small {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--app-ink-3);
+    font-size: 11.5px;
+  }
+}
+
+.used {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  min-width: 170px;
+  max-width: 220px;
+
+  span {
+    max-width: 100%;
+    overflow: hidden;
+    padding: 2px 8px;
+    border-radius: 5px;
+    background: var(--app-surface-2);
+    color: var(--app-ink-2);
+    font-size: 11.5px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  small,
+  em {
+    color: var(--app-ink-3);
+    font-size: 11.5px;
+    font-style: normal;
+  }
+}
+
+.date {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  white-space: nowrap;
+
+  b {
+    color: var(--app-ink);
+    font-weight: 600;
+  }
+  small {
+    color: var(--app-ink-3);
+    font-size: 11.5px;
+  }
+}
+
+.status i {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 6px;
+  border-radius: 50%;
+  background: currentcolor;
+}
+
+.iconBlue {
+  color: $tn-blue;
+}
+.iconAmber {
+  color: $tn-amber;
+}
+
+// ── hiệu ứng khi trỏ chuột (nút, thẻ, dòng bảng) ──
+
+.btn {
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+}
+
+.btn:not(:disabled):hover {
+  background: var(--app-accent-strong);
+  box-shadow: 0 3px 8px rgb(31 116 181 / 28%);
+  transform: translateY(-1px);
+}
+.btn:not(:disabled):active {
+  box-shadow: none;
+  transform: translateY(0);
+}
+
+.kpi {
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+}
+.kpi:hover {
+  border-color: var(--app-border-strong);
+  box-shadow: 0 3px 10px rgb(16 24 40 / 8%);
+  transform: translateY(-1px);
+}
+
+.iconBtn {
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+}
+
+.iconBtn:not(:disabled):hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgb(16 24 40 / 14%);
+}
+
+.table tbody tr {
+  transition: background 0.15s ease;
+}
+.table tbody tr:hover {
+  background: color-mix(in srgb, var(--app-accent) 6%, var(--app-surface));
+}
+
+.pagerButtons button:not(:disabled):hover {
+  border-color: var(--app-accent);
+  background: var(--app-accent-soft);
+  color: var(--app-accent-strong);
+}
+
+// ── Tải nháp / kích hoạt nền: cảnh báo cấu trúc, thanh tiến trình, ô "tải và kích hoạt luôn" ──
+.bannerWarn {
+  background: #fff4e0;
+  color: #8a5a12;
+}
+
+.jobBox {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 14px;
+  border: 1px solid color-mix(in srgb, #{$tn-indigo} 30%, var(--app-border));
+  border-radius: 5px;
+  background: color-mix(in srgb, #{$tn-indigo} 6%, var(--app-surface));
+  font-size: 13px;
+}
+
+.rowProgress {
+  display: flex;
+  min-width: 130px;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.activateRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  margin-top: 14px;
+  padding: 10px 12px;
+  border: 1px solid var(--app-border);
+  border-radius: 5px;
+  background: var(--app-surface-2);
+  cursor: pointer;
+
+  input {
+    margin-top: 3px;
+  }
+  span {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  b {
+    color: var(--app-ink);
+    font-size: 13px;
+    font-weight: 600;
+  }
+  small {
+    color: var(--app-ink-2);
+    font-size: 12px;
+    line-height: 1.4;
+  }
+}
+
+
+// ── Bảng vừa khít chiều ngang (không trượt ngang): cột cố định theo phần trăm, chữ dài cắt bằng dấu … và xem đủ khi trỏ chuột ──
+.tableWrap {
+  overflow-x: hidden;
+}
+.table {
+  table-layout: fixed;
+
+  th,
+  td {
+    overflow: hidden;
+    padding: 10px 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  td b,
+  td small {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+.docName {
+  min-width: 0;
+
+  > div {
+    min-width: 0;
+    flex: 1;
+  }
+}
+.docIcon {
+  background: var(--app-surface-2);
+}
+.kind {
+  max-width: 100%;
+  min-width: 0;
+
+  span {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+.used {
+  min-width: 0;
+  max-width: 100%;
+}
+.rowProgress {
+  min-width: 0;
+}
+.rowActions {
+  flex-wrap: wrap; // cột hẹp thì nút xuống hàng thay vì bị cắt
+  gap: 4px;
+}
+
+// ── Ô chọn ngày cạnh ô tìm kiếm (lọc theo ngày cập nhật) ──
+.dateRange {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.dateField {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 10px;
+  border: 1px solid var(--app-border-strong);
+  border-radius: 5px;
+  background: var(--app-surface);
+
+  span {
+    display: flex;
+    flex-direction: column;
+  }
+  small {
+    color: var(--app-ink-3);
+    font-size: 11px;
+  }
+  input {
+    padding: 0;
+    border: none;
+    background: none;
+    color: var(--app-ink);
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+
+    &:focus {
+      outline: none;
+    }
+  }
+  &:focus-within {
+    border-color: var(--app-accent);
+  }
+}
+.dateClear {
+  padding: 6px 10px;
+  border: 1px dashed var(--app-border-strong);
+  border-radius: 5px;
+  background: none;
+  color: var(--app-ink-2);
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+
+  &:hover {
+    border-color: var(--app-accent);
+    color: var(--app-accent-strong);
+  }
+}

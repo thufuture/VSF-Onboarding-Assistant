@@ -1,0 +1,72 @@
+[
+ {
+  "q": "tôi ở hồ chí minh checkin ở đâu á",
+  "type": "INFO",
+  "route": "LLM",
+  "msg": "Hướng dẫn “Check-in tại địa điểm làm việc”:\n## Vì sao phải làm\nCheck-in tại địa điểm làm việc theo hướng dẫn tùy nơi onboard.\nLưu ý: Tài liệu không nêu rõ quy trình check-in cụ thể, chỉ nói theo hướng dẫn tùy nơi.\n\n## Các bước\n1. Check-in tại địa điểm làm việc, theo hướng dẫn tùy nơi onboard.",
+  "claims": []
+ },
+ {
+  "q": "Tôi chỉ có CMND, không có căn cước công dân, có thay được không?",
+  "type": "NO_BASIS",
+  "route": "LLM",
+  "msg": "Mình chưa có căn cứ trong tài liệu để trả lời câu này.",
+  "claims": [
+   [
+    "NO_BASIS",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "q": "tôi không có căn cước công dân sài vnid được không",
+  "type": "NO_BASIS",
+  "route": "LLM",
+  "msg": "Mình chưa có căn cứ trong tài liệu để trả lời câu này.",
+  "claims": [
+   [
+    "NO_BASIS",
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ {
+  "q": "Check-in ngày đầu làm thế nào?",
+  "type": "INFO",
+  "route": "LLM",
+  "msg": "Hướng dẫn “Check-in tại địa điểm làm việc”:\n## Vì sao phải làm\nCheck-in tại địa điểm làm việc theo hướng dẫn tùy nơi onboard.\nLưu ý: Tài liệu không nêu rõ quy trình check-in cụ thể, chỉ nói theo hướng dẫn tùy nơi.\n\n## Các bước\n1. Check-in tại địa điểm làm việc, theo hướng dẫn tùy nơi onboard.",
+  "claims": []
+ },
+ {
+  "q": "Tôi làm ở Hà Nội thì check-in ở đâu?",
+  "type": "ANSWER",
+  "route": "LLM",
+  "msg": "Check-in tại địa điểm làm việc, theo hướng dẫn tùy nơi onboard.",
+  "claims": [
+   [
+    "ANSWER",
+    "Check-in tại địa điểm làm việc, theo hướng dẫn tùy nơi onboard.",
+    "Check-in tại địa điểm làm việc, theo hướng dẫn tùy nơi onboard",
+    "Check-in tại địa điểm làm việc, theo hướng dẫn tùy nơi onboard"
+   ]
+  ]
+ },
+ {
+  "q": "Tôi không có VNeID thì nộp giấy xác nhận nơi cư trú thế nào?",
+  "type": "ANSWER",
+  "route": "LLM",
+  "msg": "Không có VNeID thì nộp bản photo giấy xác nhận nơi cư trú cho Phòng tuyển dụng trong ngày đầu.",
+  "claims": [
+   [
+    "ANSWER",
+    "Không có VNeID thì nộp bản photo giấy xác nhận nơi cư trú cho Phòng tuyển dụng trong ngày đầu.",
+    "Tôi không có VNeID thì nộp giấy xác nhận nơi cư trú thế nào?",
+    "Không có VNeID thì nộp bản photo."
+   ]
+  ]
+ }
+]

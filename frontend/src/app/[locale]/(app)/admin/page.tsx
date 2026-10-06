@@ -1,13 +1,15 @@
 import { getLocale } from "next-intl/server";
 
-import { AdminPlaceholder } from "@/features/app-shell/AdminPlaceholder";
 import { getSessionUser } from "@/features/auth/server";
+import { AdminDashboardPage } from "@/features/portal-admin/AdminDashboardPage";
+import { HrDashboardPage } from "@/features/portal-hr/HrDashboardPage";
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
-// Khu dành cho HR và Admin (trang giữ chỗ; màn hình quản lý làm ở Phase 5 đến 8). Nhân sự mới bị chuyển về chat.
+// ADMIN thấy tổng quan quản trị hệ thống; HR thấy tổng quan HR thật (GET /portal/dashboard).
 export default async function AdminPage() {
   const user = await getSessionUser();
-  if (user?.role === "USER") return redirect({ href: "/chat", locale: (await getLocale()) as Locale });
-  return <AdminPlaceholder />;
+  if (user?.role === "USER") return redirect({ href: "/me", locale: (await getLocale()) as Locale });
+  if (user?.role === "ADMIN") return <AdminDashboardPage />;
+  return <HrDashboardPage />;
 }

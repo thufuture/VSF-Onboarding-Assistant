@@ -1,7 +1,7 @@
 {
   "metadata": {
     "title": "VSF Onboarding Assistant",
-    "description": "Trợ lý onboarding cho nhân sự mới: trả lời từ tài liệu đã được duyệt, có trích dẫn nguồn."
+    "description": "VSF Onboarding Portal: lộ trình việc cần làm cho nhân sự mới, tài liệu và quy trình có nguồn, trợ lý Viga hỗ trợ khi bạn kẹt."
   },
   "landing": {
     "skipLink": "Bỏ qua tới nội dung",
@@ -15,60 +15,60 @@
     },
     "hero": {
       "line1": "Mới vào công ty,",
-      "line2": "hỏi là biết bước tiếp theo",
-      "description": "Trợ lý trả lời từ tài liệu đã được duyệt, chỉ đúng quy trình và đúng đầu mối. Điều gì chưa có nguồn, trợ lý nói thẳng là chưa có, thay vì đoán.",
+      "line2": "có lộ trình, biết ngay cần làm gì",
+      "description": "VSF Onboarding Portal cho bạn lộ trình việc cần làm theo đúng thứ tự, hướng dẫn kèm nguồn cho từng việc, và Viga đồng hành khi bạn kẹt.",
       "primary": "Bắt đầu hỏi",
       "secondary": "Xem cách hoạt động",
       "checkSources": "Câu trả lời kèm nguồn",
-      "checkProcess": "Đúng quy trình, đầu mối, biểu mẫu",
+      "checkProcess": "Lộ trình, task và ticket đang được xây dựng",
       "photoAlt": "Tòa nhà Vincom Center Đồng Khởi nhìn từ công viên, TP.HCM"
     },
     "services": {
       "chat": {
-        "title": "Hỏi đáp có nguồn",
+        "title": "Hỏi Viga, có nguồn",
         "sub": "Kèm trích dẫn đúng đoạn tài liệu"
       },
       "process": {
-        "title": "Quy trình từng bước",
-        "sub": "Kèm link, đầu mối, biểu mẫu đã duyệt"
+        "title": "Lộ trình việc cần làm",
+        "sub": "Đang xây dựng — đúng thứ tự, tự đánh dấu hoàn thành"
       },
       "clarify": {
-        "title": "Hỏi lại khi thiếu điều kiện",
-        "sub": "Không đoán đơn vị hay vai trò của bạn"
+        "title": "Hỏi Viga khi kẹt",
+        "sub": "Đang xây dựng — Viga hiểu bạn đang ở việc nào"
       },
       "ticket": {
-        "title": "Ticket nội bộ",
-        "sub": "Bản nháp, chỉ gửi khi bạn xác nhận"
+        "title": "Ticket khi cần hỗ trợ",
+        "sub": "Đang xây dựng — chỉ tạo khi bạn xác nhận"
       }
     },
     "intro": {
-      "heading": "Một nơi để hỏi khi bạn mới vào công ty.",
-      "text": "Trợ lý gom tài liệu đã duyệt, quy trình và đầu mối thành một chỗ hỏi đáp duy nhất: có nguồn, đúng phiên bản còn hiệu lực, và nói thẳng khi chưa có căn cứ."
+      "heading": "Một nơi để biết việc cần làm khi bạn mới vào công ty.",
+      "text": "Portal gom lộ trình onboarding, tài liệu đã duyệt và đầu mối thành một chỗ duy nhất: việc cần làm đúng thứ tự, câu trả lời có nguồn, và Viga nói thẳng khi chưa có căn cứ thay vì đoán."
     },
     "features": {
       "chat": {
-        "label": "Hỏi đáp có nguồn",
-        "sub": "Bạn hỏi, trợ lý trả lời đúng tài liệu",
+        "label": "Hỏi Viga, có nguồn",
+        "sub": "Bạn hỏi, Viga trả lời đúng tài liệu",
         "titleStart": "Câu trả lời dẫn về",
         "titleAccent": "tài liệu thật",
         "titleEnd": "còn hiệu lực tại ngày bạn hỏi.",
-        "body": "Bạn có thể hỏi về nội quy, nghỉ phép, phúc lợi hay bảo mật. Trợ lý chỉ dùng tài liệu đã được duyệt và còn hiệu lực, trả lời kèm trích dẫn nguyên văn để bạn tự kiểm tra. Không có căn cứ thì trợ lý nói thẳng là chưa có."
+        "body": "Bạn có thể hỏi về nội quy, nghỉ phép, phúc lợi hay bảo mật. Viga chỉ dùng tài liệu đã được duyệt và còn hiệu lực, trả lời kèm trích dẫn nguyên văn để bạn tự kiểm tra. Không có căn cứ thì Viga nói thẳng là chưa có."
       },
       "process": {
-        "label": "Quy trình và đầu mối",
-        "sub": "Từng bước, đúng người, đúng biểu mẫu",
-        "titleStart": "Chỉ đúng",
-        "titleAccent": "quy trình",
-        "titleEnd": "kèm link và đầu mối đã duyệt.",
-        "body": "Với việc cần làm như cài phần mềm, xin cấp quyền hay đăng ký thẻ xe, trợ lý đưa các bước theo quy trình của bộ phận phụ trách. Link, đầu mối và biểu mẫu lấy từ danh mục đã duyệt, không do trợ lý tự nghĩ ra."
+        "label": "Lộ trình onboarding",
+        "sub": "Đang xây dựng cùng Portal",
+        "titleStart": "Sắp tới: việc cần làm",
+        "titleAccent": "đúng thứ tự",
+        "titleEnd": ", tự đánh dấu khi xong.",
+        "body": "Mỗi việc trong lộ trình có hướng dẫn rõ, kèm đầu mối và tài liệu liên quan; làm xong bạn tự bấm \"Hoàn thành\", việc phụ thuộc sẽ tự mở khóa. Không có quy trình duyệt rườm rà. Tính năng này đang được xây dựng cùng VSF Onboarding Portal."
       },
       "ticket": {
-        "label": "Hỏi lại và ticket",
-        "sub": "Bạn xác nhận trước khi gửi",
-        "titleStart": "Thiếu điều kiện thì",
-        "titleAccent": "hỏi lại",
-        "titleEnd": ", cần xử lý thì soạn ticket nháp.",
-        "body": "Khi câu trả lời phụ thuộc đơn vị hay vai trò của bạn, trợ lý hỏi lại thay vì đoán. Nếu cần bộ phận khác xử lý, trợ lý soạn sẵn ticket nháp từ biểu mẫu; ticket chỉ được gửi sau khi bạn xác nhận."
+        "label": "Viga và ticket",
+        "sub": "Đang xây dựng cùng Portal",
+        "titleStart": "Sắp tới: kẹt thì",
+        "titleAccent": "hỏi Viga",
+        "titleEnd": ", cần hỗ trợ thì tạo ticket.",
+        "body": "Khi kẹt hoặc không hiểu một việc trong lộ trình, bạn hỏi Viga ngay trong ngữ cảnh việc đó. Viga không có căn cứ thì nói thẳng và đề nghị tạo ticket gửi HR — ticket chỉ tạo sau khi bạn xác nhận. Tính năng này đang được xây dựng."
       }
     },
     "mock": {
@@ -78,7 +78,7 @@
         "badge": "Tài liệu đã duyệt",
         "label": "HỎI ĐÁP CÓ NGUỒN",
         "question": "Nhân viên chính thức được nghỉ phép năm bao nhiêu ngày?",
-        "assistant": "Trợ lý",
+        "assistant": "Viga",
         "answer": "Nhân viên chính thức được nghỉ 12 ngày phép năm, theo chính sách nghỉ phép năm bản 2024.",
         "cite": "Chính sách nghỉ phép năm (2024)",
         "sources": "1 nguồn đã được đối chiếu và còn hiệu lực",
@@ -130,25 +130,25 @@
       }
     },
     "roles": {
-      "lead": "Dành cho những người cùng làm nên trải nghiệm onboarding.",
+      "lead": "Dành cho những người cùng làm nên VSF Onboarding Portal.",
       "flow": "Từ tài liệu được duyệt đến câu trả lời cho người mới",
       "asker": {
         "tag": "01 · Hỏi đáp",
         "title": "Nhân sự mới",
-        "body": "Hỏi bằng ngôn ngữ thường ngày, nhận câu trả lời có nguồn, làm theo quy trình từng bước và tạo ticket khi cần.",
+        "body": "Hỏi Viga bằng ngôn ngữ thường ngày, nhận câu trả lời có nguồn. Lộ trình việc cần làm theo ngày, tự đánh dấu hoàn thành và ticket khi kẹt đang được xây dựng thêm trong Portal.",
         "cta": "Đăng nhập để hỏi"
       },
       "hr": {
         "tag": "02 · Nội dung",
         "title": "Nhân sự (HR)",
-        "body": "Nạp tài liệu và duyệt bản mới, xem khác biệt giữa các phiên bản, quản lý quy trình, link và đầu mối, theo dõi câu hỏi chưa có tài liệu.",
+        "body": "Nạp tài liệu và duyệt bản mới, quản lý đầu mối và link, theo dõi câu hỏi Viga chưa trả lời được. Soạn lộ trình, task cho từng phòng ban và xử lý ticket đang được xây dựng thêm trong Portal.",
         "cta": "Đăng nhập quản lý"
       },
       "team": {
-        "tag": "03 · Xử lý",
-        "title": "Đội xử lý ticket",
-        "body": "Nhận ticket đã được người dùng xác nhận, xem đủ thông tin theo biểu mẫu và cập nhật trạng thái xử lý.",
-        "cta": "Đăng nhập xử lý"
+        "tag": "03 · Lộ trình",
+        "title": "Portal onboarding",
+        "body": "Lộ trình việc cần làm theo ngày, điều kiện tiên quyết rõ ràng, hỏi Viga ngay trong từng việc và tạo ticket khi kẹt — phần đang được xây dựng tiếp trên nền trợ lý hỏi đáp này.",
+        "cta": "Đăng nhập xem trước"
       },
       "admin": {
         "tag": "04 · Hệ thống",
@@ -200,7 +200,7 @@
       "button": "Đăng nhập"
     },
     "footer": {
-      "tagline": "Trợ lý onboarding cho nhân sự mới. Bản demo thực tập, chưa phải sản phẩm chính thức.",
+      "tagline": "VSF Onboarding Portal: lộ trình việc cần làm và trợ lý Viga cho nhân sự mới. Bản demo thực tập, chưa phải sản phẩm chính thức.",
       "email": "onboarding@vsf-demo.example",
       "aboutTitle": "Về trợ lý",
       "how": "Cách hoạt động",
@@ -209,7 +209,7 @@
       "contactTitle": "Liên hệ",
       "contactLine": "Bản demo thực tập",
       "contactNote": "Địa chỉ liên hệ là địa chỉ giả lập.",
-      "copyright": "© 2026 VSF Onboarding Assistant. Bản demo thực tập.",
+      "copyright": "© 2026 VSF Onboarding Assistant.",
       "photoLead": "Ảnh minh họa Vincom Center Đồng Khởi, TP.HCM. Ảnh: ",
       "photoSource": "qua Wikimedia Commons",
       "photoEdited": "đã cắt và nén",
@@ -237,19 +237,19 @@
       "unavailable": "Không thể đăng nhập lúc này. Hãy thử lại sau.",
       "inactive": "Tài khoản này đã bị khóa. Hãy liên hệ HR hoặc Admin."
     },
-    "welcomeDescription": "Trợ lý trả lời từ tài liệu đã được duyệt, chỉ đúng quy trình và đầu mối, và nói thẳng khi chưa có căn cứ.",
+    "welcomeDescription": "VSF Onboarding Portal cho bạn lộ trình việc cần làm, tài liệu và quy trình có nguồn, và Viga hỗ trợ khi bạn kẹt.",
     "benefits": {
       "sources": "Câu trả lời kèm nguồn dẫn chứng",
-      "approved": "Quy trình, link và đầu mối đã được duyệt",
+      "approved": "Chỉ dùng tài liệu đã được duyệt và còn hiệu lực",
       "noGuess": "Không đoán dữ liệu cá nhân của bạn"
     },
-    "welcomeLine1": "Hỏi là biết bước tiếp theo.",
+    "welcomeLine1": "Có lộ trình, không lạc bước.",
     "welcomeLine2": "Bắt đầu tự tin hơn.",
     "firstTime": "Đăng nhập lần đầu?",
     "support": "Hỗ trợ",
     "showPassword": "Hiện mật khẩu",
     "hidePassword": "Ẩn mật khẩu",
-    "quote": "“Chỗ nào chưa có nguồn, trợ lý nói thẳng là chưa có.”"
+    "quote": "“Không có nguồn, Viga không đoán.”"
   },
   "common": {
     "language": "Ngôn ngữ",
@@ -262,6 +262,7 @@
       "HR": "Nhân sự (HR)",
       "ADMIN": "Quản trị viên"
     },
+    "brandSub": "Portal nhân viên mới",
     "signOut": "Đăng xuất",
     "signingOut": "Đang đăng xuất…",
     "signOutFailed": "Không đăng xuất được lúc này. Hãy thử lại.",
@@ -272,11 +273,38 @@
     "darkMode": "Chuyển sang giao diện tối",
     "nav": {
       "chat": "Trợ lý hỏi đáp",
+      "roadmap": "Lộ trình của tôi",
       "documents": "Tài liệu",
-      "contacts": "Đầu mối",
       "tickets": "Yêu cầu hỗ trợ",
-      "admin": "Khu quản trị",
-      "soon": "Sắp có"
+      "admin": "Tổng quan",
+      "employees": "Nhân viên",
+      "hrTickets": "Ticket sự cố",
+      "vigaFeedback": "Phản hồi Viga",
+      "taskManagement": "Quản lý task",
+      "aiTasks": "Tạo task bằng AI",
+      "soon": "Sắp có",
+      "adminUsers": "Người dùng",
+      "adminTeams": "Phòng ban",
+      "adminMembers": "Thành viên",
+      "adminAudit": "Nhật ký",
+      "adminMetrics": "Chi phí AI",
+      "ticketsUnread": "{count} ticket có tin chưa xem"
+    },
+    "footer": {
+      "brand": "VSF Onboarding Portal",
+      "note": "Nội dung chỉ hiển thị cho nhân viên sau khi được duyệt và publish.",
+      "help": "Trợ giúp",
+      "privacy": "Chính sách bảo mật",
+      "terms": "Điều khoản sử dụng",
+      "contact": "Liên hệ IT",
+      "copy": "© 2026 VSF · v4.1"
+    },
+    "collapseSidebar": "Thu gọn thanh bên",
+    "expandSidebar": "Mở rộng thanh bên",
+    "brandSubByRole": {
+      "USER": "Portal nhân viên mới",
+      "HR": "Portal nhân sự",
+      "ADMIN": "Quản trị hệ thống"
     }
   },
   "chat": {
@@ -332,9 +360,1684 @@
     "description": "Khu quản trị đang được xây dựng. Hiện tại bạn có thể xem trang chat như nhân sự mới.",
     "upcoming": {
       "documents": "Quản lý tài liệu và phiên bản",
-      "registry": "Danh bạ đầu mối và liên kết",
       "tickets": "Yêu cầu hỗ trợ từ nhân sự mới"
     },
     "openChat": "Mở trang chat"
+  },
+  "portalTasks": {
+    "title": "Quản lý lộ trình onboarding",
+    "description": "Mỗi ngày có nhiều phiên bản: sửa bản nháp, áp dụng khi sẵn sàng. Lộ trình nhân viên đã tạo không tự đổi.",
+    "defaultTemplateTitle": "Lộ trình onboarding",
+    "createWithAi": "Tạo bằng AI",
+    "addStageShort": "Thêm ngày",
+    "addStage": "Thêm giai đoạn",
+    "addTask": "Thêm task",
+    "loading": "Đang tải…",
+    "noStagesTitle": "Chưa có giai đoạn nào",
+    "noStages": "Tạo giai đoạn đầu tiên để bắt đầu thêm task.",
+    "emptyTitle": "Chưa có task",
+    "emptyTasks": "Chưa có task nào trong giai đoạn này.",
+    "taskCount": "{count} task",
+    "taskNo": "Task {n}",
+    "prereq": "{count} tiên quyết",
+    "required": "Bắt buộc",
+    "optional": "Tùy chọn",
+    "start": "Bắt đầu",
+    "viewTask": "Xem nội dung",
+    "finish": "Kết thúc",
+    "view": {
+      "stage": "Giai đoạn",
+      "completion": "Cách hoàn thành",
+      "kind": "Loại",
+      "prereq": "Tiên quyết",
+      "none": "Không có",
+      "steps": "Các bước",
+      "sources": "Nguồn tài liệu"
+    },
+    "edit": "Sửa",
+    "duplicate": "Nhân bản",
+    "delete": "Xóa",
+    "cancel": "Hủy",
+    "editTitle": "Sửa task",
+    "copySuffix": "(bản sao)",
+    "deleteConfirmTitle": "Xóa task “{title}”?",
+    "deleteConfirmBody": "Task sẽ bị xóa khỏi lộ trình. Các task phụ thuộc vào task này sẽ mất tiên quyết đó. Không hoàn tác được.",
+    "searchPlaceholder": "Tìm task trong {stage}…",
+    "backToOverview": "Tổng quan HR",
+    "sideTitle": "Lộ trình onboarding",
+    "sideHint": "Chọn ngày để quản lý task",
+    "sideCount": "{total} task · {published} đã xuất bản",
+    "sideAdd": "Thêm ngày hoặc giai đoạn",
+    "kpi": {
+      "total": "Tổng task",
+      "totalSub": "Trong lộ trình hiện tại",
+      "draft": "Bản nháp",
+      "draftSub": "Chưa ai nhận, sửa được",
+      "missing": "Cần bổ sung",
+      "missingSub": "Task thiếu hướng dẫn",
+      "applied": "Đang áp dụng",
+      "appliedSub": "Bản người mới sẽ nhận"
+    },
+    "legend": {
+      "title": "Màu mốc theo nhóm task"
+    },
+    "form": {
+      "title": "Tên task",
+      "body": "Hướng dẫn",
+      "required": "Bắt buộc",
+      "submit": "Tạo task",
+      "save": "Lưu",
+      "stageTitle": "Tên giai đoạn",
+      "createStage": "Tạo giai đoạn",
+      "saveDraft": "Lưu vào bản nháp",
+      "order": "Thứ tự trong giai đoạn (1 đến {max})",
+      "day": "Ngày / giai đoạn",
+      "completion": "Cách xác nhận hoàn thành",
+      "selfConfirm": "Tự hoàn thành",
+      "requiredLong": "Bắt buộc, tính vào tiến độ",
+      "why": "Vì sao phải làm",
+      "done": "Điều kiện hoàn thành",
+      "steps": "Các bước (mỗi dòng một bước)",
+      "prereqHint": "Chọn các task phải xong trước task này.",
+      "stageHint": "Tạo giai đoạn trống rồi thêm task thủ công hoặc bằng AI.",
+      "stageNumber": "Số ngày",
+      "dayWord": "Ngày",
+      "group": "Nhóm task (màu mốc)"
+    },
+    "notice": {
+      "created": "Đã tạo task.",
+      "updated": "Đã lưu thay đổi.",
+      "deleted": "Đã xóa task.",
+      "duplicated": "Đã nhân bản task.",
+      "stageCreated": "Đã tạo giai đoạn.",
+      "draftCreated": "Đã tạo bản nháp {n}.",
+      "applied": "Đã áp dụng bản {n}. {count} nhân viên sẽ nhận thông báo chỉnh sửa.",
+      "draftDeleted": "Đã xóa bản nháp."
+    },
+    "errors": {
+      "unauthorized": "Bạn cần đăng nhập lại.",
+      "forbidden": "Bạn không có quyền cho hành động này.",
+      "unavailable": "Có lỗi xảy ra, thử lại sau.",
+      "network": "Không kết nối được server.",
+      "published": "Lộ trình đã xuất bản nên không sửa được.",
+      "empty": "Cần ít nhất một task trước khi xuất bản.",
+      "cycle": "Tiên quyết tạo vòng lặp hoặc trỏ vào chính task này.",
+      "stageOutOfTemplate": "Chỉ chuyển được sang giai đoạn cùng lộ trình.",
+      "versionNotEditable": "Chỉ sửa được bản nháp. Hãy tạo bản nháp mới từ bản này.",
+      "versionEmpty": "Bản nháp chưa có việc nào nên chưa áp dụng được.",
+      "lastVersion": "Không xóa được bản cuối cùng của ngày."
+    },
+    "close": "Đóng",
+    "closeButton": "Đóng",
+    "tabs": {
+      "info": "Thông tin",
+      "guide": "Hướng dẫn",
+      "prereq": "Tiên quyết"
+    },
+    "deleteConfirmButton": "Xóa task",
+    "duplicateConfirmTitle": "Nhân bản task “{title}”?",
+    "duplicateConfirmBody": "Tạo một bản sao ngay sau task này trong cùng giai đoạn, giữ nguyên nội dung và tiên quyết.",
+    "duplicateConfirmButton": "Nhân bản",
+    "backToTemplate": "Lộ trình mẫu chung",
+    "group": {
+      "PROFILE": "Hồ sơ",
+      "TRAINING": "Đào tạo",
+      "DEVICE": "Thiết bị",
+      "OFFICE": "Văn phòng",
+      "none": "Chưa phân nhóm"
+    },
+    "tagPublished": "Áp dụng",
+    "tagDraft": "Nháp",
+    "sourceAction": "Nguồn tài liệu",
+    "versions": {
+      "label": "Các phiên bản của ngày",
+      "name": "Bản {n}",
+      "status": {
+        "DRAFT": "Nháp",
+        "APPLIED": "Đang áp dụng",
+        "ARCHIVED": "Lưu trữ"
+      },
+      "hint": {
+        "DRAFT": "Bản nháp: sửa thoải mái, chưa ảnh hưởng ai. Bấm Áp dụng khi sẵn sàng.",
+        "APPLIED": "Đang áp dụng: chỉ xem. Người tạo lộ trình mới nhận bản này; muốn sửa hãy Tạo bản nháp.",
+        "ARCHIVED": "Bản cũ đã lưu trữ: chỉ xem."
+      },
+      "createDraft": "Tạo bản nháp từ bản này",
+      "apply": "Áp dụng",
+      "deleteDraft": "Xóa nháp",
+      "rollout": "Theo dõi triển khai",
+      "readonly": "Bản này chỉ xem — chỉ bản nháp sửa được",
+      "deleteTitle": "Xóa bản nháp {n}?",
+      "deleteBody": "Các việc trong bản nháp này sẽ mất. Bản đang áp dụng và lộ trình của nhân viên không bị ảnh hưởng.",
+      "deleteConfirm": "Xóa nháp",
+      "taskCount": "{count} việc",
+      "createDraftTitle": "Tạo bản nháp {n} từ bản {from}?",
+      "createDraftBody": "Bản nháp mới sao chép toàn bộ việc của bản đang xem để bạn sửa. Chưa ai bị ảnh hưởng cho tới khi bạn bấm Áp dụng.",
+      "createDraftConfirm": "Tạo bản nháp"
+    },
+    "apply": {
+      "title": "Áp dụng bản {n} của {day}?",
+      "body": "Việc sửa: {modified}, việc thêm: {added}, việc bỏ: {removed}. Bản này thành bản đang áp dụng; bản cũ được lưu trữ. Lộ trình của {employees} nhân viên đã tạo KHÔNG tự đổi: họ nhận thông báo để tự bấm Cập nhật hoặc Giữ bản cũ.",
+      "confirm": "Áp dụng"
+    },
+    "rollout": {
+      "title": "Triển khai bản {n}",
+      "subtitle": "Nhân viên đã xem, đã cập nhật hay giữ bản cũ (chỉ xem).",
+      "empty": "Chưa có nhân viên nào nhận thông báo cho bản này.",
+      "failed": "Chưa tải được tình hình triển khai.",
+      "summary": "{total} nhân viên: {unseen} chưa xem, {seen} đã xem, {updated} đã cập nhật, {kept} giữ bản cũ.",
+      "col": {
+        "employee": "Nhân viên",
+        "state": "Tình trạng",
+        "pending": "Chờ quyết định",
+        "accepted": "Đã cập nhật",
+        "dismissed": "Giữ bản cũ"
+      },
+      "state": {
+        "UNSEEN": "Chưa xem",
+        "SEEN": "Đã xem",
+        "UPDATED": "Đã cập nhật",
+        "KEPT_OLD": "Giữ bản cũ",
+        "SUPERSEDED": "Đã có bản mới hơn"
+      }
+    }
+  },
+  "portalEmployees": {
+    "viewTask": "Xem task",
+    "count": "{count} nhân viên",
+    "title": "Nhân viên",
+    "description": "Toàn bộ nhân viên bạn phụ trách và tiến độ lộ trình onboarding của họ.",
+    "searchPlaceholder": "Tìm nhân viên…",
+    "loading": "Đang tải…",
+    "empty": "Không có nhân viên phù hợp.",
+    "noCurrentTask": "Chưa bắt đầu lộ trình",
+    "filters": {
+      "all": "Tất cả",
+      "attn": "Cần chú ý",
+      "wait": "Đang chờ",
+      "ok": "Bình thường"
+    },
+    "table": {
+      "employee": "Nhân viên",
+      "stage": "Giai đoạn",
+      "progress": "Tiến độ",
+      "currentTask": "Task hiện tại",
+      "status": "Trạng thái"
+    },
+    "status": {
+      "NOT_STARTED": "Chưa bắt đầu",
+      "DONE": "Hoàn tất",
+      "READY": "Đang làm",
+      "IN_PROGRESS": "Đang làm",
+      "WAITING_EXTERNAL": "Chờ bên ngoài",
+      "BLOCKED": "Đang kẹt"
+    },
+    "errors": {
+      "unauthorized": "Bạn cần đăng nhập lại.",
+      "forbidden": "Bạn không có quyền cho hành động này.",
+      "unavailable": "Có lỗi xảy ra, thử lại sau.",
+      "network": "Không kết nối được server.",
+      "NO_JOURNEY_TEMPLATE": "Chưa có bản nào được áp dụng cho nhóm này nên chưa thêm được lộ trình. Hãy áp dụng một bản ở Quản lý task.",
+      "NO_TEAM_ASSIGNED": "Nhân viên này chưa thuộc nhóm nào."
+    },
+    "addJourney": "Thêm lộ trình",
+    "addJourneyTitle": "Thêm lộ trình cho {name}?",
+    "addJourneyBody": "Nhân viên sẽ nhận bản sao các bản đang áp dụng, có hiệu lực ngay và là lộ trình riêng của họ. Sau này khi bạn áp dụng bản mới, họ nhận thông báo để tự cập nhật.",
+    "addJourneyConfirm": "Thêm lộ trình",
+    "cancel": "Hủy",
+    "close": "Đóng"
+  },
+  "hrDashboard": {
+    "greeting": "Xin chào, {name}",
+    "description": "Chưa có lộ trình onboarding nào — bắt đầu ở mục Tạo task bằng AI.",
+    "journeyHint": "Lộ trình onboarding đang được xây dựng.",
+    "kpi": {
+      "templates": "Lộ trình",
+      "templatesSub": "Đang có",
+      "stages": "Giai đoạn",
+      "stagesSub": "Trong lộ trình",
+      "tasks": "Task trong lộ trình",
+      "tasksSub": "Đang hiển thị cho nhân viên",
+      "documents": "Tài liệu",
+      "documentsSub": "Đã ingest"
+    },
+    "actions": {
+      "documents": {
+        "title": "Tải tài liệu lên"
+      },
+      "aiTasks": {
+        "title": "Thêm task"
+      }
+    },
+    "errors": {
+      "unauthorized": "Bạn cần đăng nhập lại.",
+      "forbidden": "Bạn không có quyền cho hành động này.",
+      "unavailable": "Có lỗi xảy ra, thử lại sau.",
+      "network": "Không kết nối được server."
+    }
+  },
+  "portalDocuments": {
+    "title": "Tài liệu nguồn",
+    "description": "Quản lý file gốc, nội dung đã parse và trạng thái ingest.",
+    "addDocument": "Thêm tài liệu",
+    "loading": "Đang tải…",
+    "empty": "Chưa có tài liệu nào.",
+    "viewOriginal": "Xem file gốc",
+    "archive": "Ngừng sử dụng",
+    "reactivate": "Kích hoạt lại",
+    "sectionCount": "{count} section",
+    "searchPlaceholder": "Tìm theo tên tài liệu…",
+    "filterAllStatus": "Mọi trạng thái",
+    "filterAllCategory": "Tất cả nhóm",
+    "pagerLabel": "Hiển thị {from}-{to} / {total}",
+    "kpi": {
+      "total": "Tổng tài liệu",
+      "ready": "Sẵn sàng",
+      "pending": "Cần kiểm tra",
+      "sections": "Tổng section",
+      "used": "Đang được dùng"
+    },
+    "table": {
+      "document": "Tài liệu",
+      "category": "Nhóm",
+      "sections": "Xử lý nội dung",
+      "status": "Trạng thái",
+      "updated": "Cập nhật",
+      "tasks": "Task sử dụng",
+      "version": "Phiên bản"
+    },
+    "status": {
+      "ACTIVE": "Sẵn sàng",
+      "ARCHIVED": "Đã lưu trữ",
+      "NO_CURRENT": "Chưa kích hoạt"
+    },
+    "upload": {
+      "file": "Chọn file (.docx, .pdf, .md)",
+      "title": "Tải tài liệu lên",
+      "category": "Danh mục",
+      "sourceKey": "Mã nguồn (source_key)",
+      "version": "Phiên bản",
+      "effectiveFrom": "Hiệu lực từ",
+      "submit": "Tải lên",
+      "name": "Tên tài liệu",
+      "drop": "Kéo thả hoặc bấm để chọn tệp",
+      "dropHint": "docx, pdf, md, txt · tối đa 20 MB",
+      "structurePoor": "Tài liệu gần như không có tiêu đề nên Viga sẽ trích nguồn kém chính xác. Hãy mở phiên bản, thêm tiêu đề (dòng bắt đầu bằng ##) trước khi kích hoạt; nếu để nguyên, hệ thống có thể nhờ AI chia mục.",
+      "structureMedium": "Hệ thống đã suy ra tiêu đề hoặc chia nhỏ các mục dài. Hãy mở phiên bản để xem lại mục lục.",
+      "startedBackground": "Đã tải file; đang kích hoạt ở chế độ nền.",
+      "reused": "Phiên bản này đã có sẵn (cùng nhãn, cùng nội dung), không tạo thêm.",
+      "draftCreated": "Đã tạo bản nháp. Mở “Phiên bản” để xem lại rồi kích hoạt.",
+      "progressTitle": "Đang kích hoạt tài liệu…",
+      "failedBackground": "Kích hoạt không thành công",
+      "activateNow": "Tải và kích hoạt luôn",
+      "activateNowHint": "Cắt đoạn, embedding và bật làm bản áp dụng ngay (chạy nền, có phần trăm).",
+      "draftOnlyHint": "Chỉ tạo bản nháp: chưa ảnh hưởng Viga, xem lại rồi kích hoạt sau."
+    },
+    "errors": {
+      "unauthorized": "Bạn cần đăng nhập lại.",
+      "forbidden": "Bạn không có quyền cho hành động này.",
+      "unavailable": "Có lỗi xảy ra, thử lại sau.",
+      "network": "Không kết nối được server.",
+      "ingestFailed": "Không đọc được nội dung tệp này (sai định dạng hoặc quá ngắn).",
+      "categoryNotFound": "Nhóm tài liệu không tồn tại."
+    },
+    "close": "Đóng",
+    "closeButton": "Đóng",
+    "cancel": "Hủy",
+    "save": "Lưu",
+    "view": "Phiên bản và nội dung",
+    "edit": "Sửa thông tin",
+    "newVersion": "Tải phiên bản mới",
+    "editTitle": "Sửa tài liệu",
+    "viewFailed": "Không tải được nội dung tài liệu.",
+    "toc": "Mục lục",
+    "archiveConfirmTitle": "Ngừng sử dụng tài liệu “{title}”?",
+    "archiveConfirmBody": "Tài liệu chuyển sang trạng thái Đã ẩn (không xóa): không dùng để AI đề xuất task nữa nhưng vẫn giữ nguyên nội dung và lịch sử. Bạn có thể kích hoạt lại bất cứ lúc nào.",
+    "archiveConfirmButton": "Ngừng sử dụng",
+    "reactivateConfirmTitle": "Kích hoạt lại tài liệu “{title}”?",
+    "reactivateConfirmBody": "Tài liệu quay lại trạng thái Sẵn sàng và dùng được cho AI đề xuất task.",
+    "reactivateConfirmButton": "Kích hoạt lại",
+    "notice": {
+      "updated": "Đã lưu thông tin tài liệu.",
+      "archived": "Đã ngừng sử dụng tài liệu.",
+      "reactivated": "Đã kích hoạt lại tài liệu."
+    },
+    "parsedIngested": "Đã parse · Đã ingest",
+    "noTasks": "Chưa có task",
+    "moreTasks": "+{count} task",
+    "filter": {
+      "status": "Trạng thái",
+      "statusAllHint": "Hiển thị tất cả",
+      "activeHint": "Đã parse và ingest",
+      "archivedHint": "Đã ngừng sử dụng",
+      "usage": "Mức sử dụng",
+      "usageAll": "Tất cả nguồn",
+      "usageAllHint": "Có và chưa gắn task",
+      "usageUsed": "Đang được dùng",
+      "usageUsedHint": "Đã liên kết với task",
+      "usageUnused": "Chưa gắn task",
+      "usageUnusedHint": "Chưa có task sử dụng",
+      "category": "Nhóm tài liệu",
+      "from": "Từ ngày",
+      "to": "Đến ngày",
+      "clearDates": "Xóa ngày"
+    },
+    "version": {
+      "none": "Chưa có bản áp dụng",
+      "count": "{count} phiên bản",
+      "drafts": "{count} nháp"
+    },
+    "versions": {
+      "subtitle": "{count} phiên bản",
+      "listLabel": "Danh sách phiên bản",
+      "state": {
+        "DRAFT": "Bản nháp",
+        "PROCESSING": "Đang xử lý",
+        "SCHEDULED": "Sắp hiệu lực",
+        "CURRENT": "Đang áp dụng",
+        "SUPERSEDED": "Đã thay thế",
+        "FAILED": "Lỗi"
+      },
+      "source": {
+        "UPLOAD": "Từ file tải lên",
+        "EDITED": "Đã chỉnh sửa"
+      },
+      "effective": {
+        "range": "Hiệu lực {from} – {to}",
+        "from": "Hiệu lực từ {from}",
+        "none": "Chưa đặt hiệu lực"
+      },
+      "tasks": "{count} task đang dùng",
+      "fromParent": "sao chép từ bản {label}",
+      "originalNote": "File gốc “{name}” thuộc bản được sao chép, không phản ánh phần đã sửa.",
+      "uploadNew": "Tải file thành phiên bản mới",
+      "copy": "Tạo bản mới từ bản này",
+      "edit": "Sửa nháp",
+      "activate": "Kích hoạt",
+      "setCurrent": "Đặt làm bản áp dụng",
+      "deleteDraft": "Xóa nháp",
+      "lastFailure": "Lần kích hoạt gần nhất không thành công: {error}",
+      "structure": {
+        "POOR": "Tài liệu gần như không có tiêu đề: Viga sẽ trích nguồn kém chính xác. Hãy thêm tiêu đề (dòng bắt đầu bằng ##) trước khi kích hoạt, hoặc để hệ thống nhờ AI chia mục khi kích hoạt.",
+        "MEDIUM": "Tiêu đề được suy ra hoặc mục dài đã được chia nhỏ: hãy xem lại mục lục trước khi kích hoạt.",
+        "aiApplied": "Mục lục của bản này do AI đề xuất (chữ của tài liệu không đổi). Có thể tạo bản mới từ bản này để chỉnh lại."
+      },
+      "editor": {
+        "label": "Nhãn phiên bản",
+        "effective": "Hiệu lực dự kiến",
+        "write": "Soạn thảo",
+        "preview": "Xem trước",
+        "markdown": "Nội dung Markdown",
+        "hint": "Lưu nhiều lần không tốn phí embedding. Bản nháp chưa ảnh hưởng Viga cho tới khi kích hoạt.",
+        "saveFirst": "Lưu bản nháp trước khi kích hoạt hoặc xóa"
+      },
+      "confirm": {
+        "activateTitle": "Kích hoạt bản “{label}”?",
+        "activateBody": "Viga và task sẽ dùng bản này kể từ ngày hiệu lực; bản đang áp dụng ngừng hiệu lực từ ngày hôm trước. Việc này chạy nền, có thể mất vài chục giây vì phải cắt đoạn và embedding.",
+        "setCurrentBody": "Quay về bản “{label}” làm bản áp dụng từ ngày hiệu lực; bản đang áp dụng sẽ chuyển thành đã thay thế. Bản này đã có dữ liệu nên thường không tốn embedding.",
+        "effectiveFrom": "Hiệu lực từ",
+        "deleteTitle": "Xóa bản nháp “{label}”?",
+        "deleteBody": "Bản nháp bị xóa hẳn và không khôi phục được. Các phiên bản khác không bị ảnh hưởng."
+      },
+      "progress": {
+        "title": "Đang kích hoạt…",
+        "waiting": "Đang chờ",
+        "lost": "Mất kết nối khi hỏi tiến độ; tải lại trang để xem kết quả.",
+        "done": "Đã kích hoạt xong — {sections} mục, {chunks} đoạn.",
+        "reused": "Dùng lại dữ liệu đã embedding.",
+        "failed": "Kích hoạt không thành công ({error}). Bản cũ vẫn đang chạy bình thường."
+      },
+      "errors": {
+        "unauthorized": "Bạn cần đăng nhập lại.",
+        "forbidden": "Bạn không có quyền cho hành động này.",
+        "unavailable": "Có lỗi xảy ra, thử lại sau.",
+        "network": "Không kết nối được server.",
+        "VERSION_CONFLICT": "Bản nháp vừa được người khác lưu. Đóng và mở lại phiên bản để lấy nội dung mới nhất.",
+        "VERSION_NOT_EDITABLE": "Chỉ sửa được bản nháp. Hãy tạo bản mới từ bản này rồi sửa.",
+        "VERSION_LABEL_EXISTS": "Nhãn phiên bản này đã có, hãy chọn nhãn khác.",
+        "VERSION_LABEL_REQUIRED": "Cần nhập nhãn phiên bản.",
+        "VERSION_LABEL_TOO_LONG": "Nhãn phiên bản tối đa 32 ký tự.",
+        "VERSION_CONTENT_TOO_SHORT": "Nội dung quá ngắn (tối thiểu 200 ký tự).",
+        "VERSION_ALREADY_CURRENT": "Bản này đang là bản áp dụng.",
+        "VERSION_NOT_ACTIVATABLE": "Bản này đang được xử lý hoặc không kích hoạt được.",
+        "VERSION_NOT_DELETABLE": "Chỉ xóa được bản nháp chưa từng kích hoạt.",
+        "DOCUMENT_ARCHIVED": "Tài liệu đang ngừng sử dụng: hãy kích hoạt lại tài liệu trước."
+      }
+    },
+    "category": {
+      "hint": {
+        "onboarding": "Ngày đầu, giấy tờ, thiết bị, quy định cần biết",
+        "other": "Các tài liệu còn lại"
+      }
+    }
+  },
+  "portalHr": {
+    "title": "Tạo task bằng AI",
+    "description": "Chọn tài liệu và giai đoạn đích; AI đề xuất task có liên kết tới đúng đoạn nguồn.",
+    "safeBadge": "AI không tự xuất bản",
+    "sectionCount": "{count} section",
+    "steps": {
+      "step1": "Chọn nguồn và đích",
+      "step2": "AI dựng roadmap",
+      "step3": "HR chấp nhận",
+      "step4": "Thêm vào quản lý task"
+    },
+    "template": {
+      "code": "Mã lộ trình",
+      "title": "Tên lộ trình"
+    },
+    "stage": {
+      "heading": "Roadmap đích",
+      "hint": "Chọn giai đoạn đã có hoặc tạo mới",
+      "title": "Tên giai đoạn",
+      "create": "Tạo giai đoạn",
+      "addNew": "Tạo ngày hoặc giai đoạn mới",
+      "addNewHint": "Dùng khi cần thêm giai đoạn mới cho lộ trình",
+      "empty": "Chưa có ngày nào. Hãy tạo ngày đầu tiên cho lộ trình ở biểu mẫu bên dưới, rồi chọn tài liệu để AI đề xuất task.",
+      "createFirst": "Tạo ngày đầu tiên",
+      "cancel": "Hủy",
+      "close": "Đóng",
+      "toDraft": "Task AI vào bản nháp {n}",
+      "toNewDraft": "Task AI vào bản nháp mới"
+    },
+    "document": {
+      "heading": "Tài liệu nguồn",
+      "selectedCount": "{count} tài liệu đang được chọn",
+      "pick": "Chọn tài liệu",
+      "remove": "Bỏ chọn",
+      "empty": "Chưa chọn tài liệu nào",
+      "loading": "Đang tải danh sách…",
+      "noneAvailable": "Chưa có tài liệu nào — tải lên ở mục Tài liệu trước.",
+      "collapse": "Thu gọn",
+      "pickerTitle": "Chọn tài liệu đã sẵn sàng",
+      "pickerHint": "Có thể chọn nhiều nguồn cho cùng một lần phân tích",
+      "pickedBadge": "{count} đã chọn",
+      "searchPlaceholder": "Tìm theo tên, nhóm hoặc người phụ trách…",
+      "pickedFoot": "Đã chọn {count} tài liệu",
+      "done": "Hoàn tất chọn",
+      "emptyHint": "Bấm “Chọn tài liệu” để chọn một hoặc nhiều tài liệu đã sẵn sàng; AI sẽ đề xuất task kèm đoạn nguồn để bạn kiểm tra."
+    },
+    "audience": {
+      "label": "Đối tượng áp dụng",
+      "fallback": "Chưa gán phòng ban",
+      "sub": "Theo phòng ban của bạn"
+    },
+    "run": {
+      "needDoc": "Chọn ít nhất một tài liệu",
+      "needStage": "Chọn giai đoạn đích",
+      "loading": "Đang xử lý…",
+      "submit": "AI đề xuất task",
+      "footnote": "AI đề xuất task vào giai đoạn đã chọn; HR chấp nhận từng task.",
+      "submitCount": "Phân tích {count} tài liệu và đề xuất roadmap",
+      "errors": {
+        "LLM_NOT_CONFIGURED": "Chưa cấu hình dịch vụ AI nên chưa thể tạo đề xuất.",
+        "NO_DOCUMENTS": "Chưa chọn tài liệu nào.",
+        "JOB_ERROR": "Việc tạo đề xuất gặp lỗi, thử lại sau.",
+        "JOB_INTERRUPTED": "Việc tạo đề xuất bị gián đoạn, thử lại sau."
+      }
+    },
+    "progress": {
+      "steps": {
+        "read": "Đọc tài liệu",
+        "draft": "AI soạn task",
+        "verify": "Kiểm tra nguồn trích",
+        "cover": "Bù mục còn thiếu",
+        "order": "Sắp thứ tự và tiên quyết",
+        "save": "Lưu kết quả"
+      },
+      "skipped": "không cần",
+      "seconds": "{seconds} giây",
+      "waiting": "Đang chờ",
+      "queued": "Đang xếp hàng",
+      "queueAhead": "Trước bạn còn {count} việc đang chờ.",
+      "elapsed": "Đã chạy {seconds} giây",
+      "remaining": "còn khoảng {seconds} giây",
+      "creating": "Đang tạo task {done}/{total}",
+      "lost": "Chưa lấy được tiến độ lúc này. Việc vẫn chạy nền: tải lại trang để xem tiếp."
+    },
+    "propose": {
+      "heading": "AI đề xuất task",
+      "hint": "Gọi mô hình ngôn ngữ thật — mỗi lần bấm tốn một khoản phí nhỏ.",
+      "empty": "Chưa có đề xuất nào đủ căn cứ để hiển thị.",
+      "confidence": "Độ tin cậy",
+      "sources": "Nguồn trích dẫn",
+      "accept": "Chấp nhận, tạo task",
+      "accepted": "Đã tạo task #{id} trong giai đoạn.",
+      "acceptAll": "Chấp nhận tất cả ({count})",
+      "acceptedAll": "Đã tạo {count} task trong giai đoạn.",
+      "group": {
+        "PROFILE": "Hồ sơ",
+        "TRAINING": "Đào tạo",
+        "DEVICE": "Thiết bị",
+        "OFFICE": "Văn phòng"
+      },
+      "summary": {
+        "proposed": "Task đề xuất",
+        "accepted": "Đã chấp nhận",
+        "pending": "Chờ xem"
+      },
+      "acceptPending": "Chấp nhận tất cả",
+      "addToTasks": "Thêm vào Quản lý task",
+      "reset": "Chọn lại nguồn",
+      "roadSub": "{count} task AI đề xuất · chưa hiển thị cho nhân viên",
+      "minutes": "{n} phút",
+      "copySuffix": "(bản sao)",
+      "status": {
+        "pending": "Chờ xem",
+        "accepted": "Đã chấp nhận",
+        "edited": "Đã sửa"
+      },
+      "confidenceLevel": {
+        "HIGH": "Tin cậy cao",
+        "MEDIUM": "Tin cậy vừa",
+        "LOW": "Tin cậy thấp"
+      },
+      "actions": {
+        "accept": "Chấp nhận",
+        "source": "Xem đúng đoạn nguồn",
+        "edit": "Sửa",
+        "duplicate": "Nhân bản",
+        "remove": "Bỏ khỏi roadmap"
+      },
+      "road": {
+        "start": "Bắt đầu",
+        "finish": "Hoàn tất",
+        "taskNo": "Task {n}"
+      },
+      "remove": {
+        "title": "Bỏ đề xuất khỏi roadmap?",
+        "body": "“{title}” sẽ bị gỡ khỏi roadmap AI đề xuất. Chạy lại phân tích nếu muốn xem lại đề xuất này.",
+        "confirm": "Bỏ đề xuất"
+      },
+      "edit": {
+        "title": "Sửa đề xuất",
+        "name": "Tên task",
+        "summary": "Vì sao phải làm",
+        "minutes": "Thời lượng (phút)",
+        "steps": "Các bước",
+        "done": "Điều kiện hoàn thành (mỗi dòng một điều kiện)",
+        "save": "Lưu",
+        "position": "Vị trí (1–{max})",
+        "positionHint": "Nhập số để đổi chỗ, hoặc kéo thẻ trên roadmap.",
+        "minutesHint": "Bỏ trống nếu chưa rõ.",
+        "stepsHint": "Mỗi dòng một bước, làm lần lượt từ trên xuống."
+      },
+      "prerequisites": "Cần xong trước",
+      "needsCheck": "Cần kiểm tra",
+      "reviewNotes": "HR cần kiểm tra",
+      "reorder": {
+        "hint": "Kéo thả thẻ để đổi vị trí",
+        "dropped": "Đã bỏ {count} tiên quyết vì nay đứng sau task cần nó. Tiên quyết luôn phải đứng trước."
+      }
+    },
+    "errors": {
+      "unauthorized": "Bạn cần đăng nhập lại.",
+      "forbidden": "Bạn không có quyền cho hành động này.",
+      "unavailable": "Có lỗi xảy ra, thử lại sau.",
+      "network": "Không kết nối được server."
+    },
+    "result": {
+      "heading": "Kết quả theo từng tài liệu",
+      "done": "{count} đề xuất",
+      "failed": "Không tạo được đề xuất",
+      "retry": "Thử lại",
+      "truncated": "Tài liệu dài: {count} mục cuối chưa được đưa vào phân tích.",
+      "errors": {
+        "AI_INVALID_JSON": "AI trả dữ liệu không đúng định dạng",
+        "LLM_UNAVAILABLE": "Dịch vụ AI tạm thời không phản hồi",
+        "DOCUMENT_VERSION_NOT_FOUND": "Không đọc được nội dung tài liệu"
+      },
+      "uncovered": "{count} mục chưa có task: {names}",
+      "skippedInfo": "AI coi {count} mục là chỉ có thông tin nên không tạo task: {names}"
+    }
+  },
+  "portalAdmin": {
+    "common": {
+      "loading": "Đang tải…",
+      "empty": "Chưa có dữ liệu.",
+      "close": "Đóng",
+      "cancel": "Hủy",
+      "save": "Lưu",
+      "count": "{count} mục"
+    },
+    "roles": {
+      "all": "Tất cả",
+      "USER": "Nhân viên",
+      "HR": "HR",
+      "ADMIN": "Admin"
+    },
+    "errors": {
+      "unauthorized": "Bạn cần đăng nhập lại.",
+      "forbidden": "Bạn không có quyền cho hành động này.",
+      "unavailable": "Có lỗi xảy ra, thử lại sau.",
+      "network": "Không kết nối được server.",
+      "USER_NOT_FOUND": "Không tìm thấy người dùng.",
+      "EMAIL_TAKEN": "Email này đã có tài khoản.",
+      "CANNOT_DEMOTE_SELF": "Không thể tự hạ vai trò của chính mình.",
+      "CANNOT_LOCK_SELF": "Không thể tự khóa tài khoản của chính mình.",
+      "TEAM_NOT_FOUND": "Không tìm thấy phòng ban.",
+      "NOT_AN_HR_USER": "Người được chọn không có vai trò HR.",
+      "TEAM_CODE_TAKEN": "Mã phòng ban đã tồn tại.",
+      "ADMIN_HAS_NO_TEAM": "Tài khoản Admin không thuộc phòng ban nào.",
+      "ALREADY_MEMBER": "Người này đã ở trong phòng ban.",
+      "MEMBERSHIP_NOT_FOUND": "Không tìm thấy thành viên này.",
+      "NO_SHARED_TEMPLATE": "Chưa có lộ trình mẫu chung đã xuất bản để sao chép.",
+      "TEAM_ALREADY_HAS_JOURNEY": "Phòng ban này đã có lộ trình."
+    },
+    "dashboard": {
+      "title": "Quản trị hệ thống",
+      "description": "Phòng ban, tài khoản và thành viên. Nội dung lộ trình do HR của từng phòng ban quản lý.",
+      "byTeam": "Nhân viên mới theo phòng ban",
+      "byTeamSub": "Số nhân viên mỗi phòng ban đang hoạt động",
+      "recent": "Hoạt động gần đây",
+      "viewAudit": "Xem nhật ký",
+      "kpi": {
+        "teams": "Phòng ban",
+        "teamsSub": "{count} đã lưu trữ",
+        "hr": "HR",
+        "hrSub": "phụ trách phòng ban",
+        "employees": "Nhân viên mới",
+        "employeesNoTeam": "{count} chưa vào phòng ban",
+        "employeesAllInTeam": "đều đã có phòng ban",
+        "attention": "Cần xử lý",
+        "attentionSub": "{locked} tài khoản khóa · {noTeam} chưa gán phòng ban"
+      }
+    },
+    "users": {
+      "title": "Người dùng",
+      "description": "Tài khoản và vai trò hệ thống (Admin, HR, Nhân viên). Việc vào phòng ban làm ở mục Thành viên.",
+      "add": "Thêm người dùng",
+      "search": "Tìm theo tên hoặc email…",
+      "empty": "Không có người dùng phù hợp.",
+      "noTeam": "Chưa gán",
+      "active": "Đang hoạt động",
+      "inactive": "Đã khóa",
+      "neverLoggedIn": "Chưa đăng nhập",
+      "edit": "Sửa",
+      "resetPassword": "Đặt lại mật khẩu",
+      "lock": "Khóa tài khoản",
+      "unlock": "Mở khóa",
+      "editTitle": "Sửa người dùng",
+      "saved": "Đã lưu người dùng.",
+      "locked": "Đã khóa tài khoản.",
+      "unlocked": "Đã mở khóa tài khoản.",
+      "table": {
+        "user": "Người dùng",
+        "role": "Vai trò hệ thống",
+        "team": "Phòng ban",
+        "status": "Trạng thái",
+        "lastLogin": "Đăng nhập gần nhất"
+      },
+      "form": {
+        "name": "Họ và tên",
+        "email": "Email",
+        "role": "Vai trò hệ thống",
+        "team": "Phòng ban (tùy chọn)",
+        "noTeam": "Chưa gán",
+        "tempHint": "Mật khẩu tạm được tạo khi lưu; người dùng phải đổi ở lần đăng nhập đầu."
+      },
+      "resetTitle": "Đặt lại mật khẩu của {name}?",
+      "resetBody": "Hệ thống tạo một mật khẩu tạm mới cho {name} và hiển thị một lần để bạn chuyển cho họ.",
+      "resetWarning": "Mật khẩu cũ và mọi phiên đăng nhập hiện tại sẽ mất hiệu lực ngay.",
+      "resetConfirm": "Đặt lại mật khẩu",
+      "lockTitle": "Khóa tài khoản {name}?",
+      "lockBody": "{name} sẽ bị đăng xuất và không đăng nhập được cho đến khi bạn mở khóa. Dữ liệu và lộ trình vẫn được giữ nguyên.",
+      "unlockTitle": "Mở khóa tài khoản {name}?",
+      "unlockBody": "{name} có thể đăng nhập lại bình thường.",
+      "secretTitle": "Mật khẩu tạm của {name}",
+      "secretLabel": "Mật khẩu tạm:",
+      "secretHint": "Chỉ hiển thị một lần và không được lưu ở dạng đọc được. Người dùng phải đổi mật khẩu ở lần đăng nhập đầu."
+    },
+    "teams": {
+      "title": "Phòng ban",
+      "description": "Mỗi phòng ban có HR phụ trách, danh sách nhân viên mới và một lộ trình riêng. HR chỉ thấy phòng ban mình phụ trách.",
+      "add": "Tạo phòng ban",
+      "search": "Tìm tên hoặc mã phòng ban…",
+      "empty": "Không có phòng ban phù hợp.",
+      "active": "Đang hoạt động",
+      "archived": "Đã lưu trữ",
+      "noHr": "Chưa có HR",
+      "noJourney": "Chưa có lộ trình",
+      "memberCount": "{employees} nhân viên · {hr} HR",
+      "detail": "Chi tiết và thành viên",
+      "edit": "Sửa",
+      "archive": "Lưu trữ",
+      "restore": "Khôi phục",
+      "editTitle": "Sửa phòng ban",
+      "saved": "Đã lưu phòng ban.",
+      "created": "Đã tạo phòng ban.",
+      "filter": {
+        "all": "Tất cả",
+        "ACTIVE": "Đang hoạt động",
+        "ARCHIVED": "Đã lưu trữ"
+      },
+      "table": {
+        "team": "Phòng ban",
+        "status": "Trạng thái",
+        "hr": "HR phụ trách",
+        "members": "Thành viên",
+        "journey": "Lộ trình"
+      },
+      "journeyStatus": {
+        "DRAFT": "bản nháp",
+        "PUBLISHED": "đã xuất bản"
+      },
+      "form": {
+        "name": "Tên phòng ban",
+        "code": "Mã (chữ hoa)",
+        "hr": "HR phụ trách chính",
+        "noHr": "Chưa chọn",
+        "copyShared": "Tạo lộ trình cho phòng ban bằng cách sao chép lộ trình mẫu chung. HR của phòng ban sẽ chỉnh sửa bản sao này."
+      },
+      "archiveTitle": "Lưu trữ phòng ban “{name}”?",
+      "archiveBody": "Phòng ban chuyển sang trạng thái Đã lưu trữ (không xóa): thành viên mất quyền truy cập theo phòng ban này nhưng dữ liệu vẫn được giữ. Bạn có thể khôi phục bất cứ lúc nào.",
+      "archiveWarning": "Truy cập của mọi thành viên trong phòng ban sẽ bị đóng.",
+      "restoreTitle": "Khôi phục phòng ban “{name}”?",
+      "restoreBody": "Phòng ban hoạt động trở lại và thành viên lấy lại quyền truy cập.",
+      "archivedDone": "Đã lưu trữ phòng ban.",
+      "restoredDone": "Đã khôi phục phòng ban.",
+      "copyTitle": "Tạo lộ trình cho “{name}”?",
+      "copyBody": "Sao chép lộ trình mẫu chung (giai đoạn, task, tiên quyết) thành một bản nháp riêng của phòng ban “{name}”. HR của phòng ban chỉnh sửa và xuất bản bản sao này; lộ trình mẫu chung không bị ảnh hưởng.",
+      "copyConfirm": "Tạo bản sao từ mẫu chung",
+      "copiedDone": "Đã tạo bản sao lộ trình cho phòng ban.",
+      "detailSub": "Mã {code} · tạo {date} · {state}"
+    },
+    "members": {
+      "title": "Thành viên",
+      "pageTitle": "Thành viên phòng ban",
+      "description": "Gán người dùng vào phòng ban. Vai trò trong phòng ban theo vai trò hệ thống (HR phụ trách hoặc Nhân viên mới). Truy cập đóng khi tài khoản bị khóa hoặc phòng ban lưu trữ.",
+      "search": "Tìm người hoặc phòng ban…",
+      "empty": "Không có thành viên phù hợp.",
+      "add": "Thêm thành viên",
+      "assign": "Gán",
+      "assignTitle": "Gán vào phòng ban",
+      "user": "Người dùng",
+      "pickUser": "Chọn người dùng…",
+      "roleHint": "Vai trò trong phòng ban lấy theo vai trò hệ thống của người dùng.",
+      "remove": "Gỡ khỏi phòng ban",
+      "removeTitle": "Gỡ {user} khỏi phòng ban?",
+      "removeBody": "{user} sẽ không còn thuộc “{team}” và mất quyền truy cập dữ liệu của phòng ban này. Tài khoản vẫn được giữ.",
+      "removedDone": "Đã gỡ khỏi phòng ban.",
+      "addedDone": "Đã gán vào phòng ban.",
+      "table": {
+        "team": "Phòng ban",
+        "teamRole": "Vai trò trong phòng ban",
+        "access": "Truy cập",
+        "joined": "Tham gia"
+      },
+      "teamRole": {
+        "HR": "HR phụ trách",
+        "EMPLOYEE": "Nhân viên mới"
+      },
+      "access": {
+        "ACTIVE": "Hoạt động",
+        "BLOCKED_USER": "Tài khoản khóa",
+        "BLOCKED_TEAM": "Phòng ban lưu trữ"
+      }
+    },
+    "template": {
+      "title": "Lộ trình mẫu chung",
+      "description": "Bản gốc của công ty. Khi tạo phòng ban, lộ trình được sao chép cho phòng ban đó; HR của phòng ban chỉ sửa bản sao của mình.",
+      "edit": "Chỉnh sửa lộ trình mẫu",
+      "byTeam": "Lộ trình theo phòng ban",
+      "usingCopy": "Đang dùng bản sao",
+      "kpi": {
+        "shared": "Bản mẫu chung",
+        "noShared": "Chưa có bản đã xuất bản",
+        "tasks": "Số task",
+        "tasksSub": "trong bản mẫu",
+        "teams": "Phòng ban đang dùng bản sao",
+        "teamsSub": "trên {total} đang hoạt động"
+      }
+    },
+    "audit": {
+      "title": "Nhật ký thay đổi",
+      "description": "Ai đã làm gì, khi nào — ghi từ các thao tác quản trị thật.",
+      "empty": "Chưa có hoạt động nào.",
+      "system": "Hệ thống",
+      "table": {
+        "time": "Thời điểm",
+        "actor": "Người thực hiện",
+        "action": "Hành động",
+        "target": "Đối tượng"
+      },
+      "actions": {
+        "CREATE_USER": "Thêm người dùng",
+        "UPDATE_USER": "Sửa người dùng",
+        "RESET_PASSWORD": "Đặt lại mật khẩu",
+        "LOCK_USER": "Khóa tài khoản",
+        "UNLOCK_USER": "Mở khóa tài khoản",
+        "CREATE_TEAM": "Tạo phòng ban",
+        "UPDATE_TEAM": "Sửa phòng ban",
+        "ARCHIVE_TEAM": "Lưu trữ phòng ban",
+        "RESTORE_TEAM": "Khôi phục phòng ban",
+        "ADD_MEMBER": "Thêm thành viên vào phòng ban",
+        "REMOVE_MEMBER": "Gỡ thành viên khỏi phòng ban",
+        "COPY_TEMPLATE": "Sao lộ trình mẫu chung",
+        "PUBLISH_TEMPLATE": "Publish lộ trình",
+        "INGEST_DOCUMENT": "Đăng tài liệu"
+      },
+      "entities": {
+        "user": "Người dùng",
+        "team": "Phòng ban",
+        "document_version": "Phiên bản tài liệu",
+        "journey_template": "Lộ trình",
+        "document": "Tài liệu"
+      }
+    },
+    "metrics": {
+      "title": "Chi phí và hiệu năng AI",
+      "description": "Số lượt gọi, lỗi, độ trễ, token và chi phí ước tính của LLM và embedding theo từng thao tác. Chỉ có số liệu, không có nội dung.",
+      "period": "Khoảng thời gian",
+      "lastDays": "{count} ngày gần nhất",
+      "kpi": {
+        "calls": "Lượt gọi",
+        "errors": "Lượt lỗi",
+        "errorRate": "{percent}% số lượt",
+        "cost": "Chi phí ước tính",
+        "costNote": "Theo đơn giá cấu hình; embedding chưa có giá nên tính 0"
+      },
+      "table": {
+        "operation": "Thao tác",
+        "calls": "Lượt",
+        "errors": "Lỗi",
+        "tokensIn": "Token vào",
+        "tokensOut": "Token ra",
+        "embedded": "Chuỗi embed",
+        "cost": "USD"
+      },
+      "operations": {
+        "chat_rewrite": "Viết lại câu hỏi",
+        "chat_embed": "Embedding câu hỏi",
+        "chat_answer": "Trả lời từ tài liệu",
+        "viga_route": "Viga chọn công cụ",
+        "ingest_embed": "Embedding khi kích hoạt tài liệu",
+        "ingest_reembed": "Embedding lại khi đổi model",
+        "ingest_probe": "Kiểm tra dịch vụ embedding",
+        "ingest_structure": "AI chia mục tài liệu",
+        "task_proposal": "Tạo task bằng AI",
+        "embed_keepwarm": "Giữ ấm dịch vụ embedding (GPU chạy nền)"
+      },
+      "empty": "Chưa có lượt gọi nào trong khoảng này.",
+      "note": "Độ trễ p50 và p95 tính theo từng lượt gọi (không phải cả câu hỏi). Giá DeepSeek tra ngày 01/10/2026, có thể đổi: kiểm lại trước khi dùng làm số liệu tài chính."
+    }
+  },
+  "employee": {
+    "brand": "VSF Onboarding",
+    "brandSub": "Portal nhân viên mới",
+    "navLabel": "Điều hướng chính",
+    "accountMenu": "Tài khoản của tôi",
+    "darkMode": "Chuyển sang giao diện tối",
+    "lightMode": "Chuyển sang giao diện sáng",
+    "askViga": "Hỏi Viga",
+    "nav": {
+      "overview": "Tổng quan",
+      "tasks": "Nhiệm vụ",
+      "progress": "Theo dõi",
+      "documents": "Tài liệu",
+      "notifications": "Thông báo",
+      "tickets": "Yêu cầu",
+      "ticketsUnread": "{count} ticket có tin chưa xem"
+    },
+    "menu": {
+      "profile": "Hồ sơ của tôi",
+      "logout": "Đăng xuất",
+      "appearance": "Giao diện"
+    },
+    "task": {
+      "close": "Đóng",
+      "markDone": "Tôi đã hoàn thành",
+      "alreadyDone": "Bạn đã hoàn thành việc này",
+      "required": "Bắt buộc",
+      "optional": "Tùy chọn",
+      "view": "Xem chi tiết",
+      "noBody": "Việc này chưa có hướng dẫn chi tiết.",
+      "lockedTitle": "Cần hoàn thành trước:",
+      "prereqTitle": "Việc tiên quyết",
+      "state": {
+        "done": "Đã xong",
+        "ready": "Làm được ngay",
+        "locked": "Đang khóa"
+      },
+      "group": {
+        "PROFILE": "Hồ sơ",
+        "TRAINING": "Đào tạo",
+        "DEVICE": "Thiết bị",
+        "OFFICE": "Văn phòng",
+        "NONE": "Chưa phân nhóm"
+      }
+    },
+    "overview": {
+      "greeting": "Xin chào, {name}",
+      "subtitle": "Đây là những việc bạn cần làm, theo đúng thứ tự. Việc bị khóa sẽ tự mở khi bạn xong việc tiên quyết.",
+      "heroProgressLabel": "Tiến độ của bạn",
+      "heroProgressHint": "{done}/{total} việc đã xong",
+      "openRoadmap": "Mở lộ trình",
+      "kpi": {
+        "done": "Đã xong",
+        "doneHint": "trên tổng {total} việc",
+        "ready": "Làm được ngay",
+        "readyHint": "không còn vướng việc nào",
+        "locked": "Đang khóa",
+        "lockedHint": "chờ xong việc tiên quyết",
+        "required": "Việc bắt buộc",
+        "requiredHint": "trên tổng {total} việc bắt buộc"
+      },
+      "next": {
+        "title": "Việc làm được ngay",
+        "hint": "Bấm vào một việc để xem hướng dẫn và tự xác nhận hoàn thành",
+        "all": "Xem tất cả",
+        "emptyTitle": "Không còn việc nào đang mở",
+        "emptyBody": "Các việc còn lại đang chờ bạn hoàn thành việc tiên quyết, hoặc bạn đã xong toàn bộ lộ trình."
+      },
+      "recent": {
+        "title": "Bạn vừa hoàn thành",
+        "empty": "Chưa có việc nào được đánh dấu hoàn thành.",
+        "locked": "Còn {count} việc đang khóa, sẽ tự mở khi xong việc tiên quyết."
+      },
+      "shortcuts": {
+        "title": "Lối tắt",
+        "tasks": "Nhiệm vụ",
+        "tasksHint": "Xem theo từng ngày",
+        "documents": "Tài liệu",
+        "documentsHint": "Đọc ngay trong portal",
+        "progress": "Theo dõi",
+        "progressHint": "Tiến độ chi tiết",
+        "profile": "Hồ sơ",
+        "profileHint": "Thông tin và mật khẩu"
+      },
+      "completed": "Đã hoàn thành: {title}",
+      "completeFailed": "Chưa ghi nhận được. Bạn thử lại giúp nhé.",
+      "currentDay": "Đang ở {day}",
+      "chart": {
+        "title": "Tiến độ của bạn",
+        "hint": "Theo trạng thái từng việc",
+        "center": "đã xong"
+      }
+    },
+    "tasks": {
+      "title": "Lộ trình theo từng ngày",
+      "subtitle": "Chọn một ngày ở bên trái để xem việc của ngày đó. Làm lần lượt, việc bị khóa sẽ tự mở khi xong việc tiên quyết.",
+      "heroProgress": "{done}/{total} việc đã xong",
+      "sideTitle": "Các ngày",
+      "sideHint": "Chọn ngày để xem việc",
+      "start": "Bắt đầu",
+      "finish": "Kết thúc",
+      "dayCount": "{done}/{total} việc đã xong",
+      "stat": {
+        "done": "Đã xong",
+        "ready": "Làm ngay",
+        "locked": "Đang khóa"
+      },
+      "modeRoad": "Lộ trình",
+      "modeList": "Danh sách",
+      "taskNo": "Việc {n}",
+      "prereq": "{count} tiên quyết",
+      "needFirst": "Cần xong: {titles}",
+      "legendTitle": "Màu mốc theo nhóm việc",
+      "emptyTitle": "Chưa có lộ trình",
+      "emptyBody": "HR chưa xuất bản lộ trình cho phòng ban của bạn. Khi có, các việc sẽ hiện ở đây.",
+      "emptyDayTitle": "Ngày này chưa có việc nào",
+      "emptyDayBody": "Hãy chọn một ngày khác ở cột bên trái.",
+      "completed": "Đã hoàn thành: {title}",
+      "completeFailed": "Chưa ghi nhận được. Bạn thử lại giúp nhé.",
+      "changed": "Có chỉnh sửa"
+    },
+    "progress": {
+      "title": "Tiến độ chi tiết",
+      "subtitle": "Tổng hợp việc theo ngày và theo nhóm, cùng những việc bạn vừa hoàn thành.",
+      "kpi": {
+        "overall": "Tiến độ chung",
+        "overallHint": "{done}/{total} việc đã xong",
+        "required": "Việc bắt buộc",
+        "requiredHint": "đã xong trên tổng số",
+        "ready": "Làm được ngay",
+        "readyHint": "không còn vướng việc nào",
+        "locked": "Đang khóa",
+        "lockedHint": "chờ xong việc tiên quyết"
+      },
+      "byDay": {
+        "title": "Theo từng ngày",
+        "hint": "Số việc đã xong trên tổng số việc của ngày"
+      },
+      "byGroup": {
+        "title": "Theo nhóm việc",
+        "hint": "Chiều cao cột là tổng số việc của nhóm",
+        "legend": "Phần tô màu là số việc đã xong trong nhóm."
+      },
+      "recent": {
+        "title": "Hoạt động gần đây",
+        "empty": "Chưa có việc nào được đánh dấu hoàn thành."
+      },
+      "noData": "Chưa có dữ liệu để hiển thị."
+    },
+    "documents": {
+      "title": "Tài liệu",
+      "subtitle": "Tài liệu do HR và các phòng ban đăng trong portal. Đọc được ngay tại đây, không cần tải về.",
+      "searchPlaceholder": "Tìm tài liệu…",
+      "allCategories": "Mọi nhóm",
+      "sections": "{count} mục",
+      "read": "Đọc tài liệu",
+      "emptyTitle": "Không có tài liệu phù hợp",
+      "emptyBody": "Thử bỏ bớt bộ lọc hoặc tìm bằng từ khóa khác.",
+      "failed": "Chưa tải được danh sách tài liệu. Bạn thử tải lại trang giúp nhé."
+    },
+    "notifications": {
+      "title": "Thông báo",
+      "subtitle": "Nhắc việc chỉ hiển thị trong portal, dựa trên chính lộ trình của bạn. Trạng thái đã đọc lưu trên máy bạn.",
+      "filterAll": "Tất cả ({count})",
+      "filterUnread": "Chưa đọc ({count})",
+      "markAll": "Đánh dấu tất cả đã đọc",
+      "emptyTitle": "Không có thông báo nào",
+      "emptyBody": "Khi có việc mới mở khóa hoặc việc cần làm, thông báo sẽ hiện ở đây.",
+      "kind": {
+        "unlocked": "Việc mới mở",
+        "done": "Đã hoàn thành",
+        "reminder": "Nhắc việc",
+        "welcome": "Hệ thống",
+        "ticket": "HR phản hồi",
+        "change": "Có chỉnh sửa"
+      },
+      "welcomeTitle": "Chào mừng bạn đến VSF!",
+      "welcomeBody": "Bắt đầu từ trang Tổng quan; bạn có thể hỏi Viga bất cứ lúc nào.",
+      "unlockedTitle": "Bạn làm được ngay: {title}",
+      "unlockedBody": "Việc này không còn vướng việc tiên quyết nào.",
+      "doneTitle": "Đã hoàn thành: {title}",
+      "doneBody": "Việc này đã được ghi nhận trong lộ trình của bạn.",
+      "reminderTitle": "{day} còn việc chưa xong",
+      "reminderBody": "Còn {count} việc bắt buộc trong ngày này.",
+      "unreadMark": "Chưa xem",
+      "ticketTitle": "HR đã trả lời: {subject}",
+      "ticketBody": "Mở yêu cầu để xem phản hồi.",
+      "changeTitle": "{stage} có chỉnh sửa",
+      "changeBody": "HR vừa cập nhật lộ trình. Có {count} việc chờ bạn quyết định cập nhật hay giữ bản cũ."
+    },
+    "profile": {
+      "title": "Hồ sơ của tôi",
+      "subtitle": "Thông tin tài khoản, tiến độ lộ trình và mật khẩu đăng nhập.",
+      "failed": "Chưa tải được hồ sơ. Bạn thử tải lại trang giúp nhé.",
+      "role": {
+        "USER": "Nhân viên mới",
+        "HR": "Nhân sự (HR)",
+        "ADMIN": "Quản trị hệ thống"
+      },
+      "facts": {
+        "joined": "Ngày tạo tài khoản",
+        "started": "Bắt đầu lộ trình",
+        "notStarted": "Chưa bắt đầu",
+        "lastLogin": "Đăng nhập gần nhất"
+      },
+      "progressLabel": "Tiến độ lộ trình",
+      "progressHint": "{done}/{total} việc đã xong, trong đó {requiredDone}/{requiredTotal} việc bắt buộc.",
+      "nameTitle": "Tên hiển thị",
+      "nameHint": "Tên này hiện trên portal và trong danh sách của HR.",
+      "nameLabel": "Tên hiển thị",
+      "save": "Lưu",
+      "nameSaved": "Đã lưu tên hiển thị.",
+      "nameFailed": "Chưa lưu được tên hiển thị. Bạn thử lại giúp nhé.",
+      "password": {
+        "title": "Đổi mật khẩu",
+        "hint": "Nhập mật khẩu hiện tại rồi đặt mật khẩu mới, tối thiểu 8 ký tự.",
+        "current": "Mật khẩu hiện tại",
+        "new": "Mật khẩu mới",
+        "confirm": "Nhập lại mật khẩu mới",
+        "submit": "Đổi mật khẩu",
+        "note": "Sau khi đổi, các thiết bị khác sẽ phải đăng nhập lại; thiết bị này vẫn giữ phiên.",
+        "saved": "Đã đổi mật khẩu.",
+        "mismatch": "Hai lần nhập mật khẩu mới chưa khớp nhau.",
+        "tooShort": "Mật khẩu mới cần ít nhất 8 ký tự.",
+        "wrongCurrent": "Mật khẩu hiện tại chưa đúng.",
+        "unchanged": "Mật khẩu mới trùng mật khẩu cũ.",
+        "failed": "Chưa đổi được mật khẩu. Bạn thử lại giúp nhé."
+      }
+    },
+    "viga": {
+      "title": "Viga",
+      "subtitle": "Vin Intelligent Guidance Assistant",
+      "close": "Đóng",
+      "inputLabel": "Câu hỏi cho Viga",
+      "placeholder": "Hỏi về việc cần làm…",
+      "send": "Gửi",
+      "sourcesLabel": "Nguồn:",
+      "quick": {
+        "q1": "Hôm nay mình cần làm gì?",
+        "q2": "Việc nào đang bị khóa?",
+        "q3": "Nhận laptop thế nào?",
+        "q4": "Hồ sơ cần nộp gồm những gì?"
+      },
+      "type": {
+        "ANSWER": "Trả lời có nguồn",
+        "NO_BASIS": "Chưa có căn cứ",
+        "OUT_OF_SCOPE": "Ngoài tài liệu chung",
+        "NEXT_STEP": "Bước kế tiếp",
+        "PREREQUISITE_REQUIRED": "Cần làm trước",
+        "DAY_PLAN": "Kế hoạch ngày",
+        "INFO": "Thông tin",
+        "NOT_IN_JOURNEY": "Không trong lộ trình",
+        "CLARIFY": "Cần làm rõ",
+        "ERROR": "Tạm thời chưa trả lời được"
+      },
+      "reply": {
+        "notInJourney": "Việc này không có trong lộ trình của bạn.",
+        "allDone": "Bạn đã hoàn thành toàn bộ việc trong lộ trình.",
+        "taskDone": "Bạn đã hoàn thành việc “{title}”.",
+        "taskReady": "Việc “{title}” đang mở, bạn làm được ngay.",
+        "nextStep": "Bạn làm được ngay việc “{title}”. Mở việc để xem hướng dẫn từng bước.",
+        "locked": "Bạn chưa làm được “{title}” vì cần hoàn thành “{blocker}” trước.",
+        "dayPlan": "{day}: bạn làm được ngay {ready} việc trên tổng {total} việc của ngày.",
+        "dayPlanEmpty": "{day}: hiện chưa có việc nào làm được ngay, các việc còn lại đang chờ việc tiên quyết.",
+        "dayNotFound": "Mình không thấy ngày đó trong lộ trình của bạn.",
+        "progress": "Bạn đã hoàn thành {done}/{total} việc ({percent}%).",
+        "taskDetail": "Hướng dẫn “{title}”:\n{detail}",
+        "clarifyTask": "Bạn đang nói về việc nào?",
+        "noJourney": "Bạn chưa có lộ trình onboarding nên mình chưa tra được việc cần làm.",
+        "noTaskNow": "Hiện chưa có việc nào làm được ngay.",
+        "noBasis": "Mình chưa có căn cứ trong tài liệu để trả lời câu này, nên mình không đoán.",
+        "outOfScope": "Thông tin này không có trong tài liệu chung. Bạn hỏi HR phụ trách nhé; mình có thể giúp gửi câu hỏi cho HR.",
+        "assistantUnavailable": "Viga tạm thời chưa trả lời được, bạn thử lại sau nhé. Nếu việc gấp, bạn có thể gửi câu hỏi cho HR.",
+        "smalltalk": "Mình là Viga, chuyên dẫn đường lộ trình onboarding và tra tài liệu HR đã đăng. Bạn hỏi mình về việc cần làm hoặc nội quy nhé.",
+        "assumed": "Mình đang hiểu bạn nói về việc “{title}”."
+      },
+      "action": {
+        "openTask": "Mở: {title}",
+        "openDay": "Xem {day}"
+      },
+      "source": {
+        "task": "việc “{title}” trong lộ trình",
+        "day": "{day} trong lộ trình"
+      },
+      "hello": "Xin chào {name}, mình là Viga. Việc thường ngày cứ làm theo lộ trình. Hỏi mình khi bạn không biết bắt đầu từ đâu, khi một việc đang bị khóa, hoặc khi cần tra trong tài liệu HR đã đăng.",
+      "infoLabel": "Viga hoạt động thế nào",
+      "infoLink": "Viga làm được gì, không làm gì?",
+      "infoTitle": "Viga — trợ lý dẫn đường",
+      "infoIntro": "Viga dựa trên lộ trình onboarding của chính bạn và tài liệu HR đã đăng trong portal. Viga chỉ dẫn đường, không thay bạn quyết định và không tự đổi trạng thái việc.",
+      "canTitle": "Viga làm được",
+      "can": {
+        "a1": "Nói việc kế tiếp nên làm là việc nào",
+        "a2": "Giải thích vì sao một việc đang bị khóa và cần xong việc nào trước",
+        "a3": "Tóm tắt kế hoạch của ngày bạn đang làm"
+      },
+      "cannotTitle": "Viga không làm",
+      "cannot": {
+        "b1": "Không tự đánh dấu hoàn thành thay bạn",
+        "b2": "Không đoán khi tài liệu chưa có căn cứ — sẽ nói thẳng là chưa có",
+        "b3": "Không cấp quyền, không duyệt và không thay HR quyết định"
+      },
+      "claim": {
+        "quote": "Trích nguyên văn",
+        "part": "Ý {n}",
+        "partNoBasis": "Mình chưa có căn cứ trong tài liệu để trả lời ý này.",
+        "partialNoBasis": "Một vài ý trong câu hỏi chưa có căn cứ trong tài liệu nên mình không trả lời phần đó.",
+        "unansweredTitle": "Phần chưa có trong tài liệu",
+        "unansweredHint": "Mình chưa có căn cứ để trả lời ý này nên không đoán. Bạn có thể gửi câu hỏi cho HR."
+      },
+      "thinking": "Viga đang tra cứu…",
+      "errors": {
+        "throttled": "Bạn hỏi nhanh quá, thử lại sau {seconds} giây nhé.",
+        "unavailable": "Viga tạm thời chưa trả lời được, bạn thử lại sau nhé.",
+        "network": "Không kết nối được máy chủ. Bạn kiểm tra mạng rồi thử lại nhé."
+      },
+      "history": {
+        "title": "Lịch sử trò chuyện",
+        "new": "Cuộc trò chuyện mới",
+        "loading": "Đang tải…",
+        "empty": "Chưa có cuộc trò chuyện nào.",
+        "rename": "Đổi tên",
+        "delete": "Xóa cuộc trò chuyện",
+        "retention": "Cuộc trò chuyện được lưu 90 ngày kể từ lần trao đổi cuối; chỉ bạn xem được và bạn xóa được."
+      },
+      "report": {
+        "button": "Gửi câu hỏi này cho HR",
+        "sent": "Đã gửi cho HR (mã #{id}). Bạn theo dõi phản hồi ở mục Yêu cầu.",
+        "title": "Gửi câu hỏi cho HR",
+        "newTitle": "Tạo ticket cho HR",
+        "newIntro": "Mô tả vấn đề hoặc câu hỏi của bạn. Có thể đính kèm ảnh, video để HR dễ hỗ trợ.",
+        "newPlaceholder": "Ví dụ: mình chưa đăng nhập được Outlook trên điện thoại",
+        "subtitle": "HR phòng ban của bạn sẽ nhận và trả lời",
+        "intro": "Bạn xem lại và sửa câu hỏi nếu cần. Câu hỏi chỉ được gửi sau khi bạn bấm “Gửi”; Viga không tự gửi.",
+        "question": "Câu hỏi",
+        "note": "Ghi chú thêm (không bắt buộc)",
+        "notePlaceholder": "Ví dụ: mình đã thử làm theo hướng dẫn nhưng vẫn lỗi ở bước 2",
+        "limits": "Tối đa 5 yêu cầu mỗi ngày; câu giống nhau trong 10 phút sẽ không gửi lại.",
+        "send": "Gửi",
+        "cancel": "Hủy",
+        "close": "Đóng",
+        "errors": {
+          "TICKET_DAILY_LIMIT": "Bạn đã dùng hết 5 yêu cầu hôm nay. Mai bạn gửi tiếp nhé.",
+          "TICKET_DUPLICATE": "Bạn vừa gửi câu này rồi. HR sẽ phản hồi sớm.",
+          "NO_TEAM_ASSIGNED": "Bạn chưa được gán phòng ban nên chưa gửi được. Liên hệ HR hoặc quản trị viên.",
+          "generic": "Chưa gửi được. Bạn thử lại giúp nhé."
+        },
+        "attachments": "Ảnh, video đính kèm (không bắt buộc)"
+      },
+      "expand": "Mở rộng thành trang đầy đủ",
+      "feedback": {
+        "question": "Câu trả lời này có đúng ý bạn?",
+        "up": "Đúng ý",
+        "down": "Chưa đúng",
+        "thanks": "Cảm ơn bạn đã góp ý",
+        "reasonLabel": "Vì sao chưa đúng? (không bắt buộc)",
+        "reasons": {
+          "WRONG": "Sai thông tin",
+          "MISSING": "Thiếu thông tin",
+          "UNCLEAR": "Khó hiểu, lộn xộn",
+          "OFF_TOPIC": "Không đúng ý tôi hỏi"
+        },
+        "commentPlaceholder": "Ghi chú thêm cho HR (không bắt buộc)",
+        "send": "Gửi",
+        "failed": "Chưa gửi được đánh giá, bạn thử lại nhé.",
+        "editAgain": "Sửa góp ý"
+      },
+      "page": {
+        "title": "Trò chuyện với Viga",
+        "listTitle": "Cuộc trò chuyện",
+        "collapse": "Thu nhỏ về ngăn Viga",
+        "greetingTitle": "Bạn muốn hỏi gì hôm nay?",
+        "greetingHint": "Hỏi về việc cần làm, việc đang bị khóa hoặc tra trong tài liệu HR đã đăng. Viga chỉ trả lời khi có căn cứ.",
+        "emptyList": "Chưa có cuộc trò chuyện nào. Hãy đặt câu hỏi đầu tiên."
+      },
+      "resize": "Kéo để đổi chiều rộng khung chat",
+      "resizeHint": "Kéo mép trái để đổi chiều rộng, bấm đúp để về mặc định"
+    },
+    "taskPage": {
+      "breadcrumb": "Đường dẫn",
+      "allTasks": "Nhiệm vụ",
+      "backToTasks": "Về danh sách nhiệm vụ",
+      "notFoundTitle": "Không tìm thấy việc này",
+      "notFoundBody": "Việc này không nằm trong lộ trình của bạn, hoặc đã bị HR gỡ khỏi lộ trình.",
+      "lockedTitle": "Việc này đang khóa",
+      "lockedBody": "Bạn cần hoàn thành việc tiên quyết ở cột bên phải trước; xong là việc này tự mở.",
+      "why": "Vì sao phải làm",
+      "steps": "Các bước thực hiện",
+      "stepsHint": "Làm lần lượt từ trên xuống",
+      "doneWhen": "Điều kiện hoàn thành",
+      "guide": "Hướng dẫn",
+      "noBody": "Việc này chưa có hướng dẫn chi tiết.",
+      "statusTitle": "Thực hiện việc này",
+      "readyHint": "Bạn làm được ngay. Làm xong thì bấm nút bên dưới để ghi nhận.",
+      "lockedHint": "Chưa bấm hoàn thành được vì còn việc tiên quyết chưa xong.",
+      "doneAt": "Đã hoàn thành lúc {at}",
+      "unlockedAfter": "Đã mở khóa {count} việc tiếp theo.",
+      "askViga": "Hỏi Viga về việc này",
+      "askVigaQuestion": "{title} làm thế nào?",
+      "prereqTitle": "Cần xong trước",
+      "unlocksTitle": "Sau việc này",
+      "unlocksHint": "Những việc sẽ mở khi bạn xong việc này",
+      "completed": "Đã hoàn thành: {title}",
+      "completeFailed": "Chưa ghi nhận được. Bạn thử lại giúp nhé.",
+      "heroSubtitle": "{group} · {required} · {day}",
+      "railTitle": "Việc trong {day}",
+      "railHint": "{done}/{total} việc đã xong",
+      "sourcesTitle": "Nguồn tài liệu",
+      "sourcesHint": "Đoạn tài liệu việc này dựa vào"
+    },
+    "tickets": {
+      "title": "Yêu cầu của tôi",
+      "subtitle": "Các câu hỏi bạn đã gửi cho HR và phản hồi nhận được."
+    },
+    "changes": {
+      "title": "Lộ trình có chỉnh sửa",
+      "subtitlePending": "Có {count} việc HR đã chỉnh sửa đang chờ bạn quyết định.",
+      "subtitleNone": "Không có chỉnh sửa nào đang chờ. Lộ trình của bạn đang là bản mới nhất bạn đã chọn.",
+      "emptyTitle": "Chưa có chỉnh sửa nào",
+      "emptyBody": "Khi HR áp dụng bản mới của một ngày, các việc thay đổi sẽ hiện ở đây. Lộ trình của bạn không tự đổi.",
+      "noticeTitle": "{stage} · bản {version}",
+      "acceptAll": "Cập nhật cả {count} việc",
+      "banner": "HR vừa chỉnh sửa lộ trình: {count} việc đang chờ bạn quyết định.",
+      "bannerLink": "Xem chỉnh sửa",
+      "changed": "Có chỉnh sửa",
+      "kind": {
+        "MODIFIED": "Nội dung đã đổi",
+        "ADDED": "Việc mới",
+        "REMOVED": "Việc bị bỏ",
+        "PREREQUISITES": "Đổi việc cần làm trước"
+      },
+      "field": {
+        "title": "Tên việc",
+        "body_markdown": "Nội dung hướng dẫn",
+        "required": "Mức bắt buộc",
+        "task_group": "Nhóm",
+        "prerequisites": "Việc cần làm trước"
+      },
+      "before": "Bản của bạn",
+      "after": "Bản mới của HR",
+      "empty": "(trống)",
+      "noPrerequisites": "Không có",
+      "alreadyDone": "Bạn đã làm xong",
+      "keptDone": "Việc này bạn đã làm xong nên được giữ nguyên trong lộ trình của bạn, dù HR đã bỏ nó ở bản mới.",
+      "noteTitle": "Khi bấm Cập nhật:",
+      "noteKeepStatus": "Nội dung việc được thay bằng bản mới nhất của HR; trạng thái của bạn giữ nguyên, bạn làm tiếp từ chỗ đang đứng.",
+      "noteKeepsDone": "Bạn đã làm xong việc này: vẫn giữ trạng thái Đã xong, chỉ nội dung được đổi.",
+      "noteRemoves": "Việc này sẽ được gỡ khỏi lộ trình của bạn.",
+      "noteAlsoUpdate": "Các việc liên quan cũng được thêm hoặc cập nhật theo: {titles}.",
+      "noteLockedUntil": "Việc này sẽ bị khóa cho tới khi bạn xong: {titles}.",
+      "noteKeepOld": "Nếu bấm Giữ bản cũ, lộ trình của bạn không đổi gì.",
+      "accept": "Cập nhật",
+      "keepOld": "Giữ bản cũ",
+      "openTask": "Mở việc",
+      "status": {
+        "ACCEPTED": "Bạn đã cập nhật việc này.",
+        "DISMISSED": "Bạn đã chọn giữ bản cũ.",
+        "SUPERSEDED": "Đã có bản mới hơn thay thế chỉnh sửa này."
+      }
+    },
+    "journeyProblem": {
+      "needsCreateTitle": "Bạn chưa có lộ trình",
+      "needsCreateBody": "HR sẽ thêm lộ trình onboarding cho bạn. Khi có, các việc sẽ hiện ở đây.",
+      "noJourney": "Bạn chưa được gán lộ trình onboarding hoặc HR chưa áp dụng bản nào. Hãy liên hệ HR phụ trách.",
+      "unavailable": "Chưa tải được lộ trình. Bạn thử tải lại trang giúp nhé."
+    }
+  },
+  "viga": {
+    "ticket": {
+      "loading": "Đang tải…",
+      "listLabel": "Danh sách ticket",
+      "create": "Tạo ticket",
+      "filterAll": "Tất cả",
+      "status": {
+        "OPEN": "Mới",
+        "IN_PROGRESS": "Đang xử lý",
+        "RESOLVED": "Đã giải quyết",
+        "CLOSED": "Đã đóng"
+      },
+      "messages": "{count} tin",
+      "hrReplied": "HR đã phản hồi",
+      "unclaimed": "Chưa có HR nhận",
+      "emptyMine": "Bạn chưa gửi yêu cầu nào",
+      "emptyMineHint": "Bấm “Tạo ticket” để gửi yêu cầu cho HR, hoặc bấm “Gửi câu hỏi này cho HR” khi Viga chưa trả lời được.",
+      "emptyStaff": "Chưa có ticket nào",
+      "emptyStaffHint": "Ticket nhân viên gửi cho phòng ban của bạn sẽ hiện ở đây.",
+      "pick": "Chọn một ticket để xem trao đổi.",
+      "relatedTask": "việc: {title}",
+      "assigned": "HR phụ trách: {name}",
+      "staffTag": "HR",
+      "resolution": "Kết quả: {note}",
+      "closedNote": "Ticket đã đóng nên không trả lời thêm được.",
+      "replyLabel": "Nội dung trả lời",
+      "replyPlaceholder": "Nhập nội dung trao đổi…",
+      "send": "Gửi",
+      "claim": "Nhận xử lý",
+      "statusLabel": "Trạng thái",
+      "noteLabel": "Ghi chú kết quả",
+      "saveStatus": "Lưu trạng thái",
+      "taskUnchanged": "Đóng ticket không tự đổi trạng thái việc của nhân viên; hãy xử lý việc riêng nếu cần.",
+      "errors": {
+        "generic": "Có lỗi xảy ra, thử lại sau.",
+        "closed": "Ticket đã đóng, không trả lời thêm được.",
+        "claimed": "Đã có HR khác nhận ticket này."
+      },
+      "searchLabel": "Tìm ticket",
+      "searchPlaceholderStaff": "Tìm theo tên, email, tiêu đề…",
+      "searchPlaceholderMine": "Tìm theo tiêu đề…",
+      "filterLabel": "Lọc theo trạng thái",
+      "noMatch": "Không tìm thấy ticket phù hợp",
+      "noMatchHint": "Thử từ khóa khác hoặc đổi bộ lọc trạng thái.",
+      "pickHint": "Nhấn vào một ticket ở danh sách bên trái để đọc và trả lời.",
+      "showing": "Hiển thị {shown} trên {total} ticket",
+      "unread": "Có tin chưa xem"
+    },
+    "hrTickets": {
+      "title": "Ticket sự cố",
+      "description": "Câu hỏi nhân viên gửi HR khi Viga chưa trả lời được. Hàng đợi chung của phòng ban: nhận xử lý để tránh trùng."
+    },
+    "feedback": {
+      "title": "Phản hồi Viga",
+      "description": "Câu Viga chưa trả lời được và câu nhân viên bấm 👎. Bổ sung tài liệu, Viga sẽ tự hỏi lại để biết đã đủ chưa.",
+      "showResolved": "Hiện cả câu đã xử lý",
+      "loading": "Đang tải…",
+      "error": "Chưa tải được danh sách, thử lại sau.",
+      "emptyTitle": "Chưa có phản hồi nào cần xử lý",
+      "emptyHint": "Khi Viga chưa có căn cứ hoặc nhân viên bấm 👎, câu hỏi sẽ hiện ở đây.",
+      "question": "Câu hỏi",
+      "times": "{count} lần",
+      "lastAsked": "Gần nhất",
+      "addDocument": "Bổ sung tài liệu",
+      "resolve": "Đã xử lý",
+      "resolved": "Đã xử lý",
+      "privacy": "Câu hỏi hiện ẩn danh và chỉ của phòng ban bạn; hội thoại cá nhân của nhân viên HR không đọc được.",
+      "satisfaction": "Hài lòng 7 ngày",
+      "openDown": "Chưa hài lòng",
+      "openGaps": "Chưa có căn cứ",
+      "searchLabel": "Tìm câu hỏi",
+      "searchPlaceholder": "Tìm theo nội dung câu hỏi…",
+      "kindLabel": "Lọc theo loại",
+      "kind": {
+        "ALL": "Mọi loại",
+        "NO_BASIS": "Chưa có căn cứ",
+        "PARTIAL": "Trả lời một phần",
+        "DOWN": "Chưa hài lòng"
+      },
+      "rowKind": {
+        "NO_BASIS": "Chưa có căn cứ",
+        "PARTIAL": "Trả lời một phần",
+        "DOWN": "Chưa hài lòng"
+      },
+      "statusLabel": "Lọc theo trạng thái",
+      "status": {
+        "open": "Chưa xử lý",
+        "resolved": "Đã xử lý",
+        "all": "Tất cả"
+      },
+      "sortLabel": "Sắp xếp",
+      "sort": {
+        "count": "Hỏi nhiều nhất",
+        "recent": "Mới nhất"
+      },
+      "partialAnswered": "Viga đã trả lời được:",
+      "answeredWas": "Viga đã trả lời:",
+      "reasons": {
+        "WRONG": "Sai thông tin",
+        "MISSING": "Thiếu thông tin",
+        "UNCLEAR": "Khó hiểu, lộn xộn",
+        "OFF_TOPIC": "Không đúng ý hỏi"
+      },
+      "resolvedBy": "Đã bổ sung ở: {title}",
+      "recheck": "Kiểm tra lại",
+      "rechecking": "Đang hỏi lại Viga…",
+      "recheckOk": "Viga đã trả lời được",
+      "recheckFail": "Viga vẫn chưa có căn cứ để trả lời. Hãy viết rõ hơn hoặc bổ sung tài liệu.",
+      "recheckError": "Chưa hỏi lại được, thử lại sau.",
+      "noMatch": "Không có câu phù hợp",
+      "noMatchHint": "Thử từ khóa khác hoặc đổi bộ lọc.",
+      "supplement": {
+        "title": "Bổ sung câu trả lời",
+        "subtitle": "Thêm vào tài liệu “Hỏi đáp bổ sung” của phòng ban",
+        "hint": "Viết câu trả lời đúng cho câu hỏi này. Hệ thống thêm vào tài liệu Hỏi đáp bổ sung rồi hỏi lại Viga; chỉ khi Viga trả lời được thì câu mới tự đóng.",
+        "question": "Câu hỏi (sửa cho rõ nghĩa nếu cần)",
+        "answer": "Câu trả lời đúng",
+        "answerPlaceholder": "Ví dụ: Khi chưa có lý lịch tư pháp, bạn nộp giấy hẹn của cơ quan cấp và bổ sung bản chính trong vòng 30 ngày.",
+        "contact": "Đầu mối (không bắt buộc)",
+        "contactPlaceholder": "Ví dụ: Phòng Tuyển dụng, tuyendung@vinsmartfuture.tech",
+        "submit": "Lưu và kiểm tra",
+        "cancel": "Hủy",
+        "close": "Đóng",
+        "edit": "Sửa lại câu trả lời",
+        "working": "Đang thêm vào tài liệu và cập nhật để Viga tra cứu được…",
+        "starting": "Đang bắt đầu",
+        "checking": "Đang hỏi lại Viga với câu hỏi này…",
+        "checkingStage": "Hỏi lại Viga",
+        "okTitle": "Viga đã trả lời được",
+        "closed": "Câu hỏi đã được đánh dấu đã xử lý.",
+        "missTitle": "Viga vẫn chưa trả lời được",
+        "missBody": "Câu trả lời đã được lưu nhưng Viga chưa tìm thấy đủ căn cứ. Hãy sửa câu hỏi cho giống cách nhân viên hay hỏi hoặc viết câu trả lời đầy đủ hơn.",
+        "errors": {
+          "save": "Chưa lưu được câu trả lời. Bạn thử lại giúp nhé.",
+          "activation": "Chưa cập nhật được tài liệu. Bạn thử lại sau.",
+          "recheck": "Đã lưu nhưng chưa hỏi lại được Viga. Bấm “Kiểm tra lại” ở dòng câu hỏi."
+        }
+      },
+      "pager": {
+        "count": "{count} mục",
+        "label": "Phân trang",
+        "prev": "Trang trước",
+        "next": "Trang sau"
+      }
+    }
+  },
+  "analytics": {
+    "title": "Số liệu theo thời gian",
+    "loading": "Đang tải số liệu…",
+    "updatedAt": "Cập nhật lúc {time}",
+    "scopeAll": "Toàn hệ thống",
+    "scopeTeam": "Phòng ban: {team}",
+    "scopeNoTeam": "Chưa thuộc phòng ban nào",
+    "period": "Khoảng thời gian",
+    "lastDays": "{count} ngày gần nhất",
+    "empty": "Chưa có dữ liệu trong khoảng này.",
+    "viewTable": "Xem dạng bảng",
+    "viewChart": "Xem dạng biểu đồ",
+    "errors": {
+      "unauthorized": "Phiên đăng nhập đã hết hạn, hãy đăng nhập lại.",
+      "forbidden": "Bạn không có quyền xem số liệu này.",
+      "unavailable": "Chưa tải được số liệu. Hãy thử lại sau.",
+      "network": "Không kết nối được máy chủ."
+    },
+    "table": {
+      "date": "Ngày",
+      "state": "Trạng thái",
+      "count": "Số lượng",
+      "operation": "Thao tác",
+      "hour": "Giờ"
+    },
+    "progress": {
+      "title": "Tiến độ nhân viên",
+      "sub": "Mỗi nhân viên thuộc đúng một nhóm",
+      "center": "nhân viên",
+      "states": {
+        "NO_JOURNEY": "Chưa có lộ trình",
+        "NOT_STARTED": "Chưa bắt đầu",
+        "IN_PROGRESS": "Đang làm",
+        "COMPLETED": "Hoàn thành"
+      }
+    },
+    "activity": {
+      "title": "Hoạt động mỗi ngày",
+      "sub": "Task hoàn thành, câu hỏi Viga và ticket mới theo ngày",
+      "completed": "Task hoàn thành",
+      "questions": "Câu hỏi Viga",
+      "tickets": "Ticket mới"
+    },
+    "outcome": {
+      "title": "Kết quả câu trả lời của Viga",
+      "sub": "Câu có nội dung trả lời so với câu không có căn cứ",
+      "center": "có trả lời",
+      "names": {
+        "answer": "Trả lời có căn cứ",
+        "guidance": "Hướng dẫn việc cần làm",
+        "no_basis": "Không có căn cứ",
+        "out_of_scope": "Ngoài phạm vi",
+        "error": "Lỗi"
+      }
+    },
+    "costDay": {
+      "title": "Chi phí AI mỗi ngày",
+      "sub": "USD, ước tính theo đơn giá cấu hình",
+      "series": "Chi phí (USD)"
+    },
+    "costOp": {
+      "title": "Chi phí theo thao tác",
+      "sub": "Thao tác nào đang tốn tiền nhất",
+      "other": "Khác",
+      "none": "Chưa phát sinh chi phí"
+    },
+    "operations": {
+      "chat_rewrite": "Viết lại câu hỏi",
+      "chat_embed": "Nhúng câu hỏi",
+      "chat_answer": "Trả lời có căn cứ",
+      "viga_route": "Viga chọn công cụ",
+      "ingest_embed": "Nhúng tài liệu",
+      "ingest_reembed": "Nhúng lại tài liệu",
+      "ingest_probe": "Kiểm tra dịch vụ nhúng",
+      "ingest_structure": "Nhận diện cấu trúc",
+      "task_proposal": "Tạo task bằng AI",
+      "job": "Việc nền khác",
+      "embed_keepwarm": "Giữ ấm dịch vụ embedding (GPU chạy nền)"
+    },
+    "runs": {
+      "taskTitle": "Từng lượt tạo task bằng AI",
+      "average": "Trung bình {count} lượt thành công gần nhất: {seconds} mỗi lượt, {cost} USD, {items} đề xuất.",
+      "noRuns": "Chưa có lượt tạo task nào gần đây.",
+      "title": "Mỗi lượt tạo task",
+      "tabLatency": "Độ trễ",
+      "tabCost": "Chi phí",
+      "latencyTitle": "Độ trễ mỗi lượt tạo task",
+      "latencySub": "Thời gian chạy cả lượt so với thời gian chờ mô hình AI (giây)",
+      "costTitle": "Chi phí mỗi lượt tạo task",
+      "costSub": "USD cho từng lượt, cộng theo mã việc",
+      "run": "Lượt",
+      "status": "Trạng thái",
+      "statuses": {
+        "SUCCEEDED": "Thành công",
+        "FAILED": "Lỗi"
+      },
+      "duration": "Thời gian chạy",
+      "llmLatency": "Chờ mô hình AI",
+      "documents": "Số tài liệu",
+      "proposals": "Số đề xuất",
+      "llmCalls": "Số lượt gọi AI",
+      "tokensIn": "Token đầu vào",
+      "tokensOut": "Token đầu ra",
+      "cost": "Chi phí (USD)"
+    },
+    "taskCost": {
+      "title": "Chi phí AI của phòng",
+      "sub": "Ước tính trong khoảng đã chọn, tách hai khoản HR tự gây ra",
+      "upload": "Tải tài liệu lên",
+      "uploadHint": "Đọc cấu trúc tài liệu bằng LLM (embedding tự host, không tính)",
+      "tasks": "Tạo task bằng AI",
+      "runs": "DeepSeek, {count} lượt tạo task"
+    },
+    "providers": {
+      "sub": "Chi phí LLM DeepSeek, tính theo token",
+      "title": "Chi phí và hiệu năng theo nhà cung cấp",
+      "none": "Chưa có lời gọi nào trong khoảng đã chọn",
+      "provider": "Nhà cung cấp",
+      "calls": "Số lượt gọi",
+      "errors": "{count} lỗi",
+      "errorsHead": "Lỗi",
+      "tokensIn": "Token vào",
+      "tokensOut": "Token ra",
+      "strings": "Chuỗi đã embed",
+      "gpuSeconds": "Giây GPU",
+      "names": {
+        "deepseek": "LLM DeepSeek",
+        "modal": "Embedding BGE-M3 (Modal)"
+      },
+      "kinds": {
+        "llm": "Mô hình ngôn ngữ",
+        "embedding": "Mô hình vector"
+      }
+    },
+    "costHour": {
+      "title": "Chi phí AI theo giờ",
+      "sub": "USD trong 24 giờ gần nhất, chi phí LLM DeepSeek"
+    },
+    "costGroups": {
+      "names": {
+        "upload": "Tải tài liệu lên",
+        "tasks": "Tạo task bằng AI"
+      },
+      "daySub": "USD mỗi ngày, tách tải tài liệu và tạo task bằng AI",
+      "hourSub": "USD trong 24 giờ gần nhất, tách tải tài liệu và tạo task bằng AI"
+    }
+  },
+  "taskSources": {
+    "view": "Xem trong tài liệu"
+  },
+  "attachments": {
+    "add": "Đính kèm ảnh hoặc video",
+    "pick": "Chọn ảnh hoặc video",
+    "hint": "Ảnh tối đa 10 MB, video tối đa 50 MB, tối đa {max} tệp",
+    "uploading": "Đang tải lên",
+    "remove": "Bỏ {name}",
+    "listLabel": "Tệp đính kèm",
+    "errors": {
+      "type": "Chỉ nhận ảnh JPG, PNG, WebP, GIF và video MP4, WebM, MOV",
+      "tooLargeImage": "Ảnh quá 10 MB",
+      "tooLargeVideo": "Video quá 50 MB",
+      "tooMany": "Quá số tệp cho phép",
+      "unavailable": "Chưa bật được tính năng đính kèm",
+      "failed": "Tải lên chưa được, thử lại"
+    }
   }
 }

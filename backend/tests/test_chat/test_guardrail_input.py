@@ -1,4 +1,4 @@
-from src.services.chat.guardrail_input import INJECTION_DEFENSE_NOTE, wrap_user_input
+from src.services.viga.guardrail_input import INJECTION_DEFENSE_NOTE, wrap_user_input
 
 
 def test_injection_defense_note_is_not_empty() -> None:

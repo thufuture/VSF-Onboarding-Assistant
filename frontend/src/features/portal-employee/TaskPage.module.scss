@@ -1,0 +1,478 @@
+@use "../../styles/tokens" as *;
+
+.crumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 10px;
+  color: var(--app-ink-3);
+  font-size: 12.5px;
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--app-accent-strong);
+    font-weight: 500;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+// Thẻ nhỏ trên banner: trạng thái và nhóm việc.
+.heroCard {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 14px 16px;
+  border: 1px solid rgb(255 255 255 / 20%);
+  border-radius: 5px;
+  background: linear-gradient(160deg, rgb(9 31 58 / 78%), rgb(12 45 84 / 62%));
+}
+.heroGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: rgb(255 255 255 / 88%);
+  font-size: 12.5px;
+  font-weight: 500;
+}
+.pill {
+  padding: 4px 11px;
+  border-radius: 5px;
+  font-size: 12.5px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.pill_done {
+  background: #dff1e8;
+  color: #226b4d;
+}
+.pill_ready {
+  background: #e3eefb;
+  color: #17578b;
+}
+.pill_locked {
+  background: rgb(255 255 255 / 86%);
+  color: #4a5768;
+}
+
+// Cây ngày bên trái + nội dung bên phải, giống trang Nhiệm vụ.
+.layout {
+  display: grid;
+  grid-template-columns: 268px minmax(0, 1fr);
+  overflow: hidden;
+
+  // Vùng nội dung hẹp (ngăn Viga mở rộng): cột trái thu nhỏ nhưng VẪN nằm bên trái, để nội dung việc luôn thấy ngay.
+  @container page (max-width: 900px) {
+    grid-template-columns: 208px minmax(0, 1fr);
+  }
+  // Rất hẹp mới xếp chồng, và cột ngày cuộn trong khung thấp để không đẩy nội dung xuống tận cuối trang.
+  @container page (max-width: 560px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.cols {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr) 312px;
+  align-items: start;
+  gap: 16px;
+  padding: 18px;
+
+  @container page (max-width: 1100px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.left {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--emp-gap);
+}
+
+.lockNote {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  padding: 13px 16px;
+  border: 1px solid #e6d3a8;
+  border-radius: 5px;
+  background: #fdf7e9;
+  color: #7a5a14;
+
+  svg {
+    flex: none;
+    margin-top: 1px;
+  }
+  b {
+    font-size: 13.5px;
+    font-weight: 600;
+  }
+  p {
+    margin: 3px 0 0;
+    font-size: 12.5px;
+    line-height: 1.55;
+  }
+}
+
+.block {
+  overflow: hidden;
+  border: 1px solid var(--app-border);
+  border-radius: 5px;
+  background: var(--app-surface);
+}
+.blockHead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--app-border);
+
+  h2 {
+    margin: 0;
+    color: var(--app-ink);
+    font-size: 14.5px;
+    font-weight: 600;
+  }
+  small {
+    display: block;
+    margin-top: 2px;
+    color: var(--app-ink-3);
+    font-size: 11.5px;
+  }
+}
+.prose {
+  margin: 0;
+  padding: 16px 18px 18px;
+  color: var(--app-ink);
+  font-size: 14px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+// các bước: số tròn bên trái, đường nối dọc mảnh giữa các bước
+.steps {
+  margin: 0;
+  padding: 16px 18px 18px;
+  list-style: none;
+
+  li {
+    position: relative;
+    display: grid;
+    grid-template-columns: 28px minmax(0, 1fr);
+    gap: 12px;
+    padding-bottom: 16px;
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 30px;
+      bottom: 2px;
+      left: 13px;
+      width: 2px;
+      background: var(--app-border);
+    }
+    &:last-child {
+      padding-bottom: 0;
+
+      &::before {
+        display: none;
+      }
+    }
+  }
+  p {
+    margin: 2px 0 0;
+    color: var(--app-ink);
+    font-size: 13.5px;
+    line-height: 1.65;
+  }
+}
+.stepNum {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border: 1px solid var(--app-border-strong);
+  border-radius: 50%;
+  background: var(--app-surface);
+  color: var(--app-ink-2);
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.markdown {
+  padding: 16px 18px 18px;
+  color: var(--app-ink);
+  font-size: 14px;
+  line-height: 1.7;
+
+  h1,
+  h2,
+  h3 {
+    margin: 16px 0 8px;
+    font-size: 14.5px;
+    font-weight: 600;
+  }
+  p,
+  ul,
+  ol {
+    margin: 0 0 10px;
+  }
+  ul,
+  ol {
+    padding-left: 22px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 6px 0 12px;
+    font-size: 13px;
+  }
+  th,
+  td {
+    padding: 7px 10px;
+    border: 1px solid var(--app-border);
+    text-align: left;
+  }
+  th {
+    background: var(--app-accent);
+    color: #fff;
+    font-weight: 600;
+  }
+  a {
+    color: var(--app-accent-strong);
+  }
+}
+
+// ── cột phải ──
+.rail {
+  position: sticky;
+  top: calc(var(--emp-header, 60px) + 16px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--emp-gap);
+
+  @container page (max-width: 1100px) {
+    position: static;
+  }
+}
+.railCard {
+  overflow: hidden;
+  border: 1px solid var(--app-border);
+  border-radius: 5px;
+  background: var(--app-surface);
+}
+.railHead {
+  padding: 13px 16px;
+  border-bottom: 1px solid var(--app-border);
+
+  h2 {
+    margin: 0;
+    color: var(--app-ink);
+    font-size: 13.5px;
+    font-weight: 600;
+  }
+  small {
+    display: block;
+    margin-top: 2px;
+    color: var(--app-ink-3);
+    font-size: 11.5px;
+  }
+}
+.railBody {
+  padding: 14px 16px 16px;
+}
+
+// chặng trạng thái: Đang khóa → Làm được ngay → Hoàn thành
+.track {
+  display: flex;
+  margin: 0 0 14px;
+  padding: 0;
+  list-style: none;
+
+  li {
+    position: relative;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    color: var(--app-ink-3);
+    font-size: 11.5px;
+    text-align: center;
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 6px;
+      right: 50%;
+      left: -50%;
+      height: 2px;
+      background: var(--app-border);
+    }
+    &:first-child::before {
+      display: none;
+    }
+  }
+  i {
+    z-index: 1;
+    width: 14px;
+    height: 14px;
+    border: 2px solid var(--app-border-strong);
+    border-radius: 50%;
+    background: var(--app-surface);
+  }
+}
+.trackOn {
+  color: var(--app-ink-2) !important;
+
+  i {
+    border-color: var(--app-accent);
+    background: var(--app-accent);
+  }
+  &::before {
+    background: var(--app-accent) !important;
+  }
+}
+.trackNow {
+  color: var(--app-ink) !important;
+  font-weight: 600;
+}
+
+.doneNote,
+.readyHint,
+.lockedHint {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  margin: 0 0 12px;
+  font-size: 12.5px;
+  line-height: 1.55;
+}
+.doneNote {
+  color: var(--app-success);
+}
+.readyHint {
+  color: var(--app-ink-2);
+}
+.lockedHint {
+  color: #8a6a1c;
+}
+.doneButton {
+  width: 100%;
+}
+.unlockedNote {
+  margin: 10px 0 0;
+  color: var(--app-success);
+  font-size: 12.5px;
+}
+
+.vigaButton {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1px solid var(--app-border);
+  border-radius: 5px;
+  background: var(--app-surface);
+  color: var(--app-ink);
+  cursor: pointer;
+  font: 500 13px/1.3 $font;
+  text-align: left;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+
+  &:hover {
+    border-color: var(--app-accent);
+    box-shadow: 0 4px 12px rgb(31 116 181 / 16%);
+    transform: translateY(-1px);
+  }
+}
+
+.links {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  li + li button {
+    border-top: 1px solid var(--app-border);
+  }
+  button {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 16px;
+    border: 0;
+    background: none;
+    color: inherit;
+    cursor: pointer;
+    font: inherit;
+    text-align: left;
+    transition: background 0.15s ease;
+
+    &:hover {
+      background: var(--app-surface-2);
+    }
+    svg {
+      flex: none;
+      color: var(--app-ink-3);
+    }
+  }
+}
+.linkText {
+  min-width: 0;
+  flex: 1;
+
+  b {
+    display: block;
+    overflow: hidden;
+    color: var(--app-ink);
+    font-size: 13px;
+    font-weight: 500;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  small {
+    color: var(--app-ink-3);
+    font-size: 11.5px;
+  }
+}
+.dot {
+  width: 9px;
+  height: 9px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--app-ink-3);
+}
+.dot_done {
+  background: #2f9a6f;
+}
+.dot_ready {
+  background: #1b6fb8;
+}
+.dot_locked {
+  background: #8f9bb0;
+}
+
+.spin {
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.pill_changed {
+  background: #fdeede;
+  color: #b5671b;
+}

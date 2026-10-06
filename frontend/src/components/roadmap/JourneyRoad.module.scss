@@ -1,0 +1,406 @@
+// Roadmap sóng ngang dùng chung. Màu lấy từ biến --app-* của khung bao ngoài (AppShell hoặc EmployeeShell).
+
+.roadScroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 10px 18px 4px;
+  background: var(--app-surface);
+}
+
+.canvas {
+  position: relative;
+  width: 100%;
+  margin: auto;
+}
+
+.roadSvg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.roadBed,
+.roadLine,
+.roadWalked,
+.roadDash {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+// nền đường (lề sáng) → mặt đường navy → đoạn đã đi (xanh lá) → vạch trắng đứt ở giữa
+.roadBed {
+  stroke: color-mix(in srgb, var(--app-border) 70%, transparent);
+  stroke-width: 30;
+}
+.roadLine {
+  stroke: #2b4462;
+  stroke-width: 18;
+}
+.roadWalked {
+  stroke: #2f9a6f;
+  stroke-width: 18;
+}
+.roadDash {
+  stroke: rgb(255 255 255 / 85%);
+  stroke-dasharray: 9 11;
+  stroke-width: 2;
+}
+
+// Đường "chạy ra" từ trái sang phải khi vào trang.
+.reveal {
+  transform-box: fill-box;
+  transform-origin: left center;
+  animation: reveal 1.3s cubic-bezier(0.22, 0.8, 0.3, 1) both;
+}
+@keyframes reveal {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+// Mốc đầu và cuối nằm trên đường như mọi nút khác: vòng tròn trắng viền màu, nhãn nhỏ bên dưới.
+.endNode {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+
+  em {
+    position: absolute;
+    width: 80px;
+    color: var(--app-ink-2);
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 500;
+    text-align: center;
+    transition: color 0.15s ease;
+  }
+}
+.endCircle {
+  position: absolute;
+  z-index: 5;
+  display: grid;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  place-items: center;
+  border: 4px solid var(--end);
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 4px rgb(16 24 40 / 16%);
+  cursor: pointer;
+  pointer-events: auto;
+  transition:
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+
+  &:disabled {
+    cursor: default;
+  }
+  &:hover:not(:disabled) {
+    box-shadow:
+      0 0 0 5px color-mix(in srgb, var(--end) 22%, transparent),
+      0 3px 8px rgb(16 24 40 / 22%);
+    transform: scale(1.1);
+  }
+}
+.endNode:hover em {
+  color: var(--end);
+}
+.endStart {
+  --end: #cf3a43;
+}
+.endFinish {
+  --end: #7a4fb0;
+}
+
+.roadItem {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  animation: rise 0.55s cubic-bezier(0.22, 0.8, 0.3, 1) both;
+  animation-delay: calc(0.35s + var(--i, 0) * 90ms);
+}
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+// đường nối thẻ → nút: nét liền mảnh cùng màu nhóm, có chấm ở đầu thẻ
+.tether {
+  position: absolute;
+  z-index: 1;
+  width: 2px;
+  margin-left: -1px;
+  border-radius: 5px;
+  background: color-mix(in srgb, var(--node) 40%, var(--app-surface));
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    width: 8px;
+    height: 8px;
+    margin-left: -4px;
+    border: 2px solid var(--app-surface);
+    border-radius: 50%;
+    background: var(--node);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--node) 50%, #fff);
+  }
+}
+.tetherTop::before {
+  top: -4px;
+}
+.tetherBottom::before {
+  bottom: -4px;
+}
+
+// nút: vòng tròn màu nhóm, viền dày, icon nhóm ở giữa, số thứ tự (hoặc dấu tích) làm huy hiệu góc trên
+.node {
+  position: absolute;
+  z-index: 4;
+  display: grid;
+  padding: 0;
+  place-items: center;
+  border: 4px solid var(--node);
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 4px rgb(16 24 40 / 16%);
+  cursor: pointer;
+  pointer-events: auto;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+
+  &:hover {
+    transform: translateY(-1px) scale(1.06);
+    box-shadow: 0 3px 8px rgb(16 24 40 / 22%);
+  }
+}
+// task đang mở: vòng nhấp nháy nhẹ mời bấm vào làm
+.is_ready .node::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  animation: pulse 2.2s ease-out infinite;
+  pointer-events: none;
+}
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--node) 45%, transparent);
+  }
+  70%,
+  100% {
+    box-shadow: 0 0 0 12px transparent;
+  }
+}
+.is_locked .card {
+  opacity: 0.82;
+}
+
+.nodeNum {
+  position: absolute;
+  top: -9px;
+  right: -9px;
+  display: grid;
+  width: 22px;
+  height: 22px;
+  place-items: center;
+  border: 2px solid var(--app-surface);
+  border-radius: 50%;
+  background: var(--node);
+  color: #fff;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 600;
+}
+.nodeDone {
+  background: #2f9a6f;
+}
+
+// thẻ: dải màu nhóm ở đầu, thân theo nền khung, nhãn dạng viên thuốc
+.card {
+  position: absolute;
+  z-index: 3;
+  display: flex;
+  box-sizing: border-box;
+  height: 138px;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--app-border);
+  border-radius: 5px;
+  background: var(--app-surface);
+  box-shadow: 0 1px 3px rgb(16 24 40 / 8%);
+  pointer-events: auto;
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    border-color 0.18s ease;
+
+  &:hover {
+    border-color: var(--app-border-strong);
+    box-shadow: 0 6px 16px rgb(16 24 40 / 14%);
+    transform: translateY(-2px);
+  }
+}
+
+.cardBand {
+  display: flex;
+  height: 30px;
+  flex: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 0 8px 0 6px;
+  background: var(--node);
+  color: #fff;
+
+  small {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+}
+
+.bandIcon {
+  display: grid;
+  width: 20px;
+  height: 20px;
+  place-items: center;
+  border-radius: 5px;
+  background: #fff;
+}
+
+.bandPill {
+  padding: 2px 7px;
+  border-radius: 5px;
+  background: rgb(255 255 255 / 24%);
+  color: #fff;
+  font-size: 9.5px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.cardBody {
+  flex: 1;
+  min-height: 0;
+  padding: 8px 10px 0;
+
+  h3 {
+    display: -webkit-box;
+    margin: 0;
+    overflow: hidden;
+    color: var(--app-ink);
+    font-size: 12.5px;
+    font-weight: 600;
+    line-height: 1.35;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+}
+
+.chips {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 5px;
+  margin-top: 7px;
+
+  span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 7px;
+    border-radius: 5px;
+    background: var(--app-surface-2);
+    color: var(--app-ink-2);
+    font-size: 10px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+}
+
+.actions {
+  display: flex;
+  flex: none;
+  justify-content: flex-end;
+  gap: 4px;
+  padding: 0 8px 8px;
+
+  button {
+    display: grid;
+    width: 26px;
+    height: 26px;
+    place-items: center;
+    border: 1px solid var(--app-border);
+    border-radius: 5px;
+    background: var(--app-surface);
+    color: var(--app-ink-2);
+    cursor: pointer;
+    transition:
+      background 0.15s ease,
+      border-color 0.15s ease,
+      color 0.15s ease;
+
+    &:hover:not(:disabled) {
+      border-color: var(--node);
+      background: var(--app-surface-2);
+      color: var(--node);
+    }
+    &:disabled {
+      opacity: 0.45;
+      cursor: default;
+    }
+  }
+}
+.danger {
+  color: #ad3e3e !important;
+
+  &:hover:not(:disabled) {
+    border-color: #d49a9a !important;
+    background: #fff5f5 !important;
+    color: #a72f2f !important;
+  }
+}
+.success {
+  border-color: #2f9a6f !important;
+  background: #2f9a6f !important;
+  color: #fff !important;
+
+  &:hover:not(:disabled) {
+    background: #26805c !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .roadItem,
+  .is_ready .node::after {
+    animation: none;
+  }
+}
+
+// Kéo thả đổi vị trí (khi có `onReorder`): thẻ đang kéo mờ đi, thẻ sắp nhận vị trí có viền nổi.
+.dragging {
+  opacity: 0.45;
+}
+.dropTarget .card {
+  border-color: var(--app-accent);
+  box-shadow: 0 0 0 3px var(--app-accent-soft);
+}
+.roadItem[draggable="true"] .card {
+  cursor: grab;
+}

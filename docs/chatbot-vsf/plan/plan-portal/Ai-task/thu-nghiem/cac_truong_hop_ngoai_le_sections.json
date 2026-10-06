@@ -1,0 +1,134 @@
+[
+ {
+  "id": 19,
+  "idx": 0,
+  "heading": "Các trường hợp ngoại lệ và xử lý sự cố ngày 1",
+  "content": "Đây là tài liệu thử nghiệm (phiên bản 1), dùng để kiểm tra Viga và luồng cập nhật phiên bản. Mục có nhãn [TRONG TÀI LIỆU NGÀY 1] dựa trên tài liệu 'Hướng dẫn ngày 1 onboarding'. Mục có nhãn [BỔ SUNG THỬ NGHIỆM] là quy định do người soạn dữ liệu thử đặt ra, KHÔNG phải quy định chính thức, HR phải xác nhận trước khi dùng thật. Mục có nhãn [CHƯA CÓ QUY ĐỊNH] cố ý để trống để kiểm tra Viga phải trả lời là chưa có căn cứ."
+ },
+ {
+  "id": 20,
+  "idx": 1,
+  "heading": "Nhóm 1. Hồ sơ ngày đầu",
+  "content": "Nhóm 1. Hồ sơ ngày đầu"
+ },
+ {
+  "id": 21,
+  "idx": 2,
+  "heading": "Tôi không có VNeID thì nộp giấy xác nhận nơi cư trú thế nào?",
+  "content": "[TRONG TÀI LIỆU NGÀY 1]\n\nHình ảnh xác nhận nơi cư trú có thể là bản photo, hoặc ảnh VNeID định danh mức 2. Không có VNeID thì nộp bản photo.\n\n1. Chuẩn bị bản photo giấy xác nhận nơi cư trú.\n2. Nộp cho Phòng tuyển dụng trong ngày đầu.\n\nĐầu mối: Phòng tuyển dụng."
+ },
+ {
+  "id": 22,
+  "idx": 3,
+  "heading": "Tôi chỉ có CMND, không có căn cước công dân, có thay được không?",
+  "content": "[CHƯA CÓ QUY ĐỊNH]\n\nTài liệu ngày 1 chỉ yêu cầu căn cước công dân bản photo và không nói về việc dùng chứng minh nhân dân (CMND) thay thế. Chưa có quy định nên chưa thể khẳng định được hay không; cần hỏi Phòng tuyển dụng.\n\nĐầu mối: Phòng tuyển dụng."
+ },
+ {
+  "id": 23,
+  "idx": 4,
+  "heading": "Tôi chưa có lý lịch tư pháp thì sao?",
+  "content": "[TRONG TÀI LIỆU NGÀY 1]\n\nNộp giấy hẹn lấy lý lịch tư pháp thay cho lý lịch tư pháp.\n\nĐầu mối: Phòng tuyển dụng."
+ },
+ {
+  "id": 24,
+  "idx": 5,
+  "heading": "Tôi thiếu giấy tờ hồ sơ thì có nộp được không?",
+  "content": "[BỔ SUNG THỬ NGHIỆM]\n\nNộp phần đã có và nói rõ còn thiếu giấy nào để Phòng tuyển dụng ghi nhận.\n\nĐầu mối: Phòng tuyển dụng."
+ },
+ {
+  "id": 25,
+  "idx": 6,
+  "heading": "Nhóm 2. Đào tạo, hợp đồng và chấm công",
+  "content": "Nhóm 2. Đào tạo, hợp đồng và chấm công"
+ },
+ {
+  "id": 26,
+  "idx": 7,
+  "heading": "Tôi làm bài test cuối khóa dưới 80% thì sao?",
+  "content": "[TRONG TÀI LIỆU NGÀY 1]\n\nĐiều kiện được tính hoàn thành chương trình Đào tạo Hội nhập gồm điểm danh đầu giờ, hoàn thành khảo sát sau chương trình, và đạt từ 80% trở lên ở bài test cuối khóa.\n\n[CHƯA CÓ QUY ĐỊNH]\n\nTài liệu không nói có được làm lại bài test hay không. Cần hỏi Phòng đào tạo và phát triển văn hóa.\n\nĐầu mối: v.thudq@vinsmartfuture.tech (Phòng ĐT&PTVH)."
+ },
+ {
+  "id": 27,
+  "idx": 8,
+  "heading": "Tôi chưa thấy email hướng dẫn ký hợp đồng lao động thì làm sao?",
+  "content": "[BỔ SUNG THỬ NGHIỆM]\n\nEmail được gửi vào cuối ngày đầu. Nếu sang ngày sau vẫn chưa có thì liên hệ Phòng nhân sự. Hợp đồng phải ký trong thời gian quy định."
+ },
+ {
+  "id": 28,
+  "idx": 9,
+  "heading": "Tôi làm ở văn phòng không phải Vincom Đồng Khởi thì đăng ký faceid thế nào?",
+  "content": "[CHƯA CÓ QUY ĐỊNH]\n\nTài liệu ngày 1 chỉ hướng dẫn đăng ký faceid cho văn phòng Vincom Đồng Khởi và không có hướng dẫn cho địa điểm khác. Cần hỏi Phòng nhân sự."
+ },
+ {
+  "id": 29,
+  "idx": 10,
+  "heading": "Faceid chấm công bị lỗi thì liên hệ ai?",
+  "content": "[BỔ SUNG THỬ NGHIỆM]\n\nLiên hệ Phòng nhân sự tầng 14."
+ },
+ {
+  "id": 30,
+  "idx": 11,
+  "heading": "Nhóm 3. Laptop, tài khoản và ticket",
+  "content": "Nhóm 3. Laptop, tài khoản và ticket"
+ },
+ {
+  "id": 31,
+  "idx": 12,
+  "heading": "Tôi chưa nhận được laptop thì có làm tiếp được không?",
+  "content": "[TRONG TÀI LIỆU NGÀY 1]\n\nKhông. Chỉ khi đã có laptop và đăng nhập được Outlook và Teams thì mới tiếp tục bước tiếp theo. Nhận laptop tại tầng 12 theo chỉ dẫn của ITHD và HR tại tầng 12.\n\n1. Đến tầng 12 gặp ITHD và HR.\n2. Nhận laptop và đăng nhập Outlook, Teams.\n3. Sau đó mới làm tiếp các việc kế tiếp."
+ },
+ {
+  "id": 32,
+  "idx": 13,
+  "heading": "Tôi không đăng nhập được Outlook hoặc Teams thì làm sao?",
+  "content": "[BỔ SUNG THỬ NGHIỆM]\n\nGửi ticket ITHD kèm ảnh chụp lỗi, theo mẫu 'Cách viết email hỗ trợ ITHD'.\n\n1. Gửi email tới support@vinsmartfuture.tech.\n2. Tiêu đề theo mẫu: ITHD [Địa điểm làm việc] + [vắn tắt yêu cầu].\n3. Nêu rõ lỗi và đính kèm ảnh chụp."
+ },
+ {
+  "id": 33,
+  "idx": 14,
+  "heading": "Tôi không mở được trang helpdesk thì làm sao?",
+  "content": "[BỔ SUNG THỬ NGHIỆM]\n\nKiểm tra đã đăng nhập Outlook và Teams chưa. Nếu vẫn không mở được, gửi email cho ITHD theo mẫu và nêu rõ lỗi."
+ },
+ {
+  "id": 34,
+  "idx": 15,
+  "heading": "Yêu cầu của tôi ticket ITHD không hỗ trợ (đổi Windows sang Ubuntu, VPN, USB...) thì làm sao?",
+  "content": "[TRONG TÀI LIỆU NGÀY 1]\n\nĐây là trường hợp riêng, ticket thường không hỗ trợ. Phải xin phê duyệt của T3, điền form VinSOC rồi mới tạo ticket ITHD.\n\n1. Gửi email xin phê duyệt tới T3 (ở Khối KD và VH Vinmec là anh Dương Anh Nghi, v.dir.data3@vinsmartfuture.tech) theo mẫu 'Xin phê duyệt'.\n2. Điền form VINSOC SECURITY REQUEST FORM.\n3. Up load file theo chỉ dẫn.\n4. Đợi email phản hồi của VinSOC.\n5. Tạo ticket hỗ trợ như mẫu ở 'Cách viết email hỗ trợ ITHD' (ở khối mình là DUCBV5) rồi thực hiện tại phòng ITHD tầng 14."
+ },
+ {
+  "id": 35,
+  "idx": 16,
+  "heading": "Máy của tôi đã dùng sẵn Ubuntu thì cần làm gì?",
+  "content": "[TRONG TÀI LIỆU NGÀY 1]\n\nNếu đang sử dụng sẵn Ubuntu OS, có thể xin phê duyệt qua Team và chụp ảnh."
+ },
+ {
+  "id": 36,
+  "idx": 17,
+  "heading": "T3 chưa trả lời email phê duyệt thì sao?",
+  "content": "[BỔ SUNG THỬ NGHIỆM]\n\nChờ 1 ngày làm việc rồi nhắn nhắc nhẹ."
+ },
+ {
+  "id": 37,
+  "idx": 18,
+  "heading": "VinSOC chưa phản hồi thì sao?",
+  "content": "[BỔ SUNG THỬ NGHIỆM]\n\nKiểm tra hộp thư và thư rác, sau đó liên hệ ITHD."
+ },
+ {
+  "id": 38,
+  "idx": 19,
+  "heading": "Có bắt buộc làm chuỗi yêu cầu ngoại lệ (Ubuntu, VPN, USB...) không?",
+  "content": "[BỔ SUNG THỬ NGHIỆM]\n\nKhông. Chỉ làm khi bạn có nhu cầu."
+ },
+ {
+  "id": 39,
+  "idx": 20,
+  "heading": "Nhóm 4. Khác",
+  "content": "Nhóm 4. Khác"
+ },
+ {
+  "id": 40,
+  "idx": 21,
+  "heading": "Tôi cần tủ gửi đồ thì làm sao?",
+  "content": "[TRONG TÀI LIỆU NGÀY 1]\n\nYêu cầu tủ gửi đồ qua đầu mối request tủ gửi đồ (ở khối mình là NGANNK25)."
+ }
+]

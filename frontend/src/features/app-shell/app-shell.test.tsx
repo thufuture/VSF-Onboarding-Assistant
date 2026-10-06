@@ -11,7 +11,6 @@ import { chatApi } from "@/features/chat/api";
 import { ChatShell } from "@/features/chat/ChatShell";
 import type { ChatAskResponseDTO } from "@/features/chat/dto/responseDTO/chat.response";
 
-import { AdminPlaceholder } from "./AdminPlaceholder";
 import { AppShell } from "./AppShell";
 
 const replace = vi.fn();
@@ -81,13 +80,13 @@ function deferredAsk() {
 }
 
 describe("AppShell", () => {
-  it("thanh bên hiện tên, chữ viết tắt và vai trò của người dùng", () => {
+  it("thanh bên hiện tên, avatar và vai trò của người dùng", () => {
     renderWithSession(<AppShell>nội dung</AppShell>);
 
     const account = within(screen.getByRole("button", { name: app.signOut }).parentElement as HTMLElement);
     expect(account.getByText(USER.display_name)).toBeInTheDocument();
     expect(account.getByText(app.roles.USER)).toBeInTheDocument();
-    expect(account.getByText("NA")).toBeInTheDocument();
+    expect(account.getByTitle(USER.display_name)).toBeInTheDocument();
     expect(screen.getByText("nội dung")).toBeInTheDocument();
   });
 
@@ -102,34 +101,48 @@ describe("AppShell", () => {
     expect(account().getByText(app.roles.USER)).toBeInTheDocument();
   });
 
-  it("thanh trên có tiêu đề trang và nhãn phạm vi, cùng chọn ngôn ngữ và sáng/tối", () => {
+  it("thanh trên có tiêu đề trang lộ trình cho nhân sự mới, cùng chọn ngôn ngữ và sáng/tối", () => {
     renderWithSession(<AppShell>x</AppShell>);
 
     const bar = within(screen.getByRole("banner"));
-    expect(bar.getByText(chat.title)).toBeInTheDocument();
-    expect(bar.getByText(chat.scope)).toBeInTheDocument();
+    expect(bar.getByText(app.nav.roadmap)).toBeInTheDocument();
     expect(bar.getByLabelText(new RegExp(`^${viMessages.common.language}: `))).toBeInTheDocument();
     expect(bar.getByRole("button", { name: app.darkMode })).toBeInTheDocument();
   });
 
-  it("nhân sự mới: trợ lý hỏi đáp là trang hiện tại, các mục chưa có trang mờ kèm nhãn Sắp có", () => {
+  it("HR/ADMIN: thanh trên có tiêu đề trang chat và nhãn phạm vi", () => {
+    renderWithSession(<AppShell>x</AppShell>, HR);
+
+    const bar = within(screen.getByRole("banner"));
+    expect(bar.getByText(chat.title)).toBeInTheDocument();
+    expect(bar.getByText(chat.scope)).toBeInTheDocument();
+  });
+
+  it("nhân sự mới: lộ trình của tôi là trang hiện tại, các mục chưa có trang mờ kèm nhãn Sắp có", () => {
     renderWithSession(<AppShell>x</AppShell>);
 
     const nav = within(screen.getByRole("navigation", { name: app.navigation }));
-    expect(nav.getByRole("link", { name: app.nav.chat })).toHaveAttribute("aria-current", "page");
+    expect(nav.getByRole("link", { name: app.nav.roadmap })).toHaveAttribute("aria-current", "page");
     expect(nav.queryByRole("link", { name: app.nav.admin })).toBeNull();
-    for (const key of ["documents", "contacts", "tickets"] as const) {
+    for (const key of ["documents", "tickets"] as const) {
       expect(nav.getByText(app.nav[key]).closest("[aria-disabled='true']")).not.toBeNull();
     }
-    expect(nav.getAllByText(app.nav.soon)).toHaveLength(3);
+    expect(nav.getAllByText(app.nav.soon)).toHaveLength(2);
   });
 
-  it("HR thấy khu quản trị và đường tới trang chat, không có mục Sắp có", () => {
+  it("HR thấy Tổng quan, Nhân viên, Ticket, Phản hồi Viga, Quản lý task, Tài liệu, Tạo task bằng AI; Đầu mối và đường dẫn", () => {
     renderWithSession(<AppShell>x</AppShell>, HR);
 
     const nav = within(screen.getByRole("navigation", { name: app.navigation }));
     expect(nav.getByRole("link", { name: app.nav.admin })).toHaveAttribute("href", "/vi/admin");
-    expect(nav.getByRole("link", { name: app.nav.chat })).toHaveAttribute("href", "/vi/chat");
+    expect(nav.getByRole("link", { name: app.nav.employees })).toHaveAttribute("href", "/vi/admin/employees");
+    expect(nav.getByRole("link", { name: app.nav.taskManagement })).toHaveAttribute("href", "/vi/admin/tasks");
+    expect(nav.getByRole("link", { name: app.nav.documents })).toHaveAttribute("href", "/vi/admin/documents");
+    expect(nav.getByRole("link", { name: app.nav.aiTasks })).toHaveAttribute("href", "/vi/admin/ai-tasks");
+    expect(nav.getByRole("link", { name: app.nav.hrTickets })).toHaveAttribute("href", "/vi/admin/tickets");
+    expect(nav.getByRole("link", { name: app.nav.vigaFeedback })).toHaveAttribute("href", "/vi/admin/viga-feedback");
+    expect(nav.queryByRole("link", { name: app.nav.chat })).toBeNull();
+    // Mọi mục của HR đều là liên kết thật, không còn mục mờ "Sắp có".
     expect(nav.queryByText(app.nav.soon)).toBeNull();
   });
 
@@ -468,12 +481,3 @@ describe("ChatShell", () => {
   });
 });
 
-describe("AdminPlaceholder", () => {
-  it("hiện lời chào, vai trò HR và đường về trang chat", () => {
-    renderWithSession(<AdminPlaceholder />, HR);
-
-    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("HR Demo 1");
-    expect(screen.getByText(app.roles.HR)).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: viMessages.admin.openChat })).toHaveAttribute("href", "/vi/chat");
-  });
-});

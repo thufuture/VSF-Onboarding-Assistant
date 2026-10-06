@@ -1,0 +1,273 @@
+{
+ "name": "Golden set Viga: hỏi đáp tài liệu onboarding",
+ "documents": {
+  "D1": "Hướng dẫn ngày 1 onboarding",
+  "D2": "Ngoại lệ: laptop, tài khoản, hồ sơ ngày 1"
+ },
+ "grading": "ANSWER: phải trả lời có trích dẫn và có đủ các ý must_contain; NO_BASIS: phải từ chối; ANY: chấp nhận cả hai, chỉ kiểm must_contain nếu có",
+ "count": 25,
+ "cases": [
+  {
+   "id": 1,
+   "document": "D1",
+   "question": "Hồ sơ cần nộp trong ngày đầu gồm những gì?",
+   "expect": "ANSWER",
+   "must_contain": [
+    "cv",
+    "lý lịch tư pháp",
+    "khám sức khỏe",
+    "nơi cư trú",
+    "căn cước",
+    "chứng chỉ"
+   ],
+   "group": "tra cứu một ý"
+  },
+  {
+   "id": 2,
+   "document": "D1",
+   "question": "Nộp hồ sơ ngày đầu thì liên hệ đầu mối nào?",
+   "expect": "ANSWER",
+   "must_contain": [
+    "phòng tuyển dụng"
+   ],
+   "group": "tra cứu một ý"
+  },
+  {
+   "id": 3,
+   "document": "D1",
+   "question": "Chương trình Đào tạo Hội nhập có bắt buộc không và điều kiện hoàn thành là gì?",
+   "expect": "ANSWER",
+   "must_contain": [
+    "bắt buộc",
+    "điểm danh",
+    "khảo sát",
+    "80"
+   ],
+   "group": "tra cứu một ý"
+  },
+  {
+   "id": 4,
+   "document": "D1",
+   "question": "Bài test cuối khóa phải đạt bao nhiêu phần trăm?",
+   "expect": "ANSWER",
+   "must_contain": [
+    "80"
+   ],
+   "group": "tra cứu một ý"
+  },
+  {
+   "id": 5,
+   "document": "D1",
+   "question": "Đầu mối của chương trình Đào tạo Hội nhập là ai, email gì?",
+   "expect": "ANSWER",
+   "must_contain": [
+    "v.thudq@vinsmartfuture.tech"
+   ],
+   "group": "tra cứu một ý"
+  },
+  {
+   "id": 6,
+   "document": "D1",
+   "question": "Khi nào tôi ký hợp đồng lao động?",
+   "expect": "ANSWER",
+   "must_contain": [
+    "email",
+    "cuối ngày"
+   ],
+   "group": "tra cứu một ý"
+  },
+  {
+   "id": 7,
+   "document": "D1",
+   "question": "Đăng ký faceid chấm công ở đâu?",
+   "expect": "ANSWER",
+   "must_contain": [
+    "tầng 14",
+    "vincom"
+   ],
+   "group": "tra cứu một ý"
+  },
+  {
+   "id": 8,
+   "document": "D1",
+   "question": "Tôi nhận laptop ở đâu?",
+   "expect": "ANSWER",
+   "must_contain": [
+    "tầng 12",
+    "ithd"
+   ],
+   "group": "tra cứu một ý"
+  },
+  {
+   "id": 9,
+   "document": "D1",
+   "question": "Nhận laptop xong thì làm gì tiếp theo?",
+   "expect": "ANSWER",
+   "must_contain": [
+    "outlook",
+    "teams"
+   ],
+   "group": "tra cứu một ý"
+  },
+  {
+   "id": 10,
+   "document": "D1",
+   "question": "Viết email hỗ trợ cho ITHD thì gửi tới địa chỉ nào và đặt tiêu đề thế nào?",
+   "expect": "ANSWER",
+   "must_contain": [
+    "support@vinsmartfuture.tech",
+    "ithd"
+   ],
+   "group": "tra cứu một ý"
+  },
+  {
+   "id": 11,
+   "document": "D1",
+   "question": "Trước khi viết ticket tôi cần kiểm tra gì?",
+   "expect": "ANSWER",
+   "must_contain": [
+    "quick access"
+   ],
+   "group": "tra cứu một ý"
+  },
+  {
+   "id": 12,
+   "document": "D1",
+   "question": "Muốn dùng VPN hoặc xin exception USB thì cần ai đồng thuận?",
+   "expect": "ANSWER",
+   "must_contain": [
+    "t3"
+   ],
+   "group": "tra cứu một ý"
+  },
+  {
+   "id": 13,
+   "document": "D1",
+   "question": "Máy tôi đã dùng sẵn Ubuntu thì xin phê duyệt thế nào?",
+   "expect": "ANSWER",
+   "must_contain": [
+    "team",
+    "chụp"
+   ],
+   "group": "tra cứu một ý"
+  },
+  {
+   "id": 14,
+   "document": "D1",
+   "question": "Sau khi VinSOC phản hồi email thì tôi làm gì?",
+   "expect": "ANSWER",
+   "must_contain": [
+    "ticket",
+    "ithd",
+    "tầng 14"
+   ],
+   "group": "tra cứu một ý"
+  },
+  {
+   "id": 15,
+   "document": "D1",
+   "question": "Yêu cầu tủ gửi đồ như thế nào?",
+   "expect": "ANSWER",
+   "must_contain": [
+    "tủ gửi đồ"
+   ],
+   "group": "tra cứu một ý"
+  },
+  {
+   "id": 16,
+   "document": "D2",
+   "question": "Tôi chưa có lý lịch tư pháp thì sao?",
+   "expect": "ANSWER",
+   "must_contain": [
+    "giấy hẹn"
+   ],
+   "group": "tình huống ngoại lệ"
+  },
+  {
+   "id": 17,
+   "document": "D2",
+   "question": "Tôi chỉ có CMND, không có căn cước công dân thì thay được không?",
+   "expect": "ANY",
+   "must_contain": [],
+   "group": "tình huống ngoại lệ"
+  },
+  {
+   "id": 18,
+   "document": "D2",
+   "question": "T3 chưa trả lời email phê duyệt thì tôi làm sao?",
+   "expect": "ANSWER",
+   "must_contain": [
+    "1 ngày",
+    "nhắc"
+   ],
+   "group": "tình huống ngoại lệ"
+  },
+  {
+   "id": 19,
+   "document": "D2",
+   "question": "Có bắt buộc làm chuỗi yêu cầu ngoại lệ như Ubuntu, VPN, USB không?",
+   "expect": "ANSWER",
+   "must_contain": [
+    "không"
+   ],
+   "group": "tình huống ngoại lệ"
+  },
+  {
+   "id": 20,
+   "document": "D2",
+   "question": "Văn phòng của tôi không phải Vincom Đồng Khởi thì đăng ký faceid thế nào?",
+   "expect": "ANY",
+   "must_contain": [],
+   "group": "ngoài phạm vi tài liệu"
+  },
+  {
+   "id": 21,
+   "document": "D1",
+   "question": "tôi ở hồ chí minh checkin ở đâu á",
+   "expect": "ANY",
+   "must_contain": [
+    "onboard"
+   ],
+   "group": "câu viết tắt, sai dấu"
+  },
+  {
+   "id": 23,
+   "document": "D2",
+   "question": "tôi không có căn cước công dân sài vnid được không",
+   "expect": "ANY",
+   "must_contain": [],
+   "group": "câu viết tắt, sai dấu"
+  },
+  {
+   "id": 24,
+   "document": "D1",
+   "question": "Check-in ngày đầu làm thế nào?",
+   "expect": "ANY",
+   "must_contain": [
+    "onboard"
+   ],
+   "group": "câu mơ hồ"
+  },
+  {
+   "id": 25,
+   "document": "D1",
+   "question": "Tôi làm ở Hà Nội thì check-in ở đâu?",
+   "expect": "ANY",
+   "must_contain": [
+    "onboard"
+   ],
+   "group": "câu mơ hồ"
+  },
+  {
+   "id": 26,
+   "document": "D1",
+   "question": "Tôi không có VNeID thì nộp giấy xác nhận nơi cư trú thế nào?",
+   "expect": "ANSWER",
+   "must_contain": [
+    "photo",
+    "phòng tuyển dụng"
+   ],
+   "group": "tình huống ngoại lệ"
+  }
+ ]
+}

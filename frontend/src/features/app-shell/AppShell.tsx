@@ -1,50 +1,54 @@
 "use client";
 
-import {
-  BookOpenText,
-  LayoutDashboard,
-  LifeBuoy,
-  LogOut,
-  Menu,
-  MessageSquareText,
-  ShieldCheck,
-  Sparkles,
-  Moon,
-  Sun,
-  Users,
-  X,
-  type LucideIcon,
-} from "lucide-react";
+import { LogOut, Menu, MessageSquareText, PanelLeftClose, PanelLeftOpen, ShieldCheck, Sparkles, Moon, Sun, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState, type ReactNode } from "react";
 
+import { PersonAvatar } from "@/components/avatar/PersonAvatar";
+import { FlatIcon, type FlatIconName } from "@/components/flat-icons/FlatIcon";
 import { VsfBrand } from "@/components/brand/VsfBrand";
 import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
+import { PortalFooter } from "@/components/portal-footer/PortalFooter";
+import { VsfMark } from "@/components/brand/VsfMark";
 import { useSession } from "@/features/auth/SessionProvider";
+import { useTicketUnread } from "@/features/viga/useTicketUnread";
 import { Link, usePathname } from "@/i18n/navigation";
 
 import styles from "./AppShell.module.scss";
+import { TasksSidebar } from "./TasksSidebar";
+import { useSidebarCollapsed } from "./useSidebarCollapsed";
 import { useTheme } from "./useTheme";
 
-type NavItem = { key: string; icon: LucideIcon; href?: string };
+// Mỗi mục điều hướng một màu riêng (đồng bộ với bảng màu của FlatIcon) để nhận ra nhanh, không còn toàn một màu xanh.
+type NavTone = "blue" | "teal" | "indigo" | "amber" | "rose" | "slate" | "green" | "red" | "violet";
+type NavItem = { key: string; flat: FlatIconName; href?: string; tone: NavTone };
 
 // Mục chưa có trang (không có `href`) hiện mờ kèm nhãn "Sắp có" thay vì liên kết chết.
 const MEMBER_NAV: NavItem[] = [
-  { key: "chat", icon: MessageSquareText, href: "/chat" },
-  { key: "documents", icon: BookOpenText },
-  { key: "contacts", icon: Users },
-  { key: "tickets", icon: LifeBuoy },
+  { key: "roadmap", flat: "chat", href: "/chat", tone: "blue" },
+  { key: "documents", flat: "book", tone: "green" },
+  { key: "tickets", flat: "lifebuoy", tone: "rose" },
 ];
+// Đúng thứ tự nav HR trong prototype v15 (NAV.owner): Tổng quan, Nhân viên, Ticket sự cố, Phản hồi Viga,
+// Quản lý task, Tài liệu, Tạo task bằng AI. Chỉ mục đã có API thật mới có `href`.
 const STAFF_NAV: NavItem[] = [
-  { key: "admin", icon: LayoutDashboard, href: "/admin" },
-  { key: "chat", icon: MessageSquareText, href: "/chat" },
+  { key: "admin", flat: "dashboard", href: "/admin", tone: "blue" },
+  { key: "employees", flat: "users", href: "/admin/employees", tone: "teal" },
+  { key: "hrTickets", flat: "flag", href: "/admin/tickets", tone: "red" },
+  { key: "vigaFeedback", flat: "mail", href: "/admin/viga-feedback", tone: "amber" },
+  { key: "taskManagement", flat: "tasks", href: "/admin/tasks", tone: "indigo" },
+  { key: "documents", flat: "book", href: "/admin/documents", tone: "green" },
+  { key: "aiTasks", flat: "sparkle", href: "/admin/ai-tasks", tone: "violet" },
 ];
-
-function initials(name: string): string {
-  const parts = name.trim().split(/\s+/).filter(Boolean);
-  const letters = parts.length > 1 ? [parts[0], parts[parts.length - 1]] : parts;
-  return letters.map((part) => part[0]).join("").slice(0, 2).toUpperCase();
-}
+// Đúng thứ tự nav Admin trong prototype v15 (NAV.admin): Tổng quan, Người dùng, Phòng ban, Thành viên, Lộ trình mẫu, Nhật ký.
+const ADMIN_NAV: NavItem[] = [
+  { key: "admin", flat: "dashboard", href: "/admin", tone: "blue" },
+  { key: "adminUsers", flat: "user", href: "/admin/users", tone: "teal" },
+  { key: "adminTeams", flat: "building", href: "/admin/teams", tone: "indigo" },
+  { key: "adminMembers", flat: "network", href: "/admin/members", tone: "violet" },
+  { key: "adminMetrics", flat: "award", href: "/admin/metrics", tone: "amber" },
+  { key: "adminAudit", flat: "clock", href: "/admin/audit", tone: "slate" },
+];
 
 /**
  * Khung của khu đã đăng nhập, theo bố cục portal của Ralion: thanh bên (logo, điều hướng theo vai trò, thẻ người dùng,
@@ -53,9 +57,13 @@ function initials(name: string): string {
 export function AppShell({ children }: { children: ReactNode }) {
   const t = useTranslations("app");
   const chatText = useTranslations("chat");
+  const brandText = useTranslations("landing.nav");
   const { user, logout } = useSession();
   const { theme, toggleTheme } = useTheme();
   const pathname = usePathname();
+  const { collapsed, toggleCollapsed } = useSidebarCollapsed();
+  // Chỉ HR và Admin có hàng đợi ticket; nhân viên dùng trang Yêu cầu riêng.
+  const ticketUnread = useTicketUnread(user.role !== "USER");
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
   const [signOutFailed, setSignOutFailed] = useState(false);
@@ -85,15 +93,44 @@ export function AppShell({ children }: { children: ReactNode }) {
     }
   }
 
-  const items = user.role === "USER" ? MEMBER_NAV : STAFF_NAV;
-  const onChat = pathname.startsWith("/chat");
+  const items = user.role === "USER" ? MEMBER_NAV : user.role === "ADMIN" ? ADMIN_NAV : STAFF_NAV;
+  const onChat = pathname.startsWith("/chat") && user.role !== "USER";
+  const onRoadmap = pathname.startsWith("/chat") && user.role === "USER";
   const home = user.role === "USER" ? "/chat" : "/admin";
+  const onTasksTree = user.role !== "USER" && pathname.startsWith("/admin/tasks");
+  // Thanh bên thu gọn thì Quản lý task hiện thanh biểu tượng thường (không có cây ngày) để nhường chỗ cho trang.
+  const showTree = onTasksTree && !collapsed;
+  const collapseButton = (
+    <button
+      aria-label={collapsed ? t("expandSidebar") : t("collapseSidebar")}
+      aria-pressed={collapsed}
+      className={styles.collapseButton}
+      onClick={toggleCollapsed}
+      title={collapsed ? t("expandSidebar") : t("collapseSidebar")}
+      type="button"
+    >
+      {collapsed ? <PanelLeftOpen aria-hidden="true" size={17} /> : <PanelLeftClose aria-hidden="true" size={17} />}
+    </button>
+  );
+  // Mục nav khớp đường dẫn hiện tại (dài nhất trước, ví dụ /admin/documents thắng /admin) — dùng cho tiêu đề thanh trên.
+  // Quản lý task (cả khi ADMIN sửa lộ trình mẫu chung) luôn mang tiêu đề "Quản lý task" trên thanh trên.
+  const activeItem = onTasksTree
+    ? STAFF_NAV.find((i) => i.key === "taskManagement")
+    : !onChat
+    ? [...items].filter((i) => i.href).sort((a, b) => (b.href?.length ?? 0) - (a.href?.length ?? 0)).find((i) => i.href && pathname.startsWith(i.href))
+    : undefined;
 
   return (
-    <div className={styles.shell} data-theme={theme}>
+    <div className={styles.shell} data-collapsed={collapsed ? "true" : "false"} data-theme={theme}>
       <aside className={`${styles.sidebar} ${drawerOpen ? styles.sidebarOpen : ""}`} id="app-sidebar">
         <div className={styles.sidebarHead}>
-          <VsfBrand href={home} size={24} />
+          <Link aria-label={brandText("brand")} className={styles.brand} href={home}>
+            <VsfMark className={styles.mark} size={40} />
+            <span aria-hidden="true" className={styles.brandText}>
+              <b>VSF Onboarding</b>
+              <small>{t(`brandSubByRole.${user.role}`)}</small>
+            </span>
+          </Link>
           <button
             aria-label={t("closeMenu")}
             className={styles.iconButton}
@@ -105,13 +142,29 @@ export function AppShell({ children }: { children: ReactNode }) {
           </button>
         </div>
 
-        <nav aria-label={t("navigation")} className={styles.nav}>
-          {items.map(({ key, icon: Icon, href }) => {
-            const active = href !== undefined && pathname.startsWith(href);
+        {showTree ? (
+          // Ở Quản lý task không hiện dòng vai trò: "Tổng quan HR" đưa lên đầu và nút thu/mở nằm cùng dòng đó.
+          <TasksSidebar toggle={collapseButton} />
+        ) : (
+          <div className={styles.sideTop}>
+            {user.role !== "USER" ? <p className={styles.roleBadge}>{t(`roles.${user.role}`)}</p> : <span />}
+            {collapseButton}
+          </div>
+        )}
+
+        <nav aria-label={t("navigation")} className={styles.nav} hidden={showTree}>
+          {items.map(({ key, flat, href, tone }) => {
+            const active = activeItem?.key === key;
             if (!href) {
               return (
-                <span aria-disabled="true" className={`${styles.navItem} ${styles.navSoon}`} key={key}>
-                  <Icon aria-hidden="true" size={18} />
+                <span
+                  aria-disabled="true"
+                  className={`${styles.navItem} ${styles.navSoon} ${styles[`tone_${tone}`]}`}
+                  key={key}
+                >
+                  <i className={styles.navIcon}>
+                    <FlatIcon name={flat} size={26} tone={tone} />
+                  </i>
                   <span>{t(`nav.${key}`)}</span>
                   <small>{t("nav.soon")}</small>
                 </span>
@@ -120,22 +173,29 @@ export function AppShell({ children }: { children: ReactNode }) {
             return (
               <Link
                 aria-current={active ? "page" : undefined}
-                className={`${styles.navItem} ${active ? styles.navActive : ""}`}
+                className={`${styles.navItem} ${styles[`tone_${tone}`]} ${active ? styles.navActive : ""}`}
                 href={href}
+                title={t(`nav.${key}`)}
                 key={key}
               >
-                <Icon aria-hidden="true" size={18} />
+                <i className={styles.navIcon}>
+                  <FlatIcon name={flat} size={26} tone={tone} />
+                </i>
                 <span>{t(`nav.${key}`)}</span>
+                {key === "hrTickets" && ticketUnread > 0 ? (
+                  <b aria-label={t("nav.ticketsUnread", { count: ticketUnread })} className={styles.navBadge} role="status">
+                    {ticketUnread > 99 ? "99+" : ticketUnread}
+                  </b>
+                ) : null}
               </Link>
             );
           })}
         </nav>
 
+
         <div className={styles.account}>
           <div className={styles.userCard}>
-            <span aria-hidden="true" className={styles.avatar}>
-              {initials(user.display_name)}
-            </span>
+            <PersonAvatar name={user.display_name} sizePx={36} />
             <span className={styles.userText}>
               <b>{user.display_name}</b>
               <small>{user.department ?? t(`roles.${user.role}`)}</small>
@@ -178,11 +238,19 @@ export function AppShell({ children }: { children: ReactNode }) {
                   {chatText("scope")}
                 </span>
               </>
-            ) : (
+            ) : onRoadmap ? (
               <b>
-                <LayoutDashboard aria-hidden="true" size={18} />
-                {t("nav.admin")}
+                <MessageSquareText aria-hidden="true" size={18} />
+                {t("nav.roadmap")}
               </b>
+            ) : (
+              <>
+                <span className={styles.crumb}>{t(`roles.${user.role}`)}</span>
+              <b>
+                <FlatIcon name={activeItem?.flat ?? "dashboard"} size={22} tone={activeItem?.tone ?? "blue"} />
+                {t(`nav.${activeItem?.key ?? "admin"}`)}
+              </b>
+              </>
             )}
           </div>
           <span className={styles.mobileBrand}>
@@ -201,7 +269,10 @@ export function AppShell({ children }: { children: ReactNode }) {
             </button>
           </div>
         </header>
-        <div className={styles.page}>{children}</div>
+        <div className={styles.page} data-fill={pathname.startsWith("/chat") ? undefined : "true"}>
+          {children}
+        </div>
+        <PortalFooter />
       </div>
     </div>
   );

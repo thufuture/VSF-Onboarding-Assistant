@@ -10,6 +10,7 @@ from src.api.dependencies import (
     AuthenticatedSession,
     get_current_session,
     get_db,
+    get_keep_warm,
     get_login_throttle,
     session_secret,
 )
@@ -28,6 +29,7 @@ from src.services.auth.auth_service import (
 from src.services.auth.errors import AuthError
 from src.services.auth.login_throttle import LoginThrottle
 from src.services.auth.sessions import SESSION_COOKIE_NAME, SessionError, read_token, should_refresh
+from src.services.ingest.embedding.keep_warm import KeepWarm
 
 router = APIRouter(prefix="/api/v1/auth", tags=["auth"])
 
@@ -38,7 +40,7 @@ _ERRORS: dict[int | str, dict[str, object]] = {
 }
 
 
-def _set_session_cookie(response: Response, token: str, settings: Settings) -> None:
+def set_session_cookie(response: Response, token: str, settings: Settings) -> None:
     response.set_cookie(
         SESSION_COOKIE_NAME,
         token,
@@ -72,11 +74,14 @@ async def login(
     db: Annotated[AsyncSession, Depends(get_db)],
     settings: Annotated[Settings, Depends(get_settings)],
     throttle: Annotated[LoginThrottle, Depends(get_login_throttle)],
+    keep_warm: Annotated[KeepWarm | None, Depends(get_keep_warm)],
 ) -> SessionUserResponseDTO:
     client_ip = request.client.host if request.client else "unknown"
     user = await authenticate(db, email=body.email, password=body.password, client_ip=client_ip, throttle=throttle)
     token, expires_at = start_session(user, session_secret(settings), settings.session_ttl_seconds)
-    _set_session_cookie(response, token, settings)
+    set_session_cookie(response, token, settings)
+    if keep_warm is not None:
+        keep_warm.wake()  # đánh thức dịch vụ embedding trong lúc người dùng còn đang xem trang, để câu hỏi đầu không phải đợi
     return await _profile(db, user, expires_at)
 
 
@@ -99,7 +104,7 @@ async def refresh(
     if not should_refresh(current.token, settings.session_ttl_seconds):
         return await _profile(db, current.user, current.token.expires_at)
     token, expires_at = start_session(current.user, session_secret(settings), settings.session_ttl_seconds)
-    _set_session_cookie(response, token, settings)
+    set_session_cookie(response, token, settings)
     return await _profile(db, current.user, expires_at)
 
 

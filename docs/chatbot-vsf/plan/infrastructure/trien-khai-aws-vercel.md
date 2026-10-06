@@ -120,7 +120,7 @@ Vercel **không cần workflow riêng** — tự deploy qua GitHub App khi push,
 - File này (kế hoạch).
 - `docs/chatbot-vsf/plan/infrastructure/bao-cao-trien-khai-aws-vercel.md` — viết sau khi làm xong từng bước, theo mẫu `bao-cao-phase-4.md`.
 - Cập nhật [vsf-onboarding-assistant-deployment-ci.md](../../vsf-onboarding-assistant-deployment-ci.md): đóng câu hỏi mở #2 → chốt Vercel; thêm mục kiến trúc AWS+Vercel.
-- Cập nhật [phu-luc-may-chu-va-chi-phi.md](../phu-luc-may-chu-va-chi-phi.md): thêm chi phí AWS EC2 `m7i-flex.large` trong Free Plan ($0 khi còn "Eligible for the free offer" + còn credit, tới hết 6 tháng/22-03-2027 hoặc hết $100-200 credit thì dịch vụ dừng — không tự chuyển sang tính phí thẻ) và Vercel Hobby (miễn phí).
+- Cập nhật [phu-luc-may-chu-va-chi-phi.md](../phu-luc-may-chu-va-chi-phi.md): thêm chi phí AWS EC2 `m7i-flex.large` trong Free Plan (**ĐÍNH CHÍNH 25/09/2026: không phải $0** — chạy 24/7 tốn khoảng $2,4–3/ngày và trừ vào credit; xem [ke-hoach-giam-chi-phi-aws.md](ke-hoach-giam-chi-phi-aws.md); dịch vụ dừng khi hết 6 tháng/22-03-2027 hoặc hết $100-200 credit, không tự chuyển sang tính phí thẻ) và Vercel Hobby (miễn phí).
 - Cập nhật [plan/README.md](../README.md): thêm dòng trỏ tới thư mục `infrastructure/`.
 
 ## 4. Kế hoạch theo bước
