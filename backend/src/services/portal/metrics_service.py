@@ -15,7 +15,7 @@ from sqlalchemy import case, func, select
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from src.infrastructure.observability.call_metrics import CallRecord
-from src.model.llm_call import LlmCall
+from src.model.llm_call import LLM_COST, LlmCall
 
 logger = logging.getLogger(__name__)
 
@@ -124,7 +124,7 @@ async def get_metrics(session: AsyncSession, *, days: int) -> MetricsReport:
                 func.coalesce(func.sum(LlmCall.prompt_tokens), 0),
                 func.coalesce(func.sum(LlmCall.completion_tokens), 0),
                 func.coalesce(func.sum(LlmCall.input_count), 0),
-                func.coalesce(func.sum(LlmCall.cost_usd), 0.0),
+                func.coalesce(func.sum(LLM_COST), 0.0),
             )
             .where(LlmCall.created_at >= since)
             .group_by(LlmCall.operation, LlmCall.kind)
@@ -150,7 +150,7 @@ async def get_metrics(session: AsyncSession, *, days: int) -> MetricsReport:
     day = func.date_trunc("day", LlmCall.created_at)
     daily_rows = (
         await session.execute(
-            select(day, func.count(), func.coalesce(func.sum(LlmCall.cost_usd), 0.0))
+            select(day, func.count(), func.coalesce(func.sum(LLM_COST), 0.0))
             .where(LlmCall.created_at >= since)
             .group_by(day)
             .order_by(day)

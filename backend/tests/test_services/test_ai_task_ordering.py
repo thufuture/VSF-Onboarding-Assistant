@@ -68,8 +68,11 @@ async def test_end_of_day_tasks_go_last_even_when_the_model_orders_them_earlier(
     )
 
     result = await propose_tasks_detailed(
-        _Session([HOP_DONG, LAPTOP, TU]), document_version_id=1, llm=llm, options=LEGACY
-    )  # type: ignore[arg-type]
+        _Session([HOP_DONG, LAPTOP, TU]),  # type: ignore[arg-type]
+        document_version_id=1,
+        llm=llm,
+        options=LEGACY,
+    )
 
     assert [p.title for p in result.proposals] == ["Nhận laptop", "Đăng ký tủ gửi đồ", "Ký hợp đồng lao động"]
     assert [p.order for p in result.proposals] == [1, 2, 3]

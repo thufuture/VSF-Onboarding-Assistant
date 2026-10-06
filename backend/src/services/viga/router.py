@@ -128,8 +128,10 @@ async def route_question(
     """Một lần gọi LLM định tuyến. Mọi lỗi (mạng, JSON sai, kiểm chứng không qua) trả None: người gọi lùi về hỏi đáp tài liệu."""
     try:
         with call_context(operation=ROUTE_OPERATION):
+            # Chọn một nhãn công cụ trong danh sách đóng không cần suy luận ẩn: đo ngày 06/10/2026 (docs/value/benchmark-modal-llm-viga)
+            # cho thấy 72% token đầu ra của bước này là suy luận ẩn; tắt đi nhanh hơn khoảng 0,5 giây mà độ chính xác không tệ đi.
             raw = await llm.complete_json(
-                system_prompt=SYSTEM_PROMPT, user_prompt=build_prompt(question, snapshot, history)
+                system_prompt=SYSTEM_PROMPT, user_prompt=build_prompt(question, snapshot, history), reasoning=False
             )
     except Exception:
         return None

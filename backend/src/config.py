@@ -91,8 +91,10 @@ class Settings(BaseSettings):
     # plan-portal/ingest-tai-lieu-va-tao-task-bang-ai.md. Đặt 0 nếu muốn tắt ước tính.
     llm_price_input_per_million_usd: float = 0.30
     llm_price_output_per_million_usd: float = 1.20
-    # Embedding BGE-M3 chạy trên Modal (GPU L4): tính theo giây GPU chạy. L4 = $0.000222/giây (modal.com/pricing, tra 05/10/2026).
-    embedding_price_per_second_usd: float = 0.000222
+    # Embedding BGE-M3 do dự án tự host (máy EC2 riêng, tính tiền theo giờ thuê máy chứ không theo lời gọi) nên mặc định KHÔNG tính
+    # chi phí theo lời gọi. Nếu quay lại dùng Modal (GPU L4, $0.000222/giây theo modal.com/pricing tra 05/10/2026) thì đặt
+    # EMBEDDING_PRICE_PER_SECOND_USD=0.000222; thống kê chi phí trên giao diện vẫn chỉ cộng LLM.
+    embedding_price_per_second_usd: float = 0.0
 
     # Hàng đợi việc nền (nạp/kích hoạt tài liệu, tạo task bằng AI) chạy trong tiến trình backend (mục 14).
     job_worker_enabled: bool = True

@@ -136,8 +136,11 @@ async def test_ai_order_wins_over_document_order_for_first_pass() -> None:
     )
 
     result = await propose_tasks_detailed(
-        _Session([HOSO, HOPDONG, LAPTOP]), document_version_id=1, llm=llm, options=LEGACY
-    )  # type: ignore[arg-type]
+        _Session([HOSO, HOPDONG, LAPTOP]),  # type: ignore[arg-type]
+        document_version_id=1,
+        llm=llm,
+        options=LEGACY,
+    )
 
     assert [p.title for p in result.proposals] == ["Nộp hồ sơ", "Nhận laptop", "Ký hợp đồng"]
     assert [p.order for p in result.proposals] == [1, 2, 3]
@@ -161,8 +164,11 @@ async def test_prerequisites_keep_only_earlier_real_tasks() -> None:
     )
 
     result = await propose_tasks_detailed(
-        _Session([HOSO, HOPDONG, LAPTOP]), document_version_id=1, llm=llm, options=LEGACY
-    )  # type: ignore[arg-type]
+        _Session([HOSO, HOPDONG, LAPTOP]),  # type: ignore[arg-type]
+        document_version_id=1,
+        llm=llm,
+        options=LEGACY,
+    )
 
     by_title = {p.title: p for p in result.proposals}
     assert by_title["Nhận laptop"].prerequisites == []

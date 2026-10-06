@@ -679,7 +679,7 @@ async def test_concurrent_applies_and_concurrent_journey_creation_leave_exactly_
     )
 
     assert all(
-        not isinstance(r, Exception) and r.status_code == 200 for r in results
+        not isinstance(r, BaseException) and r.status_code == 200 for r in results
     )  # nối tiếp nhau nhờ khóa dòng ngày
     day = await tree_day(hr, ids.template_id)
     assert sorted(v["status"] for v in day["versions"]).count("APPLIED") == 1

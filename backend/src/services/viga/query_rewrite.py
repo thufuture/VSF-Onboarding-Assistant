@@ -60,7 +60,9 @@ async def rewrite_query(
         system_prompt = f"{SYSTEM_PROMPT}\n{HISTORY_NOTE}"
         user_prompt = _format_history(history) + user_prompt
     with call_context(operation="chat.rewrite"):
-        raw = await llm.complete_json(system_prompt=system_prompt, user_prompt=user_prompt)
+        # Viết lại câu hỏi ngắn không cần suy luận ẩn: đo ngày 06/10/2026 cho thấy 88% token đầu ra của bước này là suy luận ẩn,
+        # tắt đi giảm độ trễ từ 2,25 giây xuống 1,05 giây (docs/value/benchmark-modal-llm-viga).
+        raw = await llm.complete_json(system_prompt=system_prompt, user_prompt=user_prompt, reasoning=False)
     try:
         data = json.loads(raw)
         questions = data["standalone_questions"]

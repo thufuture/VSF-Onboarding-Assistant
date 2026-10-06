@@ -465,7 +465,8 @@ async def test_attachments_need_cloud_storage(
 async def unread(client: Any) -> dict[str, Any]:
     response = await client.get(f"{TICKETS}/unread")
     assert response.status_code == 200, response.text
-    return response.json()
+    data: dict[str, Any] = response.json()
+    return data
 
 
 async def test_unread_counts_tickets_not_messages_and_drops_by_one_when_opened(

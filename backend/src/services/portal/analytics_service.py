@@ -41,7 +41,7 @@ from src.model.employee_journey import EmployeeJourney
 from src.model.employee_task import EmployeeTask
 from src.model.enums import ChatRole, DocumentStatus, EmployeeTaskStatus, JobKind, JobStatus, TicketStatus, UserRole
 from src.model.job import Job
-from src.model.llm_call import LlmCall
+from src.model.llm_call import LLM_COST, LlmCall
 from src.model.team import Team
 from src.model.team_member import TeamMember
 from src.model.ticket import Ticket
@@ -362,7 +362,7 @@ async def _runs(
                     func.sum(LlmCall.latency_ms),
                     func.sum(LlmCall.prompt_tokens),
                     func.sum(LlmCall.completion_tokens),
-                    func.sum(LlmCall.cost_usd),
+                    func.sum(LLM_COST),
                 )
                 .where(LlmCall.job_id.in_([job.id for job in jobs]))
                 .group_by(LlmCall.job_id)
@@ -413,7 +413,7 @@ async def _cost_groups(
     start: datetime,
     hours: list[datetime],
 ) -> list[CostGroupResponseDTO]:
-    """Chi phí theo ngày và theo giờ của hai khoản: tải tài liệu lên (`ingest.*`: embedding BGE-M3 và đọc cấu trúc) và tạo task."""
+    """Chi phí LLM theo ngày và theo giờ của hai khoản: tải tài liệu lên (`ingest.*`: đọc cấu trúc bằng LLM; embedding không tính) và tạo task."""
     group = case(
         (LlmCall.operation.like("ingest.%"), "upload"),
         (LlmCall.operation == "task.proposal", "tasks"),
@@ -425,7 +425,7 @@ async def _cost_groups(
     since = min(start, datetime.now(ZoneInfo(timezone)) - timedelta(hours=25))
     rows = (
         await session.execute(
-            select(group, day, hour, func.count(), func.coalesce(func.sum(LlmCall.cost_usd), 0.0))
+            select(group, day, hour, func.count(), func.coalesce(func.sum(LLM_COST), 0.0))
             .where(LlmCall.created_at >= since, group.is_not(None), *scope)
             .group_by(group, day, hour)
         )
@@ -457,6 +457,8 @@ async def _providers(
     hours: list[datetime],
     timezone: str,
 ) -> list[ProviderBreakdownResponseDTO]:
+    # Chỉ LLM: embedding BGE-M3 tự host, không tính chi phí theo nhà cung cấp nữa.
+    scope = [*scope, LlmCall.kind == "llm"]
     totals = (
         await session.execute(
             select(
@@ -470,7 +472,7 @@ async def _providers(
                 func.coalesce(func.sum(LlmCall.completion_tokens), 0),
                 func.coalesce(func.sum(LlmCall.input_count), 0),
                 func.coalesce(func.sum(LlmCall.latency_ms), 0.0),
-                func.coalesce(func.sum(LlmCall.cost_usd), 0.0),
+                func.coalesce(func.sum(LLM_COST), 0.0),
             )
             .where(LlmCall.created_at >= start, *scope)
             .group_by(LlmCall.provider, LlmCall.kind)
@@ -479,7 +481,7 @@ async def _providers(
     ).all()
     daily = (
         await session.execute(
-            select(LlmCall.provider, day, func.coalesce(func.sum(LlmCall.cost_usd), 0.0))
+            select(LlmCall.provider, day, func.coalesce(func.sum(LLM_COST), 0.0))
             .where(LlmCall.created_at >= start, *scope)
             .group_by(LlmCall.provider, day)
         )
@@ -488,7 +490,7 @@ async def _providers(
     since = datetime.now(ZoneInfo(timezone)) - timedelta(hours=25)
     hourly = (
         await session.execute(
-            select(LlmCall.provider, hour, func.coalesce(func.sum(LlmCall.cost_usd), 0.0))
+            select(LlmCall.provider, hour, func.coalesce(func.sum(LLM_COST), 0.0))
             .where(LlmCall.created_at >= since, *scope)
             .group_by(LlmCall.provider, hour)
         )
@@ -528,7 +530,7 @@ async def _ai(
     errors = func.sum(case((LlmCall.ok.is_(False), 1), else_=0))
     daily = (
         await session.execute(
-            select(day, func.count(), errors, func.coalesce(func.sum(LlmCall.cost_usd), 0.0))
+            select(day, func.count(), errors, func.coalesce(func.sum(LLM_COST), 0.0))
             .where(LlmCall.created_at >= start, *scope)
             .group_by(day)
         )
@@ -545,11 +547,11 @@ async def _ai(
                 func.coalesce(func.sum(LlmCall.prompt_tokens), 0),
                 func.coalesce(func.sum(LlmCall.completion_tokens), 0),
                 func.coalesce(func.sum(LlmCall.input_count), 0),
-                func.coalesce(func.sum(LlmCall.cost_usd), 0.0),
+                func.coalesce(func.sum(LLM_COST), 0.0),
             )
             .where(LlmCall.created_at >= start, *scope)
             .group_by(LlmCall.operation, LlmCall.kind)
-            .order_by(func.sum(LlmCall.cost_usd).desc(), LlmCall.operation)
+            .order_by(func.sum(LLM_COST).desc(), LlmCall.operation)
         )
     ).all()
     operations = [

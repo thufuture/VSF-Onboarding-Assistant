@@ -434,7 +434,14 @@ async def test_ai_service_failure_in_chat_returns_503_not_500(
 
     class BrokenLlm:
         async def complete_json(
-            self, *, system_prompt: str, user_prompt: str, timeout_seconds: float | None = None
+            self,
+            *,
+            system_prompt: str,
+            user_prompt: str,
+            timeout_seconds: float | None = None,
+            reasoning: bool = True,
+            stream: bool = False,
+            temperature: float | None = None,
         ) -> str:
             raise ChatCompletionError("lỗi mạng khi gọi LLM")
 

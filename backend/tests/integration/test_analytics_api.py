@@ -268,12 +268,11 @@ async def test_hr_overview_is_scoped_to_their_team_and_adds_up(
         assert operations["chat.answer"]["errors"] == 1
         assert operations["ingest.embed"]["input_count"] == 18
 
-        # Tách theo nhà cung cấp: DeepSeek (LLM, tính theo token) và BGE-M3 trên Modal (embedding, tính theo giây GPU)
+        # Tách theo nhà cung cấp: chỉ còn DeepSeek (LLM, tính theo token); embedding BGE-M3 tự host nên không có dòng chi phí riêng
         providers = {row["provider"]: row for row in ai["by_provider"]}
-        assert set(providers) == {"deepseek", "modal"}
-        assert providers["modal"]["kind"] == "embedding" and providers["modal"]["calls"] == 1
-        assert providers["modal"]["gpu_seconds"] == pytest.approx(3.3)
-        assert providers["modal"]["input_count"] == 18
+        assert set(providers) == {"deepseek"}
+        # Lời gọi embedding vẫn được đếm ở bảng theo thao tác (độ trễ), chỉ không cộng vào chi phí
+        assert operations["ingest.embed"]["cost_usd"] == 0.0
         assert providers["deepseek"]["kind"] == "llm" and providers["deepseek"]["calls"] == 4
         assert providers["deepseek"]["completion_tokens"] >= 12000
         assert sum(row["cost_usd"] for row in providers.values()) == pytest.approx(ai["cost_usd"])

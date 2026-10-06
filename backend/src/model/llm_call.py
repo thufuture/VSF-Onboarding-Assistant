@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import BigInteger, Boolean, Float, Index, Integer, String
+from sqlalchemy import BigInteger, Boolean, Float, Index, Integer, String, case
 from sqlalchemy.orm import Mapped, mapped_column
 
 from src.model.base import Base, created_at_column, id_column
@@ -44,3 +44,8 @@ class LlmCall(Base):
     attempt: Mapped[int] = mapped_column(Integer, server_default="1")
     queue_wait_ms: Mapped[float | None] = mapped_column(Float)
     created_at: Mapped[datetime] = created_at_column()
+
+
+# Chi phí chỉ tính cho LLM (DeepSeek, theo token). Embedding BGE-M3 do dự án tự host nên không còn tính tiền theo lời gọi:
+# mọi thống kê chi phí cộng qua biểu thức này để bỏ qua cả các dòng embedding cũ (đã ghi theo giây GPU của Modal).
+LLM_COST = case((LlmCall.kind == "llm", LlmCall.cost_usd), else_=0.0)

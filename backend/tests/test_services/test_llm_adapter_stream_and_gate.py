@@ -8,7 +8,6 @@ from typing import Any
 import httpx
 import pytest
 
-from src.infrastructure.ai import deepseek_adapter
 from src.infrastructure.ai.deepseek_adapter import ChatCompletionError, DeepSeekChatCompletion
 from src.infrastructure.ai.llm_gate import LlmGate
 from src.infrastructure.observability import call_metrics
@@ -29,7 +28,7 @@ def _patch_httpx(monkeypatch: pytest.MonkeyPatch, handler: Any) -> None:
     def factory(*args: Any, **kwargs: Any) -> httpx.AsyncClient:
         return real(transport=httpx.MockTransport(handler), *args, **kwargs)  # noqa: B026
 
-    monkeypatch.setattr(deepseek_adapter.httpx, "AsyncClient", factory)
+    monkeypatch.setattr(httpx, "AsyncClient", factory)
 
 
 def _sse(*chunks: dict[str, Any]) -> str:
