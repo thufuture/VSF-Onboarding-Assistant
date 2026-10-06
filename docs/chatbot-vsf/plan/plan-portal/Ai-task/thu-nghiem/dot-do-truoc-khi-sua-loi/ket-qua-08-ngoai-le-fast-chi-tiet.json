@@ -1,0 +1,861 @@
+[
+ [
+  {
+   "order": 1,
+   "title": "Nhận laptop tại tầng 12 và đăng nhập Outlook, Teams",
+   "summary": "Nhân viên đến tầng 12 gặp ITHD và HR để nhận laptop, sau đó đăng nhập Outlook và Teams trước khi làm tiếp các việc kế tiếp.",
+   "steps": [
+    "Đến tầng 12 gặp ITHD và HR.",
+    "Nhận laptop và đăng nhập Outlook, Teams.",
+    "Sau đó mới làm tiếp các việc kế tiếp."
+   ],
+   "done_criteria": [
+    "Đã nhận laptop tại tầng 12 và đăng nhập thành công Outlook và Teams."
+   ],
+   "prerequisites": [],
+   "sources": [
+    31
+   ],
+   "review_notes": [],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 2,
+   "title": "Gửi ticket ITHD kèm ảnh chụp lỗi nếu không đăng nhập được Outlook hoặc Teams",
+   "summary": "Khi không đăng nhập được Outlook hoặc Teams, nhân viên gửi ticket ITHD kèm ảnh chụp lỗi theo mẫu 'Cách viết email hỗ trợ ITHD'.",
+   "steps": [
+    "Gửi email tới support@vinsmartfuture.tech.",
+    "Tiêu đề theo mẫu: ITHD [Địa điểm làm việc] + [vắn tắt yêu cầu].",
+    "Nêu rõ lỗi và đính kèm ảnh chụp."
+   ],
+   "done_criteria": [
+    "Đã gửi email tới support@vinsmartfuture.tech với tiêu đề theo mẫu và đính kèm ảnh chụp lỗi."
+   ],
+   "prerequisites": [
+    "Nhận laptop tại tầng 12 và đăng nhập Outlook, Teams"
+   ],
+   "sources": [
+    32
+   ],
+   "review_notes": [],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 3,
+   "title": "Gửi email cho ITHD nếu không mở được trang helpdesk",
+   "summary": "Khi không mở được trang helpdesk, nhân viên kiểm tra đăng nhập Outlook và Teams, nếu vẫn không mở được thì gửi email cho ITHD theo mẫu và nêu rõ lỗi.",
+   "steps": [
+    "Kiểm tra đã đăng nhập Outlook và Teams chưa.",
+    "Nếu vẫn không mở được, gửi email cho ITHD theo mẫu và nêu rõ lỗi."
+   ],
+   "done_criteria": [
+    "Đã gửi email cho ITHD theo mẫu và nêu rõ lỗi khi không mở được trang helpdesk."
+   ],
+   "prerequisites": [
+    "Nhận laptop tại tầng 12 và đăng nhập Outlook, Teams"
+   ],
+   "sources": [
+    33
+   ],
+   "review_notes": [],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 4,
+   "title": "Xin phê duyệt T3 và tạo ticket cho yêu cầu ngoại lệ (Ubuntu, VPN, USB...)",
+   "summary": "Đối với yêu cầu ngoại lệ như đổi Windows sang Ubuntu, VPN, USB, nhân viên phải xin phê duyệt của T3, điền form VinSOC rồi mới tạo ticket ITHD.",
+   "steps": [
+    "Gửi email xin phê duyệt tới T3 (ở Khối KD và VH Vinmec là anh Dương Anh Nghi, v.dir.data3@vinsmartfuture.tech) theo mẫu 'Xin phê duyệt'.",
+    "Điền form VINSOC SECURITY REQUEST FORM.",
+    "Up load file theo chỉ dẫn.",
+    "Đợi email phản hồi của VinSOC.",
+    "Tạo ticket hỗ trợ như mẫu ở 'Cách viết email hỗ trợ ITHD' (ở khối mình là DUCBV5) rồi thực hiện tại phòng ITHD tầng 14."
+   ],
+   "done_criteria": [
+    "Đã gửi email xin phê duyệt T3, điền form VINSOC, upload file, nhận phản hồi từ VinSOC và tạo ticket ITHD."
+   ],
+   "prerequisites": [
+    "Nhận laptop tại tầng 12 và đăng nhập Outlook, Teams"
+   ],
+   "sources": [
+    34
+   ],
+   "review_notes": [],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 5,
+   "title": "Xin phê duyệt qua Team và chụp ảnh nếu máy đã dùng sẵn Ubuntu",
+   "summary": "Nếu máy đã dùng sẵn Ubuntu OS, nhân viên có thể xin phê duyệt qua Team và chụp ảnh.",
+   "steps": [
+    "Xin phê duyệt qua Team.",
+    "Chụp ảnh."
+   ],
+   "done_criteria": [
+    "Đã xin phê duyệt qua Team và chụp ảnh cho máy dùng sẵn Ubuntu."
+   ],
+   "prerequisites": [
+    "Nhận laptop tại tầng 12 và đăng nhập Outlook, Teams"
+   ],
+   "sources": [
+    35
+   ],
+   "review_notes": [],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 6,
+   "title": "Nhắn nhắc nhẹ T3 nếu chưa trả lời email phê duyệt sau 1 ngày làm việc",
+   "summary": "Nếu T3 chưa trả lời email phê duyệt, nhân viên chờ 1 ngày làm việc rồi nhắn nhắc nhẹ.",
+   "steps": [
+    "Chờ 1 ngày làm việc.",
+    "Nhắn nhắc nhẹ T3."
+   ],
+   "done_criteria": [
+    "Đã nhắn nhắc nhẹ T3 sau 1 ngày làm việc chờ đợi."
+   ],
+   "prerequisites": [
+    "Xin phê duyệt T3 và tạo ticket cho yêu cầu ngoại lệ (Ubuntu, VPN, USB...)"
+   ],
+   "sources": [
+    36
+   ],
+   "review_notes": [],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 7,
+   "title": "Kiểm tra hộp thư và liên hệ ITHD nếu VinSOC chưa phản hồi",
+   "summary": "Khi VinSOC chưa phản hồi, nhân viên kiểm tra hộp thư và thư rác, sau đó liên hệ ITHD.",
+   "steps": [
+    "Kiểm tra hộp thư và thư rác.",
+    "Liên hệ ITHD."
+   ],
+   "done_criteria": [
+    "Đã kiểm tra hộp thư, thư rác và liên hệ ITHD khi VinSOC chưa phản hồi."
+   ],
+   "prerequisites": [
+    "Xin phê duyệt T3 và tạo ticket cho yêu cầu ngoại lệ (Ubuntu, VPN, USB...)"
+   ],
+   "sources": [
+    37
+   ],
+   "review_notes": [],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 8,
+   "title": "Nộp bản photo giấy xác nhận nơi cư trú nếu không có VNeID",
+   "summary": "Nếu không có VNeID, nhân viên nộp bản photo giấy xác nhận nơi cư trú cho Phòng tuyển dụng trong ngày đầu.",
+   "steps": [
+    "Chuẩn bị bản photo giấy xác nhận nơi cư trú.",
+    "Nộp cho Phòng tuyển dụng trong ngày đầu."
+   ],
+   "done_criteria": [
+    "Đã nộp bản photo giấy xác nhận nơi cư trú cho Phòng tuyển dụng trong ngày đầu."
+   ],
+   "prerequisites": [
+    "Nhận laptop tại tầng 12 và đăng nhập Outlook, Teams"
+   ],
+   "sources": [
+    21
+   ],
+   "review_notes": [],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 9,
+   "title": "Nộp giấy hẹn lấy lý lịch tư pháp nếu chưa có",
+   "summary": "Nếu chưa có lý lịch tư pháp, nhân viên nộp giấy hẹn lấy lý lịch tư pháp thay thế cho Phòng tuyển dụng.",
+   "steps": [
+    "Nộp giấy hẹn lấy lý lịch tư pháp cho Phòng tuyển dụng."
+   ],
+   "done_criteria": [
+    "Đã nộp giấy hẹn lấy lý lịch tư pháp cho Phòng tuyển dụng."
+   ],
+   "prerequisites": [
+    "Nhận laptop tại tầng 12 và đăng nhập Outlook, Teams"
+   ],
+   "sources": [
+    23
+   ],
+   "review_notes": [],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 10,
+   "title": "Nộp phần hồ sơ đã có và thông báo giấy tờ còn thiếu",
+   "summary": "Khi thiếu giấy tờ hồ sơ, nhân viên nộp phần đã có và nói rõ giấy tờ còn thiếu để Phòng tuyển dụng ghi nhận.",
+   "steps": [
+    "Nộp phần hồ sơ đã có cho Phòng tuyển dụng.",
+    "Nói rõ giấy tờ còn thiếu để Phòng tuyển dụng ghi nhận."
+   ],
+   "done_criteria": [
+    "Đã nộp phần hồ sơ đã có và thông báo giấy tờ còn thiếu cho Phòng tuyển dụng."
+   ],
+   "prerequisites": [
+    "Nhận laptop tại tầng 12 và đăng nhập Outlook, Teams"
+   ],
+   "sources": [
+    24
+   ],
+   "review_notes": [],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 11,
+   "title": "Liên hệ Phòng nhân sự tầng 14 nếu faceid chấm công bị lỗi",
+   "summary": "Khi faceid chấm công bị lỗi, nhân viên liên hệ Phòng nhân sự tầng 14 để được xử lý.",
+   "steps": [
+    "Liên hệ Phòng nhân sự tầng 14 khi faceid chấm công bị lỗi."
+   ],
+   "done_criteria": [
+    "Đã liên hệ Phòng nhân sự tầng 14 để báo lỗi faceid chấm công."
+   ],
+   "prerequisites": [],
+   "sources": [
+    29
+   ],
+   "review_notes": [],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 12,
+   "title": "Yêu cầu tủ gửi đồ qua đầu mối request tủ gửi đồ",
+   "summary": "Khi cần tủ gửi đồ, nhân viên yêu cầu qua đầu mối request tủ gửi đồ (ở khối mình là NGANNK25).",
+   "steps": [
+    "Yêu cầu tủ gửi đồ qua đầu mối request tủ gửi đồ (ở khối mình là NGANNK25)."
+   ],
+   "done_criteria": [
+    "Đã gửi yêu cầu tủ gửi đồ qua đầu mối NGANNK25."
+   ],
+   "prerequisites": [],
+   "sources": [
+    40
+   ],
+   "review_notes": [],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 13,
+   "title": "Liên hệ Phòng nhân sự nếu chưa nhận email hướng dẫn ký hợp đồng lao động",
+   "summary": "Nếu sau ngày đầu vẫn chưa nhận email hướng dẫn ký hợp đồng lao động, nhân viên liên hệ Phòng nhân sự để được hỗ trợ.",
+   "steps": [
+    "Kiểm tra email hướng dẫn ký hợp đồng lao động (được gửi vào cuối ngày đầu).",
+    "Nếu sang ngày sau vẫn chưa có, liên hệ Phòng nhân sự."
+   ],
+   "done_criteria": [
+    "Đã liên hệ Phòng nhân sự nếu chưa nhận email hướng dẫn ký hợp đồng lao động."
+   ],
+   "prerequisites": [],
+   "sources": [
+    27
+   ],
+   "review_notes": [],
+   "confidence": "HIGH"
+  }
+ ],
+ [
+  {
+   "order": 1,
+   "title": "Nhận laptop và đăng nhập Outlook, Teams",
+   "summary": "Nhân viên cần đến tầng 12 gặp ITHD và HR để nhận laptop và đăng nhập Outlook, Teams trước khi làm tiếp các việc kế tiếp.",
+   "steps": [
+    "Đến tầng 12 gặp ITHD và HR.",
+    "Nhận laptop và đăng nhập Outlook, Teams.",
+    "Sau đó mới làm tiếp các việc kế tiếp."
+   ],
+   "done_criteria": [
+    "Đã nhận laptop tại tầng 12.",
+    "Đã đăng nhập được Outlook và Teams.",
+    "Đã sẵn sàng làm tiếp các việc kế tiếp."
+   ],
+   "prerequisites": [],
+   "sources": [
+    31
+   ],
+   "review_notes": [],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 2,
+   "title": "Nộp giấy xác nhận nơi cư trú",
+   "summary": "Nhân viên không có VNeID cần nộp bản photo giấy xác nhận nơi cư trú cho Phòng tuyển dụng trong ngày đầu.",
+   "steps": [
+    "Chuẩn bị bản photo giấy xác nhận nơi cư trú.",
+    "Nộp cho Phòng tuyển dụng trong ngày đầu."
+   ],
+   "done_criteria": [
+    "Đã nộp bản photo giấy xác nhận nơi cư trú cho Phòng tuyển dụng trong ngày đầu."
+   ],
+   "prerequisites": [],
+   "sources": [
+    21
+   ],
+   "review_notes": [],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 3,
+   "title": "Nộp giấy hẹn lấy lý lịch tư pháp",
+   "summary": "Nhân viên chưa có lý lịch tư pháp cần nộp giấy hẹn lấy lý lịch tư pháp thay thế.",
+   "steps": [
+    "Nộp giấy hẹn lấy lý lịch tư pháp thay cho lý lịch tư pháp.",
+    "Nộp cho Phòng tuyển dụng."
+   ],
+   "done_criteria": [
+    "Đã nộp giấy hẹn lấy lý lịch tư pháp cho Phòng tuyển dụng."
+   ],
+   "prerequisites": [],
+   "sources": [
+    23
+   ],
+   "review_notes": [],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 4,
+   "title": "Nộp phần hồ sơ đã có và nêu rõ giấy tờ còn thiếu",
+   "summary": "Nhân viên thiếu giấy tờ hồ sơ cần nộp phần đã có và nói rõ còn thiếu giấy nào để Phòng tuyển dụng ghi nhận.",
+   "steps": [
+    "Nộp phần hồ sơ đã có.",
+    "Nói rõ còn thiếu giấy nào để Phòng tuyển dụng ghi nhận."
+   ],
+   "done_criteria": [
+    "Đã nộp phần hồ sơ đã có và thông báo giấy tờ còn thiếu cho Phòng tuyển dụng."
+   ],
+   "prerequisites": [],
+   "sources": [
+    24
+   ],
+   "review_notes": [],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 5,
+   "title": "Hỏi Phòng tuyển dụng về việc dùng CMND thay căn cước công dân",
+   "summary": "Trường hợp chỉ có CMND không có căn cước công dân, cần hỏi Phòng tuyển dụng vì chưa có quy định.",
+   "steps": [
+    ""
+   ],
+   "done_criteria": [],
+   "prerequisites": [],
+   "sources": [
+    22
+   ],
+   "review_notes": [],
+   "confidence": "LOW"
+  },
+  {
+   "order": 6,
+   "title": "Liên hệ Phòng nhân sự nếu chưa nhận email hướng dẫn ký hợp đồng",
+   "summary": "Nhân viên chưa thấy email hướng dẫn ký hợp đồng lao động sau ngày đầu cần liên hệ Phòng nhân sự.",
+   "steps": [
+    "Kiểm tra email hướng dẫn ký hợp đồng lao động được gửi vào cuối ngày đầu.",
+    "Nếu sang ngày sau vẫn chưa có thì liên hệ Phòng nhân sự.",
+    "Ký hợp đồng trong thời gian quy định."
+   ],
+   "done_criteria": [
+    "Đã liên hệ Phòng nhân sự nếu chưa nhận email hướng dẫn ký hợp đồng.",
+    "Đã ký hợp đồng trong thời gian quy định."
+   ],
+   "prerequisites": [],
+   "sources": [
+    27
+   ],
+   "review_notes": [],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 7,
+   "title": "Hỏi Phòng nhân sự về đăng ký faceid cho văn phòng không phải Vincom Đồng Khởi",
+   "summary": "Trường hợp làm ở văn phòng không phải Vincom Đồng Khởi, cần hỏi Phòng nhân sự vì chưa có hướng dẫn.",
+   "steps": [
+    ""
+   ],
+   "done_criteria": [],
+   "prerequisites": [],
+   "sources": [
+    28
+   ],
+   "review_notes": [],
+   "confidence": "LOW"
+  },
+  {
+   "order": 8,
+   "title": "Liên hệ Phòng nhân sự tầng 14 khi faceid chấm công bị lỗi",
+   "summary": "Nhân viên gặp lỗi faceid chấm công cần liên hệ Phòng nhân sự tầng 14.",
+   "steps": [
+    "Liên hệ Phòng nhân sự tầng 14."
+   ],
+   "done_criteria": [
+    "Đã liên hệ Phòng nhân sự tầng 14 để xử lý lỗi faceid chấm công."
+   ],
+   "prerequisites": [],
+   "sources": [
+    29
+   ],
+   "review_notes": [],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 9,
+   "title": "Gửi ticket ITHD khi không đăng nhập được Outlook hoặc Teams",
+   "summary": "Nhân viên không đăng nhập được Outlook hoặc Teams cần gửi ticket ITHD kèm ảnh chụp lỗi theo mẫu.",
+   "steps": [
+    "Gửi email tới support@vinsmartfuture.tech.",
+    "Tiêu đề theo mẫu: ITHD [Địa điểm làm việc] + [vắn tắt yêu cầu].",
+    "Nêu rõ lỗi và đính kèm ảnh chụp."
+   ],
+   "done_criteria": [
+    "Đã gửi email tới support@vinsmartfuture.tech với tiêu đề theo mẫu và đính kèm ảnh chụp lỗi."
+   ],
+   "prerequisites": [
+    "Nhận laptop và đăng nhập Outlook, Teams"
+   ],
+   "sources": [
+    32
+   ],
+   "review_notes": [],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 10,
+   "title": "Gửi email cho ITHD khi không mở được trang helpdesk",
+   "summary": "Nhân viên không mở được trang helpdesk cần kiểm tra đăng nhập Outlook và Teams, nếu vẫn không được thì gửi email cho ITHD theo mẫu.",
+   "steps": [
+    "Kiểm tra đã đăng nhập Outlook và Teams chưa.",
+    "Nếu vẫn không mở được, gửi email cho ITHD theo mẫu và nêu rõ lỗi."
+   ],
+   "done_criteria": [
+    "Đã kiểm tra đăng nhập Outlook và Teams.",
+    "Đã gửi email cho ITHD nêu rõ lỗi nếu vẫn không mở được trang helpdesk."
+   ],
+   "prerequisites": [
+    "Nhận laptop và đăng nhập Outlook, Teams",
+    "Gửi ticket ITHD khi không đăng nhập được Outlook hoặc Teams"
+   ],
+   "sources": [
+    33
+   ],
+   "review_notes": [],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 11,
+   "title": "Liên hệ Phòng ĐT&PTVH về làm lại bài test cuối khóa",
+   "summary": "Trường hợp làm bài test cuối khóa dưới 80%, cần hỏi Phòng đào tạo và phát triển văn hóa về việc làm lại.",
+   "steps": [
+    ""
+   ],
+   "done_criteria": [],
+   "prerequisites": [
+    "Nhận laptop và đăng nhập Outlook, Teams"
+   ],
+   "sources": [
+    26
+   ],
+   "review_notes": [
+    "Nguồn có “v.thudq@vinsmartfuture.tech” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại."
+   ],
+   "confidence": "LOW"
+  },
+  {
+   "order": 12,
+   "title": "Xin phê duyệt và tạo ticket ITHD cho yêu cầu ngoại lệ",
+   "summary": "Nhân viên có yêu cầu ngoại lệ (đổi Windows sang Ubuntu, VPN, USB...) cần xin phê duyệt của T3, điền form VinSOC rồi mới tạo ticket ITHD.",
+   "steps": [
+    "Gửi email xin phê duyệt tới T3 (ở Khối KD và VH Vinmec là anh Dương Anh Nghi, v.dir.data3@vinsmartfuture.tech) theo mẫu 'Xin phê duyệt'.",
+    "Điền form VINSOC SECURITY REQUEST FORM.",
+    "Up load file theo chỉ dẫn.",
+    "Đợi email phản hồi của VinSOC.",
+    "Tạo ticket hỗ trợ như mẫu ở 'Cách viết email hỗ trợ ITHD' (ở khối mình là DUCBV5) rồi thực hiện tại phòng ITHD tầng 14."
+   ],
+   "done_criteria": [
+    "Đã gửi email xin phê duyệt tới T3.",
+    "Đã điền form VINSOC SECURITY REQUEST FORM và up load file theo chỉ dẫn.",
+    "Đã nhận email phản hồi của VinSOC.",
+    "Đã tạo ticket hỗ trợ ITHD."
+   ],
+   "prerequisites": [
+    "Nhận laptop và đăng nhập Outlook, Teams"
+   ],
+   "sources": [
+    34
+   ],
+   "review_notes": [],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 13,
+   "title": "Xin phê duyệt qua Team khi máy đã dùng sẵn Ubuntu",
+   "summary": "Nhân viên có máy đã dùng sẵn Ubuntu OS có thể xin phê duyệt qua Team và chụp ảnh.",
+   "steps": [
+    "Xin phê duyệt qua Team.",
+    "Chụp ảnh."
+   ],
+   "done_criteria": [
+    "Đã xin phê duyệt qua Team và chụp ảnh."
+   ],
+   "prerequisites": [
+    "Nhận laptop và đăng nhập Outlook, Teams"
+   ],
+   "sources": [
+    35
+   ],
+   "review_notes": [],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 14,
+   "title": "Nhắc nhẹ T3 sau 1 ngày làm việc nếu chưa trả lời email phê duyệt",
+   "summary": "Nhân viên chờ 1 ngày làm việc rồi nhắn nhắc nhẹ T3 nếu chưa nhận phản hồi email phê duyệt.",
+   "steps": [
+    "Chờ 1 ngày làm việc.",
+    "Nhắn nhắc nhẹ T3."
+   ],
+   "done_criteria": [
+    "Đã nhắn nhắc nhẹ T3 sau 1 ngày làm việc."
+   ],
+   "prerequisites": [
+    "Xin phê duyệt và tạo ticket ITHD cho yêu cầu ngoại lệ",
+    "Xin phê duyệt qua Team khi máy đã dùng sẵn Ubuntu"
+   ],
+   "sources": [
+    36
+   ],
+   "review_notes": [],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 15,
+   "title": "Yêu cầu tủ gửi đồ qua đầu mối",
+   "summary": "Nhân viên cần tủ gửi đồ thì yêu cầu qua đầu mối request tủ gửi đồ (ở khối mình là NGANNK25).",
+   "steps": [
+    "Yêu cầu tủ gửi đồ qua đầu mối request tủ gửi đồ (ở khối mình là NGANNK25)."
+   ],
+   "done_criteria": [
+    "Đã gửi yêu cầu tủ gửi đồ qua đầu mối."
+   ],
+   "prerequisites": [],
+   "sources": [
+    40
+   ],
+   "review_notes": [],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 16,
+   "title": "Liên hệ ITHD nếu VinSOC chưa phản hồi",
+   "summary": "Nhân viên kiểm tra hộp thư và thư rác, sau đó liên hệ ITHD nếu VinSOC chưa phản hồi.",
+   "steps": [
+    "Kiểm tra hộp thư và thư rác.",
+    "Liên hệ ITHD."
+   ],
+   "done_criteria": [
+    "Đã kiểm tra hộp thư và thư rác.",
+    "Đã liên hệ ITHD nếu VinSOC chưa phản hồi."
+   ],
+   "prerequisites": [
+    "Xin phê duyệt và tạo ticket ITHD cho yêu cầu ngoại lệ",
+    "Xin phê duyệt qua Team khi máy đã dùng sẵn Ubuntu"
+   ],
+   "sources": [
+    37
+   ],
+   "review_notes": [],
+   "confidence": "HIGH"
+  }
+ ],
+ [
+  {
+   "order": 1,
+   "title": "Nhận laptop và đăng nhập Outlook, Teams",
+   "summary": "Đến tầng 12 gặp ITHD và HR để nhận laptop và đăng nhập Outlook, Teams trước khi làm tiếp.",
+   "steps": [
+    "Đến tầng 12 gặp ITHD và HR.",
+    "Nhận laptop và đăng nhập Outlook, Teams.",
+    "Sau đó mới làm tiếp các việc kế tiếp."
+   ],
+   "done_criteria": [
+    "Đã nhận laptop và đăng nhập thành công Outlook và Teams."
+   ],
+   "prerequisites": [],
+   "sources": [
+    31
+   ],
+   "review_notes": [],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 2,
+   "title": "Nộp bản photo giấy xác nhận nơi cư trú",
+   "summary": "Nộp bản photo giấy xác nhận nơi cư trú cho Phòng tuyển dụng trong ngày đầu.",
+   "steps": [
+    "Chuẩn bị bản photo giấy xác nhận nơi cư trú.",
+    "Nộp cho Phòng tuyển dụng trong ngày đầu."
+   ],
+   "done_criteria": [
+    "Đã nộp bản photo giấy xác nhận nơi cư trú cho Phòng tuyển dụng trong ngày đầu."
+   ],
+   "prerequisites": [],
+   "sources": [
+    21
+   ],
+   "review_notes": [],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 3,
+   "title": "Liên hệ Phòng tuyển dụng về việc thay thế CMND",
+   "summary": "Hỏi Phòng tuyển dụng xem có thể dùng CMND thay cho căn cước công dân không.",
+   "steps": [
+    ""
+   ],
+   "done_criteria": [],
+   "prerequisites": [],
+   "sources": [
+    22
+   ],
+   "review_notes": [],
+   "confidence": "LOW"
+  },
+  {
+   "order": 4,
+   "title": "Nộp giấy hẹn lấy lý lịch tư pháp",
+   "summary": "Nộp giấy hẹn lấy lý lịch tư pháp thay cho lý lịch tư pháp.",
+   "steps": [
+    "Nộp giấy hẹn lấy lý lịch tư pháp thay cho lý lịch tư pháp.",
+    "Liên hệ Phòng tuyển dụng."
+   ],
+   "done_criteria": [
+    "Đã nộp giấy hẹn lấy lý lịch tư pháp cho Phòng tuyển dụng."
+   ],
+   "prerequisites": [],
+   "sources": [
+    23
+   ],
+   "review_notes": [],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 5,
+   "title": "Nộp phần hồ sơ đã có và báo thiếu giấy tờ",
+   "summary": "Nộp phần hồ sơ đã có và nói rõ còn thiếu giấy nào cho Phòng tuyển dụng.",
+   "steps": [
+    "Nộp phần đã có và nói rõ còn thiếu giấy nào để Phòng tuyển dụng ghi nhận.",
+    "Liên hệ Phòng tuyển dụng."
+   ],
+   "done_criteria": [
+    "Đã nộp phần hồ sơ đã có và thông báo giấy tờ còn thiếu cho Phòng tuyển dụng."
+   ],
+   "prerequisites": [],
+   "sources": [
+    24
+   ],
+   "review_notes": [],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 6,
+   "title": "Liên hệ Phòng đào tạo về bài test cuối khóa dưới 80%",
+   "summary": "Hỏi Phòng đào tạo và phát triển văn hóa về việc làm lại bài test cuối khóa nếu dưới 80%.",
+   "steps": [
+    ""
+   ],
+   "done_criteria": [],
+   "prerequisites": [],
+   "sources": [
+    26
+   ],
+   "review_notes": [
+    "Nguồn có “v.thudq@vinsmartfuture.tech” nhưng hướng dẫn chưa nhắc tới; HR kiểm tra lại."
+   ],
+   "confidence": "LOW"
+  },
+  {
+   "order": 7,
+   "title": "Yêu cầu tủ gửi đồ qua đầu mối",
+   "summary": "Yêu cầu tủ gửi đồ qua đầu mối request tủ gửi đồ (ở khối mình là NGANNK25).",
+   "steps": [
+    "Yêu cầu tủ gửi đồ qua đầu mối request tủ gửi đồ (ở khối mình là NGANNK25)."
+   ],
+   "done_criteria": [
+    "Đã gửi yêu cầu tủ gửi đồ qua đầu mối."
+   ],
+   "prerequisites": [],
+   "sources": [
+    40
+   ],
+   "review_notes": [],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 8,
+   "title": "Liên hệ Phòng nhân sự nếu chưa nhận email hướng dẫn ký hợp đồng",
+   "summary": "Nếu sang ngày sau vẫn chưa có email hướng dẫn ký hợp đồng lao động thì liên hệ Phòng nhân sự.",
+   "steps": [
+    "Nếu sang ngày sau vẫn chưa có email hướng dẫn ký hợp đồng lao động thì liên hệ Phòng nhân sự.",
+    "Hợp đồng phải ký trong thời gian quy định."
+   ],
+   "done_criteria": [
+    "Đã liên hệ Phòng nhân sự nếu chưa nhận email hướng dẫn ký hợp đồng."
+   ],
+   "prerequisites": [],
+   "sources": [
+    27
+   ],
+   "review_notes": [],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 9,
+   "title": "Liên hệ Phòng nhân sự về đăng ký faceid ở văn phòng khác",
+   "summary": "Hỏi Phòng nhân sự về cách đăng ký faceid khi làm ở văn phòng không phải Vincom Đồng Khởi.",
+   "steps": [
+    ""
+   ],
+   "done_criteria": [],
+   "prerequisites": [],
+   "sources": [
+    28
+   ],
+   "review_notes": [],
+   "confidence": "LOW"
+  },
+  {
+   "order": 10,
+   "title": "Liên hệ Phòng nhân sự tầng 14 khi faceid chấm công bị lỗi",
+   "summary": "Liên hệ Phòng nhân sự tầng 14 khi faceid chấm công bị lỗi.",
+   "steps": [
+    "Liên hệ Phòng nhân sự tầng 14."
+   ],
+   "done_criteria": [
+    "Đã liên hệ Phòng nhân sự tầng 14 khi faceid chấm công bị lỗi."
+   ],
+   "prerequisites": [],
+   "sources": [
+    29
+   ],
+   "review_notes": [],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 11,
+   "title": "Gửi ticket ITHD khi không đăng nhập được Outlook hoặc Teams",
+   "summary": "Gửi ticket ITHD kèm ảnh chụp lỗi theo mẫu 'Cách viết email hỗ trợ ITHD'.",
+   "steps": [
+    "Gửi email tới support@vinsmartfuture.tech.",
+    "Tiêu đề theo mẫu: ITHD [Địa điểm làm việc] + [vắn tắt yêu cầu].",
+    "Nêu rõ lỗi và đính kèm ảnh chụp."
+   ],
+   "done_criteria": [
+    "Đã gửi email tới support@vinsmartfuture.tech với tiêu đề và nội dung theo mẫu."
+   ],
+   "prerequisites": [
+    "Nhận laptop và đăng nhập Outlook, Teams"
+   ],
+   "sources": [
+    32
+   ],
+   "review_notes": [],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 12,
+   "title": "Gửi email cho ITHD khi không mở được trang helpdesk",
+   "summary": "Kiểm tra đăng nhập Outlook và Teams, nếu vẫn không mở được trang helpdesk thì gửi email cho ITHD theo mẫu.",
+   "steps": [
+    "Kiểm tra đã đăng nhập Outlook và Teams chưa.",
+    "Nếu vẫn không mở được, gửi email cho ITHD theo mẫu và nêu rõ lỗi."
+   ],
+   "done_criteria": [
+    "Đã gửi email cho ITHD theo mẫu khi không mở được trang helpdesk."
+   ],
+   "prerequisites": [
+    "Nhận laptop và đăng nhập Outlook, Teams"
+   ],
+   "sources": [
+    33
+   ],
+   "review_notes": [],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 13,
+   "title": "Xin phê duyệt T3 và hoàn thành chuỗi yêu cầu ngoại lệ",
+   "summary": "Gửi email xin phê duyệt T3, điền form VinSOC, đợi phản hồi và tạo ticket ITHD cho yêu cầu ngoại lệ.",
+   "steps": [
+    "Gửi email xin phê duyệt tới T3 (ở Khối KD và VH Vinmec là anh Dương Anh Nghi, v.dir.data3@vinsmartfuture.tech) theo mẫu 'Xin phê duyệt'.",
+    "Điền form VINSOC SECURITY REQUEST FORM.",
+    "Up load file theo chỉ dẫn.",
+    "Đợi email phản hồi của VinSOC.",
+    "Tạo ticket hỗ trợ như mẫu ở 'Cách viết email hỗ trợ ITHD' (ở khối mình là DUCBV5) rồi thực hiện tại phòng ITHD tầng 14."
+   ],
+   "done_criteria": [
+    "Đã gửi email xin phê duyệt T3, điền form VinSOC, nhận phản hồi và tạo ticket ITHD."
+   ],
+   "prerequisites": [],
+   "sources": [
+    34
+   ],
+   "review_notes": [],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 14,
+   "title": "Xin phê duyệt qua Team khi dùng sẵn Ubuntu",
+   "summary": "Nếu đang sử dụng sẵn Ubuntu OS, xin phê duyệt qua Team và chụp ảnh.",
+   "steps": [
+    "Nếu đang sử dụng sẵn Ubuntu OS, xin phê duyệt qua Team và chụp ảnh."
+   ],
+   "done_criteria": [
+    "Đã xin phê duyệt qua Team và chụp ảnh khi dùng sẵn Ubuntu."
+   ],
+   "prerequisites": [],
+   "sources": [
+    35
+   ],
+   "review_notes": [],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 15,
+   "title": "Chờ và nhắc nhẹ T3 nếu chưa trả lời email phê duyệt",
+   "summary": "Chờ 1 ngày làm việc rồi nhắn nhắc nhẹ T3 nếu chưa trả lời email phê duyệt.",
+   "steps": [
+    "Chờ 1 ngày làm việc rồi nhắn nhắc nhẹ."
+   ],
+   "done_criteria": [
+    "Đã nhắn nhắc nhẹ T3 sau 1 ngày làm việc."
+   ],
+   "prerequisites": [
+    "Xin phê duyệt T3 và hoàn thành chuỗi yêu cầu ngoại lệ"
+   ],
+   "sources": [
+    36
+   ],
+   "review_notes": [],
+   "confidence": "HIGH"
+  },
+  {
+   "order": 16,
+   "title": "Kiểm tra hộp thư và liên hệ ITHD khi VinSOC chưa phản hồi",
+   "summary": "Kiểm tra hộp thư và thư rác, sau đó liên hệ ITHD nếu VinSOC chưa phản hồi.",
+   "steps": [
+    "Kiểm tra hộp thư và thư rác, sau đó liên hệ ITHD."
+   ],
+   "done_criteria": [
+    "Đã kiểm tra hộp thư và thư rác, và liên hệ ITHD nếu cần."
+   ],
+   "prerequisites": [
+    "Xin phê duyệt T3 và hoàn thành chuỗi yêu cầu ngoại lệ"
+   ],
+   "sources": [
+    37
+   ],
+   "review_notes": [],
+   "confidence": "HIGH"
+  }
+ ]
+]

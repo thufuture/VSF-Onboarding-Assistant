@@ -1,0 +1,2271 @@
+{
+ "ghi_chu": "Chạy thật end-to-end (API -> job -> DeepSeek thật). Dòng thời gian đọc qua GET /portal/jobs/{id} mỗi 0,5 giây.",
+ "scenarios": {
+  "mot-tai-lieu-1": {
+   "job_id": 978,
+   "elapsed_seconds": 14,
+   "documents": [
+    {
+     "title": "Huong_dan_ngay_1_onboarding.docx",
+     "tasks": 16,
+     "uncovered": 0,
+     "skipped_info": 0,
+     "metrics": {
+      "mode": "fast",
+      "batches": 1,
+      "seconds": {
+       "draft": 13.11,
+       "order": 1.43,
+       "total": 14.64
+      },
+      "order_source": "ai",
+      "skipped_sections": 0
+     },
+     "titles": [
+      "Chuẩn bị hồ sơ nộp trong ngày đầu",
+      "Check-in tại địa điểm làm việc",
+      "Tham gia chương trình Đào tạo Hội nhập",
+      "Nghe nội quy công ty",
+      "Nhận laptop tại tầng 12",
+      "Đăng nhập Outlook và Teams",
+      "Cập nhật ảnh đại diện, chữ ký, slide",
+      "Đăng ký faceid chấm công tại tầng 14",
+      "Đăng ký faceid ra vào tòa nhà",
+      "Kiểm tra ticket và Quick access trước khi viết ticket",
+      "Viết email hỗ trợ ITHD",
+      "Xử lý trường hợp ticket không hỗ trợ",
+      "Xin phê duyệt T3 cho dịch vụ ZTNA, WAF, Cloud (Wiz)",
+      "Tạo ticket hỗ trợ ITHD sau khi có phê duyệt VinSOC",
+      "Yêu cầu tủ gửi đồ",
+      "Ký hợp đồng lao động"
+     ]
+    }
+   ],
+   "timeline": [
+    {
+     "t": 0.1,
+     "status": "RUNNING",
+     "percent": 0,
+     "elapsed_seconds": 0,
+     "queue_ahead": null,
+     "steps": {
+      "read": "pending",
+      "draft": "pending",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 0.6,
+     "status": "RUNNING",
+     "percent": 5,
+     "elapsed_seconds": 0,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 1.1,
+     "status": "RUNNING",
+     "percent": 8,
+     "elapsed_seconds": 1,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 1.6,
+     "status": "RUNNING",
+     "percent": 8,
+     "elapsed_seconds": 1,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 2.2,
+     "status": "RUNNING",
+     "percent": 12,
+     "elapsed_seconds": 2,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 2.7,
+     "status": "RUNNING",
+     "percent": 12,
+     "elapsed_seconds": 2,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 3.2,
+     "status": "RUNNING",
+     "percent": 15,
+     "elapsed_seconds": 3,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 3.7,
+     "status": "RUNNING",
+     "percent": 15,
+     "elapsed_seconds": 3,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 4.2,
+     "status": "RUNNING",
+     "percent": 18,
+     "elapsed_seconds": 4,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 4.7,
+     "status": "RUNNING",
+     "percent": 18,
+     "elapsed_seconds": 4,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 5.2,
+     "status": "RUNNING",
+     "percent": 21,
+     "elapsed_seconds": 5,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 5.7,
+     "status": "RUNNING",
+     "percent": 21,
+     "elapsed_seconds": 5,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 6.2,
+     "status": "RUNNING",
+     "percent": 24,
+     "elapsed_seconds": 6,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 6.7,
+     "status": "RUNNING",
+     "percent": 24,
+     "elapsed_seconds": 6,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 7.2,
+     "status": "RUNNING",
+     "percent": 26,
+     "elapsed_seconds": 7,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 7.7,
+     "status": "RUNNING",
+     "percent": 26,
+     "elapsed_seconds": 7,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 8.2,
+     "status": "RUNNING",
+     "percent": 29,
+     "elapsed_seconds": 8,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 8.7,
+     "status": "RUNNING",
+     "percent": 29,
+     "elapsed_seconds": 8,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 9.2,
+     "status": "RUNNING",
+     "percent": 31,
+     "elapsed_seconds": 9,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 9.7,
+     "status": "RUNNING",
+     "percent": 31,
+     "elapsed_seconds": 9,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 10.2,
+     "status": "RUNNING",
+     "percent": 33,
+     "elapsed_seconds": 10,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 10.7,
+     "status": "RUNNING",
+     "percent": 33,
+     "elapsed_seconds": 10,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 11.2,
+     "status": "RUNNING",
+     "percent": 35,
+     "elapsed_seconds": 11,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 11.7,
+     "status": "RUNNING",
+     "percent": 35,
+     "elapsed_seconds": 11,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 12.2,
+     "status": "RUNNING",
+     "percent": 37,
+     "elapsed_seconds": 12,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 12.7,
+     "status": "RUNNING",
+     "percent": 37,
+     "elapsed_seconds": 12,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 13.6,
+     "status": "RUNNING",
+     "percent": 83,
+     "elapsed_seconds": 13,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "done",
+      "verify": "done",
+      "cover": "skipped",
+      "order": "running",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 14.1,
+     "status": "RUNNING",
+     "percent": 83,
+     "elapsed_seconds": 13,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "done",
+      "verify": "done",
+      "cover": "skipped",
+      "order": "running",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 14.6,
+     "status": "RUNNING",
+     "percent": 85,
+     "elapsed_seconds": 14,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "done",
+      "verify": "done",
+      "cover": "skipped",
+      "order": "running",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 14.8,
+     "status": "SUCCEEDED",
+     "percent": 100,
+     "elapsed_seconds": 14,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "done",
+      "verify": "done",
+      "cover": "skipped",
+      "order": "done",
+      "save": "done"
+     }
+    }
+   ]
+  },
+  "mot-tai-lieu-2": {
+   "job_id": 979,
+   "elapsed_seconds": 14,
+   "documents": [
+    {
+     "title": "Huong_dan_ngay_1_onboarding.docx",
+     "tasks": 19,
+     "uncovered": 0,
+     "skipped_info": 0,
+     "metrics": {
+      "mode": "fast",
+      "batches": 1,
+      "seconds": {
+       "draft": 13.41,
+       "order": 1.52,
+       "total": 14.95
+      },
+      "order_source": "ai",
+      "skipped_sections": 0
+     },
+     "titles": [
+      "Chuẩn bị hồ sơ nộp trong ngày đầu",
+      "Check-in tại địa điểm làm việc",
+      "Tham gia chương trình Đào tạo Hội nhập",
+      "Nghe nội quy công ty",
+      "Nhận laptop tại tầng 12",
+      "Đăng nhập Outlook và Teams",
+      "Cập nhật ảnh đại diện, chữ ký, slide",
+      "Kiểm tra ticket trước khi viết",
+      "Viết email hỗ trợ ITHD",
+      "Xử lý trường hợp ticket không hỗ trợ",
+      "Xin phê duyệt T3 cho ZTNA, WAF, Cloud (Wiz)",
+      "Điền form yêu cầu ANBM VinSOC",
+      "Xin phê duyệt qua Team cho máy đã có Ubuntu",
+      "Đợi email phản hồi từ VinSOC và liên hệ ITHD",
+      "Tạo ticket hỗ trợ ITHD",
+      "Yêu cầu tủ gửi đồ",
+      "Đăng ký faceid chấm công tại tầng 14",
+      "Đăng ký faceid ra vào tòa nhà",
+      "Ký hợp đồng lao động"
+     ]
+    }
+   ],
+   "timeline": [
+    {
+     "t": 0.0,
+     "status": "PENDING",
+     "percent": 0,
+     "elapsed_seconds": null,
+     "queue_ahead": 0,
+     "steps": {}
+    },
+    {
+     "t": 0.5,
+     "status": "RUNNING",
+     "percent": 5,
+     "elapsed_seconds": 0,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 1.1,
+     "status": "RUNNING",
+     "percent": 8,
+     "elapsed_seconds": 1,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 1.6,
+     "status": "RUNNING",
+     "percent": 8,
+     "elapsed_seconds": 1,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 2.1,
+     "status": "RUNNING",
+     "percent": 12,
+     "elapsed_seconds": 1,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 2.6,
+     "status": "RUNNING",
+     "percent": 12,
+     "elapsed_seconds": 1,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 3.1,
+     "status": "RUNNING",
+     "percent": 15,
+     "elapsed_seconds": 2,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 3.6,
+     "status": "RUNNING",
+     "percent": 15,
+     "elapsed_seconds": 2,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 4.1,
+     "status": "RUNNING",
+     "percent": 18,
+     "elapsed_seconds": 4,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 4.6,
+     "status": "RUNNING",
+     "percent": 18,
+     "elapsed_seconds": 4,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 5.1,
+     "status": "RUNNING",
+     "percent": 21,
+     "elapsed_seconds": 5,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 5.6,
+     "status": "RUNNING",
+     "percent": 21,
+     "elapsed_seconds": 5,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 6.1,
+     "status": "RUNNING",
+     "percent": 24,
+     "elapsed_seconds": 6,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 6.6,
+     "status": "RUNNING",
+     "percent": 24,
+     "elapsed_seconds": 6,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 7.1,
+     "status": "RUNNING",
+     "percent": 26,
+     "elapsed_seconds": 7,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 7.6,
+     "status": "RUNNING",
+     "percent": 26,
+     "elapsed_seconds": 7,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 8.1,
+     "status": "RUNNING",
+     "percent": 29,
+     "elapsed_seconds": 8,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 8.6,
+     "status": "RUNNING",
+     "percent": 29,
+     "elapsed_seconds": 8,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 9.1,
+     "status": "RUNNING",
+     "percent": 31,
+     "elapsed_seconds": 9,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 9.7,
+     "status": "RUNNING",
+     "percent": 31,
+     "elapsed_seconds": 9,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 10.1,
+     "status": "RUNNING",
+     "percent": 33,
+     "elapsed_seconds": 10,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 10.7,
+     "status": "RUNNING",
+     "percent": 33,
+     "elapsed_seconds": 10,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 11.2,
+     "status": "RUNNING",
+     "percent": 35,
+     "elapsed_seconds": 11,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 11.7,
+     "status": "RUNNING",
+     "percent": 35,
+     "elapsed_seconds": 11,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 12.2,
+     "status": "RUNNING",
+     "percent": 37,
+     "elapsed_seconds": 12,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 12.7,
+     "status": "RUNNING",
+     "percent": 37,
+     "elapsed_seconds": 12,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 13.2,
+     "status": "RUNNING",
+     "percent": 39,
+     "elapsed_seconds": 13,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 13.8,
+     "status": "RUNNING",
+     "percent": 83,
+     "elapsed_seconds": 13,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "done",
+      "verify": "done",
+      "cover": "skipped",
+      "order": "running",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 14.3,
+     "status": "RUNNING",
+     "percent": 85,
+     "elapsed_seconds": 14,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "done",
+      "verify": "done",
+      "cover": "skipped",
+      "order": "running",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 14.8,
+     "status": "RUNNING",
+     "percent": 85,
+     "elapsed_seconds": 14,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "done",
+      "verify": "done",
+      "cover": "skipped",
+      "order": "running",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 15.1,
+     "status": "SUCCEEDED",
+     "percent": 100,
+     "elapsed_seconds": 14,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "done",
+      "verify": "done",
+      "cover": "skipped",
+      "order": "done",
+      "save": "done"
+     }
+    }
+   ]
+  },
+  "mot-tai-lieu-3": {
+   "job_id": 980,
+   "elapsed_seconds": 16,
+   "documents": [
+    {
+     "title": "Huong_dan_ngay_1_onboarding.docx",
+     "tasks": 21,
+     "uncovered": 0,
+     "skipped_info": 0,
+     "metrics": {
+      "mode": "fast",
+      "batches": 1,
+      "seconds": {
+       "draft": 14.67,
+       "order": 1.37,
+       "total": 16.07
+      },
+      "order_source": "ai",
+      "skipped_sections": 0
+     },
+     "titles": [
+      "Chuẩn bị hồ sơ nộp trong ngày đầu",
+      "Check-in tại địa điểm làm việc",
+      "Tham gia chương trình Đào tạo Hội nhập",
+      "Nghe nội quy công ty",
+      "Đăng ký faceid chấm công tại tầng 14",
+      "Đăng ký faceid ra vào tòa nhà",
+      "Nhận laptop tại tầng 12",
+      "Đăng nhập Outlook và Teams",
+      "Cập nhật ảnh đại diện, chữ ký, slide",
+      "Kiểm tra ticket và Quick access trước khi viết ticket",
+      "Viết email hỗ trợ ITHD",
+      "Xử lý trường hợp ticket không hỗ trợ",
+      "Đăng ký các dịch vụ IT (web mail, VPN, Exception, Firewall, PAM)",
+      "Xin phê duyệt T3 cho ZTNA, WAF, Cloud (Wiz)",
+      "Điền form yêu cầu ANBM VinSOC",
+      "Xin phê duyệt qua Team cho máy đã có Ubuntu",
+      "Xử lý trường hợp máy Windows",
+      "Đợi email phản hồi từ VinSOC và liên hệ ITHD",
+      "Tạo ticket hỗ trợ ITHD sau khi có phản hồi VinSOC",
+      "Yêu cầu tủ gửi đồ",
+      "Ký hợp đồng lao động"
+     ]
+    }
+   ],
+   "timeline": [
+    {
+     "t": 0.0,
+     "status": "PENDING",
+     "percent": 0,
+     "elapsed_seconds": null,
+     "queue_ahead": 0,
+     "steps": {}
+    },
+    {
+     "t": 0.5,
+     "status": "RUNNING",
+     "percent": 5,
+     "elapsed_seconds": 0,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 1.0,
+     "status": "RUNNING",
+     "percent": 5,
+     "elapsed_seconds": 0,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 1.5,
+     "status": "RUNNING",
+     "percent": 8,
+     "elapsed_seconds": 1,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 2.0,
+     "status": "RUNNING",
+     "percent": 12,
+     "elapsed_seconds": 2,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 2.5,
+     "status": "RUNNING",
+     "percent": 12,
+     "elapsed_seconds": 2,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 3.0,
+     "status": "RUNNING",
+     "percent": 15,
+     "elapsed_seconds": 3,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 3.5,
+     "status": "RUNNING",
+     "percent": 15,
+     "elapsed_seconds": 3,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 4.0,
+     "status": "RUNNING",
+     "percent": 18,
+     "elapsed_seconds": 4,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 4.5,
+     "status": "RUNNING",
+     "percent": 18,
+     "elapsed_seconds": 4,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 5.0,
+     "status": "RUNNING",
+     "percent": 21,
+     "elapsed_seconds": 5,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 5.5,
+     "status": "RUNNING",
+     "percent": 21,
+     "elapsed_seconds": 5,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 6.0,
+     "status": "RUNNING",
+     "percent": 24,
+     "elapsed_seconds": 6,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 6.5,
+     "status": "RUNNING",
+     "percent": 24,
+     "elapsed_seconds": 6,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 7.0,
+     "status": "RUNNING",
+     "percent": 26,
+     "elapsed_seconds": 7,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 7.6,
+     "status": "RUNNING",
+     "percent": 26,
+     "elapsed_seconds": 7,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 8.1,
+     "status": "RUNNING",
+     "percent": 29,
+     "elapsed_seconds": 8,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 8.6,
+     "status": "RUNNING",
+     "percent": 29,
+     "elapsed_seconds": 8,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 9.1,
+     "status": "RUNNING",
+     "percent": 31,
+     "elapsed_seconds": 9,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 9.6,
+     "status": "RUNNING",
+     "percent": 31,
+     "elapsed_seconds": 9,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 10.1,
+     "status": "RUNNING",
+     "percent": 33,
+     "elapsed_seconds": 10,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 10.6,
+     "status": "RUNNING",
+     "percent": 33,
+     "elapsed_seconds": 10,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 11.1,
+     "status": "RUNNING",
+     "percent": 35,
+     "elapsed_seconds": 11,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 11.7,
+     "status": "RUNNING",
+     "percent": 35,
+     "elapsed_seconds": 11,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 12.2,
+     "status": "RUNNING",
+     "percent": 37,
+     "elapsed_seconds": 12,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 12.7,
+     "status": "RUNNING",
+     "percent": 37,
+     "elapsed_seconds": 12,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 13.2,
+     "status": "RUNNING",
+     "percent": 38,
+     "elapsed_seconds": 13,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 13.7,
+     "status": "RUNNING",
+     "percent": 38,
+     "elapsed_seconds": 13,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 14.2,
+     "status": "RUNNING",
+     "percent": 40,
+     "elapsed_seconds": 14,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 14.9,
+     "status": "RUNNING",
+     "percent": 83,
+     "elapsed_seconds": 14,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "done",
+      "verify": "done",
+      "cover": "skipped",
+      "order": "running",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 15.4,
+     "status": "RUNNING",
+     "percent": 84,
+     "elapsed_seconds": 15,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "done",
+      "verify": "done",
+      "cover": "skipped",
+      "order": "running",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 15.9,
+     "status": "RUNNING",
+     "percent": 84,
+     "elapsed_seconds": 15,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "done",
+      "verify": "done",
+      "cover": "skipped",
+      "order": "running",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 16.1,
+     "status": "SUCCEEDED",
+     "percent": 100,
+     "elapsed_seconds": 16,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "done",
+      "verify": "done",
+      "cover": "skipped",
+      "order": "done",
+      "save": "done"
+     }
+    }
+   ]
+  },
+  "hai-tai-lieu-song-song": {
+   "job_id": 981,
+   "elapsed_seconds": 15,
+   "documents": [
+    {
+     "title": "Huong_dan_ngay_1_onboarding.docx",
+     "tasks": 18,
+     "uncovered": 0,
+     "skipped_info": 0,
+     "metrics": {
+      "mode": "fast",
+      "batches": 1,
+      "seconds": {
+       "draft": 13.69,
+       "order": 1.51,
+       "total": 15.22
+      },
+      "order_source": "ai",
+      "skipped_sections": 0
+     },
+     "titles": [
+      "Chuẩn bị hồ sơ nộp trong ngày đầu",
+      "Check-in tại địa điểm làm việc",
+      "Tham gia chương trình Đào tạo Hội nhập",
+      "Nghe nội quy công ty",
+      "Nhận laptop tại tầng 12",
+      "Đăng nhập Outlook và Teams",
+      "Cập nhật ảnh đại diện, chữ ký, slide",
+      "Xem hướng dẫn viết ticket hỗ trợ",
+      "Viết email hỗ trợ ITHD",
+      "Xử lý trường hợp ticket không hỗ trợ",
+      "Xin phê duyệt T3 cho dịch vụ ZTNA, WAF, Cloud (Wiz)",
+      "Điền form yêu cầu ANBM VinSOC",
+      "Chờ email phản hồi từ VinSOC",
+      "Tạo ticket hỗ trợ ITHD sau khi có phản hồi VinSOC",
+      "Đăng ký faceid chấm công tại tầng 14",
+      "Đăng ký faceid ra vào tòa nhà",
+      "Yêu cầu tủ gửi đồ",
+      "Ký hợp đồng lao động"
+     ]
+    },
+    {
+     "title": "Cac_truong_hop_ngoai_le_ngay_1_v2.docx",
+     "tasks": 14,
+     "uncovered": 0,
+     "skipped_info": 7,
+     "metrics": {
+      "mode": "fast",
+      "batches": 1,
+      "seconds": {
+       "draft": 10.14,
+       "order": 1.25,
+       "total": 11.41
+      },
+      "order_source": "ai",
+      "skipped_sections": 7
+     },
+     "titles": [
+      "Nhận laptop tại tầng 12 và đăng nhập Outlook, Teams",
+      "Nộp giấy xác nhận nơi cư trú khi không có VNeID",
+      "Nộp CMND và giấy xác nhận nơi cư trú thay cho CCCD",
+      "Nộp giấy hẹn lấy lý lịch tư pháp",
+      "Nộp phần hồ sơ đã có và báo thiếu giấy tờ",
+      "Gửi ticket ITHD khi không đăng nhập được Outlook hoặc Teams",
+      "Kiểm tra đăng nhập và gửi email ITHD khi không mở được trang helpdesk",
+      "Xin phê duyệt T3 và tạo ticket ITHD cho yêu cầu ngoại lệ",
+      "Xin phê duyệt qua Team và chụp ảnh khi dùng sẵn Ubuntu",
+      "Chờ và nhắc nhẹ T3 nếu chưa trả lời email phê duyệt",
+      "Kiểm tra hộp thư và liên hệ ITHD khi VinSOC chưa phản hồi",
+      "Liên hệ Phòng nhân sự tầng 14 khi faceid chấm công bị lỗi",
+      "Yêu cầu tủ gửi đồ qua đầu mối",
+      "Liên hệ Phòng nhân sự nếu chưa nhận email hướng dẫn ký hợp đồng"
+     ]
+    }
+   ],
+   "timeline": [
+    {
+     "t": 0.0,
+     "status": "PENDING",
+     "percent": 0,
+     "elapsed_seconds": null,
+     "queue_ahead": 0,
+     "steps": {}
+    },
+    {
+     "t": 0.5,
+     "status": "RUNNING",
+     "percent": 5,
+     "elapsed_seconds": 0,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 1.1,
+     "status": "RUNNING",
+     "percent": 8,
+     "elapsed_seconds": 1,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 1.6,
+     "status": "RUNNING",
+     "percent": 8,
+     "elapsed_seconds": 1,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 2.1,
+     "status": "RUNNING",
+     "percent": 12,
+     "elapsed_seconds": 1,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 2.6,
+     "status": "RUNNING",
+     "percent": 12,
+     "elapsed_seconds": 1,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 3.1,
+     "status": "RUNNING",
+     "percent": 15,
+     "elapsed_seconds": 2,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 3.6,
+     "status": "RUNNING",
+     "percent": 15,
+     "elapsed_seconds": 2,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 4.1,
+     "status": "RUNNING",
+     "percent": 18,
+     "elapsed_seconds": 3,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 4.6,
+     "status": "RUNNING",
+     "percent": 18,
+     "elapsed_seconds": 3,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 5.1,
+     "status": "RUNNING",
+     "percent": 21,
+     "elapsed_seconds": 4,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 5.6,
+     "status": "RUNNING",
+     "percent": 21,
+     "elapsed_seconds": 4,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 6.1,
+     "status": "RUNNING",
+     "percent": 24,
+     "elapsed_seconds": 5,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 6.6,
+     "status": "RUNNING",
+     "percent": 24,
+     "elapsed_seconds": 5,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 7.1,
+     "status": "RUNNING",
+     "percent": 26,
+     "elapsed_seconds": 7,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 7.6,
+     "status": "RUNNING",
+     "percent": 26,
+     "elapsed_seconds": 7,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 8.1,
+     "status": "RUNNING",
+     "percent": 29,
+     "elapsed_seconds": 7,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 8.6,
+     "status": "RUNNING",
+     "percent": 29,
+     "elapsed_seconds": 7,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 9.1,
+     "status": "RUNNING",
+     "percent": 31,
+     "elapsed_seconds": 8,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 9.6,
+     "status": "RUNNING",
+     "percent": 31,
+     "elapsed_seconds": 8,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 10.1,
+     "status": "RUNNING",
+     "percent": 33,
+     "elapsed_seconds": 10,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "pending",
+      "cover": "pending",
+      "order": "pending",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 10.6,
+     "status": "RUNNING",
+     "percent": 58,
+     "elapsed_seconds": 10,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "running",
+      "cover": "pending",
+      "order": "running",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 11.1,
+     "status": "RUNNING",
+     "percent": 60,
+     "elapsed_seconds": 11,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "running",
+      "cover": "pending",
+      "order": "running",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 11.6,
+     "status": "RUNNING",
+     "percent": 65,
+     "elapsed_seconds": 11,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "running",
+      "cover": "pending",
+      "order": "running",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 12.1,
+     "status": "RUNNING",
+     "percent": 66,
+     "elapsed_seconds": 12,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "running",
+      "cover": "pending",
+      "order": "running",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 12.6,
+     "status": "RUNNING",
+     "percent": 66,
+     "elapsed_seconds": 12,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "running",
+      "cover": "pending",
+      "order": "running",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 13.1,
+     "status": "RUNNING",
+     "percent": 66,
+     "elapsed_seconds": 13,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "running",
+      "cover": "pending",
+      "order": "running",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 13.6,
+     "status": "RUNNING",
+     "percent": 66,
+     "elapsed_seconds": 13,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "running",
+      "verify": "running",
+      "cover": "pending",
+      "order": "running",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 14.2,
+     "status": "RUNNING",
+     "percent": 89,
+     "elapsed_seconds": 14,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "done",
+      "verify": "done",
+      "cover": "skipped",
+      "order": "running",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 14.7,
+     "status": "RUNNING",
+     "percent": 89,
+     "elapsed_seconds": 14,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "done",
+      "verify": "done",
+      "cover": "skipped",
+      "order": "running",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 15.2,
+     "status": "RUNNING",
+     "percent": 90,
+     "elapsed_seconds": 15,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "done",
+      "verify": "done",
+      "cover": "skipped",
+      "order": "running",
+      "save": "pending"
+     }
+    },
+    {
+     "t": 15.3,
+     "status": "SUCCEEDED",
+     "percent": 100,
+     "elapsed_seconds": 15,
+     "queue_ahead": null,
+     "steps": {
+      "read": "done",
+      "draft": "done",
+      "verify": "done",
+      "cover": "skipped",
+      "order": "done",
+      "save": "done"
+     }
+    }
+   ]
+  }
+ },
+ "llm_calls": [
+  {
+   "id": 326,
+   "job_id": 978,
+   "ok": true,
+   "attempt": 1,
+   "latency_ms": 13084,
+   "queue_wait_ms": 0,
+   "first_byte_ms": 765,
+   "first_token_ms": 1247,
+   "reasoning_ms": 0,
+   "content_ms": 11836,
+   "prompt_tokens": 3792,
+   "completion_tokens": 4351,
+   "reasoning_tokens": 0,
+   "cached_input_tokens": 256,
+   "finish_reason": "stop",
+   "cost_usd": 0.00636
+  },
+  {
+   "id": 327,
+   "job_id": 978,
+   "ok": true,
+   "attempt": 1,
+   "latency_ms": 1414,
+   "queue_wait_ms": 0,
+   "first_byte_ms": 614,
+   "first_token_ms": 1000,
+   "reasoning_ms": 0,
+   "content_ms": 414,
+   "prompt_tokens": 1201,
+   "completion_tokens": 83,
+   "reasoning_tokens": 0,
+   "cached_input_tokens": 0,
+   "finish_reason": "stop",
+   "cost_usd": 0.00046
+  },
+  {
+   "id": 328,
+   "job_id": 979,
+   "ok": true,
+   "attempt": 1,
+   "latency_ms": 13365,
+   "queue_wait_ms": 0,
+   "first_byte_ms": 460,
+   "first_token_ms": 1087,
+   "reasoning_ms": 0,
+   "content_ms": 12278,
+   "prompt_tokens": 3792,
+   "completion_tokens": 4568,
+   "reasoning_tokens": 0,
+   "cached_input_tokens": 3584,
+   "finish_reason": "stop",
+   "cost_usd": 0.00662
+  },
+  {
+   "id": 329,
+   "job_id": 979,
+   "ok": true,
+   "attempt": 1,
+   "latency_ms": 1495,
+   "queue_wait_ms": 0,
+   "first_byte_ms": 591,
+   "first_token_ms": 1219,
+   "reasoning_ms": 0,
+   "content_ms": 276,
+   "prompt_tokens": 1340,
+   "completion_tokens": 106,
+   "reasoning_tokens": 0,
+   "cached_input_tokens": 256,
+   "finish_reason": "stop",
+   "cost_usd": 0.00053
+  },
+  {
+   "id": 330,
+   "job_id": 980,
+   "ok": true,
+   "attempt": 1,
+   "latency_ms": 14646,
+   "queue_wait_ms": 0,
+   "first_byte_ms": 464,
+   "first_token_ms": 810,
+   "reasoning_ms": 0,
+   "content_ms": 13836,
+   "prompt_tokens": 3792,
+   "completion_tokens": 5179,
+   "reasoning_tokens": 0,
+   "cached_input_tokens": 3584,
+   "finish_reason": "stop",
+   "cost_usd": 0.00735
+  },
+  {
+   "id": 331,
+   "job_id": 980,
+   "ok": true,
+   "attempt": 1,
+   "latency_ms": 1357,
+   "queue_wait_ms": 0,
+   "first_byte_ms": 441,
+   "first_token_ms": 1014,
+   "reasoning_ms": 0,
+   "content_ms": 343,
+   "prompt_tokens": 1519,
+   "completion_tokens": 69,
+   "reasoning_tokens": 0,
+   "cached_input_tokens": 128,
+   "finish_reason": "stop",
+   "cost_usd": 0.00054
+  },
+  {
+   "id": 332,
+   "job_id": 981,
+   "ok": true,
+   "attempt": 1,
+   "latency_ms": 10122,
+   "queue_wait_ms": 0,
+   "first_byte_ms": 610,
+   "first_token_ms": 1094,
+   "reasoning_ms": 0,
+   "content_ms": 9028,
+   "prompt_tokens": 2848,
+   "completion_tokens": 3517,
+   "reasoning_tokens": 0,
+   "cached_input_tokens": 256,
+   "finish_reason": "stop",
+   "cost_usd": 0.00507
+  },
+  {
+   "id": 333,
+   "job_id": 981,
+   "ok": true,
+   "attempt": 1,
+   "latency_ms": 1243,
+   "queue_wait_ms": 0,
+   "first_byte_ms": 413,
+   "first_token_ms": 920,
+   "reasoning_ms": 0,
+   "content_ms": 323,
+   "prompt_tokens": 1222,
+   "completion_tokens": 59,
+   "reasoning_tokens": 0,
+   "cached_input_tokens": 256,
+   "finish_reason": "stop",
+   "cost_usd": 0.00044
+  },
+  {
+   "id": 334,
+   "job_id": 981,
+   "ok": true,
+   "attempt": 1,
+   "latency_ms": 13484,
+   "queue_wait_ms": 0,
+   "first_byte_ms": 519,
+   "first_token_ms": 1005,
+   "reasoning_ms": 0,
+   "content_ms": 12479,
+   "prompt_tokens": 3792,
+   "completion_tokens": 4609,
+   "reasoning_tokens": 0,
+   "cached_input_tokens": 3584,
+   "finish_reason": "stop",
+   "cost_usd": 0.00667
+  },
+  {
+   "id": 335,
+   "job_id": 981,
+   "ok": true,
+   "attempt": 1,
+   "latency_ms": 1492,
+   "queue_wait_ms": 0,
+   "first_byte_ms": 506,
+   "first_token_ms": 1109,
+   "reasoning_ms": 0,
+   "content_ms": 384,
+   "prompt_tokens": 1272,
+   "completion_tokens": 59,
+   "reasoning_tokens": 0,
+   "cached_input_tokens": 512,
+   "finish_reason": "stop",
+   "cost_usd": 0.00045
+  }
+ ]
+}

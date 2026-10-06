@@ -1,6 +1,8 @@
 # Kế hoạch tối ưu "Tạo task bằng AI": công nghệ, luồng, mã nguồn, vì sao chậm và cách làm nhanh (03/10/2026)
 
-> **Chỉ là kế hoạch, chưa sửa mã sản phẩm.** Phần "đo" đã chạy thật: gọi LLM thật để đo, **không ghi vào DB**. Số liệu lấy từ hai nguồn: bảng `llm_calls` (bản sao lưu DB dev ngày 02/10, 734 dòng) và các thí nghiệm trong [thu-nghiem/](thu-nghiem/) (chạy lại được bằng [thu_nghiem_toi_uu.py](thu-nghiem/thu_nghiem_toi_uu.py)).
+> **Cập nhật 03/10/2026: kế hoạch này đã được thực hiện (P1, P2 và một phần mục 13, 14). Xem [bao-cao-toi-uu-do-tre-tao-task-ai.md](bao-cao-toi-uu-do-tre-tao-task-ai.md)** (đã sửa gì, hàm nào, luồng chạy, số đo thật: trung vị 126,8 giây xuống 14,5 giây, và các mục chưa làm). Nội dung bên dưới giữ nguyên làm hồ sơ lập kế hoạch.
+>
+> Phần "đo" của kế hoạch đã chạy thật: gọi LLM thật để đo, **không ghi vào DB**. Số liệu lấy từ hai nguồn: bảng `llm_calls` (bản sao lưu DB dev ngày 02/10, 734 dòng) và các thí nghiệm trong [thu-nghiem/](thu-nghiem/) (chạy lại được bằng [thu_nghiem_toi_uu.py](thu-nghiem/thu_nghiem_toi_uu.py)).
 > Tài liệu liên quan: [bao-cao-hoan-thanh-viga-task-ai.md](../bao-cao-hoan-thanh-viga-task-ai.md) (những gì đã làm cho luồng này), [ingest-tai-lieu-va-tao-task-bang-ai.md](../ingest-tai-lieu-va-tao-task-bang-ai.md) (thiết kế gốc, mục 14.5).
 
 ## 1. Kết luận ngắn
