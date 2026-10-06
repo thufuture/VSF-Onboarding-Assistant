@@ -1,0 +1,24 @@
+#!/bin/bash
+# Cloud-init của máy embedding BGE-M3: cài Docker, đặt mã dịch vụ, build ảnh (tải mô hình từ Hugging Face) và chạy container.
+# Nhật ký: /var/log/embedder-bootstrap.log. Kiểm tra xong: curl http://localhost:8080/health
+set -euo pipefail
+exec > >(tee /var/log/embedder-bootstrap.log) 2>&1
+
+export DEBIAN_FRONTEND=noninteractive
+apt-get update -y
+apt-get install -y docker.io
+systemctl enable --now docker
+
+mkdir -p /opt/embedder
+echo '${server_py_b64}' | base64 -d > /opt/embedder/server.py
+echo '${dockerfile_b64}' | base64 -d > /opt/embedder/Dockerfile
+echo '${requirements_txt_b64}' | base64 -d > /opt/embedder/requirements.txt
+
+# Khóa chỉ nằm trong file quyền 600 của root và được đưa vào container lúc chạy, không ghi vào ảnh Docker.
+install -m 600 /dev/null /etc/embedder.env
+echo 'EMBEDDING_API_KEY=${api_key}' >> /etc/embedder.env
+echo 'DTYPE=${dtype}' >> /etc/embedder.env
+
+docker build -t bge-m3-embedder /opt/embedder
+docker run -d --name embedder --restart unless-stopped --env-file /etc/embedder.env -p 8080:8080 bge-m3-embedder
+echo "embedder-bootstrap: xong, đang nạp mô hình (xem docker logs embedder)"

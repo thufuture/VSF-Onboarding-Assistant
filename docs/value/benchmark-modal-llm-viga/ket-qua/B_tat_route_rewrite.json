@@ -1,0 +1,4061 @@
+{
+ "label": "B_tat_route_rewrite",
+ "runs": 2,
+ "results": [
+  {
+   "run": 1,
+   "id": 1,
+   "set": "doc",
+   "question": "Hồ sơ cần nộp trong ngày đầu gồm những gì?",
+   "expect": "ANSWER",
+   "seconds": 6.508,
+   "request_id": "cbac079227e1426b8450057e70ed5b33",
+   "route": "FALLBACK",
+   "type": "ANSWER",
+   "got": "ANSWER",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 1436.5643998607993,
+     "prompt_tokens": 1176,
+     "completion_tokens": 32,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00039119999999999997,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 1131.0168001800776,
+     "prompt_tokens": 357,
+     "completion_tokens": 28,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00014069999999999998,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 1598.7619999796152,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00035492516399547456,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 2173.7663000822067,
+     "prompt_tokens": 5872,
+     "completion_tokens": 228,
+     "reasoning_tokens": 27,
+     "cost_usd": 0.0020352,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 1,
+   "id": 2,
+   "set": "doc",
+   "question": "Nộp hồ sơ ngày đầu thì liên hệ đầu mối nào?",
+   "expect": "ANSWER",
+   "seconds": 5.87,
+   "request_id": "5daac1a31ec5430daf16e1f8e6a8f590",
+   "route": "LLM",
+   "type": "ANSWER",
+   "got": "ANSWER",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 1014.3154002726078,
+     "prompt_tokens": 1175,
+     "completion_tokens": 47,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00040889999999999996,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 1234.4912001863122,
+     "prompt_tokens": 356,
+     "completion_tokens": 31,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.000144,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 1581.5614005550742,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0003511066309232265,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 1911.8403000757098,
+     "prompt_tokens": 5635,
+     "completion_tokens": 171,
+     "reasoning_tokens": 81,
+     "cost_usd": 0.0018957,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 1,
+   "id": 3,
+   "set": "doc",
+   "question": "Chương trình Đào tạo Hội nhập có bắt buộc không và điều kiện hoàn thành là gì?",
+   "expect": "ANSWER",
+   "seconds": 7.366,
+   "request_id": "6b39e9f8c23e4ac9bb087dca6acf243c",
+   "route": "LLM",
+   "type": "ANSWER",
+   "got": "ANSWER",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 1304.2179001495242,
+     "prompt_tokens": 1186,
+     "completion_tokens": 60,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0004278,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 1036.197000183165,
+     "prompt_tokens": 367,
+     "completion_tokens": 51,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0001713,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 1731.2503000721335,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00038433756661601366,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 3108.5529001429677,
+     "prompt_tokens": 12547,
+     "completion_tokens": 637,
+     "reasoning_tokens": 323,
+     "cost_usd": 0.0045285,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 1,
+   "id": 4,
+   "set": "doc",
+   "question": "Bài test cuối khóa phải đạt bao nhiêu phần trăm?",
+   "expect": "ANSWER",
+   "seconds": 5.518,
+   "request_id": "3b4b0e316fc8453fbf4cae9b663a841b",
+   "route": "LLM",
+   "type": "ANSWER",
+   "got": "ANSWER",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 976.6482999548316,
+     "prompt_tokens": 1173,
+     "completion_tokens": 46,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0004071,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 1173.83289989084,
+     "prompt_tokens": 354,
+     "completion_tokens": 24,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.000135,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 1515.8657999709249,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00033652220759354534,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 1739.9650998413563,
+     "prompt_tokens": 5482,
+     "completion_tokens": 175,
+     "reasoning_tokens": 61,
+     "cost_usd": 0.0018545999999999999,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 1,
+   "id": 5,
+   "set": "doc",
+   "question": "Đầu mối của chương trình Đào tạo Hội nhập là ai, email gì?",
+   "expect": "ANSWER",
+   "seconds": 7.581,
+   "request_id": "ae8b965f99114022a12571a6a8f371f7",
+   "route": "LLM",
+   "type": "ANSWER",
+   "got": "ANSWER",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 691.4271004498005,
+     "prompt_tokens": 1179,
+     "completion_tokens": 53,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00041729999999999995,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 1124.8843995854259,
+     "prompt_tokens": 360,
+     "completion_tokens": 36,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0001512,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 3382.0413993671536,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0007508131906595082,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 2277.2848000749946,
+     "prompt_tokens": 6519,
+     "completion_tokens": 360,
+     "reasoning_tokens": 222,
+     "cost_usd": 0.0023877,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 1,
+   "id": 6,
+   "set": "doc",
+   "question": "Khi nào tôi ký hợp đồng lao động?",
+   "expect": "ANSWER",
+   "seconds": 6.539,
+   "request_id": "98ad336f8cde4c1c9c50b12dababc970",
+   "route": "FALLBACK",
+   "type": "ANSWER",
+   "got": "ANSWER",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 1352.8017001226544,
+     "prompt_tokens": 1170,
+     "completion_tokens": 32,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0003894,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 1129.2653996497393,
+     "prompt_tokens": 351,
+     "completion_tokens": 22,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00013169999999999998,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 1693.7667997553945,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00037601622954569757,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 2255.7525001466274,
+     "prompt_tokens": 5758,
+     "completion_tokens": 409,
+     "reasoning_tokens": 258,
+     "cost_usd": 0.0022182,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 1,
+   "id": 7,
+   "set": "doc",
+   "question": "Đăng ký faceid chấm công ở đâu?",
+   "expect": "ANSWER",
+   "seconds": 5.694,
+   "request_id": "267128ca9c19416aadbb4be2b06ec20b",
+   "route": "FALLBACK",
+   "type": "ANSWER",
+   "got": "ANSWER",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 826.4659000560641,
+     "prompt_tokens": 1170,
+     "completion_tokens": 32,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0003894,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 1293.8863998278975,
+     "prompt_tokens": 351,
+     "completion_tokens": 23,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0001329,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 1504.0092999115586,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.000333890064580366,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 1946.5787997469306,
+     "prompt_tokens": 6635,
+     "completion_tokens": 307,
+     "reasoning_tokens": 172,
+     "cost_usd": 0.0023589,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 1,
+   "id": 8,
+   "set": "doc",
+   "question": "Tôi nhận laptop ở đâu?",
+   "expect": "ANSWER",
+   "seconds": 5.869,
+   "request_id": "f6b75c8e7d8c4b5ea59aef52eab3c0b6",
+   "route": "FALLBACK",
+   "type": "ANSWER",
+   "got": "ANSWER",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 982.8019002452493,
+     "prompt_tokens": 1164,
+     "completion_tokens": 32,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0003876,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 1327.7390003204346,
+     "prompt_tokens": 345,
+     "completion_tokens": 17,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0001239,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 1739.3559999763966,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00038613703199476,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 1683.9596005156636,
+     "prompt_tokens": 5893,
+     "completion_tokens": 193,
+     "reasoning_tokens": 95,
+     "cost_usd": 0.0019995,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 1,
+   "id": 9,
+   "set": "doc",
+   "question": "Nhận laptop xong thì làm gì tiếp theo?",
+   "expect": "ANSWER",
+   "seconds": 6.835,
+   "request_id": "11bf576202ae4270abc8b691901eabb2",
+   "route": "FALLBACK",
+   "type": "ANSWER",
+   "got": "ANSWER",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 1377.3538991808891,
+     "prompt_tokens": 1168,
+     "completion_tokens": 27,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0003828,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 742.9204992949963,
+     "prompt_tokens": 349,
+     "completion_tokens": 23,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00013230000000000002,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 2070.2155008912086,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0004595878411978483,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 2480.2631000056863,
+     "prompt_tokens": 6647,
+     "completion_tokens": 207,
+     "reasoning_tokens": 103,
+     "cost_usd": 0.0022425,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 1,
+   "id": 10,
+   "set": "doc",
+   "question": "Viết email hỗ trợ cho ITHD thì gửi tới địa chỉ nào và đặt tiêu đề thế nào?",
+   "expect": "ANSWER",
+   "seconds": 7.944,
+   "request_id": "3fbf8bd21a844f469d59e93a7528a893",
+   "route": "LLM",
+   "type": "ANSWER",
+   "got": "ANSWER",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 1338.5226000100374,
+     "prompt_tokens": 1188,
+     "completion_tokens": 60,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00042839999999999995,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 1661.5359000861645,
+     "prompt_tokens": 369,
+     "completion_tokens": 43,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00016230000000000001,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 2129.0331995114684,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.000472645370291546,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 2659.139299765229,
+     "prompt_tokens": 6038,
+     "completion_tokens": 366,
+     "reasoning_tokens": 198,
+     "cost_usd": 0.0022505999999999997,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 1,
+   "id": 11,
+   "set": "doc",
+   "question": "Trước khi viết ticket tôi cần kiểm tra gì?",
+   "expect": "ANSWER",
+   "seconds": 5.145,
+   "request_id": "d4dac2ab5a7540c798d1da873344c0f4",
+   "route": "LLM",
+   "type": "ANSWER",
+   "got": "ANSWER",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 1040.2017002925277,
+     "prompt_tokens": 1172,
+     "completion_tokens": 46,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00040679999999999997,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 846.4887998998165,
+     "prompt_tokens": 353,
+     "completion_tokens": 26,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0001371,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 1495.5976996570826,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00033202268932387236,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 1654.3974000960588,
+     "prompt_tokens": 6312,
+     "completion_tokens": 286,
+     "reasoning_tokens": 144,
+     "cost_usd": 0.0022367999999999997,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 1,
+   "id": 12,
+   "set": "doc",
+   "question": "Muốn dùng VPN hoặc xin exception USB thì cần ai đồng thuận?",
+   "expect": "ANSWER",
+   "seconds": 6.67,
+   "request_id": "ab66ba74f1d24c798b36056f1367ba0d",
+   "route": "LLM",
+   "type": "ANSWER",
+   "got": "ANSWER",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 1178.7983002141118,
+     "prompt_tokens": 1176,
+     "completion_tokens": 50,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0004128,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 1028.46849989146,
+     "prompt_tokens": 357,
+     "completion_tokens": 29,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00014189999999999998,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 1516.0179995000362,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.000336555995889008,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 2800.0298999249935,
+     "prompt_tokens": 6740,
+     "completion_tokens": 518,
+     "reasoning_tokens": 321,
+     "cost_usd": 0.0026436,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 1,
+   "id": 13,
+   "set": "doc",
+   "question": "Máy tôi đã dùng sẵn Ubuntu thì xin phê duyệt thế nào?",
+   "expect": "ANSWER",
+   "seconds": 5.683,
+   "request_id": "625863246fa14b70994609e776b151b3",
+   "route": "FALLBACK",
+   "type": "ANSWER",
+   "got": "ANSWER",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 856.4441995695233,
+     "prompt_tokens": 1182,
+     "completion_tokens": 32,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00039299999999999996,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 1259.9809998646379,
+     "prompt_tokens": 363,
+     "completion_tokens": 34,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00014969999999999998,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 1520.0263001024723,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00033744583862274885,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 1939.1015004366636,
+     "prompt_tokens": 5756,
+     "completion_tokens": 248,
+     "reasoning_tokens": 117,
+     "cost_usd": 0.0020244,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 1,
+   "id": 14,
+   "set": "doc",
+   "question": "Sau khi VinSOC phản hồi email thì tôi làm gì?",
+   "expect": "ANSWER",
+   "seconds": 6.005,
+   "request_id": "787f403664024d39bdababde84ecd7ec",
+   "route": "FALLBACK",
+   "type": "ANSWER",
+   "got": "ANSWER",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 1248.1124000623822,
+     "prompt_tokens": 1173,
+     "completion_tokens": 32,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00039029999999999995,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 1016.9758992269635,
+     "prompt_tokens": 354,
+     "completion_tokens": 28,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0001398,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 1542.2967001795769,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00034238986743986605,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 2093.1955007836223,
+     "prompt_tokens": 6612,
+     "completion_tokens": 355,
+     "reasoning_tokens": 163,
+     "cost_usd": 0.0024096,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 1,
+   "id": 15,
+   "set": "doc",
+   "question": "Yêu cầu tủ gửi đồ như thế nào?",
+   "expect": "ANSWER",
+   "seconds": 5.416,
+   "request_id": "c9ae122d40d048f5bcba08f3a7a22bca",
+   "route": "FALLBACK",
+   "type": "ANSWER",
+   "got": "ANSWER",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 1115.7986000180244,
+     "prompt_tokens": 1171,
+     "completion_tokens": 32,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0003897,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 855.6287996470928,
+     "prompt_tokens": 352,
+     "completion_tokens": 23,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00013319999999999999,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 1491.1599000915885,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00033103749782033265,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 1844.331900589168,
+     "prompt_tokens": 5379,
+     "completion_tokens": 290,
+     "reasoning_tokens": 166,
+     "cost_usd": 0.0019617000000000002,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 1,
+   "id": 16,
+   "set": "doc",
+   "question": "Tôi chưa có lý lịch tư pháp thì sao?",
+   "expect": "ANSWER",
+   "seconds": 6.599,
+   "request_id": "36a38c4356774cac940b72500b733618",
+   "route": "LLM",
+   "type": "ANSWER",
+   "got": "ANSWER",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 1217.8028002381325,
+     "prompt_tokens": 1174,
+     "completion_tokens": 46,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0004074,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 989.9992002174258,
+     "prompt_tokens": 355,
+     "completion_tokens": 27,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00013890000000000002,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 2509.1060996055603,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0005570215541124344,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 1783.0854002386332,
+     "prompt_tokens": 6650,
+     "completion_tokens": 200,
+     "reasoning_tokens": 66,
+     "cost_usd": 0.002235,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 1,
+   "id": 17,
+   "set": "doc",
+   "question": "Tôi chỉ có CMND, không có căn cước công dân thì thay được không?",
+   "expect": "ANY",
+   "seconds": 9.414,
+   "request_id": "8da78c80d2cf44e093b7190c4958089a",
+   "route": "LLM",
+   "type": "NO_BASIS",
+   "got": "NO_BASIS",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 824.9228997156024,
+     "prompt_tokens": 1177,
+     "completion_tokens": 52,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00041549999999999996,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 727.4026004597545,
+     "prompt_tokens": 358,
+     "completion_tokens": 37,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00015179999999999998,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 1585.826899856329,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00035205357176810504,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 6154.09279987216,
+     "prompt_tokens": 6612,
+     "completion_tokens": 1249,
+     "reasoning_tokens": 1174,
+     "cost_usd": 0.0034823999999999996,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 1,
+   "id": 18,
+   "set": "doc",
+   "question": "T3 chưa trả lời email phê duyệt thì tôi làm sao?",
+   "expect": "ANSWER",
+   "seconds": 6.759,
+   "request_id": "ecc3a986af644e8a92792419094cea93",
+   "route": "LLM",
+   "type": "ANSWER",
+   "got": "ANSWER",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 1142.3858003690839,
+     "prompt_tokens": 1177,
+     "completion_tokens": 45,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0004071,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 843.4669002890587,
+     "prompt_tokens": 358,
+     "completion_tokens": 38,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.000153,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 1542.922000400722,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00034252868408896027,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 3122.663199901581,
+     "prompt_tokens": 6647,
+     "completion_tokens": 616,
+     "reasoning_tokens": 430,
+     "cost_usd": 0.0027332999999999997,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 1,
+   "id": 19,
+   "set": "doc",
+   "question": "Có bắt buộc làm chuỗi yêu cầu ngoại lệ như Ubuntu, VPN, USB không?",
+   "expect": "ANSWER",
+   "seconds": 9.014,
+   "request_id": "190ce978ed8a42c182cd7593909d0ca9",
+   "route": "LLM",
+   "type": "ANSWER",
+   "got": "ANSWER",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 1206.4827997237444,
+     "prompt_tokens": 1183,
+     "completion_tokens": 58,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0004245,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 2087.897200137377,
+     "prompt_tokens": 364,
+     "completion_tokens": 38,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00015480000000000002,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 2949.7025003656745,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0006548339550811798,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 2596.423599869013,
+     "prompt_tokens": 6600,
+     "completion_tokens": 408,
+     "reasoning_tokens": 266,
+     "cost_usd": 0.0024695999999999997,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 1,
+   "id": 20,
+   "set": "doc",
+   "question": "Văn phòng của tôi không phải Vincom Đồng Khởi thì đăng ký faceid thế nào?",
+   "expect": "ANY",
+   "seconds": 7.113,
+   "request_id": "d4aae02045094cac896593bf36afaaaa",
+   "route": "LLM",
+   "type": "NO_BASIS",
+   "got": "NO_BASIS",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 954.9697004258633,
+     "prompt_tokens": 1186,
+     "completion_tokens": 55,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0004218,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 914.4596997648478,
+     "prompt_tokens": 367,
+     "completion_tokens": 39,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00015689999999999996,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 1616.597699932754,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0003588846893850714,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 3470.0938994064927,
+     "prompt_tokens": 6732,
+     "completion_tokens": 606,
+     "reasoning_tokens": 529,
+     "cost_usd": 0.0027467999999999998,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 1,
+   "id": 21,
+   "set": "doc",
+   "question": "tôi ở hồ chí minh checkin ở đâu á",
+   "expect": "ANY",
+   "seconds": 1.007,
+   "request_id": "844711d9cb3a4a3d9b46d2ba6ebc332f",
+   "route": "LLM",
+   "type": "INFO",
+   "got": "NO_BASIS",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 947.7771995589137,
+     "prompt_tokens": 1172,
+     "completion_tokens": 24,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0003804,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 1,
+   "id": 22,
+   "set": "doc",
+   "question": "Tôi chỉ có CMND, không có căn cước công dân, có thay được không?",
+   "expect": "ANY",
+   "seconds": 15.509,
+   "request_id": "0858cb51e96d4941ac06af0428ad08e8",
+   "route": "LLM",
+   "type": "NO_BASIS",
+   "got": "NO_BASIS",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 1275.475399568677,
+     "prompt_tokens": 1178,
+     "completion_tokens": 52,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00041579999999999997,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 1102.4920996278524,
+     "prompt_tokens": 359,
+     "completion_tokens": 38,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0001533,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 1725.1027002930641,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0003829727994650602,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 11246.814699843526,
+     "prompt_tokens": 6590,
+     "completion_tokens": 2496,
+     "reasoning_tokens": 2420,
+     "cost_usd": 0.0049721999999999995,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 1,
+   "id": 23,
+   "set": "doc",
+   "question": "tôi không có căn cước công dân sài vnid được không",
+   "expect": "ANY",
+   "seconds": 10.674,
+   "request_id": "487046f5fa90478c8783a86384b378de",
+   "route": "LLM",
+   "type": "NO_BASIS",
+   "got": "NO_BASIS",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 1135.590299963951,
+     "prompt_tokens": 1175,
+     "completion_tokens": 48,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00041010000000000005,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 1089.487699791789,
+     "prompt_tokens": 356,
+     "completion_tokens": 31,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.000144,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 1527.6480996981263,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00033913787813298407,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 6777.9850997030735,
+     "prompt_tokens": 6694,
+     "completion_tokens": 1380,
+     "reasoning_tokens": 1311,
+     "cost_usd": 0.0036642,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 1,
+   "id": 24,
+   "set": "doc",
+   "question": "Check-in ngày đầu làm thế nào?",
+   "expect": "ANY",
+   "seconds": 0.983,
+   "request_id": "576846fbd49c46968ac3b0d7867a9212",
+   "route": "LLM",
+   "type": "CLARIFY",
+   "got": "NO_BASIS",
+   "verdict": "~",
+   "missing": [
+    "onboard"
+   ],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 927.3129999637604,
+     "prompt_tokens": 1166,
+     "completion_tokens": 32,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0003882,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 1,
+   "id": 25,
+   "set": "doc",
+   "question": "Tôi làm ở Hà Nội thì check-in ở đâu?",
+   "expect": "ANY",
+   "seconds": 7.318,
+   "request_id": "5edd2b1196944b5d911182ffd8ea0df8",
+   "route": "LLM",
+   "type": "ANSWER",
+   "got": "ANSWER",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 1595.9371998906136,
+     "prompt_tokens": 1170,
+     "completion_tokens": 45,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.000405,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 1090.2990996837616,
+     "prompt_tokens": 351,
+     "completion_tokens": 26,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0001365,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 1848.6006008461118,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0004103893333878368,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 2662.57209982723,
+     "prompt_tokens": 6115,
+     "completion_tokens": 428,
+     "reasoning_tokens": 295,
+     "cost_usd": 0.0023481,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 1,
+   "id": 26,
+   "set": "doc",
+   "question": "Tôi không có VNeID thì nộp giấy xác nhận nơi cư trú thế nào?",
+   "expect": "ANSWER",
+   "seconds": 5.863,
+   "request_id": "7f4c46c1a18f471bb7b241c03b978623",
+   "route": "LLM",
+   "type": "ANSWER",
+   "got": "ANSWER",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 1097.0621993765235,
+     "prompt_tokens": 1183,
+     "completion_tokens": 57,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00042329999999999993,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 1139.512900263071,
+     "prompt_tokens": 364,
+     "completion_tokens": 37,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0001536,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 1590.5385995283723,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00035309956909529867,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 1933.7143003940582,
+     "prompt_tokens": 7016,
+     "completion_tokens": 232,
+     "reasoning_tokens": 113,
+     "cost_usd": 0.0023832,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 1,
+   "id": 101,
+   "set": "extra",
+   "question": "Hôm nay tôi có việc gì?",
+   "expect": "TASK",
+   "seconds": 1.376,
+   "request_id": "107889c2014c4f5f8054ecef7a0cabc1",
+   "route": "LLM",
+   "type": "DAY_PLAN",
+   "got": "DAY_PLAN",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 1311.5475000813603,
+     "prompt_tokens": 1168,
+     "completion_tokens": 32,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00038879999999999996,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 1,
+   "id": 102,
+   "set": "extra",
+   "question": "Ngày 2 có những việc nào?",
+   "expect": "TASK",
+   "seconds": 1.241,
+   "request_id": "dcb38541856e4eb1abf7eedde11bafaa",
+   "route": "LLM",
+   "type": "INFO",
+   "got": "INFO",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 1195.1603004708886,
+     "prompt_tokens": 1167,
+     "completion_tokens": 32,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00038849999999999996,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 1,
+   "id": 103,
+   "set": "extra",
+   "question": "Tôi làm được bao nhiêu việc rồi?",
+   "expect": "TASK",
+   "seconds": 0.06,
+   "request_id": "a725a5849f0843629546914a248fd78b",
+   "route": "SHORTCUT",
+   "type": "INFO",
+   "got": "INFO",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": []
+  },
+  {
+   "run": 1,
+   "id": 104,
+   "set": "extra",
+   "question": "Sao tôi chưa làm được việc nhận laptop?",
+   "expect": "TASK",
+   "seconds": 0.904,
+   "request_id": "b9d9b480eb854921bb0456c4589b6d0b",
+   "route": "LLM",
+   "type": "INFO",
+   "got": "INFO",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 835.8786003664136,
+     "prompt_tokens": 1171,
+     "completion_tokens": 32,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0003897,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 1,
+   "id": 105,
+   "set": "extra",
+   "question": "Việc nhận laptop làm thế nào?",
+   "expect": "TASK",
+   "seconds": 1.294,
+   "request_id": "3fce0e33998040009a1bf8980e1b51d8",
+   "route": "LLM",
+   "type": "INFO",
+   "got": "INFO",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 1237.5314002856612,
+     "prompt_tokens": 1167,
+     "completion_tokens": 32,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00038849999999999996,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 1,
+   "id": 106,
+   "set": "extra",
+   "question": "Tiếp theo tôi nên làm gì?",
+   "expect": "TASK",
+   "seconds": 0.068,
+   "request_id": "19696d8c6bbd47b2aa9c0bf6d70bbd1c",
+   "route": "SHORTCUT",
+   "type": "NEXT_STEP",
+   "got": "NEXT_STEP",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": []
+  },
+  {
+   "run": 1,
+   "id": 107,
+   "set": "extra",
+   "question": "Việc nào tôi làm được ngay bây giờ?",
+   "expect": "TASK",
+   "seconds": 1.286,
+   "request_id": "4845a01c618d4c17aec6fee50b8585a9",
+   "route": "LLM",
+   "type": "NEXT_STEP",
+   "got": "NEXT_STEP",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 1220.830500125885,
+     "prompt_tokens": 1171,
+     "completion_tokens": 27,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0003837,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 1,
+   "id": 108,
+   "set": "extra",
+   "question": "tôi đã đăng nhập được outlook nhưng team không vào được thì sao",
+   "expect": "ANSWER",
+   "seconds": 5.977,
+   "request_id": "00334f3bf26e41a0b912a92aa561f8bb",
+   "route": "LLM",
+   "type": "ANSWER",
+   "got": "ANSWER",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 1338.1984001025558,
+     "prompt_tokens": 1176,
+     "completion_tokens": 45,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0004068,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 948.2452999800444,
+     "prompt_tokens": 357,
+     "completion_tokens": 32,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0001455,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 1575.2012999728322,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00034969468859396874,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 1993.1007996201515,
+     "prompt_tokens": 6477,
+     "completion_tokens": 251,
+     "reasoning_tokens": 93,
+     "cost_usd": 0.0022443,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 1,
+   "id": 109,
+   "set": "extra",
+   "question": "Lương của tôi tháng này bao nhiêu?",
+   "expect": "DECLINE",
+   "seconds": 0.053,
+   "request_id": "1c28d3d04b994b21aee13fa0ba1298d5",
+   "route": "GUARD",
+   "type": "OUT_OF_SCOPE",
+   "got": "OUT_OF_SCOPE",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": []
+  },
+  {
+   "run": 1,
+   "id": 110,
+   "set": "extra",
+   "question": "Hôm nay thời tiết ở Hà Nội thế nào?",
+   "expect": "DECLINE",
+   "seconds": 0.999,
+   "request_id": "31b9b651d06f40b8839feea214ea9db7",
+   "route": "LLM",
+   "type": "INFO",
+   "got": "INFO",
+   "verdict": "✗",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 951.0567001998425,
+     "prompt_tokens": 1172,
+     "completion_tokens": 24,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0003804,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 1,
+   "id": 201,
+   "set": "multi",
+   "question": "Tôi chưa có VNeID thì sao, dùng CMND được không, và tôi không đăng nhập được Teams thì sao?",
+   "expect": 3,
+   "seconds": 10.812,
+   "request_id": "db35c743fd394240bee9bf3468314444",
+   "route": "LLM",
+   "type": "ANSWER",
+   "got": "2/3 ý",
+   "verdict": "~",
+   "missing": [],
+   "claim_count": 2,
+   "answered_parts": 2,
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 995.6673001870513,
+     "prompt_tokens": 1189,
+     "completion_tokens": 55,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0004227,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 992.6486006006598,
+     "prompt_tokens": 370,
+     "completion_tokens": 44,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00016380000000000002,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 2069.480299949646,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0004594246265888214,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 6645.363699644804,
+     "prompt_tokens": 12173,
+     "completion_tokens": 1585,
+     "reasoning_tokens": 1379,
+     "cost_usd": 0.0055539,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 1,
+   "id": 202,
+   "set": "multi",
+   "question": "Tôi nhận laptop ở đâu và đăng ký faceid chấm công ở đâu?",
+   "expect": 2,
+   "seconds": 8.21,
+   "request_id": "5b7eaf51b44340458262a3fd42d2f9c1",
+   "route": "LLM",
+   "type": "ANSWER",
+   "got": "2/2 ý",
+   "verdict": "✓",
+   "missing": [],
+   "claim_count": 2,
+   "answered_parts": 2,
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 1263.337199576199,
+     "prompt_tokens": 1178,
+     "completion_tokens": 53,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.000417,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 1427.8760002925992,
+     "prompt_tokens": 359,
+     "completion_tokens": 34,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0001485,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 2072.525500319898,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0004601006610710174,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 3316.8512005358934,
+     "prompt_tokens": 11458,
+     "completion_tokens": 707,
+     "reasoning_tokens": 474,
+     "cost_usd": 0.0042858,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 1,
+   "id": 203,
+   "set": "multi",
+   "question": "Bài test cuối khóa phải đạt bao nhiêu phần trăm và đầu mối chương trình Đào tạo Hội nhập là ai?",
+   "expect": 2,
+   "seconds": 7.457,
+   "request_id": "56dac10347304c04a6237be58014d4cc",
+   "route": "LLM",
+   "type": "ANSWER",
+   "got": "2/2 ý",
+   "verdict": "✓",
+   "missing": [],
+   "claim_count": 2,
+   "answered_parts": 2,
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 986.4242998883128,
+     "prompt_tokens": 1190,
+     "completion_tokens": 63,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0004326,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 862.1722003445029,
+     "prompt_tokens": 371,
+     "completion_tokens": 43,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0001629,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 1911.8343004956841,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0004244272147100419,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 3599.42530002445,
+     "prompt_tokens": 11359,
+     "completion_tokens": 768,
+     "reasoning_tokens": 539,
+     "cost_usd": 0.0043292999999999995,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 1,
+   "id": 204,
+   "set": "multi",
+   "question": "Tôi chưa có lý lịch tư pháp thì sao, và T3 chưa trả lời email phê duyệt thì tôi làm sao?",
+   "expect": 2,
+   "seconds": 7.766,
+   "request_id": "2c3507b8d6a74f5ea12b93f0e520580b",
+   "route": "LLM",
+   "type": "ANSWER",
+   "got": "2/2 ý",
+   "verdict": "✓",
+   "missing": [],
+   "claim_count": 2,
+   "answered_parts": 2,
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 1033.2063995301723,
+     "prompt_tokens": 1197,
+     "completion_tokens": 66,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0004383,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 939.5033000037074,
+     "prompt_tokens": 378,
+     "completion_tokens": 50,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00017339999999999999,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 1867.3165002837777,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00041454426306299866,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 3811.6990998387337,
+     "prompt_tokens": 12425,
+     "completion_tokens": 775,
+     "reasoning_tokens": 464,
+     "cost_usd": 0.0046575,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 2,
+   "id": 1,
+   "set": "doc",
+   "question": "Hồ sơ cần nộp trong ngày đầu gồm những gì?",
+   "expect": "ANSWER",
+   "seconds": 6.856,
+   "request_id": "e87910261f974104a9d5297155fe69eb",
+   "route": "FALLBACK",
+   "type": "ANSWER",
+   "got": "ANSWER",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 824.7079001739621,
+     "prompt_tokens": 1176,
+     "completion_tokens": 32,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00039119999999999997,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 1059.6404001116753,
+     "prompt_tokens": 357,
+     "completion_tokens": 28,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00014069999999999998,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 1571.4656002819538,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00034886536326259374,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 3291.3958998396993,
+     "prompt_tokens": 5872,
+     "completion_tokens": 603,
+     "reasoning_tokens": 269,
+     "cost_usd": 0.0024852,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 2,
+   "id": 2,
+   "set": "doc",
+   "question": "Nộp hồ sơ ngày đầu thì liên hệ đầu mối nào?",
+   "expect": "ANSWER",
+   "seconds": 5.252,
+   "request_id": "1b27c9be7ec14502bed213bdeeadbd1a",
+   "route": "LLM",
+   "type": "ANSWER",
+   "got": "ANSWER",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 1170.4918993636966,
+     "prompt_tokens": 1175,
+     "completion_tokens": 47,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00040889999999999996,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 1021.5840004384518,
+     "prompt_tokens": 356,
+     "completion_tokens": 33,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0001464,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 1555.6320007890463,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00034535030417516825,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 1389.1115002334118,
+     "prompt_tokens": 5637,
+     "completion_tokens": 163,
+     "reasoning_tokens": 59,
+     "cost_usd": 0.0018866999999999998,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 2,
+   "id": 3,
+   "set": "doc",
+   "question": "Chương trình Đào tạo Hội nhập có bắt buộc không và điều kiện hoàn thành là gì?",
+   "expect": "ANSWER",
+   "seconds": 7.384,
+   "request_id": "8267731acae8426ea2365ca67d94ab26",
+   "route": "LLM",
+   "type": "ANSWER",
+   "got": "ANSWER",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 1048.2475003227592,
+     "prompt_tokens": 1186,
+     "completion_tokens": 60,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0004278,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 993.58019977808,
+     "prompt_tokens": 367,
+     "completion_tokens": 51,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0001713,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 2112.1179992333055,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0004688901958297938,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 3114.7825000807643,
+     "prompt_tokens": 12547,
+     "completion_tokens": 588,
+     "reasoning_tokens": 283,
+     "cost_usd": 0.0044697,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 2,
+   "id": 4,
+   "set": "doc",
+   "question": "Bài test cuối khóa phải đạt bao nhiêu phần trăm?",
+   "expect": "ANSWER",
+   "seconds": 6.208,
+   "request_id": "c2f6086710d14a949b7684abcaca9663",
+   "route": "LLM",
+   "type": "ANSWER",
+   "got": "ANSWER",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 1271.9661993905902,
+     "prompt_tokens": 1173,
+     "completion_tokens": 46,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0004071,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 939.3903994932771,
+     "prompt_tokens": 354,
+     "completion_tokens": 24,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.000135,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 1735.9006004408002,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00038536993329785766,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 2140.6728997826576,
+     "prompt_tokens": 5482,
+     "completion_tokens": 293,
+     "reasoning_tokens": 156,
+     "cost_usd": 0.0019961999999999996,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 2,
+   "id": 5,
+   "set": "doc",
+   "question": "Đầu mối của chương trình Đào tạo Hội nhập là ai, email gì?",
+   "expect": "ANSWER",
+   "seconds": 6.596,
+   "request_id": "5a7d42a5b5be470cad43625fe2f3a75f",
+   "route": "LLM",
+   "type": "ANSWER",
+   "got": "ANSWER",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 955.0426993519068,
+     "prompt_tokens": 1179,
+     "completion_tokens": 53,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00041729999999999995,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 1141.1156002432108,
+     "prompt_tokens": 360,
+     "completion_tokens": 35,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00015,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 2039.2626002430916,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0004527162972539663,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 2362.240600399673,
+     "prompt_tokens": 6231,
+     "completion_tokens": 296,
+     "reasoning_tokens": 156,
+     "cost_usd": 0.0022245,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 2,
+   "id": 6,
+   "set": "doc",
+   "question": "Khi nào tôi ký hợp đồng lao động?",
+   "expect": "ANSWER",
+   "seconds": 6.292,
+   "request_id": "e615d810ebd5497daa4608682ebf6237",
+   "route": "FALLBACK",
+   "type": "ANSWER",
+   "got": "ANSWER",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 1004.199099726975,
+     "prompt_tokens": 1170,
+     "completion_tokens": 32,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0003894,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 857.264400459826,
+     "prompt_tokens": 351,
+     "completion_tokens": 22,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00013169999999999998,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 1939.0810001641512,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0004304759820364416,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 2383.386599831283,
+     "prompt_tokens": 5758,
+     "completion_tokens": 368,
+     "reasoning_tokens": 199,
+     "cost_usd": 0.002169,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 2,
+   "id": 7,
+   "set": "doc",
+   "question": "Đăng ký faceid chấm công ở đâu?",
+   "expect": "ANSWER",
+   "seconds": 5.568,
+   "request_id": "de7a2ea9d4d9408195a9c6a5fa0ce9e0",
+   "route": "FALLBACK",
+   "type": "ANSWER",
+   "got": "ANSWER",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 1025.5424994975328,
+     "prompt_tokens": 1170,
+     "completion_tokens": 32,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0003894,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 967.2900000587106,
+     "prompt_tokens": 351,
+     "completion_tokens": 22,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00013169999999999998,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 1448.4422001987696,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00032155416844412686,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 2026.3938000425696,
+     "prompt_tokens": 6168,
+     "completion_tokens": 294,
+     "reasoning_tokens": 160,
+     "cost_usd": 0.0022031999999999998,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 2,
+   "id": 8,
+   "set": "doc",
+   "question": "Tôi nhận laptop ở đâu?",
+   "expect": "ANSWER",
+   "seconds": 5.022,
+   "request_id": "c2d5a994faba4e098536fa15e45b54b8",
+   "route": "FALLBACK",
+   "type": "ANSWER",
+   "got": "ANSWER",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 823.1898006051779,
+     "prompt_tokens": 1164,
+     "completion_tokens": 31,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00038639999999999996,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 827.907900325954,
+     "prompt_tokens": 345,
+     "completion_tokens": 17,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0001239,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 1515.4204005375504,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0003364233289193362,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 1746.183699928224,
+     "prompt_tokens": 5893,
+     "completion_tokens": 158,
+     "reasoning_tokens": 60,
+     "cost_usd": 0.0019574999999999996,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 2,
+   "id": 9,
+   "set": "doc",
+   "question": "Nhận laptop xong thì làm gì tiếp theo?",
+   "expect": "ANSWER",
+   "seconds": 6.134,
+   "request_id": "5f0c0f5031bc487392494187b96dddfd",
+   "route": "FALLBACK",
+   "type": "ANSWER",
+   "got": "ANSWER",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 1097.847799770534,
+     "prompt_tokens": 1168,
+     "completion_tokens": 27,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0003828,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 1150.8011994883418,
+     "prompt_tokens": 349,
+     "completion_tokens": 25,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0001347,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 1476.868700236082,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00032786485145241024,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 2304.675799794495,
+     "prompt_tokens": 6307,
+     "completion_tokens": 365,
+     "reasoning_tokens": 256,
+     "cost_usd": 0.0023301,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 2,
+   "id": 10,
+   "set": "doc",
+   "question": "Viết email hỗ trợ cho ITHD thì gửi tới địa chỉ nào và đặt tiêu đề thế nào?",
+   "expect": "ANSWER",
+   "seconds": 5.808,
+   "request_id": "4f97631da40344fbb9042038e53ceb34",
+   "route": "LLM",
+   "type": "ANSWER",
+   "got": "ANSWER",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 1258.0609004944563,
+     "prompt_tokens": 1188,
+     "completion_tokens": 61,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0004296,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 945.924200117588,
+     "prompt_tokens": 369,
+     "completion_tokens": 43,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00016230000000000001,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 1593.8389003276825,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00035383223587274554,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 1905.8112995699048,
+     "prompt_tokens": 6038,
+     "completion_tokens": 323,
+     "reasoning_tokens": 155,
+     "cost_usd": 0.002199,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 2,
+   "id": 11,
+   "set": "doc",
+   "question": "Trước khi viết ticket tôi cần kiểm tra gì?",
+   "expect": "ANSWER",
+   "seconds": 5.554,
+   "request_id": "ba6f0ce2ac37470dbc35313205ac90d0",
+   "route": "LLM",
+   "type": "ANSWER",
+   "got": "ANSWER",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 1036.8440002202988,
+     "prompt_tokens": 1172,
+     "completion_tokens": 44,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00040439999999999996,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 955.1210002973676,
+     "prompt_tokens": 353,
+     "completion_tokens": 26,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0001371,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 1450.25120023638,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00032195576645247637,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 2001.2324005365372,
+     "prompt_tokens": 6312,
+     "completion_tokens": 355,
+     "reasoning_tokens": 211,
+     "cost_usd": 0.0023196,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 2,
+   "id": 12,
+   "set": "doc",
+   "question": "Muốn dùng VPN hoặc xin exception USB thì cần ai đồng thuận?",
+   "expect": "ANSWER",
+   "seconds": 7.284,
+   "request_id": "09e067f280754e148076ddefb57e4ec0",
+   "route": "LLM",
+   "type": "ANSWER",
+   "got": "ANSWER",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 877.3395996540785,
+     "prompt_tokens": 1176,
+     "completion_tokens": 50,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0004128,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 1213.990700431168,
+     "prompt_tokens": 357,
+     "completion_tokens": 39,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00015389999999999997,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 2334.6695005893707,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0005182966291308403,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 2745.6609001383185,
+     "prompt_tokens": 12069,
+     "completion_tokens": 559,
+     "reasoning_tokens": 265,
+     "cost_usd": 0.0042915,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 2,
+   "id": 13,
+   "set": "doc",
+   "question": "Máy tôi đã dùng sẵn Ubuntu thì xin phê duyệt thế nào?",
+   "expect": "ANSWER",
+   "seconds": 5.926,
+   "request_id": "45617f532c5d448b97696a07df233457",
+   "route": "LLM",
+   "type": "ANSWER",
+   "got": "ANSWER",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 926.4724003151059,
+     "prompt_tokens": 1182,
+     "completion_tokens": 54,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0004194,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 968.8799995929003,
+     "prompt_tokens": 363,
+     "completion_tokens": 34,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00014969999999999998,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 1530.7894991710782,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0003398352688159794,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 2389.4651997834444,
+     "prompt_tokens": 5756,
+     "completion_tokens": 398,
+     "reasoning_tokens": 267,
+     "cost_usd": 0.0022044,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 2,
+   "id": 14,
+   "set": "doc",
+   "question": "Sau khi VinSOC phản hồi email thì tôi làm gì?",
+   "expect": "ANSWER",
+   "seconds": 5.387,
+   "request_id": "7cdb577b92a14fbe9d4e432704e6c52e",
+   "route": "FALLBACK",
+   "type": "ANSWER",
+   "got": "ANSWER",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 770.1782993972301,
+     "prompt_tokens": 1173,
+     "completion_tokens": 32,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00039029999999999995,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 908.9149003848433,
+     "prompt_tokens": 354,
+     "completion_tokens": 28,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0001398,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 1516.8428998440504,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0003367391237653792,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 2087.6794001087546,
+     "prompt_tokens": 6612,
+     "completion_tokens": 462,
+     "reasoning_tokens": 276,
+     "cost_usd": 0.002538,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 2,
+   "id": 15,
+   "set": "doc",
+   "question": "Yêu cầu tủ gửi đồ như thế nào?",
+   "expect": "ANSWER",
+   "seconds": 5.32,
+   "request_id": "6ea9933dae2c4bff835b60a922ccd581",
+   "route": "FALLBACK",
+   "type": "ANSWER",
+   "got": "ANSWER",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 1086.5891007706523,
+     "prompt_tokens": 1171,
+     "completion_tokens": 32,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0003897,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 794.8607001453638,
+     "prompt_tokens": 352,
+     "completion_tokens": 23,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00013319999999999999,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 1851.4193007722497,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0004110150847714394,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 1490.6330006197095,
+     "prompt_tokens": 5379,
+     "completion_tokens": 228,
+     "reasoning_tokens": 106,
+     "cost_usd": 0.0018873,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 2,
+   "id": 16,
+   "set": "doc",
+   "question": "Tôi chưa có lý lịch tư pháp thì sao?",
+   "expect": "ANSWER",
+   "seconds": 5.258,
+   "request_id": "6d98180c095d48199ce842307bbad19b",
+   "route": "LLM",
+   "type": "ANSWER",
+   "got": "ANSWER",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 826.5613000839949,
+     "prompt_tokens": 1174,
+     "completion_tokens": 46,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0004074,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 1161.362400278449,
+     "prompt_tokens": 355,
+     "completion_tokens": 30,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0001425,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 1436.239699833095,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0003188452133629471,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 1731.1482997611165,
+     "prompt_tokens": 6826,
+     "completion_tokens": 271,
+     "reasoning_tokens": 131,
+     "cost_usd": 0.002373,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 2,
+   "id": 17,
+   "set": "doc",
+   "question": "Tôi chỉ có CMND, không có căn cước công dân thì thay được không?",
+   "expect": "ANY",
+   "seconds": 22.123,
+   "request_id": "cb37a192361a43bbb4ff45e686c22dc0",
+   "route": "LLM",
+   "type": "ANSWER",
+   "got": "ANSWER",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 937.7268999814987,
+     "prompt_tokens": 1177,
+     "completion_tokens": 52,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00041549999999999996,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 920.2536996454,
+     "prompt_tokens": 358,
+     "completion_tokens": 34,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0001482,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 1802.6546007022262,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0004001893213558942,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 18362.72779945284,
+     "prompt_tokens": 6609,
+     "completion_tokens": 4203,
+     "reasoning_tokens": 4112,
+     "cost_usd": 0.007026299999999999,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 2,
+   "id": 18,
+   "set": "doc",
+   "question": "T3 chưa trả lời email phê duyệt thì tôi làm sao?",
+   "expect": "ANSWER",
+   "seconds": 5.229,
+   "request_id": "b345105c97c0405db9cd044615bbba73",
+   "route": "LLM",
+   "type": "ANSWER",
+   "got": "ANSWER",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 1074.9125992879272,
+     "prompt_tokens": 1177,
+     "completion_tokens": 49,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0004119,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 1013.5499993339181,
+     "prompt_tokens": 358,
+     "completion_tokens": 38,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.000153,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 1861.4983009174466,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00041325262280367313,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 1172.4474001675844,
+     "prompt_tokens": 6647,
+     "completion_tokens": 170,
+     "reasoning_tokens": 57,
+     "cost_usd": 0.0021980999999999997,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 2,
+   "id": 19,
+   "set": "doc",
+   "question": "Có bắt buộc làm chuỗi yêu cầu ngoại lệ như Ubuntu, VPN, USB không?",
+   "expect": "ANSWER",
+   "seconds": 6.572,
+   "request_id": "ddc2cefdeadd4f11b271bb29a5803c30",
+   "route": "LLM",
+   "type": "ANSWER",
+   "got": "ANSWER",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 1078.1292002648115,
+     "prompt_tokens": 1183,
+     "completion_tokens": 58,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0004245,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 1223.9122996106744,
+     "prompt_tokens": 364,
+     "completion_tokens": 38,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00015480000000000002,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 1471.6982003301382,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0003267170004732907,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 2683.8507000356913,
+     "prompt_tokens": 6600,
+     "completion_tokens": 470,
+     "reasoning_tokens": 295,
+     "cost_usd": 0.002544,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 2,
+   "id": 20,
+   "set": "doc",
+   "question": "Văn phòng của tôi không phải Vincom Đồng Khởi thì đăng ký faceid thế nào?",
+   "expect": "ANY",
+   "seconds": 6.171,
+   "request_id": "4d877f4f04084d22aca9923c8cf2ef40",
+   "route": "LLM",
+   "type": "NO_BASIS",
+   "got": "NO_BASIS",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 1192.0509999617934,
+     "prompt_tokens": 1186,
+     "completion_tokens": 55,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0004218,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 869.3022998049855,
+     "prompt_tokens": 367,
+     "completion_tokens": 40,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0001581,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 1496.3795999065042,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0003321962711792439,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 2491.3304997608066,
+     "prompt_tokens": 6733,
+     "completion_tokens": 371,
+     "reasoning_tokens": 293,
+     "cost_usd": 0.0024651,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 2,
+   "id": 21,
+   "set": "doc",
+   "question": "tôi ở hồ chí minh checkin ở đâu á",
+   "expect": "ANY",
+   "seconds": 7.653,
+   "request_id": "bbbac2ca196246c5a5f49d7f1c986272",
+   "route": "LLM",
+   "type": "ANSWER",
+   "got": "ANSWER",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 1173.526999540627,
+     "prompt_tokens": 1172,
+     "completion_tokens": 41,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00040079999999999993,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 1036.20530012995,
+     "prompt_tokens": 353,
+     "completion_tokens": 25,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00013589999999999997,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 1819.2143002524972,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0004038655746560544,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 3523.3821999281645,
+     "prompt_tokens": 6673,
+     "completion_tokens": 622,
+     "reasoning_tokens": 493,
+     "cost_usd": 0.0027482999999999995,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 2,
+   "id": 22,
+   "set": "doc",
+   "question": "Tôi chỉ có CMND, không có căn cước công dân, có thay được không?",
+   "expect": "ANY",
+   "seconds": 13.787,
+   "request_id": "1c38a2b88a97462dbb53aac0de9f9d15",
+   "route": "LLM",
+   "type": "NO_BASIS",
+   "got": "NO_BASIS",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 884.9886003881693,
+     "prompt_tokens": 1178,
+     "completion_tokens": 49,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0004122,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 947.7675007656217,
+     "prompt_tokens": 359,
+     "completion_tokens": 39,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0001545,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 1613.3098006248474,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0003581547757387161,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 10233.780999667943,
+     "prompt_tokens": 6614,
+     "completion_tokens": 2370,
+     "reasoning_tokens": 2293,
+     "cost_usd": 0.0048281999999999995,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 2,
+   "id": 23,
+   "set": "doc",
+   "question": "tôi không có căn cước công dân sài vnid được không",
+   "expect": "ANY",
+   "seconds": 7.039,
+   "request_id": "c12ce8df18614148a8188db45bc5c77d",
+   "route": "LLM",
+   "type": "NO_BASIS",
+   "got": "NO_BASIS",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 779.7079998999834,
+     "prompt_tokens": 1175,
+     "completion_tokens": 48,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00041010000000000005,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 1207.5838996097445,
+     "prompt_tokens": 356,
+     "completion_tokens": 29,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0001416,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 1453.20659969002,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00032261186513118446,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 3479.7464003786445,
+     "prompt_tokens": 6692,
+     "completion_tokens": 644,
+     "reasoning_tokens": 577,
+     "cost_usd": 0.0027803999999999997,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 2,
+   "id": 24,
+   "set": "doc",
+   "question": "Check-in ngày đầu làm thế nào?",
+   "expect": "ANY",
+   "seconds": 1.136,
+   "request_id": "dca5d7ff71b840fc8ed8950233e06a4e",
+   "route": "LLM",
+   "type": "CLARIFY",
+   "got": "NO_BASIS",
+   "verdict": "~",
+   "missing": [
+    "onboard"
+   ],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 1088.4606000036001,
+     "prompt_tokens": 1166,
+     "completion_tokens": 32,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0003882,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 2,
+   "id": 25,
+   "set": "doc",
+   "question": "Tôi làm ở Hà Nội thì check-in ở đâu?",
+   "expect": "ANY",
+   "seconds": 6.446,
+   "request_id": "e8a73db017094c65ad47497755c2cf3f",
+   "route": "LLM",
+   "type": "ANSWER",
+   "got": "ANSWER",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 906.5830996260047,
+     "prompt_tokens": 1170,
+     "completion_tokens": 45,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.000405,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 1060.4563001543283,
+     "prompt_tokens": 351,
+     "completion_tokens": 26,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0001365,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 1627.773500047624,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00036136571701057254,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 2748.1992999091744,
+     "prompt_tokens": 6115,
+     "completion_tokens": 449,
+     "reasoning_tokens": 320,
+     "cost_usd": 0.0023733,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 2,
+   "id": 26,
+   "set": "doc",
+   "question": "Tôi không có VNeID thì nộp giấy xác nhận nơi cư trú thế nào?",
+   "expect": "ANSWER",
+   "seconds": 4.958,
+   "request_id": "252d252685ef40bf9615e0301518020d",
+   "route": "LLM",
+   "type": "ANSWER",
+   "got": "ANSWER",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 1025.0821998342872,
+     "prompt_tokens": 1183,
+     "completion_tokens": 58,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0004245,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 709.4326997175813,
+     "prompt_tokens": 364,
+     "completion_tokens": 37,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0001536,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 1564.453000202775,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00034730856604501604,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 1554.0900994092226,
+     "prompt_tokens": 7016,
+     "completion_tokens": 232,
+     "reasoning_tokens": 112,
+     "cost_usd": 0.0023832,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 2,
+   "id": 101,
+   "set": "extra",
+   "question": "Hôm nay tôi có việc gì?",
+   "expect": "TASK",
+   "seconds": 0.915,
+   "request_id": "5f9231dfaf3e4e6fb19124c12b68a6b2",
+   "route": "LLM",
+   "type": "DAY_PLAN",
+   "got": "DAY_PLAN",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 882.2339000180364,
+     "prompt_tokens": 1168,
+     "completion_tokens": 32,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00038879999999999996,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 2,
+   "id": 102,
+   "set": "extra",
+   "question": "Ngày 2 có những việc nào?",
+   "expect": "TASK",
+   "seconds": 1.066,
+   "request_id": "6e897effa4a648e68794a5ccc6495c36",
+   "route": "LLM",
+   "type": "INFO",
+   "got": "INFO",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 994.7960991412401,
+     "prompt_tokens": 1167,
+     "completion_tokens": 32,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00038849999999999996,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 2,
+   "id": 103,
+   "set": "extra",
+   "question": "Tôi làm được bao nhiêu việc rồi?",
+   "expect": "TASK",
+   "seconds": 0.03,
+   "request_id": "de432f8fa8034dd08931ca4f601cd1de",
+   "route": "SHORTCUT",
+   "type": "INFO",
+   "got": "INFO",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": []
+  },
+  {
+   "run": 2,
+   "id": 104,
+   "set": "extra",
+   "question": "Sao tôi chưa làm được việc nhận laptop?",
+   "expect": "TASK",
+   "seconds": 1.033,
+   "request_id": "168a4db52ba94f6990e6ae83cd9a2dcf",
+   "route": "LLM",
+   "type": "INFO",
+   "got": "INFO",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 998.7551998347044,
+     "prompt_tokens": 1171,
+     "completion_tokens": 32,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0003897,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 2,
+   "id": 105,
+   "set": "extra",
+   "question": "Việc nhận laptop làm thế nào?",
+   "expect": "TASK",
+   "seconds": 0.947,
+   "request_id": "785335efa0e74b24a32a1c605311f169",
+   "route": "LLM",
+   "type": "INFO",
+   "got": "INFO",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 898.5722996294498,
+     "prompt_tokens": 1167,
+     "completion_tokens": 32,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00038849999999999996,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 2,
+   "id": 106,
+   "set": "extra",
+   "question": "Tiếp theo tôi nên làm gì?",
+   "expect": "TASK",
+   "seconds": 0.031,
+   "request_id": "6d0ed5f169be4b579ad7cc2b6387a058",
+   "route": "SHORTCUT",
+   "type": "NEXT_STEP",
+   "got": "NEXT_STEP",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": []
+  },
+  {
+   "run": 2,
+   "id": 107,
+   "set": "extra",
+   "question": "Việc nào tôi làm được ngay bây giờ?",
+   "expect": "TASK",
+   "seconds": 0.862,
+   "request_id": "3d58aecf11e044908a021e338c68cb22",
+   "route": "LLM",
+   "type": "NEXT_STEP",
+   "got": "NEXT_STEP",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 827.6851000264287,
+     "prompt_tokens": 1171,
+     "completion_tokens": 27,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0003837,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 2,
+   "id": 108,
+   "set": "extra",
+   "question": "tôi đã đăng nhập được outlook nhưng team không vào được thì sao",
+   "expect": "ANSWER",
+   "seconds": 6.097,
+   "request_id": "2d061b81b77c42cab332e2ec0c960bfc",
+   "route": "LLM",
+   "type": "ANSWER",
+   "got": "ANSWER",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 1153.0822003260255,
+     "prompt_tokens": 1176,
+     "completion_tokens": 42,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0004032,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 1184.587400406599,
+     "prompt_tokens": 357,
+     "completion_tokens": 32,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0001455,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 1463.4849997237325,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0003248936699386686,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 2184.3902999535203,
+     "prompt_tokens": 6477,
+     "completion_tokens": 430,
+     "reasoning_tokens": 238,
+     "cost_usd": 0.0024591,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 2,
+   "id": 109,
+   "set": "extra",
+   "question": "Lương của tôi tháng này bao nhiêu?",
+   "expect": "DECLINE",
+   "seconds": 0.034,
+   "request_id": "5605279af8fb4de187135001badbb163",
+   "route": "GUARD",
+   "type": "OUT_OF_SCOPE",
+   "got": "OUT_OF_SCOPE",
+   "verdict": "✓",
+   "missing": [],
+   "llm_calls": []
+  },
+  {
+   "run": 2,
+   "id": 110,
+   "set": "extra",
+   "question": "Hôm nay thời tiết ở Hà Nội thế nào?",
+   "expect": "DECLINE",
+   "seconds": 1.329,
+   "request_id": "27a4bb176d4f4fc2bd4907699f34566b",
+   "route": "LLM",
+   "type": "INFO",
+   "got": "INFO",
+   "verdict": "✗",
+   "missing": [],
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 1299.0856003016233,
+     "prompt_tokens": 1172,
+     "completion_tokens": 24,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0003804,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 2,
+   "id": 201,
+   "set": "multi",
+   "question": "Tôi chưa có VNeID thì sao, dùng CMND được không, và tôi không đăng nhập được Teams thì sao?",
+   "expect": 3,
+   "seconds": 10.24,
+   "request_id": "7410f46468ea44efb381074c0bcd053e",
+   "route": "LLM",
+   "type": "ANSWER",
+   "got": "3/3 ý",
+   "verdict": "✓",
+   "missing": [],
+   "claim_count": 3,
+   "answered_parts": 3,
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 1211.2174006178975,
+     "prompt_tokens": 1189,
+     "completion_tokens": 63,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00043229999999999994,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 751.1344002559781,
+     "prompt_tokens": 370,
+     "completion_tokens": 60,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.000183,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 1755.031400360167,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00038961697087995707,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 6343.044499866664,
+     "prompt_tokens": 18571,
+     "completion_tokens": 1605,
+     "reasoning_tokens": 1261,
+     "cost_usd": 0.0074973,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 2,
+   "id": 202,
+   "set": "multi",
+   "question": "Tôi nhận laptop ở đâu và đăng ký faceid chấm công ở đâu?",
+   "expect": 2,
+   "seconds": 7.521,
+   "request_id": "6b21a0e7ff094602955270998dc71b3a",
+   "route": "FALLBACK",
+   "type": "ANSWER",
+   "got": "2/2 ý",
+   "verdict": "✓",
+   "missing": [],
+   "claim_count": 2,
+   "answered_parts": 2,
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 1307.5356995686889,
+     "prompt_tokens": 1178,
+     "completion_tokens": 32,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00039179999999999993,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 1090.4017994180322,
+     "prompt_tokens": 359,
+     "completion_tokens": 34,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0001485,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 1738.9535000547767,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0003860476770121604,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 3273.3327001333237,
+     "prompt_tokens": 11458,
+     "completion_tokens": 620,
+     "reasoning_tokens": 385,
+     "cost_usd": 0.0041814,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 2,
+   "id": 203,
+   "set": "multi",
+   "question": "Bài test cuối khóa phải đạt bao nhiêu phần trăm và đầu mối chương trình Đào tạo Hội nhập là ai?",
+   "expect": 2,
+   "seconds": 9.919,
+   "request_id": "c9c3e37f19004885860c607993ccb9fe",
+   "route": "LLM",
+   "type": "ANSWER",
+   "got": "2/2 ý",
+   "verdict": "✓",
+   "missing": [],
+   "claim_count": 2,
+   "answered_parts": 2,
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 1517.9212996736169,
+     "prompt_tokens": 1190,
+     "completion_tokens": 63,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0004326,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 982.5992994010448,
+     "prompt_tokens": 371,
+     "completion_tokens": 43,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0001629,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 1772.2212001681328,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0003934331064373255,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 5531.25340025872,
+     "prompt_tokens": 11359,
+     "completion_tokens": 1275,
+     "reasoning_tokens": 1023,
+     "cost_usd": 0.0049377,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  },
+  {
+   "run": 2,
+   "id": 204,
+   "set": "multi",
+   "question": "Tôi chưa có lý lịch tư pháp thì sao, và T3 chưa trả lời email phê duyệt thì tôi làm sao?",
+   "expect": 2,
+   "seconds": 8.511,
+   "request_id": "83ebcaefccd24abf9baf852250f29ced",
+   "route": "LLM",
+   "type": "ANSWER",
+   "got": "2/2 ý",
+   "verdict": "✓",
+   "missing": [],
+   "claim_count": 2,
+   "answered_parts": 2,
+   "llm_calls": [
+    {
+     "operation": "viga.route",
+     "kind": "llm",
+     "latency_ms": 1355.8101002126932,
+     "prompt_tokens": 1197,
+     "completion_tokens": 72,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00044549999999999993,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.rewrite",
+     "kind": "llm",
+     "latency_ms": 1030.3447004407644,
+     "prompt_tokens": 378,
+     "completion_tokens": 55,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.00017939999999999997,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.embed",
+     "kind": "embedding",
+     "latency_ms": 1765.3059996664524,
+     "prompt_tokens": 0,
+     "completion_tokens": 0,
+     "reasoning_tokens": 0,
+     "cost_usd": 0.0003918979319259524,
+     "ok": true,
+     "attempt": 1
+    },
+    {
+     "operation": "chat.answer",
+     "kind": "llm",
+     "latency_ms": 4252.866400405765,
+     "prompt_tokens": 12603,
+     "completion_tokens": 984,
+     "reasoning_tokens": 691,
+     "cost_usd": 0.0049616999999999994,
+     "ok": true,
+     "attempt": 1
+    }
+   ]
+  }
+ ]
+}
