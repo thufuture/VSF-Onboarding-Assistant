@@ -1565,6 +1565,8 @@
       },
       "claim": {
         "quote": "Quoted verbatim",
+        "part": "Part {n}",
+        "partNoBasis": "I have no basis in the documents to answer this part.",
         "partialNoBasis": "Some parts of the question have no basis in the documents, so I did not answer them.",
         "unansweredTitle": "Not covered by the documents",
         "unansweredHint": "I have no basis to answer this part, so I will not guess. You can send the question to HR."
@@ -1955,6 +1957,9 @@
       "taskTitle": "Each AI task-generation run",
       "average": "Average of the last {count} successful runs: {seconds} per run, {cost} USD, {items} proposals.",
       "noRuns": "No task-generation runs recently.",
+      "title": "Each task-creation run",
+      "tabLatency": "Latency",
+      "tabCost": "Cost",
       "latencyTitle": "Latency per task-generation run",
       "latencySub": "Total run time versus time spent waiting for the AI model (seconds)",
       "costTitle": "Cost per task-generation run",
@@ -1978,12 +1983,12 @@
       "title": "AI cost of the team",
       "sub": "Estimated for the selected period, split into the two items HR triggers",
       "upload": "Uploading documents",
-      "uploadHint": "BGE-M3 embedding (Modal) and document structure reading",
+      "uploadHint": "Reading document structure with the LLM (self-hosted embedding is not billed)",
       "tasks": "AI task generation",
       "runs": "DeepSeek, {count} generation run(s)"
     },
     "providers": {
-      "sub": "DeepSeek is billed per token, BGE-M3 on Modal per GPU second",
+      "sub": "DeepSeek LLM cost, billed per token",
       "title": "Cost and performance by provider",
       "none": "No calls in the selected period",
       "provider": "Provider",
@@ -2005,7 +2010,7 @@
     },
     "costHour": {
       "title": "AI cost per hour",
-      "sub": "USD over the last 24 hours, DeepSeek and BGE-M3 apart"
+      "sub": "USD over the last 24 hours, DeepSeek LLM cost"
     },
     "costGroups": {
       "names": {

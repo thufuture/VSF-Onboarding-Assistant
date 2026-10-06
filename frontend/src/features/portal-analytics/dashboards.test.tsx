@@ -113,7 +113,7 @@ describe("Trang Tổng quan có số liệu theo thời gian", () => {
     expect(screen.getByTestId("upload-cost")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Chi phí AI mỗi ngày" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Chi phí AI theo giờ" })).toBeInTheDocument();
-    for (const name of ["Chi phí theo thao tác", "Độ trễ mỗi lượt tạo task", "Chi phí mỗi lượt tạo task", "Chi phí và hiệu năng theo nhà cung cấp"]) {
+    for (const name of ["Chi phí theo thao tác", "Mỗi lượt tạo task", "Chi phí và hiệu năng theo nhà cung cấp"]) {
       expect(screen.queryByRole("heading", { name })).not.toBeInTheDocument();
     }
   });

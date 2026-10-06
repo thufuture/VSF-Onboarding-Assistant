@@ -58,6 +58,9 @@ export function VigaReply({
       ? t(`reply.${reply.message_key}`, reply.message_params)
       : reply.message;
   const answers = reply.claims.filter((claim) => claim.response_type === "ANSWER" && claim.text);
+  // Câu hỏi nhiều ý: mỗi ý một thẻ có số thứ tự và chính câu hỏi con ở đầu thẻ (kể cả ý chưa có căn cứ), để biết đoạn nào trả lời ý nào.
+  const multi = reply.claims.length > 1;
+  const shown = multi ? reply.claims : answers;
 
   return (
     <div className={styles.reply}>
@@ -68,26 +71,43 @@ export function VigaReply({
 
       {reply.response_type === "ANSWER" && answers.length > 0 ? (
         <div className={styles.claims}>
-          {answers.map((claim, index) => (
-            <div className={styles.claim} key={index}>
-              <MarkdownText className={styles.text}>{claim.text ?? ""}</MarkdownText>
-              {claim.quote ? (
-                <blockquote>
-                  <small>{t("claim.quote")}</small>
-                  {claim.quote}
-                </blockquote>
+          {shown.map((claim, index) => (
+            <div className={multi ? `${styles.claim} ${styles.part}` : styles.claim} key={index}>
+              {multi ? (
+                <div className={styles.partHead}>
+                  <span aria-hidden="true" className={styles.partNo}>
+                    {index + 1}
+                  </span>
+                  <span className={styles.partQuestion}>
+                    <small>{t("claim.part", { n: index + 1 })}</small>
+                    {claim.question}
+                  </span>
+                </div>
               ) : null}
-              {claim.source ? (
-                <button
-                  className={styles.sourceButton}
-                  onClick={() => claim.source && setSource({ source: claim.source, quote: claim.quote })}
-                  type="button"
-                >
-                  <FileText aria-hidden="true" size={13} />
-                  {claim.source.document_title} · {claim.source.version_label}
-                  {claim.source.section_heading ? ` · ${claim.source.section_heading}` : ""}
-                </button>
-              ) : null}
+              {claim.response_type === "ANSWER" && claim.text ? (
+                <>
+                  <MarkdownText className={styles.text}>{claim.text}</MarkdownText>
+                  {claim.quote ? (
+                    <blockquote>
+                      <small>{t("claim.quote")}</small>
+                      {claim.quote}
+                    </blockquote>
+                  ) : null}
+                  {claim.source ? (
+                    <button
+                      className={styles.sourceButton}
+                      onClick={() => claim.source && setSource({ source: claim.source, quote: claim.quote })}
+                      type="button"
+                    >
+                      <FileText aria-hidden="true" size={13} />
+                      {claim.source.document_title} · {claim.source.version_label}
+                      {claim.source.section_heading ? ` · ${claim.source.section_heading}` : ""}
+                    </button>
+                  ) : null}
+                </>
+              ) : (
+                <p className={styles.partNoBasis}>{t("claim.partNoBasis")}</p>
+              )}
             </div>
           ))}
         </div>
@@ -104,7 +124,7 @@ export function VigaReply({
           </ul>
           <small>{t("claim.unansweredHint")}</small>
         </div>
-      ) : reply.response_type === "ANSWER" && reply.claims.some((claim) => claim.response_type === "NO_BASIS") ? (
+      ) : reply.response_type === "ANSWER" && !multi && reply.claims.some((claim) => claim.response_type === "NO_BASIS") ? (
         <p className={styles.partial}>{t("claim.partialNoBasis")}</p>
       ) : null}
 

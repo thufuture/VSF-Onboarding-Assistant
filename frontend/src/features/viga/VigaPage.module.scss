@@ -7,8 +7,12 @@
 
 .layout {
   display: grid;
-  min-height: max(520px, calc(100dvh - var(--emp-header) - 96px));
+  // Chiều cao CỐ ĐỊNH theo màn hình (không chỉ min-height): để tin nhắn dài cuộn bên trong khung, còn ô nhập và danh sách hội thoại
+  // luôn nằm trong tầm nhìn, không phải cuộn cả trang mới thấy.
+  height: max(520px, calc(100dvh - var(--emp-header) - 96px));
+  min-height: 0;
   grid-template-columns: 276px minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
   overflow: hidden;
   border: 1px solid var(--app-border);
   border-radius: 14px;

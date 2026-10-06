@@ -75,6 +75,8 @@ export function AnalyticsPanel({ variant = "admin" }: { variant?: "admin" | "hr"
   const t = useTranslations("analytics");
   const locale = useLocale();
   const [days, setDays] = useState<number>(14);
+  // Hai biểu đồ "mỗi lượt tạo task" (độ trễ, chi phí) gộp thành một thẻ có hai thẻ chọn, để lưới luôn chẵn và kết thúc đúng chân trang.
+  const [runsView, setRunsView] = useState<"latency" | "cost">("latency");
   const [data, setData] = useState<PortalAnalyticsResponseDTO | null>(null);
   const [errorKey, setErrorKey] = useState<string | null>(null);
 
@@ -166,7 +168,7 @@ export function AnalyticsPanel({ variant = "admin" }: { variant?: "admin" | "hr"
   ];
 
   // ── chi phí AI ──
-  // Hai nhà cung cấp tính tiền theo hai cách khác nhau nên vẽ riêng hai đường: LLM DeepSeek (theo token) và embedding BGE-M3 (theo giây GPU Modal).
+  // Chỉ LLM DeepSeek (theo token) có chi phí: embedding BGE-M3 do dự án tự host nên backend không còn trả về dòng embedding.
   const providerLabel = (provider: string) => (provider === "deepseek" || provider === "modal" ? t(`providers.names.${provider}`) : provider);
   const hourLabels = ai.hours.map(hourLabel);
   const hourTitles = ai.hours.map(hourTitle);
@@ -254,8 +256,6 @@ export function AnalyticsPanel({ variant = "admin" }: { variant?: "admin" | "hr"
       "p95",
       t("providers.tokensIn"),
       t("providers.tokensOut"),
-      t("providers.strings"),
-      t("providers.gpuSeconds"),
       "USD",
     ],
     rows: ai.by_provider.map((row) => [
@@ -264,10 +264,8 @@ export function AnalyticsPanel({ variant = "admin" }: { variant?: "admin" | "hr"
       formatCount(row.errors),
       formatMs(row.p50_latency_ms),
       formatMs(row.p95_latency_ms),
-      row.kind === "llm" ? formatCount(row.prompt_tokens) : "—",
-      row.kind === "llm" ? formatCount(row.completion_tokens) : "—",
-      row.kind === "llm" ? "—" : formatCount(row.input_count),
-      row.kind === "llm" ? "—" : formatSeconds(row.gpu_seconds),
+      formatCount(row.prompt_tokens),
+      formatCount(row.completion_tokens),
       formatUsd(row.cost_usd),
     ]),
   };
@@ -295,7 +293,7 @@ export function AnalyticsPanel({ variant = "admin" }: { variant?: "admin" | "hr"
     ]),
   };
 
-  // HR chỉ cần hai khoản: tải tài liệu lên (embedding BGE-M3 trên Modal + đọc cấu trúc bằng LLM) và tạo task bằng AI (DeepSeek).
+  // HR chỉ cần hai khoản LLM: tải tài liệu lên (đọc cấu trúc bằng LLM; embedding tự host không tính) và tạo task bằng AI (DeepSeek).
   const costOf = (match: (operation: string) => boolean) =>
     ai.by_operation.filter((row) => match(row.operation)).reduce((total, row) => total + row.cost_usd, 0);
   const uploadCost = costOf((operation) => operation.startsWith("ingest."));
@@ -498,23 +496,38 @@ export function AnalyticsPanel({ variant = "admin" }: { variant?: "admin" | "hr"
         )}
         {hr ? null : (
           <>
-        <ChartCard subtitle={runsSubtitle} table={runsTable} title={t("runs.latencyTitle")}>
+        <ChartCard
+          subtitle={runsView === "latency" ? runsSubtitle : t("runs.costSub")}
+          table={runsTable}
+          title={t("runs.title")}
+        >
+          <div aria-label={t("runs.title")} className={styles.viewTabs} role="tablist">
+            {(["latency", "cost"] as const).map((view) => (
+              <button
+                aria-selected={runsView === view}
+                className={runsView === view ? styles.viewTabOn : styles.viewTab}
+                key={view}
+                onClick={() => setRunsView(view)}
+                role="tab"
+                type="button"
+              >
+                {t(view === "latency" ? "runs.tabLatency" : "runs.tabCost")}
+              </button>
+            ))}
+          </div>
           {ai.task_runs.length === 0 ? (
             <p className={styles.empty}>{t("runs.noRuns")}</p>
-          ) : (
+          ) : runsView === "latency" ? (
             <BarChart
+              key="latency"
               ariaLabel={t("runs.latencyTitle")}
               categories={runCategories(true)}
               formatValue={formatSeconds}
               series={latencySeries}
             />
-          )}
-        </ChartCard>
-        <ChartCard subtitle={t("runs.costSub")} table={runsTable} title={t("runs.costTitle")}>
-          {ai.task_runs.length === 0 ? (
-            <p className={styles.empty}>{t("runs.noRuns")}</p>
           ) : (
             <BarChart
+              key="cost"
               ariaLabel={t("runs.costTitle")}
               categories={runCategories(false)}
               formatAxis={formatUsdAxis}

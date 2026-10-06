@@ -20,6 +20,7 @@ import type {
 } from "./dto/responseDTO/viga.response";
 import { HrTicketsPage } from "./HrTicketsPage";
 import { TicketThread } from "./TicketThread";
+import { VigaReply } from "./VigaReply";
 import { VigaFeedbackPage } from "./VigaFeedbackPage";
 import { VigaPage } from "./VigaPage";
 
@@ -388,6 +389,73 @@ function pick(label: string, option: string | RegExp) {
 function renderHr(ui: ReactNode) {
   return render(<NextIntlClientProvider locale="vi" messages={viMessages}>{ui}</NextIntlClientProvider>);
 }
+
+describe("Câu hỏi nhiều ý", () => {
+  it("mỗi ý một thẻ có số thứ tự và câu hỏi con; ý chưa có căn cứ cũng có thẻ riêng", () => {
+    const source = { document_title: "Hướng dẫn ngày 1", version_label: "1.0", section_heading: "Hồ sơ", document_url: "/d/1", version_id: 1 };
+    const reply = {
+      conversation_id: 1,
+      message_id: 0,
+      new_conversation: false,
+      response_type: "ANSWER",
+      message: "",
+      message_key: null,
+      message_params: {},
+      claims: [
+        { question: "Chưa có VNeID thì sao?", response_type: "ANSWER", text: "Photo công chứng.", quote: "phải photo công chứng", source },
+        { question: "Dùng CMND được không?", response_type: "NO_BASIS", text: null, quote: null, source: null },
+        { question: "Không đăng nhập được Teams?", response_type: "ANSWER", text: "Đăng nhập lại cả hai ứng dụng.", quote: "Đăng xuất, đăng nhập lại", source },
+      ],
+      blocking_tasks: [],
+      suggested_actions: [],
+      sources: [],
+      can_report_to_hr: false,
+      unanswered: [],
+      assumed_task_title: null,
+      route: "LLM",
+    } as VigaAnswerResponseDTO;
+    render(
+      <NextIntlClientProvider locale="vi" messages={viMessages}>
+        <VigaReply onReport={() => undefined} reply={reply} sentTicketId={null} />
+      </NextIntlClientProvider>,
+    );
+
+    for (const n of [1, 2, 3]) expect(screen.getByText(`Ý ${n}`)).toBeInTheDocument();
+    expect(screen.getByText("Chưa có VNeID thì sao?")).toBeInTheDocument();
+    expect(screen.getByText("Dùng CMND được không?")).toBeInTheDocument();
+    expect(screen.getByText(viMessages.employee.viga.claim.partNoBasis)).toBeInTheDocument();
+    expect(screen.getByText("Photo công chứng.")).toBeInTheDocument();
+    expect(screen.getByText("Đăng nhập lại cả hai ứng dụng.")).toBeInTheDocument();
+  });
+
+  it("câu một ý không có thẻ đánh số", () => {
+    const reply = {
+      conversation_id: 1,
+      message_id: 0,
+      new_conversation: false,
+      response_type: "ANSWER",
+      message: "",
+      message_key: null,
+      message_params: {},
+      claims: [{ question: "Laptop nhận ở đâu?", response_type: "ANSWER", text: "Tầng 12.", quote: null, source: null }],
+      blocking_tasks: [],
+      suggested_actions: [],
+      sources: [],
+      can_report_to_hr: false,
+      unanswered: [],
+      assumed_task_title: null,
+      route: "LLM",
+    } as VigaAnswerResponseDTO;
+    render(
+      <NextIntlClientProvider locale="vi" messages={viMessages}>
+        <VigaReply onReport={() => undefined} reply={reply} sentTicketId={null} />
+      </NextIntlClientProvider>,
+    );
+
+    expect(screen.getByText("Tầng 12.")).toBeInTheDocument();
+    expect(screen.queryByText("Ý 1")).not.toBeInTheDocument();
+  });
+});
 
 describe("Khung trao đổi tự cập nhật", () => {
   it("tin mới của bên kia hiện ra không cần tải lại trang, rồi đánh dấu đã xem", async () => {
