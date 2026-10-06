@@ -113,6 +113,15 @@ function report(overrides: Partial<PortalAnalyticsResponseDTO> = {}): PortalAnal
       calls_per_day: [0, 5, 3, 8, 12, 15, 12],
       errors_per_day: [0, 0, 0, 1, 0, 1, 0],
       cost_per_day: [0, 0.001, 0.002, 0.005, 0.006, 0.0089, 0.006],
+      cost_groups: [
+        { key: "upload", calls: 3, cost_usd: 0.004, cost_per_day: Array(14).fill(0), cost_per_hour: Array(24).fill(0) },
+        { key: "tasks", calls: 2, cost_usd: 0.02, cost_per_day: Array(14).fill(0), cost_per_hour: Array(24).fill(0) },
+      ],
+      hours: Array.from({ length: 24 }, (_, i) => `2026-10-04T${String(i).padStart(2, "0")}:00`),
+      by_provider: [
+        { provider: "modal", kind: "embedding", calls: 3, errors: 0, p50_latency_ms: 80, p95_latency_ms: 18900, prompt_tokens: 0, completion_tokens: 0, input_count: 22, gpu_seconds: 19.1, cost_usd: 0.0042, cost_per_day: Array(14).fill(0), cost_per_hour: Array(24).fill(0) },
+        { provider: "deepseek", kind: "llm", calls: 8, errors: 1, p50_latency_ms: 1500, p95_latency_ms: 9000, prompt_tokens: 12000, completion_tokens: 3000, input_count: 0, gpu_seconds: 20, cost_usd: 0.0072, cost_per_day: Array(14).fill(0), cost_per_hour: Array(24).fill(0) },
+      ],
       by_operation: [
         {
           operation: "task.proposal",
@@ -178,6 +187,18 @@ beforeEach(() => {
 });
 
 describe("Số liệu theo thời gian (trang Tổng quan)", () => {
+  it("tách chi phí và hiệu năng giữa LLM DeepSeek (token) và embedding BGE-M3 trên Modal (giây GPU)", async () => {
+    renderPanel();
+
+    const deepseek = await screen.findByTestId("provider-deepseek");
+    expect(within(deepseek).getByText("LLM DeepSeek")).toBeInTheDocument();
+    expect(within(deepseek).getByText("Token vào")).toBeInTheDocument();
+    const modal = screen.getByTestId("provider-modal");
+    expect(within(modal).getByText("Embedding BGE-M3 (Modal)")).toBeInTheDocument();
+    expect(within(modal).getByText("Giây GPU")).toBeInTheDocument();
+    expect(within(modal).queryByText("Token vào")).not.toBeInTheDocument();
+  });
+
   it("hiện phạm vi phòng ban và tải đúng 14 ngày mặc định, không có thẻ chỉ số hay tiêu đề mục thừa", async () => {
     renderPanel();
 
@@ -263,7 +284,7 @@ describe("Số liệu theo thời gian (trang Tổng quan)", () => {
     expect(failed).toHaveTextContent("3.10 s");
   });
 
-  it("chỉ giữ sáu biểu đồ quan trọng, không còn các thẻ phụ", async () => {
+  it("chỉ giữ tám biểu đồ quan trọng, không còn các thẻ phụ", async () => {
     renderPanel();
     await screen.findByText("Phòng ban: Kỹ thuật");
 
@@ -271,7 +292,9 @@ describe("Số liệu theo thời gian (trang Tổng quan)", () => {
     expect(titles).toEqual([
       "Tiến độ nhân viên",
       "Hoạt động mỗi ngày",
+      "Chi phí và hiệu năng theo nhà cung cấp",
       "Chi phí AI mỗi ngày",
+      "Chi phí AI theo giờ",
       "Chi phí theo thao tác",
       "Độ trễ mỗi lượt tạo task",
       "Chi phí mỗi lượt tạo task",
@@ -335,9 +358,9 @@ describe("Số liệu theo thời gian (trang Tổng quan)", () => {
     expect(await screen.findByText("Chưa tải được số liệu. Hãy thử lại sau.")).toBeInTheDocument();
   });
 
-  it("mỗi biểu đồ trong số sáu biểu đồ đều có nút xem dạng bảng", async () => {
+  it("mỗi biểu đồ trong số tám biểu đồ đều có nút xem dạng bảng", async () => {
     renderPanel();
     await screen.findByText("Phòng ban: Kỹ thuật");
-    expect(screen.getAllByRole("button", { name: /Xem dạng bảng/ })).toHaveLength(6);
+    expect(screen.getAllByRole("button", { name: /Xem dạng bảng/ })).toHaveLength(8);
   });
 });

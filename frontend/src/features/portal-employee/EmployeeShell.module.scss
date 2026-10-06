@@ -495,6 +495,10 @@
   background: #ece6f7;
   color: #7a4fb0;
 }
+.kind_change {
+  background: #fdeede;
+  color: #b5671b;
+}
 .kind_ticket {
   background: #e0f3f1;
   color: #1f7f7a;
@@ -684,4 +688,19 @@
   .card {
     animation: none;
   }
+}
+
+// Huy hiệu số ticket có tin chưa xem cạnh mục "Yêu cầu".
+.navBadge {
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: #c0392f;
+  color: #fff;
+  font-size: 10.5px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 18px;
+  text-align: center;
 }

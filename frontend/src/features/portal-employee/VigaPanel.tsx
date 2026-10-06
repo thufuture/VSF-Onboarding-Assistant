@@ -1,8 +1,8 @@
 "use client";
 
-import { History, Loader2, Maximize2, MessageSquarePlus, Pencil, Send, Sparkles, Trash2, X } from "lucide-react";
+import { History, Maximize2, MessageSquarePlus, Pencil, Send, Sparkles, Trash2, X } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type FormEvent, type KeyboardEvent, type PointerEvent } from "react";
 
 import { VigaAvatar } from "@/components/avatar/VigaAvatar";
 import { PortalModal } from "@/components/portal-modal/PortalModal";
@@ -13,6 +13,7 @@ import { VigaReply } from "@/features/viga/VigaReply";
 import { useRouter } from "@/i18n/navigation";
 
 import { givenName } from "./journeyModel";
+import { WaveText } from "@/components/thinking/WaveText";
 import styles from "./VigaPanel.module.scss";
 import { useVigaPanel } from "./vigaPanelStore";
 
@@ -21,6 +22,29 @@ import { useVigaPanel } from "./vigaPanelStore";
  * không che nội dung). Nối API thật `/viga/ask`: công cụ lộ trình, hỏi đáp tài liệu có nguồn, đường thoát và gợi ý gửi HR.
  * Hội thoại lưu trên máy chủ: mở lại, đổi tên, xóa, mở cuộc mới (mục 6.2). Nút "Mở rộng" đưa sang trang đầy đủ `/me/viga`.
  */
+const WIDTH_KEY = "vsf-viga-width";
+const DEFAULT_WIDTH = 440;
+const MIN_WIDTH = 340;
+
+/** Chiều rộng tối đa: không quá 760px và luôn chừa cho trang bên trái ít nhất 760px để bố cục không bị bóp vỡ. */
+function maxWidth(): number {
+  return Math.max(MIN_WIDTH, Math.min(760, window.innerWidth - 760));
+}
+
+function clampWidth(value: number): number {
+  return Math.min(Math.max(value, MIN_WIDTH), maxWidth());
+}
+
+function savedWidth(): number {
+  if (typeof window === "undefined") return DEFAULT_WIDTH;
+  try {
+    const stored = Number(window.localStorage.getItem(WIDTH_KEY));
+    return Number.isFinite(stored) && stored > 0 ? clampWidth(stored) : DEFAULT_WIDTH;
+  } catch {
+    return DEFAULT_WIDTH;
+  }
+}
+
 export function VigaPanel() {
   const t = useTranslations("employee.viga");
   const router = useRouter();
@@ -29,6 +53,42 @@ export function VigaPanel() {
   const chat = useVigaChat();
   const { turns, conversationId, draft, setDraft, busy, history, renaming, setRenaming, report, setReport } = chat;
   const [infoOpen, setInfoOpen] = useState(false);
+  // Kéo mép trái để đổi chiều rộng ngăn (như khung chat của VS Code); nhớ lại ở trình duyệt, bấm đúp mép để về mặc định.
+  const [width, setWidth] = useState(DEFAULT_WIDTH);
+  // Đọc chiều rộng đã lưu SAU khi gắn vào trang (máy chủ không biết giá trị này nên không đọc lúc dựng ban đầu, tránh lệch hydration).
+  useEffect(() => {
+    const timer = window.setTimeout(() => setWidth(savedWidth()), 0);
+    return () => window.clearTimeout(timer);
+  }, []);
+  const [resizing, setResizing] = useState(false);
+
+  const remember = (value: number) => {
+    try {
+      window.localStorage.setItem(WIDTH_KEY, String(Math.round(value)));
+    } catch {
+      /* trình duyệt chặn lưu trữ: vẫn đổi được trong phiên này */
+    }
+  };
+  const startResize = (event: PointerEvent<HTMLDivElement>) => {
+    event.currentTarget.setPointerCapture(event.pointerId);
+    setResizing(true);
+  };
+  const moveResize = (event: PointerEvent<HTMLDivElement>) => {
+    if (resizing) setWidth(clampWidth(window.innerWidth - event.clientX));
+  };
+  const endResize = () => {
+    if (!resizing) return;
+    setResizing(false);
+    remember(width);
+  };
+  const keyResize = (event: KeyboardEvent<HTMLDivElement>) => {
+    const step = event.shiftKey ? 80 : 24;
+    if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+    event.preventDefault();
+    const next = clampWidth(width + (event.key === "ArrowLeft" ? step : -step));
+    setWidth(next);
+    remember(next);
+  };
   const [historyOpen, setHistoryOpen] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -83,7 +143,32 @@ export function VigaPanel() {
 
   return (
     <>
-      <aside aria-label={t("title")} className={`${styles.panel} ${open ? styles.panelOpen : ""}`} hidden={!open}>
+      <aside
+        aria-label={t("title")}
+        className={`${styles.panel} ${open ? styles.panelOpen : ""} ${resizing ? styles.panelResizing : ""}`}
+        hidden={!open}
+        style={{ "--viga-w": `${width}px` } as CSSProperties}
+      >
+        <div
+          aria-label={t("resize")}
+          aria-orientation="vertical"
+          aria-valuemax={760}
+          aria-valuemin={MIN_WIDTH}
+          aria-valuenow={width}
+          className={`${styles.resizer} ${resizing ? styles.resizerOn : ""}`}
+          onDoubleClick={() => {
+            setWidth(DEFAULT_WIDTH);
+            remember(DEFAULT_WIDTH);
+          }}
+          onKeyDown={keyResize}
+          onPointerCancel={endResize}
+          onPointerDown={startResize}
+          onPointerMove={moveResize}
+          onPointerUp={endResize}
+          role="separator"
+          tabIndex={0}
+          title={t("resizeHint")}
+        />
         <header className={styles.head}>
           <VigaAvatar sizePx={38} />
           <div>
@@ -221,8 +306,8 @@ export function VigaPanel() {
                         {turn.error}
                       </p>
                     ) : (
-                      <p className={styles.thinking} role="status">
-                        <Loader2 aria-hidden="true" className={styles.spin} size={14} /> {t("thinking")}
+                      <p className={styles.thinking}>
+                        <WaveText text={t("thinking")} />
                       </p>
                     )}
                   </div>

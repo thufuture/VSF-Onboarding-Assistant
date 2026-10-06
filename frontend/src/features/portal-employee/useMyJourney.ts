@@ -7,16 +7,22 @@ import type { EmployeeJourneyResponseDTO } from "@/features/portal-hr/dto/respon
 
 import { buildDays, progressOf } from "./journeyModel";
 
-export type JourneyProblem = "noJourney" | "unavailable";
+/**
+ * - `needsCreate`: HR chưa thêm lộ trình cho nhân viên (lộ trình không tự tạo khi mở trang, chỉ HR thêm);
+ * - `noJourney`: chưa có nhóm hoặc chưa có bản nào được áp dụng nên chưa tạo được;
+ * - `unavailable`: lỗi khác.
+ */
+export type JourneyProblem = "needsCreate" | "noJourney" | "unavailable";
 
 function problemOf(error: unknown): JourneyProblem {
-  if (error instanceof PortalError && (error.apiCode === "NO_TEAM_ASSIGNED" || error.apiCode === "NO_JOURNEY_TEMPLATE")) {
-    return "noJourney";
+  if (error instanceof PortalError) {
+    if (error.apiCode === "NO_JOURNEY") return "needsCreate";
+    if (error.apiCode === "NO_TEAM_ASSIGNED" || error.apiCode === "NO_JOURNEY_TEMPLATE") return "noJourney";
   }
   return "unavailable";
 }
 
-/** Lộ trình của chính nhân viên (tự khởi tạo ở lần gọi đầu) kèm ngày, tiến độ và thao tác hoàn thành task. */
+/** Lộ trình RIÊNG của chính nhân viên (bản sao do HR thêm, có hiệu lực ngay) kèm ngày, tiến độ và thao tác hoàn thành task. */
 export function useMyJourney() {
   const [journey, setJourney] = useState<EmployeeJourneyResponseDTO | null>(null);
   const [problem, setProblem] = useState<JourneyProblem | null>(null);

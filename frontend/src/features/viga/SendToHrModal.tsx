@@ -6,6 +6,8 @@ import { type FormEvent, useState } from "react";
 
 import { modalStyles as m, PortalModal } from "@/components/portal-modal/PortalModal";
 import { vigaApi, VigaError } from "@/features/viga/api";
+import { AttachmentPicker } from "@/features/viga/attachments/AttachmentPicker";
+import { useAttachments } from "@/features/viga/attachments/useAttachments";
 import type { TicketSummaryResponseDTO } from "@/features/viga/dto/responseDTO/viga.response";
 
 const KNOWN = new Set(["TICKET_DAILY_LIMIT", "TICKET_DUPLICATE", "NO_TEAM_ASSIGNED"]);
@@ -18,12 +20,15 @@ export function SendToHrModal({
   question,
   conversationId,
   employeeTaskId,
+  fresh = false,
   onClose,
   onSent,
 }: {
   question: string;
   conversationId: number | null;
   employeeTaskId: number | null;
+  /** Tạo ticket mới từ trang "Yêu cầu" (không đi từ một câu hỏi của Viga): tiêu đề, lời dẫn và ô nhập theo hướng tự viết. */
+  fresh?: boolean;
   onClose: () => void;
   onSent: (ticket: TicketSummaryResponseDTO) => void;
 }) {
@@ -32,6 +37,7 @@ export function SendToHrModal({
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const attachments = useAttachments();
 
   async function submit(event: FormEvent) {
     event.preventDefault();
@@ -44,6 +50,7 @@ export function SendToHrModal({
         note: note.trim() || null,
         employee_task_id: employeeTaskId,
         conversation_id: conversationId,
+        attachment_ids: attachments.ids,
       });
       onSent(ticket);
     } catch (caught) {
@@ -62,7 +69,7 @@ export function SendToHrModal({
           <button className={m.btnSec} onClick={onClose} type="button">
             {t("cancel")}
           </button>
-          <button className={m.btn} disabled={busy || !text.trim()} form="send-to-hr" type="submit">
+          <button className={m.btn} disabled={busy || attachments.uploading || !text.trim()} form="send-to-hr" type="submit">
             <Send aria-hidden="true" size={14} /> {t("send")}
           </button>
         </>
@@ -70,11 +77,11 @@ export function SendToHrModal({
       icon={Send}
       onClose={onClose}
       subtitle={t("subtitle")}
-      title={t("title")}
+      title={t(fresh ? "newTitle" : "title")}
       tone="indigo"
     >
       <form id="send-to-hr" onSubmit={submit}>
-        <p className={m.faint}>{t("intro")}</p>
+        <p className={m.faint}>{t(fresh ? "newIntro" : "intro")}</p>
         {error ? (
           <p className={m.faint} role="alert" style={{ color: "#a3121f" }}>
             {error}
@@ -87,6 +94,7 @@ export function SendToHrModal({
               id="hr-question"
               maxLength={2000}
               onChange={(event) => setText(event.target.value)}
+              placeholder={fresh ? t("newPlaceholder") : undefined}
               required
               rows={4}
               value={text}
@@ -102,6 +110,10 @@ export function SendToHrModal({
               rows={3}
               value={note}
             />
+          </div>
+          <div className={m.span2}>
+            <label>{t("attachments")}</label>
+            <AttachmentPicker attachments={attachments} />
           </div>
         </div>
         <p className={m.faint}>{t("limits")}</p>

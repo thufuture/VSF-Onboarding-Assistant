@@ -286,9 +286,9 @@
       "adminUsers": "Người dùng",
       "adminTeams": "Phòng ban",
       "adminMembers": "Thành viên",
-      "adminTemplate": "Lộ trình mẫu",
       "adminAudit": "Nhật ký",
-      "adminMetrics": "Chi phí AI"
+      "adminMetrics": "Chi phí AI",
+      "ticketsUnread": "{count} ticket có tin chưa xem"
     },
     "footer": {
       "brand": "VSF Onboarding Portal",
@@ -366,7 +366,7 @@
   },
   "portalTasks": {
     "title": "Quản lý lộ trình onboarding",
-    "description": "Tạo giai đoạn, thêm task và quản lý từng task ngay trên roadmap.",
+    "description": "Mỗi ngày có nhiều phiên bản: sửa bản nháp, áp dụng khi sẵn sàng. Lộ trình nhân viên đã tạo không tự đổi.",
     "defaultTemplateTitle": "Lộ trình onboarding",
     "createWithAi": "Tạo bằng AI",
     "addStageShort": "Thêm ngày",
@@ -380,8 +380,6 @@
     "taskCount": "{count} task",
     "taskNo": "Task {n}",
     "prereq": "{count} tiên quyết",
-    "statusPublished": "Đã xuất bản",
-    "statusDraft": "Bản nháp",
     "required": "Bắt buộc",
     "optional": "Tùy chọn",
     "start": "Bắt đầu",
@@ -414,11 +412,11 @@
       "total": "Tổng task",
       "totalSub": "Trong lộ trình hiện tại",
       "draft": "Bản nháp",
-      "draftSub": "Chưa hiển thị cho nhân viên",
-      "published": "Đã xuất bản",
-      "publishedSub": "Đang hiển thị cho nhân viên",
+      "draftSub": "Chưa ai nhận, sửa được",
       "missing": "Cần bổ sung",
-      "missingSub": "Task thiếu hướng dẫn"
+      "missingSub": "Task thiếu hướng dẫn",
+      "applied": "Đang áp dụng",
+      "appliedSub": "Bản người mới sẽ nhận"
     },
     "legend": {
       "title": "Màu mốc theo nhóm task"
@@ -452,7 +450,9 @@
       "deleted": "Đã xóa task.",
       "duplicated": "Đã nhân bản task.",
       "stageCreated": "Đã tạo giai đoạn.",
-      "published": "Đã xuất bản lộ trình."
+      "draftCreated": "Đã tạo bản nháp {n}.",
+      "applied": "Đã áp dụng bản {n}. {count} nhân viên sẽ nhận thông báo chỉnh sửa.",
+      "draftDeleted": "Đã xóa bản nháp."
     },
     "errors": {
       "unauthorized": "Bạn cần đăng nhập lại.",
@@ -462,12 +462,13 @@
       "published": "Lộ trình đã xuất bản nên không sửa được.",
       "empty": "Cần ít nhất một task trước khi xuất bản.",
       "cycle": "Tiên quyết tạo vòng lặp hoặc trỏ vào chính task này.",
-      "stageOutOfTemplate": "Chỉ chuyển được sang giai đoạn cùng lộ trình."
+      "stageOutOfTemplate": "Chỉ chuyển được sang giai đoạn cùng lộ trình.",
+      "versionNotEditable": "Chỉ sửa được bản nháp. Hãy tạo bản nháp mới từ bản này.",
+      "versionEmpty": "Bản nháp chưa có việc nào nên chưa áp dụng được.",
+      "lastVersion": "Không xóa được bản cuối cùng của ngày."
     },
     "close": "Đóng",
     "closeButton": "Đóng",
-    "publish": "Xuất bản",
-    "publishedReadonly": "Lộ trình đã xuất bản — chỉ xem",
     "tabs": {
       "info": "Thông tin",
       "guide": "Hướng dẫn",
@@ -477,9 +478,6 @@
     "duplicateConfirmTitle": "Nhân bản task “{title}”?",
     "duplicateConfirmBody": "Tạo một bản sao ngay sau task này trong cùng giai đoạn, giữ nguyên nội dung và tiên quyết.",
     "duplicateConfirmButton": "Nhân bản",
-    "publishConfirmTitle": "Xuất bản lộ trình “{title}”?",
-    "publishConfirmBody": "Sau khi xuất bản, nhân viên trong nhóm sẽ thấy lộ trình này và bạn không sửa được task nữa.",
-    "publishConfirmButton": "Xuất bản",
     "backToTemplate": "Lộ trình mẫu chung",
     "group": {
       "PROFILE": "Hồ sơ",
@@ -488,14 +486,64 @@
       "OFFICE": "Văn phòng",
       "none": "Chưa phân nhóm"
     },
-    "tagPublished": "Xuất bản",
+    "tagPublished": "Áp dụng",
     "tagDraft": "Nháp",
-    "sourceAction": "Nguồn tài liệu"
+    "sourceAction": "Nguồn tài liệu",
+    "versions": {
+      "label": "Các phiên bản của ngày",
+      "name": "Bản {n}",
+      "status": {
+        "DRAFT": "Nháp",
+        "APPLIED": "Đang áp dụng",
+        "ARCHIVED": "Lưu trữ"
+      },
+      "hint": {
+        "DRAFT": "Bản nháp: sửa thoải mái, chưa ảnh hưởng ai. Bấm Áp dụng khi sẵn sàng.",
+        "APPLIED": "Đang áp dụng: chỉ xem. Người tạo lộ trình mới nhận bản này; muốn sửa hãy Tạo bản nháp.",
+        "ARCHIVED": "Bản cũ đã lưu trữ: chỉ xem."
+      },
+      "createDraft": "Tạo bản nháp từ bản này",
+      "apply": "Áp dụng",
+      "deleteDraft": "Xóa nháp",
+      "rollout": "Theo dõi triển khai",
+      "readonly": "Bản này chỉ xem — chỉ bản nháp sửa được",
+      "deleteTitle": "Xóa bản nháp {n}?",
+      "deleteBody": "Các việc trong bản nháp này sẽ mất. Bản đang áp dụng và lộ trình của nhân viên không bị ảnh hưởng.",
+      "deleteConfirm": "Xóa nháp",
+      "taskCount": "{count} việc",
+      "createDraftTitle": "Tạo bản nháp {n} từ bản {from}?",
+      "createDraftBody": "Bản nháp mới sao chép toàn bộ việc của bản đang xem để bạn sửa. Chưa ai bị ảnh hưởng cho tới khi bạn bấm Áp dụng.",
+      "createDraftConfirm": "Tạo bản nháp"
+    },
+    "apply": {
+      "title": "Áp dụng bản {n} của {day}?",
+      "body": "Việc sửa: {modified}, việc thêm: {added}, việc bỏ: {removed}. Bản này thành bản đang áp dụng; bản cũ được lưu trữ. Lộ trình của {employees} nhân viên đã tạo KHÔNG tự đổi: họ nhận thông báo để tự bấm Cập nhật hoặc Giữ bản cũ.",
+      "confirm": "Áp dụng"
+    },
+    "rollout": {
+      "title": "Triển khai bản {n}",
+      "subtitle": "Nhân viên đã xem, đã cập nhật hay giữ bản cũ (chỉ xem).",
+      "empty": "Chưa có nhân viên nào nhận thông báo cho bản này.",
+      "failed": "Chưa tải được tình hình triển khai.",
+      "summary": "{total} nhân viên: {unseen} chưa xem, {seen} đã xem, {updated} đã cập nhật, {kept} giữ bản cũ.",
+      "col": {
+        "employee": "Nhân viên",
+        "state": "Tình trạng",
+        "pending": "Chờ quyết định",
+        "accepted": "Đã cập nhật",
+        "dismissed": "Giữ bản cũ"
+      },
+      "state": {
+        "UNSEEN": "Chưa xem",
+        "SEEN": "Đã xem",
+        "UPDATED": "Đã cập nhật",
+        "KEPT_OLD": "Giữ bản cũ",
+        "SUPERSEDED": "Đã có bản mới hơn"
+      }
+    }
   },
   "portalEmployees": {
     "viewTask": "Xem task",
-    "nudge": "Nhắn",
-    "soon": "Sắp có",
     "count": "{count} nhân viên",
     "title": "Nhân viên",
     "description": "Toàn bộ nhân viên bạn phụ trách và tiến độ lộ trình onboarding của họ.",
@@ -528,8 +576,16 @@
       "unauthorized": "Bạn cần đăng nhập lại.",
       "forbidden": "Bạn không có quyền cho hành động này.",
       "unavailable": "Có lỗi xảy ra, thử lại sau.",
-      "network": "Không kết nối được server."
-    }
+      "network": "Không kết nối được server.",
+      "NO_JOURNEY_TEMPLATE": "Chưa có bản nào được áp dụng cho nhóm này nên chưa thêm được lộ trình. Hãy áp dụng một bản ở Quản lý task.",
+      "NO_TEAM_ASSIGNED": "Nhân viên này chưa thuộc nhóm nào."
+    },
+    "addJourney": "Thêm lộ trình",
+    "addJourneyTitle": "Thêm lộ trình cho {name}?",
+    "addJourneyBody": "Nhân viên sẽ nhận bản sao các bản đang áp dụng, có hiệu lực ngay và là lộ trình riêng của họ. Sau này khi bạn áp dụng bản mới, họ nhận thông báo để tự cập nhật.",
+    "addJourneyConfirm": "Thêm lộ trình",
+    "cancel": "Hủy",
+    "close": "Đóng"
   },
   "hrDashboard": {
     "greeting": "Xin chào, {name}",
@@ -712,7 +768,8 @@
         "write": "Soạn thảo",
         "preview": "Xem trước",
         "markdown": "Nội dung Markdown",
-        "hint": "Lưu nhiều lần không tốn phí embedding. Bản nháp chưa ảnh hưởng Viga cho tới khi kích hoạt."
+        "hint": "Lưu nhiều lần không tốn phí embedding. Bản nháp chưa ảnh hưởng Viga cho tới khi kích hoạt.",
+        "saveFirst": "Lưu bản nháp trước khi kích hoạt hoặc xóa"
       },
       "confirm": {
         "activateTitle": "Kích hoạt bản “{label}”?",
@@ -779,7 +836,9 @@
       "empty": "Chưa có ngày nào. Hãy tạo ngày đầu tiên cho lộ trình ở biểu mẫu bên dưới, rồi chọn tài liệu để AI đề xuất task.",
       "createFirst": "Tạo ngày đầu tiên",
       "cancel": "Hủy",
-      "close": "Đóng"
+      "close": "Đóng",
+      "toDraft": "Task AI vào bản nháp {n}",
+      "toNewDraft": "Task AI vào bản nháp mới"
     },
     "document": {
       "heading": "Tài liệu nguồn",
@@ -810,14 +869,31 @@
       "submit": "AI đề xuất task",
       "footnote": "AI đề xuất task vào giai đoạn đã chọn; HR chấp nhận từng task.",
       "submitCount": "Phân tích {count} tài liệu và đề xuất roadmap",
-      "waiting": "Đang chờ",
-      "lost": "Mất kết nối khi hỏi tiến độ; tải lại trang để xem kết quả.",
       "errors": {
         "LLM_NOT_CONFIGURED": "Chưa cấu hình dịch vụ AI nên chưa thể tạo đề xuất.",
         "NO_DOCUMENTS": "Chưa chọn tài liệu nào.",
         "JOB_ERROR": "Việc tạo đề xuất gặp lỗi, thử lại sau.",
         "JOB_INTERRUPTED": "Việc tạo đề xuất bị gián đoạn, thử lại sau."
       }
+    },
+    "progress": {
+      "steps": {
+        "read": "Đọc tài liệu",
+        "draft": "AI soạn task",
+        "verify": "Kiểm tra nguồn trích",
+        "cover": "Bù mục còn thiếu",
+        "order": "Sắp thứ tự và tiên quyết",
+        "save": "Lưu kết quả"
+      },
+      "skipped": "không cần",
+      "seconds": "{seconds} giây",
+      "waiting": "Đang chờ",
+      "queued": "Đang xếp hàng",
+      "queueAhead": "Trước bạn còn {count} việc đang chờ.",
+      "elapsed": "Đã chạy {seconds} giây",
+      "remaining": "còn khoảng {seconds} giây",
+      "creating": "Đang tạo task {done}/{total}",
+      "lost": "Chưa lấy được tiến độ lúc này. Việc vẫn chạy nền: tải lại trang để xem tiếp."
     },
     "propose": {
       "heading": "AI đề xuất task",
@@ -880,11 +956,19 @@
         "minutes": "Thời lượng (phút)",
         "steps": "Các bước",
         "done": "Điều kiện hoàn thành (mỗi dòng một điều kiện)",
-        "save": "Lưu"
+        "save": "Lưu",
+        "position": "Vị trí (1–{max})",
+        "positionHint": "Nhập số để đổi chỗ, hoặc kéo thẻ trên roadmap.",
+        "minutesHint": "Bỏ trống nếu chưa rõ.",
+        "stepsHint": "Mỗi dòng một bước, làm lần lượt từ trên xuống."
       },
       "prerequisites": "Cần xong trước",
       "needsCheck": "Cần kiểm tra",
-      "reviewNotes": "HR cần kiểm tra"
+      "reviewNotes": "HR cần kiểm tra",
+      "reorder": {
+        "hint": "Kéo thả thẻ để đổi vị trí",
+        "dropped": "Đã bỏ {count} tiên quyết vì nay đứng sau task cần nó. Tiên quyết luôn phải đứng trước."
+      }
     },
     "errors": {
       "unauthorized": "Bạn cần đăng nhập lại.",
@@ -903,7 +987,8 @@
         "LLM_UNAVAILABLE": "Dịch vụ AI tạm thời không phản hồi",
         "DOCUMENT_VERSION_NOT_FOUND": "Không đọc được nội dung tài liệu"
       },
-      "uncovered": "{count} mục chưa có task: {names}"
+      "uncovered": "{count} mục chưa có task: {names}",
+      "skippedInfo": "AI coi {count} mục là chỉ có thông tin nên không tạo task: {names}"
     }
   },
   "portalAdmin": {
@@ -1170,7 +1255,8 @@
         "ingest_reembed": "Embedding lại khi đổi model",
         "ingest_probe": "Kiểm tra dịch vụ embedding",
         "ingest_structure": "AI chia mục tài liệu",
-        "task_proposal": "Tạo task bằng AI"
+        "task_proposal": "Tạo task bằng AI",
+        "embed_keepwarm": "Giữ ấm dịch vụ embedding (GPU chạy nền)"
       },
       "empty": "Chưa có lượt gọi nào trong khoảng này.",
       "note": "Độ trễ p50 và p95 tính theo từng lượt gọi (không phải cả câu hỏi). Giá DeepSeek tra ngày 01/10/2026, có thể đổi: kiểm lại trước khi dùng làm số liệu tài chính."
@@ -1190,7 +1276,8 @@
       "progress": "Theo dõi",
       "documents": "Tài liệu",
       "notifications": "Thông báo",
-      "tickets": "Yêu cầu"
+      "tickets": "Yêu cầu",
+      "ticketsUnread": "{count} ticket có tin chưa xem"
     },
     "menu": {
       "profile": "Hồ sơ của tôi",
@@ -1261,10 +1348,6 @@
       },
       "completed": "Đã hoàn thành: {title}",
       "completeFailed": "Chưa ghi nhận được. Bạn thử lại giúp nhé.",
-      "problem": {
-        "noJourney": "Bạn chưa được gán lộ trình onboarding. Hãy liên hệ HR phụ trách để được thêm vào phòng ban và lộ trình.",
-        "unavailable": "Chưa tải được lộ trình. Bạn thử tải lại trang giúp nhé."
-      },
       "currentDay": "Đang ở {day}",
       "chart": {
         "title": "Tiến độ của bạn",
@@ -1298,10 +1381,7 @@
       "emptyDayBody": "Hãy chọn một ngày khác ở cột bên trái.",
       "completed": "Đã hoàn thành: {title}",
       "completeFailed": "Chưa ghi nhận được. Bạn thử lại giúp nhé.",
-      "problem": {
-        "noJourney": "Bạn chưa được gán lộ trình onboarding. Hãy liên hệ HR phụ trách để được thêm vào phòng ban và lộ trình.",
-        "unavailable": "Chưa tải được lộ trình. Bạn thử tải lại trang giúp nhé."
-      }
+      "changed": "Có chỉnh sửa"
     },
     "progress": {
       "title": "Tiến độ chi tiết",
@@ -1329,11 +1409,7 @@
         "title": "Hoạt động gần đây",
         "empty": "Chưa có việc nào được đánh dấu hoàn thành."
       },
-      "noData": "Chưa có dữ liệu để hiển thị.",
-      "problem": {
-        "noJourney": "Bạn chưa được gán lộ trình onboarding. Hãy liên hệ HR phụ trách.",
-        "unavailable": "Chưa tải được lộ trình. Bạn thử tải lại trang giúp nhé."
-      }
+      "noData": "Chưa có dữ liệu để hiển thị."
     },
     "documents": {
       "title": "Tài liệu",
@@ -1359,7 +1435,8 @@
         "done": "Đã hoàn thành",
         "reminder": "Nhắc việc",
         "welcome": "Hệ thống",
-        "ticket": "HR phản hồi"
+        "ticket": "HR phản hồi",
+        "change": "Có chỉnh sửa"
       },
       "welcomeTitle": "Chào mừng bạn đến VSF!",
       "welcomeBody": "Bắt đầu từ trang Tổng quan; bạn có thể hỏi Viga bất cứ lúc nào.",
@@ -1371,7 +1448,9 @@
       "reminderBody": "Còn {count} việc bắt buộc trong ngày này.",
       "unreadMark": "Chưa xem",
       "ticketTitle": "HR đã trả lời: {subject}",
-      "ticketBody": "Mở yêu cầu để xem phản hồi."
+      "ticketBody": "Mở yêu cầu để xem phản hồi.",
+      "changeTitle": "{stage} có chỉnh sửa",
+      "changeBody": "HR vừa cập nhật lộ trình. Có {count} việc chờ bạn quyết định cập nhật hay giữ bản cũ."
     },
     "profile": {
       "title": "Hồ sơ của tôi",
@@ -1509,6 +1588,9 @@
         "button": "Gửi câu hỏi này cho HR",
         "sent": "Đã gửi cho HR (mã #{id}). Bạn theo dõi phản hồi ở mục Yêu cầu.",
         "title": "Gửi câu hỏi cho HR",
+        "newTitle": "Tạo ticket cho HR",
+        "newIntro": "Mô tả vấn đề hoặc câu hỏi của bạn. Có thể đính kèm ảnh, video để HR dễ hỗ trợ.",
+        "newPlaceholder": "Ví dụ: mình chưa đăng nhập được Outlook trên điện thoại",
         "subtitle": "HR phòng ban của bạn sẽ nhận và trả lời",
         "intro": "Bạn xem lại và sửa câu hỏi nếu cần. Câu hỏi chỉ được gửi sau khi bạn bấm “Gửi”; Viga không tự gửi.",
         "question": "Câu hỏi",
@@ -1523,7 +1605,8 @@
           "TICKET_DUPLICATE": "Bạn vừa gửi câu này rồi. HR sẽ phản hồi sớm.",
           "NO_TEAM_ASSIGNED": "Bạn chưa được gán phòng ban nên chưa gửi được. Liên hệ HR hoặc quản trị viên.",
           "generic": "Chưa gửi được. Bạn thử lại giúp nhé."
-        }
+        },
+        "attachments": "Ảnh, video đính kèm (không bắt buộc)"
       },
       "expand": "Mở rộng thành trang đầy đủ",
       "feedback": {
@@ -1540,7 +1623,8 @@
         },
         "commentPlaceholder": "Ghi chú thêm cho HR (không bắt buộc)",
         "send": "Gửi",
-        "failed": "Chưa gửi được đánh giá, bạn thử lại nhé."
+        "failed": "Chưa gửi được đánh giá, bạn thử lại nhé.",
+        "editAgain": "Sửa góp ý"
       },
       "page": {
         "title": "Trò chuyện với Viga",
@@ -1549,7 +1633,9 @@
         "greetingTitle": "Bạn muốn hỏi gì hôm nay?",
         "greetingHint": "Hỏi về việc cần làm, việc đang bị khóa hoặc tra trong tài liệu HR đã đăng. Viga chỉ trả lời khi có căn cứ.",
         "emptyList": "Chưa có cuộc trò chuyện nào. Hãy đặt câu hỏi đầu tiên."
-      }
+      },
+      "resize": "Kéo để đổi chiều rộng khung chat",
+      "resizeHint": "Kéo mép trái để đổi chiều rộng, bấm đúp để về mặc định"
     },
     "taskPage": {
       "breadcrumb": "Đường dẫn",
@@ -1586,12 +1672,65 @@
     "tickets": {
       "title": "Yêu cầu của tôi",
       "subtitle": "Các câu hỏi bạn đã gửi cho HR và phản hồi nhận được."
+    },
+    "changes": {
+      "title": "Lộ trình có chỉnh sửa",
+      "subtitlePending": "Có {count} việc HR đã chỉnh sửa đang chờ bạn quyết định.",
+      "subtitleNone": "Không có chỉnh sửa nào đang chờ. Lộ trình của bạn đang là bản mới nhất bạn đã chọn.",
+      "emptyTitle": "Chưa có chỉnh sửa nào",
+      "emptyBody": "Khi HR áp dụng bản mới của một ngày, các việc thay đổi sẽ hiện ở đây. Lộ trình của bạn không tự đổi.",
+      "noticeTitle": "{stage} · bản {version}",
+      "acceptAll": "Cập nhật cả {count} việc",
+      "banner": "HR vừa chỉnh sửa lộ trình: {count} việc đang chờ bạn quyết định.",
+      "bannerLink": "Xem chỉnh sửa",
+      "changed": "Có chỉnh sửa",
+      "kind": {
+        "MODIFIED": "Nội dung đã đổi",
+        "ADDED": "Việc mới",
+        "REMOVED": "Việc bị bỏ",
+        "PREREQUISITES": "Đổi việc cần làm trước"
+      },
+      "field": {
+        "title": "Tên việc",
+        "body_markdown": "Nội dung hướng dẫn",
+        "required": "Mức bắt buộc",
+        "task_group": "Nhóm",
+        "prerequisites": "Việc cần làm trước"
+      },
+      "before": "Bản của bạn",
+      "after": "Bản mới của HR",
+      "empty": "(trống)",
+      "noPrerequisites": "Không có",
+      "alreadyDone": "Bạn đã làm xong",
+      "keptDone": "Việc này bạn đã làm xong nên được giữ nguyên trong lộ trình của bạn, dù HR đã bỏ nó ở bản mới.",
+      "noteTitle": "Khi bấm Cập nhật:",
+      "noteKeepStatus": "Nội dung việc được thay bằng bản mới nhất của HR; trạng thái của bạn giữ nguyên, bạn làm tiếp từ chỗ đang đứng.",
+      "noteKeepsDone": "Bạn đã làm xong việc này: vẫn giữ trạng thái Đã xong, chỉ nội dung được đổi.",
+      "noteRemoves": "Việc này sẽ được gỡ khỏi lộ trình của bạn.",
+      "noteAlsoUpdate": "Các việc liên quan cũng được thêm hoặc cập nhật theo: {titles}.",
+      "noteLockedUntil": "Việc này sẽ bị khóa cho tới khi bạn xong: {titles}.",
+      "noteKeepOld": "Nếu bấm Giữ bản cũ, lộ trình của bạn không đổi gì.",
+      "accept": "Cập nhật",
+      "keepOld": "Giữ bản cũ",
+      "openTask": "Mở việc",
+      "status": {
+        "ACCEPTED": "Bạn đã cập nhật việc này.",
+        "DISMISSED": "Bạn đã chọn giữ bản cũ.",
+        "SUPERSEDED": "Đã có bản mới hơn thay thế chỉnh sửa này."
+      }
+    },
+    "journeyProblem": {
+      "needsCreateTitle": "Bạn chưa có lộ trình",
+      "needsCreateBody": "HR sẽ thêm lộ trình onboarding cho bạn. Khi có, các việc sẽ hiện ở đây.",
+      "noJourney": "Bạn chưa được gán lộ trình onboarding hoặc HR chưa áp dụng bản nào. Hãy liên hệ HR phụ trách.",
+      "unavailable": "Chưa tải được lộ trình. Bạn thử tải lại trang giúp nhé."
     }
   },
   "viga": {
     "ticket": {
       "loading": "Đang tải…",
       "listLabel": "Danh sách ticket",
+      "create": "Tạo ticket",
       "filterAll": "Tất cả",
       "status": {
         "OPEN": "Mới",
@@ -1603,7 +1742,7 @@
       "hrReplied": "HR đã phản hồi",
       "unclaimed": "Chưa có HR nhận",
       "emptyMine": "Bạn chưa gửi yêu cầu nào",
-      "emptyMineHint": "Khi Viga chưa trả lời được, bấm “Gửi câu hỏi này cho HR” để HR hỗ trợ.",
+      "emptyMineHint": "Bấm “Tạo ticket” để gửi yêu cầu cho HR, hoặc bấm “Gửi câu hỏi này cho HR” khi Viga chưa trả lời được.",
       "emptyStaff": "Chưa có ticket nào",
       "emptyStaffHint": "Ticket nhân viên gửi cho phòng ban của bạn sẽ hiện ở đây.",
       "pick": "Chọn một ticket để xem trao đổi.",
@@ -1632,7 +1771,8 @@
       "noMatch": "Không tìm thấy ticket phù hợp",
       "noMatchHint": "Thử từ khóa khác hoặc đổi bộ lọc trạng thái.",
       "pickHint": "Nhấn vào một ticket ở danh sách bên trái để đọc và trả lời.",
-      "showing": "Hiển thị {shown} trên {total} ticket"
+      "showing": "Hiển thị {shown} trên {total} ticket",
+      "unread": "Có tin chưa xem"
     },
     "hrTickets": {
       "title": "Ticket sự cố",
@@ -1723,6 +1863,12 @@
           "activation": "Chưa cập nhật được tài liệu. Bạn thử lại sau.",
           "recheck": "Đã lưu nhưng chưa hỏi lại được Viga. Bấm “Kiểm tra lại” ở dòng câu hỏi."
         }
+      },
+      "pager": {
+        "count": "{count} mục",
+        "label": "Phân trang",
+        "prev": "Trang trước",
+        "next": "Trang sau"
       }
     }
   },
@@ -1748,7 +1894,8 @@
       "date": "Ngày",
       "state": "Trạng thái",
       "count": "Số lượng",
-      "operation": "Thao tác"
+      "operation": "Thao tác",
+      "hour": "Giờ"
     },
     "progress": {
       "title": "Tiến độ nhân viên",
@@ -1801,7 +1948,8 @@
       "ingest_probe": "Kiểm tra dịch vụ nhúng",
       "ingest_structure": "Nhận diện cấu trúc",
       "task_proposal": "Tạo task bằng AI",
-      "job": "Việc nền khác"
+      "job": "Việc nền khác",
+      "embed_keepwarm": "Giữ ấm dịch vụ embedding (GPU chạy nền)"
     },
     "runs": {
       "taskTitle": "Từng lượt tạo task bằng AI",
@@ -1825,9 +1973,66 @@
       "tokensIn": "Token đầu vào",
       "tokensOut": "Token đầu ra",
       "cost": "Chi phí (USD)"
+    },
+    "taskCost": {
+      "title": "Chi phí AI của phòng",
+      "sub": "Ước tính trong khoảng đã chọn, tách hai khoản HR tự gây ra",
+      "upload": "Tải tài liệu lên",
+      "uploadHint": "Embedding BGE-M3 (Modal) và đọc cấu trúc tài liệu",
+      "tasks": "Tạo task bằng AI",
+      "runs": "DeepSeek, {count} lượt tạo task"
+    },
+    "providers": {
+      "sub": "DeepSeek tính theo token, BGE-M3 trên Modal tính theo giây GPU chạy",
+      "title": "Chi phí và hiệu năng theo nhà cung cấp",
+      "none": "Chưa có lời gọi nào trong khoảng đã chọn",
+      "provider": "Nhà cung cấp",
+      "calls": "Số lượt gọi",
+      "errors": "{count} lỗi",
+      "errorsHead": "Lỗi",
+      "tokensIn": "Token vào",
+      "tokensOut": "Token ra",
+      "strings": "Chuỗi đã embed",
+      "gpuSeconds": "Giây GPU",
+      "names": {
+        "deepseek": "LLM DeepSeek",
+        "modal": "Embedding BGE-M3 (Modal)"
+      },
+      "kinds": {
+        "llm": "Mô hình ngôn ngữ",
+        "embedding": "Mô hình vector"
+      }
+    },
+    "costHour": {
+      "title": "Chi phí AI theo giờ",
+      "sub": "USD trong 24 giờ gần nhất, tách DeepSeek và BGE-M3"
+    },
+    "costGroups": {
+      "names": {
+        "upload": "Tải tài liệu lên",
+        "tasks": "Tạo task bằng AI"
+      },
+      "daySub": "USD mỗi ngày, tách tải tài liệu và tạo task bằng AI",
+      "hourSub": "USD trong 24 giờ gần nhất, tách tải tài liệu và tạo task bằng AI"
     }
   },
   "taskSources": {
     "view": "Xem trong tài liệu"
+  },
+  "attachments": {
+    "add": "Đính kèm ảnh hoặc video",
+    "pick": "Chọn ảnh hoặc video",
+    "hint": "Ảnh tối đa 10 MB, video tối đa 50 MB, tối đa {max} tệp",
+    "uploading": "Đang tải lên",
+    "remove": "Bỏ {name}",
+    "listLabel": "Tệp đính kèm",
+    "errors": {
+      "type": "Chỉ nhận ảnh JPG, PNG, WebP, GIF và video MP4, WebM, MOV",
+      "tooLargeImage": "Ảnh quá 10 MB",
+      "tooLargeVideo": "Video quá 50 MB",
+      "tooMany": "Quá số tệp cho phép",
+      "unavailable": "Chưa bật được tính năng đính kèm",
+      "failed": "Tải lên chưa được, thử lại"
+    }
   }
 }

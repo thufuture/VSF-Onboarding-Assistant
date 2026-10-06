@@ -42,7 +42,7 @@ export function TasksSidebar({ toggle }: { toggle?: ReactNode }) {
     };
   }, []);
 
-  const stages = (templates ?? []).flatMap((tpl) => tpl.stages.map((s) => ({ ...s, published: tpl.status === "PUBLISHED" })));
+  const stages = (templates ?? []).flatMap((tpl) => tpl.stages.map((s) => ({ ...s, published: s.versions.some((v) => v.status === "APPLIED") })));
   const selectedId = stages.some((s) => s.id === selectedParam) ? selectedParam : stages[0]?.id;
 
   return (

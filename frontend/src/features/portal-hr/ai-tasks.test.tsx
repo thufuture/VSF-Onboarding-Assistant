@@ -63,6 +63,7 @@ function renderPage() {
 beforeEach(() => {
   vi.resetAllMocks();
   api.listDocuments.mockResolvedValue([]);
+  api.listActiveJobs.mockResolvedValue([]);
 });
 
 describe("Tạo ngày cho Tạo task bằng AI", () => {

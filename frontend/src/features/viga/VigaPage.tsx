@@ -1,6 +1,6 @@
 "use client";
 
-import { Loader2, Minimize2, MessageSquarePlus, Pencil, Send, Sparkles, Trash2 } from "lucide-react";
+import { Minimize2, MessageSquarePlus, Pencil, Send, Sparkles, Trash2 } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, type FormEvent } from "react";
@@ -13,6 +13,7 @@ import { relatedTaskId, useVigaChat } from "@/features/viga/useVigaChat";
 import { VigaReply } from "@/features/viga/VigaReply";
 import { useRouter } from "@/i18n/navigation";
 
+import { WaveText } from "@/components/thinking/WaveText";
 import styles from "./VigaPage.module.scss";
 
 const QUICK = ["q1", "q2", "q3", "q4"] as const;
@@ -170,8 +171,8 @@ export function VigaPage() {
                             {turn.error}
                           </p>
                         ) : (
-                          <p className={styles.thinking} role="status">
-                            <Loader2 aria-hidden="true" className={styles.spin} size={14} /> {t("thinking")}
+                          <p className={styles.thinking}>
+                            <WaveText text={t("thinking")} />
                           </p>
                         )}
                       </div>

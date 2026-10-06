@@ -97,3 +97,128 @@
   font-size: 13px;
   text-align: center;
 }
+
+.bigNumber {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-height: 160px;
+
+  b {
+    color: var(--app-ink);
+    font-size: 40px;
+    font-weight: 700;
+    line-height: 1.1;
+  }
+  span {
+    color: var(--app-ink-3);
+    font-size: 13px;
+    font-weight: 600;
+  }
+  small {
+    margin-top: 6px;
+    color: var(--app-ink-3);
+    font-size: 12.5px;
+  }
+}
+
+.providerGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  padding: 4px 4px 8px;
+
+  @media (max-width: 700px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.provider {
+  display: grid;
+  gap: 8px;
+  padding: 12px 14px;
+  border: 1px solid var(--app-border);
+  border-radius: 6px;
+  background: var(--app-surface);
+
+  header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+
+    b {
+      color: var(--app-ink);
+      font-size: 14.5px;
+    }
+    small {
+      color: var(--app-ink-3);
+      font-size: 12px;
+    }
+  }
+  strong {
+    color: var(--app-ink);
+    font-size: 22px;
+  }
+  dl {
+    display: grid;
+    gap: 4px;
+    margin: 0;
+
+    > div {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 12.5px;
+    }
+    dt {
+      color: var(--app-ink-3);
+    }
+    dd {
+      margin: 0;
+      color: var(--app-ink);
+      font-weight: 600;
+    }
+  }
+}
+
+.costPair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  padding: 8px 4px 12px;
+
+  > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 14px 8px;
+    border: 1px solid var(--app-border);
+    border-radius: 6px;
+  }
+  small {
+    color: var(--app-ink-2);
+    font-size: 13px;
+    font-weight: 600;
+  }
+  b {
+    color: var(--app-ink);
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1.15;
+  }
+  span {
+    color: var(--app-ink-3);
+    font-size: 12px;
+    font-weight: 600;
+  }
+  em {
+    margin-top: 4px;
+    color: var(--app-ink-3);
+    font-size: 12px;
+    font-style: normal;
+    text-align: center;
+  }
+}

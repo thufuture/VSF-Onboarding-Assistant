@@ -392,3 +392,15 @@
     animation: none;
   }
 }
+
+// Kéo thả đổi vị trí (khi có `onReorder`): thẻ đang kéo mờ đi, thẻ sắp nhận vị trí có viền nổi.
+.dragging {
+  opacity: 0.45;
+}
+.dropTarget .card {
+  border-color: var(--app-accent);
+  box-shadow: 0 0 0 3px var(--app-accent-soft);
+}
+.roadItem[draggable="true"] .card {
+  cursor: grab;
+}

@@ -33,6 +33,8 @@ export type AcceptAiTaskProposalRequestDTO = {
   task_group?: TaskGroupDTO | null;
   /** Mã các task đã tạo trước đó phải xong trước task này. */
   depends_on?: number[];
+  /** Bản nháp của ngày sẽ nhận task; bỏ trống = bản nháp mới nhất (chưa có thì tạo từ bản đang áp dụng). */
+  stage_version_id?: number | null;
 };
 
 export type CreateAiTaskProposalJobRequestDTO = {
@@ -82,4 +84,10 @@ export type UpdateDocumentRequestDTO = {
 
 export type SetDocumentStatusRequestDTO = {
   status: "ACTIVE" | "ARCHIVED";
+};
+
+export type CreateStageVersionRequestDTO = {
+  /** Sao chép từ bản này; bỏ trống = bản đang áp dụng. */
+  from_version_id?: number | null;
+  note?: string | null;
 };

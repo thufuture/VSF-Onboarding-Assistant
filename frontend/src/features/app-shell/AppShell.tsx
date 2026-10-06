@@ -11,6 +11,7 @@ import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
 import { PortalFooter } from "@/components/portal-footer/PortalFooter";
 import { VsfMark } from "@/components/brand/VsfMark";
 import { useSession } from "@/features/auth/SessionProvider";
+import { useTicketUnread } from "@/features/viga/useTicketUnread";
 import { Link, usePathname } from "@/i18n/navigation";
 
 import styles from "./AppShell.module.scss";
@@ -45,7 +46,6 @@ const ADMIN_NAV: NavItem[] = [
   { key: "adminUsers", flat: "user", href: "/admin/users", tone: "teal" },
   { key: "adminTeams", flat: "building", href: "/admin/teams", tone: "indigo" },
   { key: "adminMembers", flat: "network", href: "/admin/members", tone: "violet" },
-  { key: "adminTemplate", flat: "route", href: "/admin/template", tone: "green" },
   { key: "adminMetrics", flat: "award", href: "/admin/metrics", tone: "amber" },
   { key: "adminAudit", flat: "clock", href: "/admin/audit", tone: "slate" },
 ];
@@ -62,6 +62,8 @@ export function AppShell({ children }: { children: ReactNode }) {
   const { theme, toggleTheme } = useTheme();
   const pathname = usePathname();
   const { collapsed, toggleCollapsed } = useSidebarCollapsed();
+  // Chỉ HR và Admin có hàng đợi ticket; nhân viên dùng trang Yêu cầu riêng.
+  const ticketUnread = useTicketUnread(user.role !== "USER");
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
   const [signOutFailed, setSignOutFailed] = useState(false);
@@ -180,6 +182,11 @@ export function AppShell({ children }: { children: ReactNode }) {
                   <FlatIcon name={flat} size={26} tone={tone} />
                 </i>
                 <span>{t(`nav.${key}`)}</span>
+                {key === "hrTickets" && ticketUnread > 0 ? (
+                  <b aria-label={t("nav.ticketsUnread", { count: ticketUnread })} className={styles.navBadge} role="status">
+                    {ticketUnread > 99 ? "99+" : ticketUnread}
+                  </b>
+                ) : null}
               </Link>
             );
           })}

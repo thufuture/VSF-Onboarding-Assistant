@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell, Check, ChevronDown, Clock, LockOpen, LogOut, MessageCircle, Moon, Sparkles, Sun, UserRound } from "lucide-react";
+import { Bell, Check, ChevronDown, Clock, LockOpen, PencilLine, LogOut, MessageCircle, Moon, Sparkles, Sun, UserRound } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 
@@ -16,14 +16,16 @@ import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
 import styles from "./EmployeeShell.module.scss";
+import { useTicketUnread } from "@/features/viga/useTicketUnread";
+
 import { useJourney } from "./JourneyProvider";
 import { VigaPanel } from "./VigaPanel";
 import { useVigaPanel } from "./vigaPanelStore";
 
-// Đúng thứ tự nav nhân viên của prototype v15 (NAV.employee): Tổng quan, Nhiệm vụ, Theo dõi, Tài liệu.
+// Nav nhân viên gọn: Tổng quan (đã có tiến độ), Nhiệm vụ, Yêu cầu. Trang Theo dõi và Tài liệu không còn trên thanh này.
 // "Thông báo" nằm ở chuông, các thiết lập (sáng/tối, ngôn ngữ) và "Hồ sơ" nằm trong thẻ tài khoản.
 const NAV: {
-  key: "overview" | "tasks" | "progress" | "documents" | "tickets";
+  key: "overview" | "tasks" | "tickets";
   href: string;
   icon: FlatIconName;
   tone: FlatTone;
@@ -31,13 +33,11 @@ const NAV: {
 }[] = [
   { key: "overview", href: "/me", icon: "dashboard", tone: "blue", exact: true },
   { key: "tasks", href: "/me/tasks", icon: "tasks", tone: "indigo" },
-  { key: "progress", href: "/me/progress", icon: "route", tone: "green" },
-  { key: "documents", href: "/me/documents", icon: "book", tone: "amber" },
   { key: "tickets", href: "/me/tickets", icon: "lifebuoy", tone: "rose" },
 ];
 
 // Icon theo loại thông báo (màu nằm ở EmployeeShell.module.scss: kind_*).
-const KIND_ICONS = { unlocked: LockOpen, done: Check, reminder: Clock, welcome: Sparkles, ticket: MessageCircle } as const;
+const KIND_ICONS = { unlocked: LockOpen, done: Check, reminder: Clock, welcome: Sparkles, ticket: MessageCircle, change: PencilLine } as const;
 
 const LANGUAGES: Locale[] = ["vi", "en"];
 const LANGUAGE_NAMES: Record<Locale, string> = { vi: "Việt Nam", en: "English" };
@@ -73,6 +73,7 @@ export function EmployeeShell({ children }: { children: ReactNode }) {
   const { notifications, unreadCount, markRead, markAllRead } = useJourney();
   const { open: vigaOpen, toggle: toggleViga } = useVigaPanel();
   const pathname = usePathname();
+  const ticketUnread = useTicketUnread();
   const router = useRouter();
   const locale = useLocale() as Locale;
 
@@ -118,6 +119,11 @@ export function EmployeeShell({ children }: { children: ReactNode }) {
               >
                 <FlatIcon name={item.icon} size={20} tone={item.tone} />
                 <span>{t(`nav.${item.key}`)}</span>
+                {item.key === "tickets" && ticketUnread > 0 ? (
+                  <i aria-label={t("nav.ticketsUnread", { count: ticketUnread })} className={styles.navBadge} role="status">
+                    {ticketUnread > 99 ? "99+" : ticketUnread}
+                  </i>
+                ) : null}
               </Link>
             ))}
           </nav>

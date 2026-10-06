@@ -72,6 +72,31 @@ export type AiProposalDocumentResultDTO = {
   truncated_sections?: number;
   /** Mục của tài liệu mà chưa task nào trích (đã được hỏi lại một lượt bổ sung). */
   uncovered_sections?: { section_id: number; heading: string | null }[];
+  /** Mục AI cho là chỉ có thông tin nên không tạo task (HR tự kiểm tra lại nếu thấy thiếu). */
+  skipped_info_sections?: { section_id: number; heading: string | null }[];
+  /** Số liệu lượt chạy (không có nội dung): ai xếp thứ tự (ai | document | single), giây từng bước. */
+  metrics?: {
+    mode: string;
+    order_source: string;
+    batches: number;
+    skipped_sections: number;
+    seconds: Record<string, number>;
+  };
+};
+
+/** Một bước của việc tạo task bằng AI (mã bước + số đếm, không có nội dung tài liệu). */
+export type JobStepDTO = {
+  key: "read" | "draft" | "verify" | "cover" | "order" | "save" | string;
+  status: "pending" | "running" | "done" | "skipped" | string;
+  done: number;
+  total: number;
+  seconds: number | null;
+};
+
+export type JobProgressDetailDTO = {
+  version: number;
+  steps: JobStepDTO[];
+  documents: { version_id: number; title: string; percent: number; failed: boolean }[];
 };
 
 /** Tiến độ một việc nền. Không chứa nội dung tài liệu; `error` chỉ có mã và mô tả ngắn. */
@@ -86,6 +111,12 @@ export type JobResponseDTO = {
   document_version_id: number | null;
   created_at: string;
   finished_at: string | null;
+  /** Tiến độ theo bước (chỉ việc tạo task bằng AI có). */
+  progress?: JobProgressDetailDTO | null;
+  started_at?: string | null;
+  elapsed_seconds?: number | null;
+  /** Số việc xếp trước khi còn chờ chạy. */
+  queue_ahead?: number | null;
 };
 
 export type AiTaskSourceChunkResponseDTO = {
@@ -143,7 +174,7 @@ export type TaskSourceDTO = {
 
 export type EmployeeTaskResponseDTO = {
   id: number;
-  task_template_id: number;
+  task_template_id: number | null;
   title: string;
   body_markdown: string;
   required: boolean;
@@ -156,6 +187,8 @@ export type EmployeeTaskResponseDTO = {
   completed_at: string | null;
   prerequisites: EmployeePrerequisiteDTO[];
   sources?: TaskSourceDTO[];
+  /** Mã thay đổi đang chờ nhân viên xem ("Có chỉnh sửa"); null/thiếu nếu việc này không có thay đổi chờ. */
+  pending_change_id?: number | null;
 };
 
 export type EmployeeProfileResponseDTO = {
@@ -196,6 +229,10 @@ export type StageOptionResponseDTO = {
   journey_template_id: number;
   title: string;
   template_title: string;
+  /** Bản nháp sẽ nhận task AI (chưa có thì tạo khi tạo task đầu tiên). */
+  draft_version_id?: number | null;
+  draft_version_no?: number | null;
+  applied_version_no?: number | null;
 };
 
 export type HrDashboardResponseDTO = {
@@ -234,6 +271,7 @@ export type TaskGroupDTO = "PROFILE" | "TRAINING" | "DEVICE" | "OFFICE";
 export type TaskNodeResponseDTO = {
   id: number;
   journey_stage_id: number;
+  stage_version_id: number;
   title: string;
   body_markdown: string;
   required: boolean;
@@ -244,11 +282,124 @@ export type TaskNodeResponseDTO = {
   sources?: TaskSourceDTO[];
 };
 
+export type StageVersionStatusDTO = "DRAFT" | "APPLIED" | "ARCHIVED";
+
+export type VersionNodeResponseDTO = {
+  id: number;
+  version_no: number;
+  status: StageVersionStatusDTO;
+  note: string | null;
+  based_on_version_id: number | null;
+  applied_at: string | null;
+  created_at: string;
+  tasks: TaskNodeResponseDTO[];
+};
+
 export type StageNodeResponseDTO = {
   id: number;
   title: string;
   sort_order: number;
+  /** Việc của bản hiển thị mặc định (đang áp dụng, không thì nháp mới nhất). */
   tasks: TaskNodeResponseDTO[];
+  versions: VersionNodeResponseDTO[];
+  default_version_id: number | null;
+};
+
+export type StageVersionResponseDTO = {
+  id: number;
+  journey_stage_id: number;
+  version_no: number;
+  status: StageVersionStatusDTO;
+  note: string | null;
+  based_on_version_id: number | null;
+  applied_at: string | null;
+  created_at: string;
+  task_count: number;
+};
+
+/** Xem trước khi áp dụng (không ghi gì). */
+export type ApplyPreviewResponseDTO = {
+  modified: number;
+  added: number;
+  removed: number;
+  employee_count: number;
+  has_applied_before: boolean;
+};
+
+export type ApplyResultResponseDTO = {
+  version: StageVersionResponseDTO;
+  notified_count: number;
+};
+
+export type RolloutStateDTO = "UNSEEN" | "SEEN" | "UPDATED" | "KEPT_OLD" | "SUPERSEDED";
+
+export type RolloutRowResponseDTO = {
+  notice_id: number;
+  user_id: number;
+  display_name: string;
+  email: string;
+  state: RolloutStateDTO;
+  pending: number;
+  accepted: number;
+  dismissed: number;
+  total: number;
+  read_at: string | null;
+};
+
+export type ChangeKindDTO = "MODIFIED" | "ADDED" | "REMOVED" | "PREREQUISITES";
+export type ChangeStatusDTO = "PENDING" | "ACCEPTED" | "DISMISSED" | "SUPERSEDED";
+
+/** Nội dung một việc ở dạng lưu trong thông báo (trước hoặc sau). */
+export type ChangeContentDTO = {
+  title?: string;
+  body_markdown?: string;
+  required?: boolean;
+  task_group?: TaskGroupDTO | null;
+  sort_order?: number;
+  prerequisites?: string[];
+  prerequisite_keys?: string[];
+  note?: string;
+};
+
+export type TaskChangeResponseDTO = {
+  id: number;
+  notice_id: number;
+  kind: ChangeKindDTO;
+  status: ChangeStatusDTO;
+  task_title: string;
+  employee_task_id: number | null;
+  /** Trạng thái hiện tại của việc: DONE nghĩa là bạn đã làm xong; null với việc mới. */
+  employee_status: EmployeeTaskStatusDTO | null;
+  stage_title: string;
+  before: ChangeContentDTO | null;
+  after: ChangeContentDTO | null;
+  changed_fields: string[];
+  /** Việc đã làm bị bỏ ở bản mới: giữ nguyên, chỉ báo thông tin (không có nút). */
+  informational: boolean;
+};
+
+export type JourneyNoticeResponseDTO = {
+  id: number;
+  journey_stage_id: number | null;
+  stage_title: string;
+  version_no: number;
+  created_at: string;
+  read_at: string | null;
+  changes: TaskChangeResponseDTO[];
+};
+
+/** Hậu quả cụ thể của nút "Cập nhật" (ghi chú trước khi bấm). */
+export type ChangePreviewResponseDTO = {
+  change_id: number;
+  kind: ChangeKindDTO;
+  keeps_done: boolean;
+  removes_task: boolean;
+  also_update: string[];
+  locked_until: string[];
+};
+
+export type AcceptChangeResponseDTO = {
+  updated_change_ids: number[];
 };
 
 export type TemplateNodeResponseDTO = {
@@ -258,6 +409,12 @@ export type TemplateNodeResponseDTO = {
   status: "DRAFT" | "PUBLISHED";
   team_id: number | null;
   stages: StageNodeResponseDTO[];
+};
+
+export type EmployeeJourneyCreatedResponseDTO = {
+  journey_id: number;
+  /** false: nhân viên đã có lộ trình từ trước, không tạo lại. */
+  created: boolean;
 };
 
 export type EmployeeSummaryResponseDTO = {

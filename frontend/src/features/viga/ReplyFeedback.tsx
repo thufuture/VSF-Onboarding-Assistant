@@ -26,7 +26,8 @@ export function ReplyFeedback({
   const [rating, setRating] = useState<"UP" | "DOWN" | null>(initial?.rating ?? null);
   const [reason, setReason] = useState<string | null>(initial?.reason ?? null);
   const [comment, setComment] = useState("");
-  const [sent, setSent] = useState(false);
+  // Đã gửi ghi chú: gập phần chọn lý do và ô ghi chú lại, chỉ còn lời cảm ơn (có nút sửa lại).
+  const [folded, setFolded] = useState(false);
   const [failed, setFailed] = useState(false);
   const [busy, setBusy] = useState(false);
 
@@ -58,7 +59,7 @@ export function ReplyFeedback({
         await vigaApi.clearRating(messageId);
         setRating(null);
         setReason(null);
-        setSent(false);
+        setFolded(false);
       } catch {
         setFailed(true);
       } finally {
@@ -66,20 +67,22 @@ export function ReplyFeedback({
       }
       return;
     }
-    setSent(false);
+    setFolded(false);
     await save(next, null, null);
   }
 
   async function chooseReason(next: VigaFeedbackReasonDTO) {
     if (busy) return;
     const value = reason === next ? null : next;
-    if (await save("DOWN", value, comment.trim() || null)) setSent(false);
+    await save("DOWN", value, comment.trim() || null);
   }
 
   async function submitComment(event: FormEvent) {
     event.preventDefault();
     if (busy || !comment.trim()) return;
-    if (await save("DOWN", reason, comment.trim())) setSent(true);
+    if (await save("DOWN", reason, comment.trim())) {
+      setFolded(true);
+    }
   }
 
   return (
@@ -116,7 +119,16 @@ export function ReplyFeedback({
         ) : null}
       </div>
 
-      {rating === "DOWN" ? (
+      {rating === "DOWN" && folded ? (
+        <div className={styles.folded}>
+          <small className={styles.thanks}>{t("thanks")}</small>
+          <button className={styles.editAgain} onClick={() => setFolded(false)} type="button">
+            {t("editAgain")}
+          </button>
+        </div>
+      ) : null}
+
+      {rating === "DOWN" && !folded ? (
         <div className={styles.more}>
           <small>{t("reasonLabel")}</small>
           <div className={styles.chips}>
@@ -145,7 +157,6 @@ export function ReplyFeedback({
               {t("send")}
             </button>
           </form>
-          {sent ? <small className={styles.thanks}>{t("thanks")}</small> : null}
         </div>
       ) : null}
     </div>

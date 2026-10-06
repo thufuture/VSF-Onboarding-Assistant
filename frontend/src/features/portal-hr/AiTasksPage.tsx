@@ -14,7 +14,6 @@ import { useTranslations } from "next-intl";
 import { type FormEvent, Fragment, useEffect, useRef, useState } from "react";
 
 import { FlatIcon, type FlatIconName, type FlatTone } from "@/components/flat-icons/FlatIcon";
-import { JobProgress } from "@/components/job-progress/JobProgress";
 import { modalStyles as m, PortalModal } from "@/components/portal-modal/PortalModal";
 import { useSession } from "@/features/auth/SessionProvider";
 import { portalHrApi, PortalError } from "@/features/portal-hr/api";
@@ -29,6 +28,7 @@ import type {
 import { AiRoadmapReview, nextReviewKey, type Review } from "./AiRoadmapReview";
 import { categoryStyle } from "./docCategory";
 import styles from "./AiTasksPage.module.scss";
+import { ProposalProgress } from "./ProposalProgress";
 import { useJob } from "./useJob";
 
 function errorMessage(t: (key: string) => string, error: unknown): string {
@@ -99,6 +99,8 @@ export function AiTasksPage() {
   const [busy, setBusy] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [acceptedCount, setAcceptedCount] = useState(0);
+  // Đang tạo task thật sau khi HR duyệt: số đã tạo / tổng, để hiện "Đang tạo task 3/16".
+  const [creating, setCreating] = useState<{ done: number; total: number } | null>(null);
   // Task đã tạo trong lượt này (tên → mã) để đổi "tiên quyết theo tên" của AI thành tiên quyết thật khi tạo tiếp.
   const createdByTitle = useRef(new Map<string, number>());
 
@@ -146,6 +148,22 @@ export function AiTasksPage() {
     loadDocs();
     loadStages();
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Tải lại trang hoặc quay lại giữa chừng: nếu còn một lượt tạo task đang chạy nền thì theo dõi tiếp thay vì bắt chạy lại.
+  useEffect(() => {
+    let cancelled = false;
+    Promise.resolve(portalHrApi.listActiveJobs("AI_TASK_PROPOSAL"))
+      .then((jobs) => {
+        const running = Array.isArray(jobs) ? jobs[0] : undefined;
+        if (cancelled || !running) return;
+        setProposalJobId((current) => current ?? running.id);
+        setBusy((current) => current ?? "propose");
+      })
+      .catch(() => undefined);
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   // Bước 1 tới khi bấm phân tích; đang chạy là "AI dựng roadmap"; có đề xuất là "HR chấp nhận"; đã chấp nhận là bước cuối.
@@ -248,12 +266,16 @@ export function AiTasksPage() {
     setBusy("accept-all");
     let created = 0;
     const remaining = [...reviews];
+    const total = remaining.length;
+    setCreating({ done: 0, total });
     while (remaining.length > 0) {
       const next = remaining[0]!;
       if (!(await acceptOne(next.proposal))) break;
       remaining.shift();
       created += 1;
+      setCreating({ done: created, total });
     }
+    setCreating(null);
     setReviews(remaining);
     if (created > 0) {
       setAcceptedCount((n) => n + created);
@@ -450,6 +472,11 @@ export function AiTasksPage() {
                     <span className={styles.dayText}>
                       <b>{stage.title}</b>
                       <small>{stage.template_title}</small>
+                      <small>
+                        {stage.draft_version_no
+                          ? t("stage.toDraft", { n: stage.draft_version_no })
+                          : t("stage.toNewDraft")}
+                      </small>
                     </span>
                     {selectedStageId === stage.id ? <Check aria-hidden="true" size={15} /> : null}
                   </button>
@@ -486,15 +513,8 @@ export function AiTasksPage() {
             >
               <Sparkles aria-hidden="true" size={15} /> {runLabel}
             </button>
-            {proposalJobId !== null && busy === "propose" ? (
-              <div className={styles.jobBox}>
-                <JobProgress
-                  percent={proposalJob.job?.progress_percent ?? 0}
-                  stage={proposalJob.job?.stage ?? t("run.waiting")}
-                  state="running"
-                />
-                {proposalJob.lost ? <small>{t("run.lost")}</small> : null}
-              </div>
+            {creating !== null || (proposalJobId !== null && busy === "propose") ? (
+              <ProposalProgress creating={creating} job={proposalJob.job} lost={proposalJob.lost} />
             ) : null}
             <p className={styles.hint}>
               <ShieldCheck aria-hidden="true" size={12} /> {t("run.footnote")}
@@ -574,6 +594,17 @@ export function AiTasksPage() {
                   {t("result.uncovered", {
                     count: entry.uncovered_sections.length,
                     names: entry.uncovered_sections
+                      .slice(0, 3)
+                      .map((item) => item.heading ?? "")
+                      .join("; "),
+                  })}
+                </em>
+              ) : null}
+              {entry.skipped_info_sections && entry.skipped_info_sections.length > 0 ? (
+                <em title={entry.skipped_info_sections.map((item) => item.heading ?? "").join("\n")}>
+                  {t("result.skippedInfo", {
+                    count: entry.skipped_info_sections.length,
+                    names: entry.skipped_info_sections
                       .slice(0, 3)
                       .map((item) => item.heading ?? "")
                       .join("; "),

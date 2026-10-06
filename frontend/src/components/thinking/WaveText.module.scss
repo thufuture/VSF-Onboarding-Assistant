@@ -1,0 +1,25 @@
+.wave {
+  display: inline-flex;
+  flex-wrap: wrap;
+}
+.char {
+  display: inline-block;
+  animation: wave 1.3s ease-in-out infinite;
+}
+@keyframes wave {
+  0%,
+  60%,
+  100% {
+    color: var(--app-ink-3);
+    transform: translateY(0);
+  }
+  30% {
+    color: var(--app-accent-strong);
+    transform: translateY(-3px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .char {
+    animation: none;
+  }
+}

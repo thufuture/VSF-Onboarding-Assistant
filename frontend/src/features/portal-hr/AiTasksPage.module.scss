@@ -959,17 +959,6 @@ $tn-amber: #a8681a;
 }
 
 // ── Tạo task chạy nền: thanh tiến trình, kết quả theo từng tài liệu, nhóm task ──
-.jobBox {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin-top: 10px;
-  padding: 10px 12px;
-  border: 1px solid var(--app-border);
-  border-radius: 5px;
-  background: var(--app-surface-2);
-}
-
 .docResults {
   display: flex;
   flex-direction: column;

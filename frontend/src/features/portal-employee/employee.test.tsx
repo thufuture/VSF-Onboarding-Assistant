@@ -9,12 +9,17 @@ import type { SessionUserResponseDTO } from "@/features/auth/dto/responseDTO/aut
 import { portalHrApi } from "@/features/portal-hr/api";
 import { vigaApi } from "@/features/viga/api";
 import type { VigaAnswerResponseDTO } from "@/features/viga/dto/responseDTO/viga.response";
-import type { EmployeeJourneyResponseDTO, EmployeeTaskResponseDTO } from "@/features/portal-hr/dto/responseDTO/portal.response";
+import type {
+  EmployeeJourneyResponseDTO,
+  EmployeeTaskResponseDTO,
+  JourneyNoticeResponseDTO,
+} from "@/features/portal-hr/dto/responseDTO/portal.response";
 
 import { EmployeeShell } from "./EmployeeShell";
 import { JourneyProvider } from "./JourneyProvider";
 import { EmployeeTaskPage } from "./TaskPage";
 import { EmployeeTasksPage } from "./TasksPage";
+import { EmployeeTicketsPage } from "./TicketsPage";
 
 const push = vi.fn();
 
@@ -45,7 +50,19 @@ vi.mock("@/features/auth/session", async (importOriginal) => {
 });
 vi.mock("@/features/portal-hr/api", async (importOriginal) => {
   const original = await importOriginal<typeof import("@/features/portal-hr/api")>();
-  return { ...original, portalHrApi: { getMyJourney: vi.fn(), completeTask: vi.fn() } };
+  return {
+    ...original,
+    portalHrApi: {
+      getMyJourney: vi.fn(),
+      completeTask: vi.fn(),
+      listMyJourneyNotices: vi.fn(),
+      markJourneyNoticeRead: vi.fn(),
+      previewJourneyChange: vi.fn(),
+      acceptJourneyChange: vi.fn(),
+      dismissJourneyChange: vi.fn(),
+      acceptAllJourneyChanges: vi.fn(),
+    },
+  };
 });
 
 vi.mock("@/features/viga/api", async (importOriginal) => {
@@ -61,6 +78,7 @@ vi.mock("@/features/viga/api", async (importOriginal) => {
       deleteConversation: vi.fn(),
       renameConversation: vi.fn(),
       createTicket: vi.fn(),
+      getTicket: vi.fn(),
     },
   };
 });
@@ -146,6 +164,18 @@ beforeEach(() => {
   window.localStorage.clear();
   vi.mocked(portalHrApi.getMyJourney).mockResolvedValue(JOURNEY);
   vi.mocked(portalHrApi.completeTask).mockResolvedValue({ ...LAPTOP, status: "DONE" });
+  vi.mocked(portalHrApi.listMyJourneyNotices).mockResolvedValue([]);
+  vi.mocked(portalHrApi.markJourneyNoticeRead).mockResolvedValue();
+  vi.mocked(portalHrApi.previewJourneyChange).mockResolvedValue({
+    change_id: 90,
+    kind: "MODIFIED",
+    keeps_done: false,
+    removes_task: false,
+    also_update: [],
+    locked_until: [],
+  });
+  vi.mocked(portalHrApi.acceptJourneyChange).mockResolvedValue({ updated_change_ids: [90] });
+  vi.mocked(portalHrApi.dismissJourneyChange).mockResolvedValue();
   vi.mocked(vigaApi.listMyTickets).mockResolvedValue([]);
   vi.mocked(vigaApi.markTaskOpened).mockResolvedValue();
 });
@@ -155,7 +185,7 @@ describe("Khung của nhân viên mới", () => {
     renderEmployee(<p>nội dung</p>);
 
     const nav = screen.getByRole("navigation", { name: m.navLabel });
-    for (const label of [m.nav.overview, m.nav.tasks, m.nav.progress, m.nav.documents, m.nav.tickets]) {
+    for (const label of [m.nav.overview, m.nav.tasks, m.nav.tickets]) {
       expect(within(nav).getByRole("link", { name: label })).toBeInTheDocument();
     }
 
@@ -212,6 +242,51 @@ describe("Khung của nhân viên mới", () => {
   });
 });
 
+describe("Trang Yêu cầu: tạo ticket", () => {
+  it("nút Tạo ticket mở hộp, gửi câu hỏi tự viết cho HR rồi mở ticket vừa tạo", async () => {
+    const created = {
+      id: 31,
+      subject: "Chưa đăng nhập được Outlook",
+      status: "OPEN",
+      source: "MANUAL",
+      created_at: "2026-10-06T05:00:00Z",
+      updated_at: "2026-10-06T05:00:00Z",
+      requester_name: USER.display_name,
+      requester_email: USER.email,
+      team_name: "IT",
+      assigned_hr_name: null,
+      related_task_title: null,
+      message_count: 1,
+      last_sender_is_staff: false,
+      resolution_note: null,
+    } as const;
+    vi.mocked(vigaApi.createTicket).mockResolvedValue(created);
+    vi.mocked(vigaApi.getTicket).mockReturnValue(new Promise(() => undefined));
+    renderEmployee(<EmployeeTicketsPage />);
+
+    fireEvent.click(await screen.findByRole("button", { name: viMessages.viga.ticket.create }));
+    const dialog = screen.getByRole("dialog");
+    expect(within(dialog).getByText(viMessages.employee.viga.report.newTitle)).toBeInTheDocument();
+
+    fireEvent.change(within(dialog).getByLabelText(viMessages.employee.viga.report.question), {
+      target: { value: "  Chưa đăng nhập được Outlook  " },
+    });
+    fireEvent.click(within(dialog).getByRole("button", { name: new RegExp(viMessages.employee.viga.report.send) }));
+
+    await waitFor(() =>
+      expect(vigaApi.createTicket).toHaveBeenCalledWith({
+        question: "Chưa đăng nhập được Outlook",
+        note: null,
+        employee_task_id: null,
+        conversation_id: null,
+        attachment_ids: [],
+      }),
+    );
+    await waitFor(() => expect(vigaApi.getTicket).toHaveBeenCalledWith(31));
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+});
+
 describe("Trang Nhiệm vụ", () => {
   it("hiện ngày và việc của ngày, bấm một việc thì mở trang chi tiết", async () => {
     renderEmployee(<EmployeeTasksPage />);
@@ -232,13 +307,23 @@ describe("Trang Nhiệm vụ", () => {
     expect(within(row).getByText(`Cần xong: ${LAPTOP.title}`)).toBeInTheDocument();
   });
 
+  it("HR chưa thêm lộ trình thì nhân viên chỉ thấy lời báo, không có nút tự tạo", async () => {
+    const { PortalError } = await vi.importActual<typeof import("@/features/portal-hr/api")>("@/features/portal-hr/api");
+    vi.mocked(portalHrApi.getMyJourney).mockRejectedValue(new PortalError("unavailable", "NO_JOURNEY"));
+
+    renderEmployee(<EmployeeTasksPage />);
+
+    expect(await screen.findByTestId("no-journey")).toHaveTextContent(m.journeyProblem.needsCreateBody);
+    expect(screen.queryByRole("button", { name: /Tạo lộ trình/ })).not.toBeInTheDocument();
+  });
+
   it("lộ trình chưa được gán thì báo rõ cần liên hệ HR", async () => {
     const { PortalError } = await vi.importActual<typeof import("@/features/portal-hr/api")>("@/features/portal-hr/api");
     vi.mocked(portalHrApi.getMyJourney).mockRejectedValue(new PortalError("unavailable", "NO_TEAM_ASSIGNED"));
 
     renderEmployee(<EmployeeTasksPage />);
 
-    expect(await screen.findByText(m.tasks.problem.noJourney)).toBeInTheDocument();
+    expect(await screen.findByText(m.journeyProblem.noJourney)).toBeInTheDocument();
   });
 });
 
@@ -341,5 +426,70 @@ describe("Trang chi tiết việc", () => {
 
     expect(await screen.findByRole("heading", { level: 1, name: m.taskPage.notFoundTitle })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: m.taskPage.backToTasks })).toHaveAttribute("href", "/vi/me/tasks");
+  });
+});
+
+const NOTICE: JourneyNoticeResponseDTO = {
+  id: 70,
+  journey_stage_id: 1,
+  stage_title: "Ngày 1",
+  version_no: 2,
+  created_at: "2026-09-30T03:00:00Z",
+  read_at: null,
+  changes: [
+    {
+      id: 90,
+      notice_id: 70,
+      kind: "MODIFIED",
+      status: "PENDING",
+      task_title: LAPTOP.title,
+      employee_task_id: LAPTOP.id,
+      employee_status: "READY",
+      stage_title: "Ngày 1",
+      before: { body_markdown: "Nhận laptop tại tầng 12" },
+      after: { body_markdown: "Nhận laptop tại tầng 5" },
+      changed_fields: ["body_markdown"],
+      informational: false,
+    },
+  ],
+};
+
+describe("Chỉnh sửa lộ trình do HR áp dụng", () => {
+  beforeEach(() => {
+    vi.mocked(portalHrApi.listMyJourneyNotices).mockResolvedValue([NOTICE]);
+  });
+
+  it("chuông báo ngày có chỉnh sửa và trang Nhiệm vụ nhắc có việc chờ quyết định", async () => {
+    renderEmployee(<EmployeeTasksPage />);
+
+    expect(await screen.findByTestId("pending-changes-banner")).toBeInTheDocument();
+    fireEvent.click(await screen.findByRole("button", { name: m.nav.notifications }));
+    const card = screen.getByRole("menu", { name: m.nav.notifications });
+    expect(within(card).getByText("Ngày 1 có chỉnh sửa")).toBeInTheDocument();
+  });
+
+  it("trang việc hiện trước/sau và ghi chú; bấm Cập nhật gọi API rồi nạp lại lộ trình", async () => {
+    renderEmployee(<EmployeeTaskPage taskId={LAPTOP.id} />);
+
+    const cardEl = await screen.findByTestId("change-card");
+    expect(within(cardEl).getByText("Nhận laptop tại tầng 12")).toBeInTheDocument();
+    expect(within(cardEl).getByText("Nhận laptop tại tầng 5")).toBeInTheDocument();
+    expect(await within(cardEl).findByText(m.changes.noteKeepStatus)).toBeInTheDocument();
+    expect(portalHrApi.previewJourneyChange).toHaveBeenCalledWith(90);
+
+    fireEvent.click(within(cardEl).getByRole("button", { name: m.changes.accept }));
+    await waitFor(() => expect(portalHrApi.acceptJourneyChange).toHaveBeenCalledWith(90));
+    // Sau khi cập nhật: nạp lại lộ trình và thông báo.
+    await waitFor(() => expect(vi.mocked(portalHrApi.getMyJourney).mock.calls.length).toBeGreaterThan(1));
+  });
+
+  it("Giữ bản cũ chỉ gọi dismiss, không gọi accept", async () => {
+    renderEmployee(<EmployeeTaskPage taskId={LAPTOP.id} />);
+
+    const cardEl = await screen.findByTestId("change-card");
+    fireEvent.click(within(cardEl).getByRole("button", { name: m.changes.keepOld }));
+
+    await waitFor(() => expect(portalHrApi.dismissJourneyChange).toHaveBeenCalledWith(90));
+    expect(portalHrApi.acceptJourneyChange).not.toHaveBeenCalled();
   });
 });

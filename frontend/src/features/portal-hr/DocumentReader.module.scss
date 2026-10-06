@@ -171,3 +171,9 @@
   color: #1f3763;
   font-size: 15.5px;
 }
+
+// Trong khung soạn thảo (Xem trước): thấp hơn để còn thấy nhãn, hướng dẫn và nút Lưu.
+.docCompact {
+  height: min(52vh, 520px);
+  border: 0;
+}

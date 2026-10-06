@@ -314,3 +314,13 @@ $tn-blue: #0e7fb3;
   background: var(--app-accent-soft);
   color: var(--app-accent-strong);
 }
+
+.btnPrimary {
+  border-color: var(--app-accent);
+  background: var(--app-accent);
+  color: var(--app-on-accent);
+}
+.btnPrimary:not(:disabled):hover {
+  background: var(--app-accent-strong);
+  color: var(--app-on-accent);
+}

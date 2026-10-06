@@ -141,3 +141,19 @@
     }
   }
 }
+
+.folded {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 6px;
+}
+.editAgain {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--app-accent-strong);
+  cursor: pointer;
+  font-size: 12px;
+  text-decoration: underline;
+}

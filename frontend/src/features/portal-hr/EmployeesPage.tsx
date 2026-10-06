@@ -1,18 +1,23 @@
 "use client";
 
-import { Eye, Mail, Search, Users } from "lucide-react";
+import { Eye, Loader2, Route, Search, Users } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
 import { PersonAvatar } from "@/components/avatar/PersonAvatar";
+import { ConfirmModal } from "@/components/portal-modal/PortalModal";
 import { portalHrApi, PortalError } from "@/features/portal-hr/api";
 import type { EmployeeSummaryResponseDTO } from "@/features/portal-hr/dto/responseDTO/portal.response";
 
 import styles from "./EmployeesPage.module.scss";
 
 function errorMessage(t: (key: string) => string, error: unknown): string {
-  if (error instanceof PortalError) return t(`errors.${error.code}`);
+  if (error instanceof PortalError) {
+    if (error.apiCode === "NO_JOURNEY_TEMPLATE") return t("errors.NO_JOURNEY_TEMPLATE");
+    if (error.apiCode === "NO_TEAM_ASSIGNED") return t("errors.NO_TEAM_ASSIGNED");
+    return t(`errors.${error.code}`);
+  }
   return t("errors.unavailable");
 }
 
@@ -43,6 +48,8 @@ export function EmployeesPage() {
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<Filter>("all");
   const [page, setPage] = useState(1);
+  const [addingId, setAddingId] = useState<number | null>(null);
+  const [confirming, setConfirming] = useState<EmployeeSummaryResponseDTO | null>(null);
 
   useEffect(() => {
     portalHrApi
@@ -51,6 +58,22 @@ export function EmployeesPage() {
       .catch((caught: unknown) => setError(errorMessage(t, caught)));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  /** HR thêm lộ trình cho nhân viên: nhân viên nhận bản sao các bản đang áp dụng, có hiệu lực ngay. */
+  async function addJourney(employee: EmployeeSummaryResponseDTO) {
+    setError(null);
+    setAddingId(employee.id);
+    try {
+      await portalHrApi.createEmployeeJourney(employee.id);
+      setConfirming(null);
+      setEmployees(await portalHrApi.listEmployees());
+    } catch (caught) {
+      setConfirming(null);
+      setError(errorMessage(t, caught));
+    } finally {
+      setAddingId(null);
+    }
+  }
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -157,12 +180,24 @@ export function EmployeesPage() {
                       </td>
                       <td>
                         <div className={styles.rowActions}>
+                          {employee.journey_started ? null : (
+                            <button
+                              className={`${styles.btnSm} ${styles.btnPrimary}`}
+                              disabled={addingId !== null}
+                              onClick={() => setConfirming(employee)}
+                              type="button"
+                            >
+                              {addingId === employee.id ? (
+                                <Loader2 aria-hidden="true" size={13} />
+                              ) : (
+                                <Route aria-hidden="true" size={13} />
+                              )}{" "}
+                              {t("addJourney")}
+                            </button>
+                          )}
                           <Link className={styles.btnSm} href="/admin/tasks">
                             <Eye aria-hidden="true" size={13} /> {t("viewTask")}
                           </Link>
-                          <button className={styles.btnSm} disabled title={t("soon")} type="button">
-                            <Mail aria-hidden="true" size={13} /> {t("nudge")}
-                          </button>
                         </div>
                       </td>
                     </tr>
@@ -185,6 +220,22 @@ export function EmployeesPage() {
           ) : null}
         </div>
       </div>
+
+      {confirming ? (
+        <ConfirmModal
+          body={t("addJourneyBody")}
+          busy={addingId !== null}
+          cancelLabel={t("cancel")}
+          closeLabel={t("close")}
+          confirmIcon={Route}
+          confirmLabel={t("addJourneyConfirm")}
+          icon={Route}
+          onCancel={() => setConfirming(null)}
+          onConfirm={() => void addJourney(confirming)}
+          title={t("addJourneyTitle", { name: confirming.display_name })}
+          tone="blue"
+        />
+      ) : null}
     </div>
   );
 }

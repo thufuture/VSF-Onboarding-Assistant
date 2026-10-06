@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, ChevronRight, Eye, Flag, LayoutList, ListChecks, Lock, Route } from "lucide-react";
+import { Check, ChevronRight, Eye, Flag, LayoutList, ListChecks, Lock, PencilLine, Route } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
@@ -17,6 +17,8 @@ import shared from "./employee.module.scss";
 import { useSession } from "@/features/auth/SessionProvider";
 
 import { useJourney } from "./JourneyProvider";
+import { JourneyProblemNotice } from "./JourneyProblemNotice";
+import { PendingChangesBanner } from "./PendingChangesBanner";
 import { stateOf } from "./journeyModel";
 import { PageHero } from "./PageHero";
 import styles from "./TasksPage.module.scss";
@@ -32,7 +34,7 @@ export function EmployeeTasksPage() {
   const { user } = useSession();
   const tt = useTranslations("employee.task");
   const params = useSearchParams();
-  const { days, tasks, progress, problem, loading, busyTaskId, complete } = useJourney();
+  const { changedTaskIds, days, tasks, progress, problem, loading, busyTaskId, complete } = useJourney();
   // `null` = chưa chọn tay, cứ theo địa chỉ và mặc định.
   const [pickedStageId, setPickedStageId] = useState<number | null>(null);
   const [mode, setMode] = useState<ViewMode>("road");
@@ -65,6 +67,9 @@ export function EmployeeTasksPage() {
     chips: [
       { icon: <ListChecks aria-hidden="true" size={10} />, label: task.required ? tt("required") : tt("optional") },
       { icon: <Lock aria-hidden="true" size={10} />, label: t("prereq", { count: task.prerequisites.length }) },
+      ...(changedTaskIds.has(task.id)
+        ? [{ icon: <PencilLine aria-hidden="true" size={10} />, label: t("changed") }]
+        : []),
     ],
   }));
 
@@ -91,7 +96,8 @@ export function EmployeeTasksPage() {
       />
 
       <div className={shared.container}>
-        {problem ? <p className={shared.banner}>{t(`problem.${problem}`)}</p> : null}
+        <JourneyProblemNotice />
+        <PendingChangesBanner />
 
         {loading ? (
           <div className={`${shared.card} ${styles.layout}`}>
@@ -102,7 +108,7 @@ export function EmployeeTasksPage() {
             </div>
             <div className={shared.skeleton} style={{ height: 420, margin: 16 }} />
           </div>
-        ) : days.length === 0 ? (
+        ) : problem ? null : days.length === 0 ? (
           <div className={`${shared.card} ${shared.empty}`}>
             <FlatIcon name="route" size={38} tone="blue" />
             <b>{t("emptyTitle")}</b>
@@ -217,6 +223,9 @@ export function EmployeeTasksPage() {
                               </span>
                             ) : null}
                           </span>
+                          {changedTaskIds.has(task.id) ? (
+                            <span className={`${styles.pill} ${styles.pill_changed}`}>{t("changed")}</span>
+                          ) : null}
                           <span className={`${styles.pill} ${styles[`pill_${state}`]}`}>{tt(`state.${state}`)}</span>
                           <ChevronRight aria-hidden="true" className={styles.rowGo} size={16} />
                         </button>

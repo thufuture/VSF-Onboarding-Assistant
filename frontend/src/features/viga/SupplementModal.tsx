@@ -22,11 +22,14 @@ type Stage = "form" | "working" | "checking" | "result" | "failed";
  */
 export function SupplementModal({
   gapId,
+  source = "gap",
   question,
   onClose,
   onResolved,
 }: {
+  /** Mã câu chưa trả lời được (`source="gap"`) hoặc mã nhóm 👎 (`source="feedback"`). */
   gapId: number;
+  source?: "gap" | "feedback";
   question: string;
   onClose: () => void;
   onResolved: () => void;
@@ -43,7 +46,7 @@ export function SupplementModal({
   async function check() {
     setStage("checking");
     try {
-      const outcome = await vigaApi.recheckContentGap(gapId);
+      const outcome = await (source === "feedback" ? vigaApi.recheckDissatisfied(gapId) : vigaApi.recheckContentGap(gapId));
       setResult(outcome);
       setStage("result");
       if (outcome.answered) onResolved();
@@ -68,11 +71,10 @@ export function SupplementModal({
     setError(null);
     setStage("working");
     try {
-      const created = await vigaApi.supplementContentGap(gapId, {
-        answer: answer.trim(),
-        question: asked.trim() || null,
-        contact: contact.trim() || null,
-      });
+      const body = { answer: answer.trim(), question: asked.trim() || null, contact: contact.trim() || null };
+      const created = await (source === "feedback"
+        ? vigaApi.supplementDissatisfied(gapId, body)
+        : vigaApi.supplementContentGap(gapId, body));
       setJobId(created.job_id);
     } catch {
       setError(t("errors.save"));

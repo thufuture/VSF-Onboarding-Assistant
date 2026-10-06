@@ -20,7 +20,8 @@ function errorMessage(t: (key: string) => string, error: unknown): string {
 }
 
 /** Tổng quan HR thật — bố cục `.pagehead.hero` + `.kpi` của prototype v15 với số thật từ GET /portal/dashboard, cộng phần
- * số liệu theo thời gian (đường, cột, tròn, chi phí và độ trễ AI) từ GET /portal/analytics trong phạm vi phòng ban của HR. */
+ * số liệu gọn theo thời gian (tiến độ nhân viên, hoạt động mỗi ngày, tổng tiền AI tạo task) từ GET /portal/analytics trong
+ * phạm vi phòng ban của HR; phần đo chi phí và độ trễ chi tiết nằm ở trang Admin. */
 export function HrDashboardPage() {
   const t = useTranslations("hrDashboard");
   const { user } = useSession();
@@ -108,7 +109,7 @@ export function HrDashboardPage() {
         </div>
       ) : null}
 
-      <AnalyticsPanel />
+      <AnalyticsPanel variant="hr" />
     </div>
   );
 }

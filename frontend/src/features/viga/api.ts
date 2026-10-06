@@ -15,8 +15,10 @@ import type {
   RecheckGapResponseDTO,
   SatisfactionSummaryResponseDTO,
   SupplementGapResponseDTO,
+  TicketAttachmentResponseDTO,
   TicketDetailResponseDTO,
   TicketSummaryResponseDTO,
+  TicketUnreadResponseDTO,
   VigaAnswerResponseDTO,
   VigaFeedbackSummaryDTO,
 } from "@/features/viga/dto/responseDTO/viga.response";
@@ -103,6 +105,26 @@ function createTicket(body: CreateTicketRequestDTO): Promise<TicketSummaryRespon
   return json("/api/v1/portal/tickets", { method: "POST", headers: JSON_HEADERS, body: JSON.stringify(body) });
 }
 
+/** Tải một ảnh hoặc video lên Cloudinary (qua máy chủ); trả URL để gắn vào ticket khi gửi. */
+function uploadTicketAttachment(file: File): Promise<TicketAttachmentResponseDTO> {
+  const form = new FormData();
+  form.append("file", file);
+  return json("/api/v1/portal/ticket-attachments", { method: "POST", body: form });
+}
+
+async function discardTicketAttachment(id: number): Promise<void> {
+  await call(`/api/v1/portal/ticket-attachments/${id}`, { method: "DELETE" });
+}
+
+function getUnreadTickets(): Promise<TicketUnreadResponseDTO> {
+  return json("/api/v1/portal/tickets/unread");
+}
+
+/** Đã mở ticket: đánh dấu đã xem tới tin cuối, trả số chưa đọc mới. */
+function markTicketRead(id: number): Promise<TicketUnreadResponseDTO> {
+  return json(`/api/v1/portal/tickets/${id}/read`, { method: "POST" });
+}
+
 function listMyTickets(): Promise<TicketSummaryResponseDTO[]> {
   return json("/api/v1/portal/tickets/mine");
 }
@@ -155,6 +177,19 @@ function supplementContentGap(id: number, body: SupplementGapRequestDTO): Promis
   });
 }
 
+/** Câu bị 👎: cùng cách bổ sung và kiểm tra lại như câu chưa trả lời được (mã là mã nhóm 👎). */
+function recheckDissatisfied(id: number): Promise<RecheckGapResponseDTO> {
+  return json(`/api/v1/portal/viga-feedback/${id}/recheck`, { method: "POST" });
+}
+
+function supplementDissatisfied(id: number, body: SupplementGapRequestDTO): Promise<SupplementGapResponseDTO> {
+  return json(`/api/v1/portal/viga-feedback/${id}/supplement`, {
+    method: "POST",
+    headers: JSON_HEADERS,
+    body: JSON.stringify(body),
+  });
+}
+
 function listDissatisfied(includeResolved = false): Promise<DissatisfiedGroupResponseDTO[]> {
   return json(`/api/v1/portal/viga-feedback${includeResolved ? "?include_resolved=true" : ""}`);
 }
@@ -196,6 +231,10 @@ export const vigaApi = {
   renameConversation,
   deleteConversation,
   createTicket,
+  uploadTicketAttachment,
+  discardTicketAttachment,
+  getUnreadTickets,
+  markTicketRead,
   listMyTickets,
   listStaffTickets,
   getTicket,
@@ -206,6 +245,8 @@ export const vigaApi = {
   resolveContentGap,
   recheckContentGap,
   supplementContentGap,
+  recheckDissatisfied,
+  supplementDissatisfied,
   listDissatisfied,
   resolveDissatisfied,
   feedbackSummary,

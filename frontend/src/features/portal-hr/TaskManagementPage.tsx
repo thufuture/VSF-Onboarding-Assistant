@@ -8,11 +8,11 @@ import {
   Copy,
   Eye,
   Flag,
+  GitBranchPlus,
   Info,
   ListChecks,
   Pencil,
   Plus,
-  Send,
   Sparkles,
   Trash2,
   Workflow,
@@ -27,13 +27,17 @@ import { JourneyRoad, type RoadItem } from "@/components/roadmap/JourneyRoad";
 import { TaskSources } from "@/components/task-sources/TaskSources";
 import { portalHrApi, PortalError } from "@/features/portal-hr/api";
 import type {
+  ApplyPreviewResponseDTO,
   TaskGroupDTO,
   TaskNodeResponseDTO,
   TemplateNodeResponseDTO,
+  VersionNodeResponseDTO,
 } from "@/features/portal-hr/dto/responseDTO/portal.response";
 import { parseTaskBody, serializeTaskBody } from "@/features/portal-hr/taskBody";
 import { Link } from "@/i18n/navigation";
 
+import { RolloutModal } from "./RolloutModal";
+import { StageVersionBar } from "./StageVersionBar";
 import styles from "./TaskManagementPage.module.scss";
 
 // Nhóm task cố định (Hồ sơ / Đào tạo / Thiết bị / Văn phòng) — mỗi nhóm một màu dịu và một icon phẳng; chưa phân nhóm dùng xám.
@@ -54,6 +58,10 @@ const API_ERROR_KEYS: Record<string, string> = {
   DEPENDENCY_CYCLE: "errors.cycle",
   DEPENDENCY_SELF: "errors.cycle",
   STAGE_OUT_OF_TEMPLATE: "errors.stageOutOfTemplate",
+  VERSION_NOT_EDITABLE: "errors.versionNotEditable",
+  VERSION_NOT_DRAFT: "errors.versionNotEditable",
+  VERSION_EMPTY: "errors.versionEmpty",
+  LAST_VERSION: "errors.lastVersion",
 };
 
 function errorMessage(t: (key: string) => string, error: unknown): string {
@@ -101,7 +109,11 @@ export function TaskManagementPage() {
   const [viewingTask, setViewingTask] = useState<TaskNodeResponseDTO | null>(null);
   const [deletingTask, setDeletingTask] = useState<TaskNodeResponseDTO | null>(null);
   const [duplicatingTask, setDuplicatingTask] = useState<TaskNodeResponseDTO | null>(null);
-  const [publishing, setPublishing] = useState(false);
+  const [pickedVersionId, setPickedVersionId] = useState<number | null>(null);
+  const [applying, setApplying] = useState<{ version: VersionNodeResponseDTO; preview: ApplyPreviewResponseDTO | null } | null>(null);
+  const [deletingVersion, setDeletingVersion] = useState<VersionNodeResponseDTO | null>(null);
+  const [creatingDraft, setCreatingDraft] = useState(false);
+  const [rolloutVersion, setRolloutVersion] = useState<VersionNodeResponseDTO | null>(null);
 
   const [showAddStage, setShowAddStage] = useState(false);
   const [stageNumber, setStageNumber] = useState("1");
@@ -134,16 +146,22 @@ export function TaskManagementPage() {
   const selectedStage = allStages.find((s) => s.id === stageParam) ?? allStages[0] ?? null;
   const selectedTemplate = (templates ?? []).find((tpl) => tpl.id === selectedStage?.templateId) ?? null;
 
-  // Thống kê chỉ tính cho ngày đang chọn: mọi task trong một ngày cùng thuộc một lộ trình nên hoặc cùng
-  // đã xuất bản hoặc cùng là bản nháp.
-  const dayTasks = selectedStage?.tasks ?? [];
-  const totalTasks = dayTasks.length;
-  const publishedTasks = selectedStage?.templateStatus === "PUBLISHED" ? totalTasks : 0;
-  const draftTasks = totalTasks - publishedTasks;
-  const missingTasks = dayTasks.filter((tk) => !tk.body_markdown.trim()).length;
+  // Phiên bản đang xem của ngày: bản vừa bấm (nếu thuộc ngày này), không thì bản mặc định (đang áp dụng, không có thì nháp).
+  const stageVersions = useMemo(() => selectedStage?.versions ?? [], [selectedStage]);
+  const selectedVersion =
+    stageVersions.find((v) => v.id === pickedVersionId) ??
+    stageVersions.find((v) => v.id === selectedStage?.default_version_id) ??
+    stageVersions[0] ??
+    null;
+  // Chỉ bản nháp sửa được; bản đang áp dụng và lưu trữ chỉ xem (sửa nhầm sẽ đổi lộ trình mà không ai biết).
+  const readOnly = selectedVersion?.status !== "DRAFT";
 
-  const isPublished = selectedStage?.templateStatus === "PUBLISHED";
-  const stageTasks = useMemo(() => selectedStage?.tasks ?? [], [selectedStage]);
+  // Thống kê chỉ tính cho phiên bản đang xem.
+  const stageTasks = useMemo(() => selectedVersion?.tasks ?? [], [selectedVersion]);
+  const totalTasks = stageTasks.length;
+  const appliedTasks = selectedVersion?.status === "APPLIED" ? totalTasks : 0;
+  const draftTasks = selectedVersion?.status === "DRAFT" ? totalTasks : 0;
+  const missingTasks = stageTasks.filter((tk) => !tk.body_markdown.trim()).length;
 
   // Task cùng lộ trình (để chọn tiên quyết) và các giai đoạn cùng lộ trình (để chọn "Ngày").
   const templateStages = selectedTemplate?.stages ?? [];
@@ -151,14 +169,15 @@ export function TaskManagementPage() {
     id: task.id,
     title: task.title,
     group: task.task_group,
-    pill: isPublished ? t("statusPublished") : t("statusDraft"),
+    pill: selectedVersion ? t(`versions.status.${selectedVersion.status}`) : "",
     chips: [
       { icon: <Clock aria-hidden="true" size={10} />, label: task.required ? t("required") : t("optional") },
       { icon: <ListChecks aria-hidden="true" size={10} />, label: t("prereq", { count: task.depends_on.length }) },
     ],
   }));
 
-  const templateTasks = templateStages.flatMap((s) => s.tasks.map((tk) => ({ ...tk, stageTitle: s.title })));
+  // Tiên quyết chỉ chọn được trong CÙNG phiên bản (Q2).
+  const templateTasks = stageTasks.map((tk) => ({ ...tk, stageTitle: selectedStage?.title ?? "" }));
 
   function openCreate() {
     if (!selectedStage) return;
@@ -228,14 +247,20 @@ export function TaskManagementPage() {
     const order = Number.parseInt(form.order, 10);
     try {
       if (taskModal.mode === "create") {
-        await portalHrApi.createTaskManual(form.stageId, {
+        const payload = {
           title: form.title,
           body_markdown: body,
           required: form.required,
           task_group: form.group || null,
           sort_order: Number.isNaN(order) ? null : order,
           depends_on: form.depends,
-        });
+        };
+        // Thêm vào đúng bản nháp đang xem; chọn ngày khác thì vào bản nháp làm việc của ngày đó.
+        if (selectedVersion && form.stageId === selectedStage?.id) {
+          await portalHrApi.createTaskInVersion(selectedVersion.id, payload);
+        } else {
+          await portalHrApi.createTaskManual(form.stageId, payload);
+        }
         showToast(t("notice.created"));
       } else if (taskModal.task) {
         await portalHrApi.updateTaskTemplate(taskModal.task.id, {
@@ -264,7 +289,7 @@ export function TaskManagementPage() {
     setError(null);
     setBusy("stage");
     try {
-      const draft = (templates ?? []).find((tpl) => tpl.status === "DRAFT");
+      const draft = (templates ?? [])[0];
       const templateId =
         draft?.id ??
         (
@@ -332,18 +357,68 @@ export function TaskManagementPage() {
     }
   }
 
-  async function handleConfirmPublish() {
-    if (!selectedTemplate) return;
+  async function handleCreateDraft() {
+    if (!selectedStage || !selectedVersion) return;
     setError(null);
-    setBusy("publish");
+    setBusy("version");
     try {
-      await portalHrApi.publishTemplate(selectedTemplate.id);
-      setPublishing(false);
-      showToast(t("notice.published"));
+      const created = await portalHrApi.createStageVersion(selectedStage.id, { from_version_id: selectedVersion.id });
+      setCreatingDraft(false);
+      setPickedVersionId(created.id);
+      showToast(t("notice.draftCreated", { n: created.version_no }));
       reload();
       notifyChanged();
     } catch (caught) {
-      setPublishing(false);
+      setCreatingDraft(false);
+      setError(errorMessage(t, caught));
+    } finally {
+      setBusy(null);
+    }
+  }
+
+  async function openApply(version: VersionNodeResponseDTO) {
+    setError(null);
+    setApplying({ version, preview: null });
+    try {
+      const preview = await portalHrApi.previewApplyVersion(version.id);
+      setApplying({ version, preview });
+    } catch (caught) {
+      setApplying(null);
+      setError(errorMessage(t, caught));
+    }
+  }
+
+  async function handleConfirmApply() {
+    if (!applying) return;
+    setError(null);
+    setBusy("apply");
+    try {
+      const result = await portalHrApi.applyStageVersion(applying.version.id);
+      setApplying(null);
+      showToast(t("notice.applied", { n: result.version.version_no, count: result.notified_count }));
+      reload();
+      notifyChanged();
+    } catch (caught) {
+      setApplying(null);
+      setError(errorMessage(t, caught));
+    } finally {
+      setBusy(null);
+    }
+  }
+
+  async function handleConfirmDeleteVersion() {
+    if (!deletingVersion) return;
+    setError(null);
+    setBusy("deleteVersion");
+    try {
+      await portalHrApi.deleteStageVersion(deletingVersion.id);
+      setDeletingVersion(null);
+      setPickedVersionId(null);
+      showToast(t("notice.draftDeleted"));
+      reload();
+      notifyChanged();
+    } catch (caught) {
+      setDeletingVersion(null);
       setError(errorMessage(t, caught));
     } finally {
       setBusy(null);
@@ -378,12 +453,7 @@ export function TaskManagementPage() {
           <button className={styles.btnSec} onClick={openAddStage} type="button">
             <Plus aria-hidden="true" size={14} /> {t("addStageShort")}
           </button>
-          {selectedTemplate && !isPublished ? (
-            <button className={styles.btnSec} onClick={() => setPublishing(true)} type="button">
-              <Send aria-hidden="true" size={14} /> {t("publish")}
-            </button>
-          ) : null}
-          <button className={styles.btn} disabled={!selectedStage || isPublished} onClick={openCreate} type="button">
+          <button className={styles.btn} disabled={!selectedStage || readOnly} onClick={openCreate} type="button">
             <Plus aria-hidden="true" size={14} /> {t("addTask")}
           </button>
         </div>
@@ -401,8 +471,18 @@ export function TaskManagementPage() {
               <div>
                 <h2>{selectedStage.title}</h2>
                 <small>
-                  {selectedStage.templateTitle} · {t("taskCount", { count: selectedStage.tasks.length })}
+                  {selectedStage.templateTitle} · {t("taskCount", { count: stageTasks.length })}
                 </small>
+                <StageVersionBar
+                  busy={busy !== null}
+                  onApply={(version) => void openApply(version)}
+                  onCreateDraft={() => setCreatingDraft(true)}
+                  onDelete={setDeletingVersion}
+                  onRollout={setRolloutVersion}
+                  onSelect={setPickedVersionId}
+                  selectedId={selectedVersion?.id ?? null}
+                  versions={stageVersions}
+                />
               </div>
             </div>
             <div className={styles.journeyRight}>
@@ -419,8 +499,8 @@ export function TaskManagementPage() {
               </div>
               <div>
                 <FlatIcon name="check" size={24} tone="green" />
-                <dt>{t("kpi.published")}</dt>
-                <dd>{publishedTasks}</dd>
+                <dt>{t("kpi.applied")}</dt>
+                <dd>{appliedTasks}</dd>
               </div>
               <div>
                 <FlatIcon name="alert" size={24} tone="rose" />
@@ -428,7 +508,7 @@ export function TaskManagementPage() {
                 <dd>{missingTasks}</dd>
               </div>
             </dl>
-            <button className={styles.btnSecSm} disabled={isPublished} onClick={openCreate} type="button">
+            <button className={styles.btnSecSm} disabled={readOnly} onClick={openCreate} type="button">
               <Plus aria-hidden="true" size={13} /> {t("addTask")}
             </button>
             </div>
@@ -453,13 +533,13 @@ export function TaskManagementPage() {
                     disabled: !task.sources || task.sources.length === 0,
                     onClick: () => setViewingTask(task),
                   },
-                  { icon: <Pencil aria-hidden="true" size={12} />, title: t("edit"), disabled: isPublished, onClick: () => openEdit(task) },
-                  { icon: <Copy aria-hidden="true" size={12} />, title: t("duplicate"), disabled: isPublished, onClick: () => setDuplicatingTask(task) },
+                  { icon: <Pencil aria-hidden="true" size={12} />, title: t("edit"), disabled: readOnly, onClick: () => openEdit(task) },
+                  { icon: <Copy aria-hidden="true" size={12} />, title: t("duplicate"), disabled: readOnly, onClick: () => setDuplicatingTask(task) },
                   {
                     icon: <Trash2 aria-hidden="true" size={12} />,
                     title: t("delete"),
                     tone: "danger" as const,
-                    disabled: isPublished,
+                    disabled: readOnly,
                     onClick: () => setDeletingTask(task),
                   },
                 ];
@@ -487,7 +567,7 @@ export function TaskManagementPage() {
                 {t("group.none")}
               </span>
             ) : null}
-            {isPublished ? <span className={styles.legendNote}>{t("publishedReadonly")}</span> : null}
+            {readOnly ? <span className={styles.legendNote}>{t("versions.readonly")}</span> : null}
           </div>
         </section>
       ) : templates === null ? (
@@ -753,20 +833,68 @@ export function TaskManagementPage() {
         />
       ) : null}
 
-      {publishing && selectedTemplate ? (
+      {creatingDraft && selectedVersion ? (
         <ConfirmModal
-          body={t("publishConfirmBody")}
-          busy={busy === "publish"}
+          body={t("versions.createDraftBody")}
+          busy={busy === "version"}
           cancelLabel={t("cancel")}
           closeLabel={t("close")}
-          confirmIcon={Send}
-          confirmLabel={t("publishConfirmButton")}
-          icon={Send}
-          onCancel={() => setPublishing(false)}
-          onConfirm={handleConfirmPublish}
-          title={t("publishConfirmTitle", { title: selectedTemplate.title })}
+          confirmIcon={GitBranchPlus}
+          confirmLabel={t("versions.createDraftConfirm")}
+          icon={GitBranchPlus}
+          onCancel={() => setCreatingDraft(false)}
+          onConfirm={() => void handleCreateDraft()}
+          title={t("versions.createDraftTitle", {
+            n: Math.max(0, ...stageVersions.map((v) => v.version_no)) + 1,
+            from: selectedVersion.version_no,
+          })}
+          tone="blue"
+        />
+      ) : null}
+
+      {applying ? (
+        <ConfirmModal
+          body={
+            applying.preview
+              ? t("apply.body", {
+                  modified: applying.preview.modified,
+                  added: applying.preview.added,
+                  removed: applying.preview.removed,
+                  employees: applying.preview.employee_count,
+                })
+              : t("loading")
+          }
+          busy={busy === "apply" || applying.preview === null}
+          cancelLabel={t("cancel")}
+          closeLabel={t("close")}
+          confirmIcon={CheckCircle2}
+          confirmLabel={t("apply.confirm")}
+          icon={CheckCircle2}
+          onCancel={() => setApplying(null)}
+          onConfirm={handleConfirmApply}
+          title={t("apply.title", { n: applying.version.version_no, day: selectedStage?.title ?? "" })}
           tone="teal"
         />
+      ) : null}
+
+      {deletingVersion ? (
+        <ConfirmModal
+          body={t("versions.deleteBody")}
+          busy={busy === "deleteVersion"}
+          cancelLabel={t("cancel")}
+          closeLabel={t("close")}
+          confirmIcon={Trash2}
+          confirmLabel={t("versions.deleteConfirm")}
+          danger
+          icon={Trash2}
+          onCancel={() => setDeletingVersion(null)}
+          onConfirm={handleConfirmDeleteVersion}
+          title={t("versions.deleteTitle", { n: deletingVersion.version_no })}
+        />
+      ) : null}
+
+      {rolloutVersion ? (
+        <RolloutModal onClose={() => setRolloutVersion(null)} versionId={rolloutVersion.id} versionNo={rolloutVersion.version_no} />
       ) : null}
 
       {showAddStage ? (

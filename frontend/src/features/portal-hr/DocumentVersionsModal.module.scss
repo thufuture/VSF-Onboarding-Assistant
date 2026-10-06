@@ -286,16 +286,12 @@ $tone-failed: #c0392b;
 }
 
 .previewBox {
+  // Xem trước dùng cùng trình đọc kiểu Word như lúc xem tài liệu (mục lục + trang giấy), để thấy đúng định dạng markdown.
   min-height: min(52vh, 520px);
-  max-height: min(60vh, 600px);
-  overflow-y: auto;
-  padding: 14px 18px;
+  overflow: hidden;
   border: 1px solid var(--app-border);
   border-radius: 5px;
   background: var(--app-surface);
-  color: var(--app-ink);
-  font-size: 13.5px;
-  line-height: 1.6;
 }
 
 .confirmText {

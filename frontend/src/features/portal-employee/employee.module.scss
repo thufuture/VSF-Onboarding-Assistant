@@ -2,7 +2,10 @@
 
 // Khối dùng chung cho các trang nhân viên (Tổng quan, Lộ trình, Tài liệu, Hỏi Viga, Hồ sơ).
 
+// `container-type` để các khối bên trong đổi bố cục theo bề rộng THẬT của vùng nội dung (khi ngăn Viga mở hoặc kéo rộng) chứ không theo màn hình.
 .container {
+  container-name: page;
+  container-type: inline-size;
   // Trải hết bề ngang, chỉ chừa lề nhỏ như thanh tiêu đề.
   width: 100%;
   padding: 14px var(--emp-gutter, 16px) 36px;
@@ -221,5 +224,23 @@
   .meter i,
   .skeleton::after {
     animation: none;
+  }
+}
+
+.changeBanner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 14px;
+  padding: 10px 14px;
+  border: 1px solid #e2c99f;
+  border-radius: 5px;
+  background: #fff8ec;
+  color: #6b4a14;
+  font-size: 13px;
+
+  span {
+    flex: 1 1 240px;
   }
 }

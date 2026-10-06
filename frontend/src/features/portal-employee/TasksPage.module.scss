@@ -27,7 +27,12 @@
   overflow: hidden;
   margin-top: var(--emp-gap);
 
-  @media (max-width: 980px) {
+  // Vùng nội dung hẹp (ngăn Viga mở rộng): cột trái thu nhỏ nhưng VẪN nằm bên trái, để nội dung việc luôn thấy ngay.
+  @container page (max-width: 900px) {
+    grid-template-columns: 208px minmax(0, 1fr);
+  }
+  // Rất hẹp mới xếp chồng, và cột ngày cuộn trong khung thấp để không đẩy nội dung xuống tận cuối trang.
+  @container page (max-width: 560px) {
     grid-template-columns: minmax(0, 1fr);
   }
 }
@@ -280,4 +285,8 @@
     border-radius: 50%;
     box-shadow: 0 0 0 2px rgb(255 255 255 / 90%);
   }
+}
+.pill_changed {
+  background: #fdeede;
+  color: #b5671b;
 }

@@ -106,7 +106,6 @@ export function LoginForm() {
       </div>
 
       <button aria-busy={pending} className={styles.submit} disabled={pending} type="submit">
-        {pending ? <i aria-hidden="true" className={styles.spinner} /> : null}
         {pending ? t("submitting") : t("submit")}
         {pending ? null : <ArrowRightIcon size={17} />}
       </button>

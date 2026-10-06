@@ -20,6 +20,7 @@ const KNOWN_OPERATIONS = new Set([
   "ingest.embed",
   "ingest.reembed",
   "ingest.probe",
+  "embed.keepwarm",
   "ingest.structure",
   "task.proposal",
 ]);

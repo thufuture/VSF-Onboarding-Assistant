@@ -9,6 +9,7 @@ import shared from "./employee.module.scss";
 import { useSession } from "@/features/auth/SessionProvider";
 
 import { useJourney } from "./JourneyProvider";
+import { JourneyProblemNotice } from "./JourneyProblemNotice";
 import { stateOf } from "./journeyModel";
 import { PageHero } from "./PageHero";
 import styles from "./ProgressPage.module.scss";
@@ -18,7 +19,7 @@ export function EmployeeProgressPage() {
   const t = useTranslations("employee.progress");
   const { user } = useSession();
   const tt = useTranslations("employee.task");
-  const { days, tasks, progress, loading, problem } = useJourney();
+  const { days, tasks, progress, loading } = useJourney();
 
   const kpis: { key: "overall" | "required" | "ready" | "locked"; icon: FlatIconName; tone: FlatTone; value: string; hint: string }[] = [
     {
@@ -65,7 +66,7 @@ export function EmployeeProgressPage() {
       />
 
       <div className={shared.container}>
-        {problem ? <p className={shared.banner}>{t(`problem.${problem}`)}</p> : null}
+        <JourneyProblemNotice />
 
         <div className={styles.kpis}>
           {kpis.map((kpi, i) => (

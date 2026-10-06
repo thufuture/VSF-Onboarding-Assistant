@@ -17,6 +17,8 @@ import type {
 import { SupplementModal } from "./SupplementModal";
 import styles from "./VigaFeedbackPage.module.scss";
 
+const PAGE_SIZE = 8;
+
 type RowKind = "NO_BASIS" | "PARTIAL" | "DOWN";
 type Row = {
   key: string;
@@ -89,6 +91,7 @@ export function VigaFeedbackPage() {
   const [status, setStatus] = useState<"open" | "resolved" | "all">("open");
   const [sort, setSort] = useState<"count" | "recent">("count");
 
+  const [page, setPage] = useState(1);
   const [supplementFor, setSupplementFor] = useState<Row | null>(null);
   const [rechecks, setRechecks] = useState<Record<string, RecheckGapResponseDTO | "running" | "failed">>({});
 
@@ -136,6 +139,10 @@ export function VigaFeedbackPage() {
       sort === "count" ? b.count - a.count || b.last.localeCompare(a.last) : b.last.localeCompare(a.last),
     );
 
+  const pageCount = Math.max(1, Math.ceil(shown.length / PAGE_SIZE));
+  const current = Math.min(page, pageCount);
+  const pageRows = shown.slice((current - 1) * PAGE_SIZE, current * PAGE_SIZE);
+
   async function resolve(row: Row) {
     setBusyKey(row.key);
     try {
@@ -152,7 +159,7 @@ export function VigaFeedbackPage() {
   async function recheck(row: Row) {
     setRechecks((current) => ({ ...current, [row.key]: "running" }));
     try {
-      const result = await vigaApi.recheckContentGap(row.id);
+      const result = await (row.kind === "DOWN" ? vigaApi.recheckDissatisfied(row.id) : vigaApi.recheckContentGap(row.id));
       setRechecks((current) => ({ ...current, [row.key]: result }));
       if (result.answered) reload();
     } catch {
@@ -196,13 +203,19 @@ export function VigaFeedbackPage() {
           <Search aria-hidden="true" size={14} />
           <input
             aria-label={t("searchLabel")}
-            onChange={(event) => setQuery(event.target.value)}
+            onChange={(event) => {
+                setQuery(event.target.value);
+                setPage(1);
+              }}
             placeholder={t("searchPlaceholder")}
             type="search"
             value={query}
           />
         </label>
-        <select aria-label={t("kindLabel")} onChange={(event) => setKind(event.target.value as RowKind | "ALL")} value={kind}>
+        <select aria-label={t("kindLabel")} onChange={(event) => {
+                setKind(event.target.value as RowKind | "ALL");
+                setPage(1);
+              }} value={kind}>
           <option value="ALL">{t("kind.ALL")}</option>
           {(["NO_BASIS", "PARTIAL", "DOWN"] as const).map((key) => (
             <option key={key} value={key}>
@@ -212,14 +225,20 @@ export function VigaFeedbackPage() {
         </select>
         <select
           aria-label={t("statusLabel")}
-          onChange={(event) => setStatus(event.target.value as "open" | "resolved" | "all")}
+          onChange={(event) => {
+                setStatus(event.target.value as "open" | "resolved" | "all");
+                setPage(1);
+              }}
           value={status}
         >
           <option value="open">{t("status.open")}</option>
           <option value="resolved">{t("status.resolved")}</option>
           <option value="all">{t("status.all")}</option>
         </select>
-        <select aria-label={t("sortLabel")} onChange={(event) => setSort(event.target.value as "count" | "recent")} value={sort}>
+        <select aria-label={t("sortLabel")} onChange={(event) => {
+                setSort(event.target.value as "count" | "recent");
+                setPage(1);
+              }} value={sort}>
           <option value="count">{t("sort.count")}</option>
           <option value="recent">{t("sort.recent")}</option>
         </select>
@@ -244,7 +263,7 @@ export function VigaFeedbackPage() {
           </div>
         ) : (
           <ul className={styles.list}>
-            {shown.map((row) => {
+            {pageRows.map((row) => {
               const visual = row.resolved ? { icon: "check" as FlatIconName, tone: "green" as FlatTone } : KIND_VISUAL[row.kind];
               const check = rechecks[row.key];
               return (
@@ -311,16 +330,12 @@ export function VigaFeedbackPage() {
                     </span>
                   ) : (
                     <div className={styles.actions}>
-                      {row.kind !== "DOWN" ? (
-                        <>
-                          <button className={styles.primary} onClick={() => setSupplementFor(row)} type="button">
-                            <FilePlus2 aria-hidden="true" size={13} /> {t("addDocument")}
-                          </button>
-                          <button disabled={check === "running"} onClick={() => void recheck(row)} type="button">
-                            <RefreshCw aria-hidden="true" size={13} /> {t("recheck")}
-                          </button>
-                        </>
-                      ) : null}
+                      <button className={styles.primary} onClick={() => setSupplementFor(row)} type="button">
+                        <FilePlus2 aria-hidden="true" size={13} /> {t("addDocument")}
+                      </button>
+                      <button disabled={check === "running"} onClick={() => void recheck(row)} type="button">
+                        <RefreshCw aria-hidden="true" size={13} /> {t("recheck")}
+                      </button>
                       <button disabled={busyKey === row.key} onClick={() => void resolve(row)} type="button">
                         <CheckCircle2 aria-hidden="true" size={13} /> {t("resolve")}
                       </button>
@@ -331,12 +346,39 @@ export function VigaFeedbackPage() {
             })}
           </ul>
         )}
+        {shown.length > 0 ? (
+          <div className={styles.pager}>
+            <span>{t("pager.count", { count: shown.length })}</span>
+            {pageCount > 1 ? (
+              <div className={styles.pagerButtons} role="navigation" aria-label={t("pager.label")}>
+                <button disabled={current === 1} onClick={() => setPage(current - 1)} type="button" aria-label={t("pager.prev")}>
+                  ‹
+                </button>
+                {Array.from({ length: pageCount }, (_, i) => i + 1).map((n) => (
+                  <button
+                    aria-current={n === current ? "page" : undefined}
+                    className={n === current ? styles.pagerOn : ""}
+                    key={n}
+                    onClick={() => setPage(n)}
+                    type="button"
+                  >
+                    {n}
+                  </button>
+                ))}
+                <button disabled={current === pageCount} onClick={() => setPage(current + 1)} type="button" aria-label={t("pager.next")}>
+                  ›
+                </button>
+              </div>
+            ) : null}
+          </div>
+        ) : null}
         <p className={styles.privacy}>{t("privacy")}</p>
       </div>
 
       {supplementFor ? (
         <SupplementModal
           gapId={supplementFor.id}
+          source={supplementFor.kind === "DOWN" ? "feedback" : "gap"}
           onClose={() => setSupplementFor(null)}
           onResolved={reload}
           question={supplementFor.question}

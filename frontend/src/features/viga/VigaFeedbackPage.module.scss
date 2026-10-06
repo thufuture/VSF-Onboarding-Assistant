@@ -427,3 +427,41 @@
     justify-content: flex-start;
   }
 }
+
+.pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  border-top: 1px solid var(--app-border);
+  color: var(--app-ink-3);
+  font-size: 12.5px;
+}
+.pagerButtons {
+  display: flex;
+  gap: 4px;
+
+  button {
+    min-width: 28px;
+    height: 28px;
+    border: 1px solid var(--app-border-strong);
+    border-radius: 5px;
+    background: var(--app-surface);
+    color: var(--app-ink);
+    cursor: pointer;
+
+    &:disabled {
+      cursor: default;
+      opacity: 0.5;
+    }
+    &:not(:disabled):hover {
+      border-color: var(--app-accent);
+      background: var(--app-accent-soft);
+    }
+  }
+}
+.pagerOn {
+  border-color: var(--app-accent) !important;
+  background: var(--app-accent) !important;
+  color: var(--app-on-accent) !important;
+}

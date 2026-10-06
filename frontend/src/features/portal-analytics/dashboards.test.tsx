@@ -61,6 +61,9 @@ const EMPTY: PortalAnalyticsResponseDTO = {
     errors_per_day: [0, 0],
     cost_per_day: [0, 0],
     by_operation: [],
+    by_provider: [],
+    hours: [],
+    cost_groups: [],
     task_runs: [],
     activation_runs: [],
   },
@@ -104,7 +107,15 @@ describe("Trang Tổng quan có số liệu theo thời gian", () => {
     expect(screen.getByText("21")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Số liệu theo thời gian" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Hoạt động mỗi ngày" })).toBeInTheDocument();
+    // HR chỉ thấy hai khoản (tải tài liệu lên, tạo task bằng AI), mỗi khoản có biểu đồ theo ngày và theo giờ.
+    expect(screen.getByRole("heading", { name: "Chi phí AI của phòng" })).toBeInTheDocument();
+    expect(screen.getByTestId("task-cost")).toBeInTheDocument();
+    expect(screen.getByTestId("upload-cost")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Chi phí AI mỗi ngày" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Chi phí AI theo giờ" })).toBeInTheDocument();
+    for (const name of ["Chi phí theo thao tác", "Độ trễ mỗi lượt tạo task", "Chi phí mỗi lượt tạo task", "Chi phí và hiệu năng theo nhà cung cấp"]) {
+      expect(screen.queryByRole("heading", { name })).not.toBeInTheDocument();
+    }
   });
 
   it("Admin: giữ KPI quản trị và thêm số liệu toàn hệ thống", async () => {

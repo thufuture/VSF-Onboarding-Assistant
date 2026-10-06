@@ -128,3 +128,55 @@ describe("Nguồn của đề xuất", () => {
     expect(viewer).toHaveAttribute("data-quote", "Đăng nhập Outlook và Teams");
   });
 });
+
+describe("Đổi vị trí đề xuất", () => {
+  const titles = () => screen.getAllByRole("heading", { level: 3 }).map((heading) => heading.textContent);
+
+  it("kéo thả thẻ đổi chỗ hai đề xuất", () => {
+    render(<Harness onCreate={vi.fn()} />);
+    expect(titles()).toEqual(["Nộp hồ sơ", "Nhận laptop"]);
+
+    const cards = screen.getAllByRole("heading", { level: 3 }).map((h) => h.closest("article")!);
+    fireEvent.dragStart(cards[0]!, { dataTransfer: { setData: vi.fn(), effectAllowed: "" } });
+    fireEvent.dragOver(cards[1]!);
+    fireEvent.drop(cards[1]!);
+
+    expect(titles()).toEqual(["Nhận laptop", "Nộp hồ sơ"]);
+  });
+
+  it("đổi vị trí bằng ô số trong hộp Sửa đề xuất", () => {
+    render(<Harness onCreate={vi.fn()} />);
+
+    fireEvent.click(screen.getAllByRole("button", { name: t.actions.edit })[0]!);
+    const dialog = screen.getByRole("dialog");
+    fireEvent.change(within(dialog).getByLabelText(/Vị trí/), { target: { value: "2" } });
+    fireEvent.click(within(dialog).getByRole("button", { name: t.edit.save }));
+
+    expect(titles()).toEqual(["Nhận laptop", "Nộp hồ sơ"]);
+  });
+});
+
+describe("Tiên quyết luôn đứng trước", () => {
+  const review = (key: number, title: string, prerequisites: string[]): Review => ({
+    key,
+    status: "pending",
+    proposal: { ...proposal(title), prerequisites },
+  });
+
+  it("moveItem đưa phần tử tới vị trí mới và giữ thứ tự các phần tử còn lại", async () => {
+    const { moveItem } = await import("./AiRoadmapReview");
+    expect(moveItem([1, 2, 3, 4], 3, 0)).toEqual([4, 1, 2, 3]);
+    expect(moveItem([1, 2, 3], 1, 1)).toEqual([1, 2, 3]);
+    expect(moveItem([1, 2, 3], 0, 9)).toEqual([1, 2, 3]);
+  });
+
+  it("bỏ tiên quyết nay đứng sau task cần nó và đếm số đã bỏ", async () => {
+    const { keepPrerequisitesBefore } = await import("./AiRoadmapReview");
+    const ok = keepPrerequisitesBefore([review(1, "A", []), review(2, "B", ["A"])]);
+    expect(ok.dropped).toBe(0);
+
+    const swapped = keepPrerequisitesBefore([review(2, "B", ["A"]), review(1, "A", [])]);
+    expect(swapped.dropped).toBe(1);
+    expect(swapped.reviews[0]!.proposal.prerequisites).toEqual([]);
+  });
+});

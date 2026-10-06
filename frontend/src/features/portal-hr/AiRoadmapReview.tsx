@@ -35,6 +35,29 @@ function sourcesOf(review: Review): TaskSourceDTO[] {
   }));
 }
 
+/** Đưa phần tử `from` tới vị trí `to` (0-based), các phần tử còn lại giữ thứ tự. */
+export function moveItem<T>(list: T[], from: number, to: number): T[] {
+  if (from === to || from < 0 || to < 0 || from >= list.length || to >= list.length) return list;
+  const next = [...list];
+  const [item] = next.splice(from, 1);
+  next.splice(to, 0, item as T);
+  return next;
+}
+
+/** Tiên quyết phải đứng TRƯỚC task cần nó (task thật được tạo theo thứ tự này). Bỏ tiên quyết nay đứng sau; trả số tiên quyết đã bỏ. */
+export function keepPrerequisitesBefore(reviews: Review[]): { reviews: Review[]; dropped: number } {
+  let dropped = 0;
+  const seen = new Set<string>();
+  const next = reviews.map((review) => {
+    const before = review.proposal.prerequisites ?? [];
+    const kept = before.filter((name) => seen.has(name));
+    dropped += before.length - kept.length;
+    seen.add(review.proposal.title);
+    return kept.length === before.length ? review : { ...review, proposal: { ...review.proposal, prerequisites: kept } };
+  });
+  return { reviews: next, dropped };
+}
+
 let reviewSeq = 0;
 /** Mã cục bộ cho một đề xuất (chưa có task thật nên chưa có id từ máy chủ). */
 export function nextReviewKey(): number {
@@ -70,6 +93,7 @@ export function AiRoadmapReview({
   const t = useTranslations("portalHr.propose");
   const tm = useTranslations("portalHr");
   const [dialog, setDialog] = useState<Dialog | null>(null);
+  const [droppedNote, setDroppedNote] = useState<number>(0);
 
   const pending = reviews.filter((r) => r.status === "pending").length;
   const accepted = reviews.length - pending;
@@ -94,6 +118,20 @@ export function AiRoadmapReview({
         : []),
     ],
   }));
+
+  /** Đổi vị trí rồi giữ đúng quy tắc "tiên quyết đứng trước"; nói rõ nếu phải bỏ tiên quyết nào. */
+  function reorder(fromKey: number, toKey: number) {
+    const from = reviews.findIndex((r) => r.key === fromKey);
+    const to = reviews.findIndex((r) => r.key === toKey);
+    applyOrder(moveItem(reviews, from, to));
+  }
+
+  function applyOrder(next: Review[]) {
+    if (next === reviews) return;
+    const fixed = keepPrerequisitesBefore(next);
+    setDroppedNote(fixed.dropped);
+    onChange(fixed.reviews);
+  }
 
   function duplicate(key: number) {
     const index = reviews.findIndex((r) => r.key === key);
@@ -155,6 +193,12 @@ export function AiRoadmapReview({
         </div>
       </div>
 
+      {droppedNote > 0 ? (
+        <p className={styles.reorderNote} role="status">
+          {t("reorder.dropped", { count: droppedNote })}
+        </p>
+      ) : null}
+
       <div className={styles.roadCard}>
         <header className={styles.roadHead}>
           <span className={styles.dayIcon}>
@@ -162,7 +206,7 @@ export function AiRoadmapReview({
           </span>
           <div>
             <h2>{dayTitle}</h2>
-            <small>{t("roadSub", { count: reviews.length })}</small>
+            <small>{t("roadSub", { count: reviews.length })} · {t("reorder.hint")}</small>
           </div>
         </header>
         {reviews.length === 0 ? (
@@ -193,6 +237,7 @@ export function AiRoadmapReview({
             items={items}
             labels={{ start: t("road.start"), finish: t("road.finish"), taskNo: (n) => t("road.taskNo", { n }) }}
             onOpen={(item) => setDialog({ kind: "source", key: item.id })}
+            onReorder={reorder}
           />
         )}
       </div>
@@ -254,15 +299,17 @@ export function AiRoadmapReview({
       {dialog?.kind === "edit" && current ? (
         <EditDialog
           onClose={() => setDialog(null)}
-          onSave={(proposal) => {
-            onChange(
-              reviews.map((r) =>
-                r.key === current.key ? { ...r, proposal, status: r.status === "pending" ? "edited" : r.status } : r,
-              ),
+          onSave={(proposal, position) => {
+            const edited = reviews.map((r) =>
+              r.key === current.key ? { ...r, proposal, status: r.status === "pending" ? ("edited" as const) : r.status } : r,
             );
+            const from = edited.findIndex((r) => r.key === current.key);
+            applyOrder(moveItem(edited, from, Math.min(Math.max(position, 1), edited.length) - 1));
             setDialog(null);
           }}
+          position={reviews.findIndex((r) => r.key === current.key) + 1}
           proposal={current.proposal}
+          total={reviews.length}
         />
       ) : null}
 
@@ -289,12 +336,16 @@ export function AiRoadmapReview({
 
 function EditDialog({
   proposal,
+  position: initialPosition,
+  total,
   onClose,
   onSave,
 }: {
   proposal: AiTaskProposalResponseDTO;
+  position: number;
+  total: number;
   onClose: () => void;
-  onSave: (next: AiTaskProposalResponseDTO) => void;
+  onSave: (next: AiTaskProposalResponseDTO, position: number) => void;
 }) {
   const t = useTranslations("portalHr.propose");
   const tm = useTranslations("portalHr");
@@ -303,11 +354,14 @@ function EditDialog({
   const [minutes, setMinutes] = useState(String(proposal.estimated_minutes ?? ""));
   const [steps, setSteps] = useState(proposal.instructions_markdown);
   const [done, setDone] = useState(proposal.done_criteria.join("\n"));
+  const [position, setPosition] = useState(String(initialPosition));
 
   function submit(event: FormEvent) {
     event.preventDefault();
     const parsed = parseInt(minutes, 10);
-    onSave({
+    const place = parseInt(position, 10);
+    onSave(
+      {
       ...proposal,
       title: title.trim() || proposal.title,
       summary: summary.trim(),
@@ -317,7 +371,9 @@ function EditDialog({
         .split("\n")
         .map((line) => line.trim())
         .filter(Boolean),
-    });
+      },
+      Number.isFinite(place) ? place : initialPosition,
+    );
   }
 
   return (
@@ -350,16 +406,29 @@ function EditDialog({
             <textarea id="ai-e-summary" onChange={(e) => setSummary(e.target.value)} value={summary} />
           </div>
           <div>
+            <label htmlFor="ai-e-pos">{t("edit.position", { max: total })}</label>
+            <input
+              id="ai-e-pos"
+              inputMode="numeric"
+              onChange={(e) => setPosition(e.target.value)}
+              type="text"
+              value={position}
+            />
+            <small className={styles.fieldHint}>{t("edit.positionHint")}</small>
+          </div>
+          <div>
             <label htmlFor="ai-e-min">{t("edit.minutes")}</label>
             <input id="ai-e-min" inputMode="numeric" onChange={(e) => setMinutes(e.target.value)} type="text" value={minutes} />
+            <small className={styles.fieldHint}>{t("edit.minutesHint")}</small>
           </div>
           <div className={m.span2}>
             <label htmlFor="ai-e-steps">{t("edit.steps")}</label>
-            <textarea id="ai-e-steps" onChange={(e) => setSteps(e.target.value)} style={{ minHeight: 120 }} value={steps} />
+            <textarea id="ai-e-steps" onChange={(e) => setSteps(e.target.value)} style={{ minHeight: 150 }} value={steps} />
+            <small className={styles.fieldHint}>{t("edit.stepsHint")}</small>
           </div>
           <div className={m.span2}>
             <label htmlFor="ai-e-done">{t("edit.done")}</label>
-            <textarea id="ai-e-done" onChange={(e) => setDone(e.target.value)} value={done} />
+            <textarea id="ai-e-done" onChange={(e) => setDone(e.target.value)} style={{ minHeight: 90 }} value={done} />
           </div>
         </div>
       </form>

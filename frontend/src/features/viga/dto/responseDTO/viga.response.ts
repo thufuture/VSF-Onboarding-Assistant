@@ -107,6 +107,23 @@ export type TicketSummaryResponseDTO = {
   message_count: number;
   last_sender_is_staff: boolean;
   resolution_note: string | null;
+  /** Có tin của phía bên kia mà bạn chưa mở. */
+  unread?: boolean;
+};
+
+/** Số ticket có tin chưa xem (mỗi ticket một) và mã của chúng. */
+export type TicketUnreadResponseDTO = {
+  count: number;
+  ticket_ids: number[];
+};
+
+export type TicketAttachmentResponseDTO = {
+  id: number;
+  kind: "IMAGE" | "VIDEO";
+  url: string;
+  filename: string;
+  content_type: string;
+  size_bytes: number;
 };
 
 export type TicketMessageResponseDTO = {
@@ -116,6 +133,7 @@ export type TicketMessageResponseDTO = {
   body: string;
   created_at: string;
   mine: boolean;
+  attachments?: TicketAttachmentResponseDTO[];
 };
 
 export type TicketDetailResponseDTO = {

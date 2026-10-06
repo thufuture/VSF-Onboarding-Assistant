@@ -1,0 +1,50 @@
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+
+  th,
+  td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--app-border);
+    text-align: left;
+    vertical-align: top;
+  }
+  th {
+    color: var(--app-ink-3);
+    font-size: 12px;
+    font-weight: 600;
+  }
+  small {
+    display: block;
+    color: var(--app-ink-3);
+    font-size: 12px;
+  }
+}
+
+.state {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 5px;
+  background: var(--app-surface-2);
+  color: var(--app-ink-2);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.state_UNSEEN {
+  background: #fdeede;
+  color: #b5671b;
+}
+.state_SEEN {
+  background: #e3eefb;
+  color: #17578b;
+}
+.state_UPDATED {
+  background: #dff1e8;
+  color: #226b4d;
+}
+.state_KEPT_OLD {
+  background: #ece6f7;
+  color: #7a4fb0;
+}

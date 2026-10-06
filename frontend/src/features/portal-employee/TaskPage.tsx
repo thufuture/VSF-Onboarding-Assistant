@@ -15,6 +15,7 @@ import { parseTaskBody } from "@/features/portal-hr/taskBody";
 import { vigaApi } from "@/features/viga/api";
 import { Link, useRouter } from "@/i18n/navigation";
 
+import { ChangeCard } from "./ChangeCard";
 import { TaskRail } from "./TaskRail";
 import shared from "./employee.module.scss";
 import { useSession } from "@/features/auth/SessionProvider";
@@ -36,7 +37,9 @@ export function EmployeeTaskPage({ taskId }: { taskId: number }) {
   const t = useTranslations("employee.taskPage");
   const { user } = useSession();
   const tt = useTranslations("employee.task");
-  const { tasks, days, loading, busyTaskId, complete } = useJourney();
+  const tc = useTranslations("employee.changes");
+  const { tasks, days, loading, busyTaskId, complete, changedTaskIds, changeById, busyChangeId, previewChange, acceptChange, dismissChange } =
+    useJourney();
   const { ask } = useVigaPanel();
   const router = useRouter();
   const [toastNode, showToast] = useToast();
@@ -98,6 +101,7 @@ export function EmployeeTaskPage({ taskId }: { taskId: number }) {
   const dayTasks = days.find((day) => day.stageId === task.stage_id)?.tasks ?? [task];
   const parts = parseTaskBody(task.body_markdown);
   const structured = parts.why || parts.done || parts.steps.length > 0;
+  const pendingChange = changeById.get(task.pending_change_id ?? changedTaskIds.get(task.id) ?? -1)?.change ?? null;
   const blockers = task.prerequisites.filter((item) => !item.done);
   const prereqTasks = tasks.filter((row) => task.prerequisites.some((item) => item.title === row.title));
   const unlocks = tasks.filter((row) => row.prerequisites.some((item) => item.title === task.title));
@@ -108,6 +112,7 @@ export function EmployeeTaskPage({ taskId }: { taskId: number }) {
         aside={
           <div className={styles.heroCard}>
             <span className={`${styles.pill} ${styles[`pill_${state}`]}`}>{tt(`state.${state}`)}</span>
+            {pendingChange ? <span className={`${styles.pill} ${styles.pill_changed}`}>{tc("changed")}</span> : null}
             <span className={styles.heroGroup}>
               <FlatIcon name={group.flat} size={20} tone={group.tone} />
               {tt(`group.${group.key ?? "NONE"}`)}
@@ -142,6 +147,17 @@ export function EmployeeTaskPage({ taskId }: { taskId: number }) {
 
           <div className={styles.cols}>
             <div className={styles.left}>
+              {pendingChange ? (
+                <ChangeCard
+                  busy={busyChangeId === pendingChange.id}
+                  change={pendingChange}
+                  compact
+                  onAccept={(id) => void acceptChange(id)}
+                  onDismiss={(id) => void dismissChange(id)}
+                  previewChange={previewChange}
+                />
+              ) : null}
+
               {blockers.length > 0 ? (
                 <div className={styles.lockNote}>
                   <Lock aria-hidden="true" size={16} />

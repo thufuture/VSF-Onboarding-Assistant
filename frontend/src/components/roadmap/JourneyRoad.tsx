@@ -1,7 +1,7 @@
 "use client";
 
 import { Check, Lock } from "lucide-react";
-import { useId, type CSSProperties, type ReactNode } from "react";
+import { useId, useState, type CSSProperties, type ReactNode } from "react";
 
 import { FlatIcon } from "@/components/flat-icons/FlatIcon";
 import { groupStyle } from "@/components/roadmap/taskGroups";
@@ -50,13 +50,18 @@ export function JourneyRoad({
   onOpen,
   actionsFor,
   onEndClick,
+  onReorder,
 }: {
   items: RoadItem[];
   labels: { start: string; finish: string; taskNo: (n: string) => string };
   onOpen: (item: RoadItem) => void;
   actionsFor: (item: RoadItem) => RoadAction[];
   onEndClick?: (kind: "start" | "finish") => void;
+  /** Có thì thẻ kéo thả được: thả thẻ `fromId` lên thẻ `toId` thì `fromId` nhận vị trí của `toId`. */
+  onReorder?: (fromId: number, toId: number) => void;
 }) {
+  const [dragging, setDragging] = useState<number | null>(null);
+  const [over, setOver] = useState<number | null>(null);
   const clipId = useId().replace(/:/g, "");
   const count = items.length;
   // Điểm 0 = "Bắt đầu", điểm 1..n = task, điểm n+1 = "Kết thúc": cả ba loại đều là nút nằm trên đường.
@@ -145,7 +150,35 @@ export function JourneyRoad({
           const actions = actionsFor(item);
           return (
             <article
-              className={`${styles.roadItem} ${item.state ? styles[`is_${item.state}`] : ""}`}
+              className={`${styles.roadItem} ${item.state ? styles[`is_${item.state}`] : ""} ${over === item.id && dragging !== item.id ? styles.dropTarget : ""} ${dragging === item.id ? styles.dragging : ""}`}
+              draggable={onReorder ? true : undefined}
+              onDragEnd={() => {
+                setDragging(null);
+                setOver(null);
+              }}
+              onDragOver={
+                onReorder
+                  ? (event) => {
+                      event.preventDefault();
+                      if (over !== item.id) setOver(item.id);
+                    }
+                  : undefined
+              }
+              onDragStart={onReorder ? (event) => {
+                    event.dataTransfer.effectAllowed = "move";
+                    event.dataTransfer.setData("text/plain", String(item.id));
+                    setDragging(item.id);
+                  } : undefined}
+              onDrop={
+                onReorder
+                  ? (event) => {
+                      event.preventDefault();
+                      if (dragging !== null && dragging !== item.id) onReorder(dragging, item.id);
+                      setDragging(null);
+                      setOver(null);
+                    }
+                  : undefined
+              }
               key={item.id}
               style={{ "--node": color, "--i": i } as CSSVars}
             >

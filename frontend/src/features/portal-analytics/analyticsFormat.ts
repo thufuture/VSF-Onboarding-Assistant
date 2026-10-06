@@ -30,6 +30,16 @@ export function dayLabel(iso: string): string {
   return `${iso.slice(8, 10)}/${iso.slice(5, 7)}`;
 }
 
+/** "2026-10-04T14:00" → "14h" (nhãn trục x của biểu đồ theo giờ). */
+export function hourLabel(iso: string): string {
+  return `${iso.slice(11, 13)}h`;
+}
+
+/** "2026-10-04T14:00" → "14:00 04/10" (tiêu đề chú giải). */
+export function hourTitle(iso: string): string {
+  return `${iso.slice(11, 16)} ${iso.slice(8, 10)}/${iso.slice(5, 7)}`;
+}
+
 /** "2026-10-01" → "Thứ Năm, 01/10/2026" theo ngôn ngữ giao diện (tiêu đề chú giải). */
 export function dayTitle(iso: string, locale: string): string {
   const [year = 1970, month = 1, day = 1] = iso.split("-").map(Number);
@@ -74,6 +84,7 @@ export const KNOWN_OPERATIONS = new Set([
   "ingest.embed",
   "ingest.reembed",
   "ingest.probe",
+  "embed.keepwarm",
   "ingest.structure",
   "task.proposal",
   "job",

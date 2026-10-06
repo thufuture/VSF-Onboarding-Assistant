@@ -17,6 +17,32 @@ export type OperationBreakdownResponseDTO = {
   cost_usd: number;
 };
 
+/** Tổng theo nhà cung cấp: DeepSeek (LLM, theo token) và BGE-M3 trên Modal (embedding, theo giây GPU). */
+export type ProviderBreakdownResponseDTO = {
+  provider: string;
+  kind: string;
+  calls: number;
+  errors: number;
+  p50_latency_ms: number;
+  p95_latency_ms: number;
+  prompt_tokens: number;
+  completion_tokens: number;
+  input_count: number;
+  gpu_seconds: number;
+  cost_usd: number;
+  cost_per_day: number[];
+  cost_per_hour: number[];
+};
+
+/** Khoản chi phí HR tự gây ra: tải tài liệu lên (`upload`) hoặc tạo task bằng AI (`tasks`). */
+export type CostGroupResponseDTO = {
+  key: "upload" | "tasks";
+  calls: number;
+  cost_usd: number;
+  cost_per_day: number[];
+  cost_per_hour: number[];
+};
+
 export type JobRunResponseDTO = {
   job_id: number;
   started_at: string | null;
@@ -70,6 +96,10 @@ export type AiAnalyticsResponseDTO = {
   errors_per_day: number[];
   cost_per_day: number[];
   by_operation: OperationBreakdownResponseDTO[];
+  by_provider: ProviderBreakdownResponseDTO[];
+  /** 24 đầu giờ gần nhất (ISO yyyy-mm-ddTHH:00, múi giờ ứng dụng), khớp `cost_per_hour`. */
+  hours: string[];
+  cost_groups: CostGroupResponseDTO[];
   task_runs: JobRunResponseDTO[];
   activation_runs: JobRunResponseDTO[];
 };

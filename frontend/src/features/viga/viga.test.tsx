@@ -19,6 +19,7 @@ import type {
   VigaAnswerResponseDTO,
 } from "./dto/responseDTO/viga.response";
 import { HrTicketsPage } from "./HrTicketsPage";
+import { TicketThread } from "./TicketThread";
 import { VigaFeedbackPage } from "./VigaFeedbackPage";
 import { VigaPage } from "./VigaPage";
 
@@ -78,12 +79,16 @@ vi.mock("@/features/viga/api", async (importOriginal) => {
       resolveContentGap: vi.fn(),
       recheckContentGap: vi.fn(),
       supplementContentGap: vi.fn(),
+      recheckDissatisfied: vi.fn(),
+      supplementDissatisfied: vi.fn(),
       listDissatisfied: vi.fn(),
       resolveDissatisfied: vi.fn(),
       feedbackSummary: vi.fn(),
       rateAnswer: vi.fn(),
       clearRating: vi.fn(),
       markTaskOpened: vi.fn(),
+      getUnreadTickets: vi.fn(),
+      markTicketRead: vi.fn(),
     },
   };
 });
@@ -231,6 +236,7 @@ describe("Ngăn Viga (API thật)", () => {
         note: "Cần gấp",
         employee_task_id: null,
         conversation_id: 8,
+        attachment_ids: [],
       }),
     );
     expect(await within(panel).findByText(`Đã gửi cho HR (mã #123). Bạn theo dõi phản hồi ở mục Yêu cầu.`)).toBeInTheDocument();
@@ -373,9 +379,42 @@ function detail(summary: TicketSummaryResponseDTO): TicketDetailResponseDTO {
   };
 }
 
+/** Ô chọn tự vẽ (PortalSelect): mở danh sách rồi bấm một dòng, như người dùng thật. */
+function pick(label: string, option: string | RegExp) {
+  fireEvent.click(screen.getByRole("combobox", { name: label }));
+  fireEvent.click(within(screen.getByRole("listbox", { name: label })).getByRole("option", { name: option }));
+}
+
 function renderHr(ui: ReactNode) {
   return render(<NextIntlClientProvider locale="vi" messages={viMessages}>{ui}</NextIntlClientProvider>);
 }
+
+describe("Khung trao đổi tự cập nhật", () => {
+  it("tin mới của bên kia hiện ra không cần tải lại trang, rồi đánh dấu đã xem", async () => {
+    const open = ticket({ id: 1, assigned_hr_name: "HR Hồng", status: "IN_PROGRESS" });
+    const onChanged = vi.fn();
+    api.getTicket.mockResolvedValueOnce(detail(open));
+    api.markTicketRead.mockResolvedValue({ count: 0, ticket_ids: [] });
+    render(
+      <NextIntlClientProvider locale="vi" messages={viMessages}>
+        <TicketThread onChanged={onChanged} staff={false} ticketId={1} />
+      </NextIntlClientProvider>,
+    );
+    expect((await screen.findAllByText("Mình chưa nhận được laptop")).length).toBeGreaterThan(0);
+
+    api.getTicket.mockResolvedValue({
+      ...detail(open),
+      messages: [
+        ...detail(open).messages,
+        { id: 2, sender_name: "HR Hồng", sender_role: "HR", body: "Chiều nay giao máy.", created_at: "2026-10-01T02:00:00Z", mine: false },
+      ],
+    });
+
+    expect(await screen.findByText("Chiều nay giao máy.", {}, { timeout: 7000 })).toBeInTheDocument();
+    expect(onChanged).toHaveBeenCalled();
+    expect(api.markTicketRead).toHaveBeenLastCalledWith(1);
+  }, 12000);
+});
 
 describe("Ticket sự cố của HR", () => {
   it("hiện hàng đợi, lọc theo trạng thái, nhận xử lý và trả lời", async () => {
@@ -395,10 +434,10 @@ describe("Ticket sự cố của HR", () => {
 
     expect(await screen.findByText("Mình chưa nhận được laptop")).toBeInTheDocument();
     expect(screen.getByText(hrText.ticket.unclaimed)).toBeInTheDocument(); // chưa có HR nhận
-    fireEvent.change(screen.getByLabelText(hrText.ticket.filterLabel), { target: { value: "RESOLVED" } });
+    pick(hrText.ticket.filterLabel, new RegExp(hrText.ticket.status.RESOLVED));
     expect(screen.queryByText("Mình chưa nhận được laptop")).not.toBeInTheDocument();
     expect(screen.getByText("Câu đã xong")).toBeInTheDocument();
-    fireEvent.change(screen.getByLabelText(hrText.ticket.filterLabel), { target: { value: "ALL" } });
+    pick(hrText.ticket.filterLabel, new RegExp(`^${hrText.ticket.filterAll}`));
 
     fireEvent.click(screen.getByRole("button", { name: /Mình chưa nhận được laptop/ }));
     fireEvent.click(await screen.findByRole("button", { name: hrText.ticket.claim }));
@@ -407,8 +446,26 @@ describe("Ticket sự cố của HR", () => {
 
     fireEvent.change(screen.getByLabelText(hrText.ticket.replyLabel), { target: { value: "Chiều nay giao máy." } });
     fireEvent.click(screen.getByRole("button", { name: hrText.ticket.send }));
-    await waitFor(() => expect(api.addTicketMessage).toHaveBeenCalledWith(1, { body: "Chiều nay giao máy." }));
+    await waitFor(() => expect(api.addTicketMessage).toHaveBeenCalledWith(1, { body: "Chiều nay giao máy.", attachment_ids: [] }));
     expect(await screen.findByText("Chiều nay giao máy.")).toBeInTheDocument();
+  });
+
+  it("ticket có tin chưa xem hiện chấm; mở ticket thì đánh dấu đã xem rồi tải lại danh sách", async () => {
+    const fresh = ticket({ id: 1, unread: true });
+    const old = ticket({ id: 2, subject: "Câu đã xem", unread: false });
+    api.listStaffTickets.mockResolvedValueOnce([fresh, old]).mockResolvedValue([{ ...fresh, unread: false }, old]);
+    api.getTicket.mockResolvedValue(detail(fresh));
+    api.markTicketRead.mockResolvedValue({ count: 0, ticket_ids: [] });
+    renderHr(<HrTicketsPage />);
+
+    const row = await screen.findByRole("button", { name: /Mình chưa nhận được laptop/ });
+    expect(within(row).getByRole("status", { name: hrText.ticket.unread })).toBeInTheDocument();
+    expect(within(screen.getByRole("button", { name: /Câu đã xem/ })).queryByRole("status")).not.toBeInTheDocument();
+
+    fireEvent.click(row);
+
+    await waitFor(() => expect(api.markTicketRead).toHaveBeenCalledWith(1));
+    await waitFor(() => expect(within(screen.getByRole("button", { name: /Mình chưa nhận được laptop/ })).queryByRole("status")).not.toBeInTheDocument());
   });
 
   it("tìm theo tên, email hoặc tiêu đề (không phân biệt dấu) và báo khi không có kết quả", async () => {
@@ -448,7 +505,7 @@ describe("Ticket sự cố của HR", () => {
     expect(await screen.findByText(hrText.ticket.taskUnchanged)).toBeInTheDocument();
     await new Promise((resolve) => setTimeout(resolve, 60));
     expect(api.getTicket).toHaveBeenCalledTimes(1); // mở một ticket chỉ tải một lần, không lặp khi vẽ lại
-    fireEvent.change(screen.getByLabelText(hrText.ticket.statusLabel), { target: { value: "RESOLVED" } });
+    pick(hrText.ticket.statusLabel, hrText.ticket.status.RESOLVED);
     fireEvent.change(screen.getByLabelText(hrText.ticket.noteLabel), { target: { value: "Đã giao laptop." } });
     fireEvent.click(screen.getByRole("button", { name: hrText.ticket.saveStatus }));
 
@@ -695,6 +752,26 @@ describe("Ngăn Viga có nút Mở rộng", () => {
   });
 });
 
+describe("Ngăn Viga đổi được chiều rộng", () => {
+  it("mép trái dùng phím mũi tên để rộng hơn hay hẹp lại, nhớ lại lựa chọn và bấm đúp để về mặc định", () => {
+    window.localStorage.removeItem("vsf-viga-width");
+    Object.defineProperty(window, "innerWidth", { configurable: true, value: 1600 }); // đủ rộng để ngăn nới ra được
+    const panel = renderPanel();
+    const handle = within(panel).getByRole("separator", { name: viga.resize });
+    expect(handle).toHaveAttribute("aria-valuenow", "440");
+
+    fireEvent.keyDown(handle, { key: "ArrowLeft" }); // kéo mép sang trái = rộng hơn
+    expect(handle).toHaveAttribute("aria-valuenow", "464");
+    expect(window.localStorage.getItem("vsf-viga-width")).toBe("464");
+
+    for (let i = 0; i < 40; i++) fireEvent.keyDown(handle, { key: "ArrowRight", shiftKey: true });
+    expect(handle).toHaveAttribute("aria-valuenow", "340"); // không hẹp hơn mức tối thiểu
+
+    fireEvent.doubleClick(handle);
+    expect(handle).toHaveAttribute("aria-valuenow", "440");
+  });
+});
+
 describe("Phản hồi Viga của HR", () => {
   const gap = (overrides: Partial<ContentGapResponseDTO>): ContentGapResponseDTO => ({
     id: 1,
@@ -845,6 +922,28 @@ describe("Phản hồi Viga của HR", () => {
     expect(await within(dialog).findByText(hrText.feedback.supplement.okTitle)).toBeInTheDocument();
     expect(within(dialog).getByText("Gửi xe tại tầng hầm B1.")).toBeInTheDocument();
     expect(api.recheckContentGap).toHaveBeenCalledWith(1);
+  });
+
+  it("câu bị 👎 cũng có nút Bổ sung tài liệu và Kiểm tra lại, gọi đúng API của nhóm 👎", async () => {
+    setup([], [down({ id: 5 })]);
+    api.supplementDissatisfied.mockResolvedValue({ document_id: 4, document_version_id: 9, version_label: "Bổ sung 1", job_id: 78 });
+    api.recheckDissatisfied.mockResolvedValue({ answered: true, message: "Tầng 12.", document_title: "Hỏi đáp bổ sung", section_heading: "Nhận laptop ở đâu?", quote: "tầng 12", closed: 1 });
+    await screen.findByText("Nhận laptop ở đâu?");
+
+    expect(screen.getByRole("button", { name: hrText.feedback.recheck })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: hrText.feedback.addDocument }));
+    const dialog = await screen.findByRole("dialog");
+    expect(within(dialog).getByLabelText(hrText.feedback.supplement.question)).toHaveValue("Nhận laptop ở đâu?");
+    fireEvent.change(within(dialog).getByLabelText(hrText.feedback.supplement.answer), { target: { value: "Nhận laptop tại tầng 12." } });
+    fireEvent.click(within(dialog).getByRole("button", { name: hrText.feedback.supplement.submit }));
+
+    await waitFor(() =>
+      expect(api.supplementDissatisfied).toHaveBeenCalledWith(5, { answer: "Nhận laptop tại tầng 12.", question: "Nhận laptop ở đâu?", contact: null }),
+    );
+    await act(async () => jobHooks.done?.({ status: "SUCCEEDED" }));
+    expect(await within(dialog).findByText(hrText.feedback.supplement.okTitle)).toBeInTheDocument();
+    expect(api.recheckDissatisfied).toHaveBeenCalledWith(5);
+    expect(api.supplementContentGap).not.toHaveBeenCalled();
   });
 
   it("Bổ sung tài liệu: Viga vẫn chưa trả lời được thì cho sửa lại câu trả lời", async () => {

@@ -652,3 +652,18 @@ a.navActive:hover {
   box-shadow: 0 3px 10px rgb(16 24 40 / 8%);
   transform: translateY(-1px);
 }
+
+// Huy hiệu số ticket có tin chưa xem cạnh mục "Ticket sự cố" (đẩy sang mép phải của hàng).
+.navBadge {
+  min-width: 18px;
+  height: 18px;
+  margin-left: auto;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: #c0392f;
+  color: #fff;
+  font-size: 10.5px;
+  font-weight: 600;
+  line-height: 18px;
+  text-align: center;
+}

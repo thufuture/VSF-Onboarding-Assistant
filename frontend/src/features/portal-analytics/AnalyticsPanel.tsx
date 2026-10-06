@@ -23,6 +23,8 @@ import {
   formatSeconds,
   formatUsd,
   formatUsdAxis,
+  hourLabel,
+  hourTitle,
   KNOWN_OPERATIONS,
   OPERATION_SLOT,
   PROGRESS_SLOT,
@@ -62,12 +64,14 @@ function sliceTable(head: [string, string], slices: DonutSlice[], format: (value
 }
 
 /**
- * Số liệu theo thời gian cho trang Tổng quan của HR (phòng ban của mình) và Admin (toàn hệ thống): bảy biểu đồ quan trọng nhất
+ * Số liệu theo thời gian. `admin` (toàn hệ thống): bảy biểu đồ quan trọng nhất
  * (tiến độ nhân viên, kết quả trả lời của Viga, hoạt động mỗi ngày, chi phí AI mỗi ngày và theo thao tác, độ trễ và chi phí của
  * từng lượt tạo task), mỗi biểu đồ tự có tên nên không thêm thẻ chỉ số hay tiêu đề mục. Chỉ số liệu tổng hợp từ
  * `GET /portal/analytics` (API còn trả nhiều hơn thế, giao diện chỉ chọn phần cần xem), không có nội dung câu hỏi hay tài liệu.
+ * `hr` (phòng ban của mình): chỉ tiến độ nhân viên, hoạt động mỗi ngày và tổng tiền AI đã dùng để tạo task; phần đo chi phí và độ
+ * trễ chi tiết thuộc về Admin.
  */
-export function AnalyticsPanel() {
+export function AnalyticsPanel({ variant = "admin" }: { variant?: "admin" | "hr" }) {
   const t = useTranslations("analytics");
   const locale = useLocale();
   const [days, setDays] = useState<number>(14);
@@ -162,7 +166,25 @@ export function AnalyticsPanel() {
   ];
 
   // ── chi phí AI ──
-  const costSeries: ChartSeries[] = [{ key: "cost", label: t("costDay.series"), slot: 4, values: ai.cost_per_day }];
+  // Hai nhà cung cấp tính tiền theo hai cách khác nhau nên vẽ riêng hai đường: LLM DeepSeek (theo token) và embedding BGE-M3 (theo giây GPU Modal).
+  const providerLabel = (provider: string) => (provider === "deepseek" || provider === "modal" ? t(`providers.names.${provider}`) : provider);
+  const hourLabels = ai.hours.map(hourLabel);
+  const hourTitles = ai.hours.map(hourTitle);
+  const hourSeries: ChartSeries[] = ai.by_provider.map((row) => ({
+    key: row.provider,
+    label: providerLabel(row.provider),
+    slot: (row.kind === "llm" ? 4 : 1) as ChartSeries["slot"],
+    values: row.cost_per_hour,
+  }));
+  const costSeries: ChartSeries[] =
+    ai.by_provider.length > 0
+      ? ai.by_provider.map((row) => ({
+          key: row.provider,
+          label: providerLabel(row.provider),
+          slot: (row.kind === "llm" ? 4 : 1) as ChartSeries["slot"],
+          values: row.cost_per_day,
+        }))
+      : [{ key: "cost", label: t("costDay.series"), slot: 4, values: ai.cost_per_day }];
   const topCosts = ai.by_operation.filter((row) => OPERATION_SLOT[row.operation] !== undefined && row.cost_usd > 0);
   const otherCost = sum(
     ai.by_operation.filter((row) => OPERATION_SLOT[row.operation] === undefined).map((row) => row.cost_usd),
@@ -223,6 +245,33 @@ export function AnalyticsPanel() {
         })
       : t("runs.latencySub");
 
+  const providersTable: ChartTable = {
+    head: [
+      t("providers.provider"),
+      t("providers.calls"),
+      t("providers.errorsHead"),
+      "p50",
+      "p95",
+      t("providers.tokensIn"),
+      t("providers.tokensOut"),
+      t("providers.strings"),
+      t("providers.gpuSeconds"),
+      "USD",
+    ],
+    rows: ai.by_provider.map((row) => [
+      providerLabel(row.provider),
+      formatCount(row.calls),
+      formatCount(row.errors),
+      formatMs(row.p50_latency_ms),
+      formatMs(row.p95_latency_ms),
+      row.kind === "llm" ? formatCount(row.prompt_tokens) : "—",
+      row.kind === "llm" ? formatCount(row.completion_tokens) : "—",
+      row.kind === "llm" ? "—" : formatCount(row.input_count),
+      row.kind === "llm" ? "—" : formatSeconds(row.gpu_seconds),
+      formatUsd(row.cost_usd),
+    ]),
+  };
+
   const runsTable: ChartTable = {
     head: [
       t("runs.run"),
@@ -245,6 +294,29 @@ export function AnalyticsPanel() {
       formatUsd(run.cost_usd),
     ]),
   };
+
+  // HR chỉ cần hai khoản: tải tài liệu lên (embedding BGE-M3 trên Modal + đọc cấu trúc bằng LLM) và tạo task bằng AI (DeepSeek).
+  const costOf = (match: (operation: string) => boolean) =>
+    ai.by_operation.filter((row) => match(row.operation)).reduce((total, row) => total + row.cost_usd, 0);
+  const uploadCost = costOf((operation) => operation.startsWith("ingest."));
+  const taskCost = costOf((operation) => operation === "task.proposal");
+  const costTable: ChartTable = {
+    head: [t("table.operation"), "USD"],
+    rows: ai.by_operation
+      .filter((row) => row.operation.startsWith("ingest.") || row.operation === "task.proposal")
+      .map((row) => [operationName(row.operation), formatUsd(row.cost_usd)]),
+  };
+  const hr = variant === "hr";
+  // Hai khoản của HR vẽ thành hai đường (tải tài liệu: slot 1, tạo task: slot 4), theo ngày và theo giờ.
+  const groupSeries = (pick: (group: (typeof ai.cost_groups)[number]) => number[]): ChartSeries[] =>
+    ai.cost_groups.map((group) => ({
+      key: group.key,
+      label: t(`costGroups.names.${group.key}`),
+      slot: (group.key === "upload" ? 1 : 4) as ChartSeries["slot"],
+      values: pick(group),
+    }));
+  const groupDaySeries = groupSeries((group) => group.cost_per_day);
+  const groupHourSeries = groupSeries((group) => group.cost_per_hour);
 
   return (
     <div aria-busy="false" className={styles.panel}>
@@ -271,6 +343,113 @@ export function AnalyticsPanel() {
         >
           <LineChart ariaLabel={t("activity.title")} integer labels={labels} series={activitySeries} titles={titles} />
         </ChartCard>
+        {hr ? (
+          <ChartCard subtitle={t("taskCost.sub")} table={costTable} title={t("taskCost.title")} wide>
+            <div className={styles.costPair}>
+              <div data-testid="upload-cost">
+                <small>{t("taskCost.upload")}</small>
+                <b>{formatUsd(uploadCost)}</b>
+                <span>USD</span>
+                <em>{t("taskCost.uploadHint")}</em>
+              </div>
+              <div data-testid="task-cost">
+                <small>{t("taskCost.tasks")}</small>
+                <b>{formatUsd(taskCost)}</b>
+                <span>USD</span>
+                <em>{t("taskCost.runs", { count: ai.task_runs.length })}</em>
+              </div>
+            </div>
+          </ChartCard>
+        ) : null}
+        {hr ? (
+          <>
+            <ChartCard
+              subtitle={t("costGroups.daySub")}
+              table={seriesTable(dateHead, labels, groupDaySeries, formatUsd)}
+              title={t("costDay.title")}
+            >
+              <LineChart
+                ariaLabel={t("costDay.title")}
+                formatAxis={formatUsdAxis}
+                formatValue={formatUsd}
+                labels={labels}
+                series={groupDaySeries}
+                titles={titles}
+              />
+            </ChartCard>
+            <ChartCard
+              subtitle={t("costGroups.hourSub")}
+              table={seriesTable(t("table.hour"), hourLabels, groupHourSeries, formatUsd)}
+              title={t("costHour.title")}
+            >
+              <LineChart
+                ariaLabel={t("costHour.title")}
+                formatAxis={formatUsdAxis}
+                formatValue={formatUsd}
+                labels={hourLabels}
+                series={groupHourSeries}
+                titles={hourTitles}
+              />
+            </ChartCard>
+          </>
+        ) : null}
+        {hr ? null : (
+          <>
+        <ChartCard subtitle={t("providers.sub")} table={providersTable} title={t("providers.title")} wide>
+          {ai.by_provider.length === 0 ? (
+            <p className={styles.empty}>{t("providers.none")}</p>
+          ) : (
+            <div className={styles.providerGrid}>
+              {ai.by_provider.map((row) => (
+                <article className={styles.provider} data-testid={`provider-${row.provider}`} key={row.provider}>
+                  <header>
+                    <b>{providerLabel(row.provider)}</b>
+                    <small>{t(`providers.kinds.${row.kind}`)}</small>
+                  </header>
+                  <strong>{formatUsd(row.cost_usd)} USD</strong>
+                  <dl>
+                    <div>
+                      <dt>{t("providers.calls")}</dt>
+                      <dd>
+                        {formatCount(row.calls)}
+                        {row.errors > 0 ? ` (${t("providers.errors", { count: row.errors })})` : ""}
+                      </dd>
+                    </div>
+                    <div>
+                      <dt>p50 / p95</dt>
+                      <dd>
+                        {formatMs(row.p50_latency_ms)} / {formatMs(row.p95_latency_ms)}
+                      </dd>
+                    </div>
+                    {row.kind === "llm" ? (
+                      <>
+                        <div>
+                          <dt>{t("providers.tokensIn")}</dt>
+                          <dd>{formatCount(row.prompt_tokens)}</dd>
+                        </div>
+                        <div>
+                          <dt>{t("providers.tokensOut")}</dt>
+                          <dd>{formatCount(row.completion_tokens)}</dd>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div>
+                          <dt>{t("providers.strings")}</dt>
+                          <dd>{formatCount(row.input_count)}</dd>
+                        </div>
+                        <div>
+                          <dt>{t("providers.gpuSeconds")}</dt>
+                          <dd>{formatSeconds(row.gpu_seconds)}</dd>
+                        </div>
+                      </>
+                    )}
+                  </dl>
+                </article>
+              ))}
+            </div>
+          )}
+        </ChartCard>
         <ChartCard
           subtitle={t("costDay.sub")}
           table={seriesTable(dateHead, labels, costSeries, formatUsd)}
@@ -283,6 +462,20 @@ export function AnalyticsPanel() {
             labels={labels}
             series={costSeries}
             titles={titles}
+          />
+        </ChartCard>
+        <ChartCard
+          subtitle={t("costHour.sub")}
+          table={seriesTable(t("table.hour"), hourLabels, hourSeries, formatUsd)}
+          title={t("costHour.title")}
+        >
+          <LineChart
+            ariaLabel={t("costHour.title")}
+            formatAxis={formatUsdAxis}
+            formatValue={formatUsd}
+            labels={hourLabels}
+            series={hourSeries}
+            titles={hourTitles}
           />
         </ChartCard>
         <ChartCard
@@ -301,6 +494,10 @@ export function AnalyticsPanel() {
           />
         </ChartCard>
 
+          </>
+        )}
+        {hr ? null : (
+          <>
         <ChartCard subtitle={runsSubtitle} table={runsTable} title={t("runs.latencyTitle")}>
           {ai.task_runs.length === 0 ? (
             <p className={styles.empty}>{t("runs.noRuns")}</p>
@@ -326,6 +523,8 @@ export function AnalyticsPanel() {
             />
           )}
         </ChartCard>
+          </>
+        )}
       </div>
     </div>
   );

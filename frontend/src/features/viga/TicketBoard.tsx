@@ -1,25 +1,21 @@
 "use client";
 
-import { Search, SearchX } from "lucide-react";
+import { Plus, Search, SearchX } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { FlatIcon, type FlatIconName, type FlatTone } from "@/components/flat-icons/FlatIcon";
+import { PersonAvatar } from "@/components/avatar/PersonAvatar";
+import { FlatIcon } from "@/components/flat-icons/FlatIcon";
+import { PortalSelect } from "@/components/portal-select/PortalSelect";
 import { foldText } from "@/components/text/foldText";
 import { vigaApi } from "@/features/viga/api";
 import type { TicketStatusDTO } from "@/features/viga/dto/requestDTO/viga.request";
 import type { TicketSummaryResponseDTO } from "@/features/viga/dto/responseDTO/viga.response";
+import { SendToHrModal } from "@/features/viga/SendToHrModal";
 
 import styles from "./TicketBoard.module.scss";
-import { TICKET_STATUSES, TicketThread } from "./TicketThread";
-
-// Mỗi trạng thái một biểu tượng và một màu riêng để nhìn danh sách là biết ngay ticket nào cần xử lý.
-const STATUS_ICON: Record<TicketStatusDTO, { icon: FlatIconName; tone: FlatTone }> = {
-  OPEN: { icon: "alert", tone: "amber" },
-  IN_PROGRESS: { icon: "clock", tone: "blue" },
-  RESOLVED: { icon: "check", tone: "green" },
-  CLOSED: { icon: "flag", tone: "slate" },
-};
+import { STATUS_TONE, TICKET_STATUSES, TicketThread } from "./TicketThread";
+import { TICKETS_READ_EVENT } from "./useTicketUnread";
 
 /**
  * Danh sách ticket bên trái, luồng trao đổi bên phải. Trên danh sách có ô tìm kiếm (tiêu đề; HR còn tìm được theo tên và email
@@ -33,6 +29,7 @@ export function TicketBoard({ staff, initialTicketId = null }: { staff: boolean;
   const [selectedId, setSelectedId] = useState<number | null>(initialTicketId);
   const [filter, setFilter] = useState<TicketStatusDTO | "ALL">("ALL");
   const [query, setQuery] = useState("");
+  const [creating, setCreating] = useState(false);
 
   const [reloadKey, setReloadKey] = useState(0);
   const reload = useCallback(() => setReloadKey((key) => key + 1), []);
@@ -55,6 +52,18 @@ export function TicketBoard({ staff, initialTicketId = null }: { staff: boolean;
     };
   }, [staff, reloadKey]);
 
+  // Danh sách tự cập nhật: ngay khi mở một ticket (chấm chưa đọc tắt) và mỗi 30 giây (ticket, tin mới của bên kia).
+  useEffect(() => {
+    window.addEventListener(TICKETS_READ_EVENT, reload);
+    const timer = window.setInterval(() => {
+      if (!document.hidden) reload();
+    }, 30_000);
+    return () => {
+      window.removeEventListener(TICKETS_READ_EVENT, reload);
+      window.clearInterval(timer);
+    };
+  }, [reload]);
+
   const counts = useMemo(() => {
     const result: Record<string, number> = { ALL: tickets?.length ?? 0 };
     for (const status of TICKET_STATUSES) result[status] = tickets?.filter((row) => row.status === status).length ?? 0;
@@ -73,6 +82,11 @@ export function TicketBoard({ staff, initialTicketId = null }: { staff: boolean;
   return (
     <div className={styles.board}>
       <aside aria-label={t("listLabel")} className={styles.list}>
+        {!staff ? (
+          <button className={styles.create} onClick={() => setCreating(true)} type="button">
+            <Plus aria-hidden="true" size={15} /> {t("create")}
+          </button>
+        ) : null}
         <div className={styles.toolbar}>
           <label className={styles.search}>
             <Search aria-hidden="true" size={14} />
@@ -84,18 +98,17 @@ export function TicketBoard({ staff, initialTicketId = null }: { staff: boolean;
               value={query}
             />
           </label>
-          <select
-            aria-label={t("filterLabel")}
+          <PortalSelect
+            ariaLabel={t("filterLabel")}
             className={styles.select}
-            onChange={(event) => setFilter(event.target.value as TicketStatusDTO | "ALL")}
+            onChange={(next) => setFilter(next as TicketStatusDTO | "ALL")}
+            options={(["ALL", ...TICKET_STATUSES] as const).map((key) => ({
+              value: key,
+              label: `${key === "ALL" ? t("filterAll") : t(`status.${key}`)} (${counts[key]})`,
+              tone: key === "ALL" ? undefined : STATUS_TONE[key],
+            }))}
             value={filter}
-          >
-            {(["ALL", ...TICKET_STATUSES] as const).map((key) => (
-              <option key={key} value={key}>
-                {key === "ALL" ? t("filterAll") : t(`status.${key}`)} ({counts[key]})
-              </option>
-            ))}
-          </select>
+          />
         </div>
 
         {failed ? <p className={styles.error}>{t("errors.generic")}</p> : null}
@@ -117,21 +130,22 @@ export function TicketBoard({ staff, initialTicketId = null }: { staff: boolean;
           <>
             <ul>
               {shown.map((row) => {
-                const visual = STATUS_ICON[row.status];
                 return (
                   <li key={row.id}>
                     <button
-                      className={`${styles.item} ${row.id === selectedId ? styles.itemOn : ""}`}
+                      className={`${styles.item} ${row.id === selectedId ? styles.itemOn : ""} ${row.unread ? styles.itemUnread : ""}`}
                       data-status={row.status}
+                      data-unread={row.unread ? "true" : undefined}
                       onClick={() => setSelectedId(row.id)}
                       type="button"
                     >
                       <span className={styles.itemIcon}>
-                        <FlatIcon name={visual.icon} size={22} tone={visual.tone} />
+                        <PersonAvatar name={staff ? row.requester_name : (row.assigned_hr_name ?? row.team_name)} sizePx={38} />
                       </span>
                       <span className={styles.itemBody}>
                         <span className={styles.top}>
                           <b>{row.subject}</b>
+                          {row.unread ? <span aria-label={t("unread")} className={styles.dot} role="status" /> : null}
                           <i className={styles.chip} data-status={row.status}>
                             {t(`status.${row.status}`)}
                           </i>
@@ -166,6 +180,22 @@ export function TicketBoard({ staff, initialTicketId = null }: { staff: boolean;
           <TicketThread key={selectedId} onChanged={reload} staff={staff} ticketId={selectedId} />
         )}
       </div>
+      {creating ? (
+        <SendToHrModal
+          conversationId={null}
+          employeeTaskId={null}
+          fresh
+          onClose={() => setCreating(false)}
+          onSent={(ticket) => {
+            setCreating(false);
+            setFilter("ALL");
+            setQuery("");
+            setSelectedId(ticket.id);
+            reload();
+          }}
+          question=""
+        />
+      ) : null}
     </div>
   );
 }

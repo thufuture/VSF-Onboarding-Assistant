@@ -270,6 +270,27 @@ describe("DocumentVersionsModal", () => {
     await waitFor(() => expect(onChanged).toHaveBeenCalled());
   });
 
+  it("keeps the activate and delete buttons visible (disabled) while editing, and previews the markdown like Word", async () => {
+    open();
+
+    fireEvent.click(await screen.findByRole("button", { name: /v2 nháp/ }));
+    fireEvent.click(await screen.findByRole("button", { name: "Sửa nháp" }));
+
+    expect(screen.getByRole("button", { name: "Kích hoạt" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Xóa nháp" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Sửa nháp" })).toBeDisabled();
+
+    fireEvent.change(screen.getByLabelText("Nội dung Markdown"), {
+      target: { value: ["# Tiêu đề lớn", "", "## Mục nhỏ", "", "Nội dung **đậm**"].join("\n") },
+    });
+    fireEvent.click(screen.getByRole("tab", { name: "Xem trước" }));
+
+    // Trình đọc kiểu Word: có mục lục và tiêu đề thật (không phải chữ thô có dấu #)
+    expect(screen.getByRole("heading", { name: "Mục nhỏ" })).toBeInTheDocument();
+    expect(screen.getByText("đậm").tagName).toBe("STRONG");
+    expect(screen.getAllByText("Tiêu đề lớn").length).toBeGreaterThan(1); // một ở mục lục, một ở trang
+  });
+
   it("shows a clear message when someone else saved the draft first", async () => {
     const { PortalError } = await import("@/features/portal-hr/api");
     api.updateDocumentVersion.mockRejectedValue(new PortalError("unavailable", "VERSION_CONFLICT"));

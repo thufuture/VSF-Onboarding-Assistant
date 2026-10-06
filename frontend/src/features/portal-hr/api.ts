@@ -6,6 +6,7 @@ import type {
   CreateAiTaskProposalRequestDTO,
   CreateJourneyStageRequestDTO,
   CreateJourneyTemplateRequestDTO,
+  CreateStageVersionRequestDTO,
   CreateTaskManualRequestDTO,
   SetDocumentStatusRequestDTO,
   UpdateDocumentRequestDTO,
@@ -13,22 +14,30 @@ import type {
   UpdateTaskTemplateRequestDTO,
 } from "@/features/portal-hr/dto/requestDTO/portal.request";
 import type {
+  AcceptChangeResponseDTO,
   AiTaskProposalResponseDTO,
+  ApplyPreviewResponseDTO,
+  ApplyResultResponseDTO,
+  ChangePreviewResponseDTO,
   DocumentCategoryResponseDTO,
   DocumentListItemResponseDTO,
   DocumentUploadResponseDTO,
   DocumentVersionDetailResponseDTO,
   DocumentVersionResponseDTO,
   EmployeeDocumentResponseDTO,
+  EmployeeJourneyCreatedResponseDTO,
   EmployeeJourneyResponseDTO,
   EmployeeProfileResponseDTO,
   EmployeeSummaryResponseDTO,
   EmployeeTaskResponseDTO,
   HrDashboardResponseDTO,
   JobResponseDTO,
+  JourneyNoticeResponseDTO,
   JourneyStageResponseDTO,
   JourneyTemplateResponseDTO,
+  RolloutRowResponseDTO,
   StageOptionResponseDTO,
+  StageVersionResponseDTO,
   TaskTemplateResponseDTO,
   TemplateNodeResponseDTO,
 } from "@/features/portal-hr/dto/responseDTO/portal.response";
@@ -118,6 +127,92 @@ function originalDocumentUrl(versionId: number): string {
 
 function getMyJourney(): Promise<EmployeeJourneyResponseDTO> {
   return request("/api/v1/portal/me/journey");
+}
+
+/** HR thêm lộ trình cho một nhân viên trong team: sao chép các bản đang áp dụng, có hiệu lực ngay (idempotent). */
+function createEmployeeJourney(userId: number): Promise<EmployeeJourneyCreatedResponseDTO> {
+  return request(`/api/v1/portal/employees/${userId}/journey`, { method: "POST" });
+}
+
+/** Gọi điểm cuối trả 204 (không có thân): chỉ cần biết thành công hay lỗi nào. */
+async function requestNoContent(path: string, init: RequestInit): Promise<void> {
+  let response: Response;
+  try {
+    response = await fetch(path, { credentials: "include", ...init });
+  } catch {
+    throw new PortalError("network");
+  }
+  if (response.status === 401) throw new PortalError("unauthorized");
+  if (response.status === 403) throw new PortalError("forbidden", await readErrorCode(response));
+  if (!response.ok) throw new PortalError("unavailable", await readErrorCode(response));
+}
+
+// ── Phiên bản của từng ngày (HR) ──
+
+function createStageVersion(stageId: number, body: CreateStageVersionRequestDTO = {}): Promise<StageVersionResponseDTO> {
+  return request(`/api/v1/portal/stages/${stageId}/versions`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+}
+
+function updateStageVersionNote(versionId: number, note: string | null): Promise<StageVersionResponseDTO> {
+  return request(`/api/v1/portal/stage-versions/${versionId}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ note }),
+  });
+}
+
+function deleteStageVersion(versionId: number): Promise<void> {
+  return requestNoContent(`/api/v1/portal/stage-versions/${versionId}`, { method: "DELETE" });
+}
+
+function createTaskInVersion(versionId: number, body: CreateTaskManualRequestDTO): Promise<TaskTemplateResponseDTO> {
+  return request(`/api/v1/portal/stage-versions/${versionId}/tasks`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+}
+
+function previewApplyVersion(versionId: number): Promise<ApplyPreviewResponseDTO> {
+  return request(`/api/v1/portal/stage-versions/${versionId}/apply-preview`);
+}
+
+function applyStageVersion(versionId: number): Promise<ApplyResultResponseDTO> {
+  return request(`/api/v1/portal/stage-versions/${versionId}/apply`, { method: "POST" });
+}
+
+function getVersionRollout(versionId: number): Promise<RolloutRowResponseDTO[]> {
+  return request(`/api/v1/portal/stage-versions/${versionId}/rollout`);
+}
+
+// ── Thông báo thay đổi lộ trình (nhân viên) ──
+
+function listMyJourneyNotices(): Promise<JourneyNoticeResponseDTO[]> {
+  return request("/api/v1/portal/me/journey/notices");
+}
+
+function markJourneyNoticeRead(noticeId: number): Promise<void> {
+  return requestNoContent(`/api/v1/portal/me/journey/notices/${noticeId}/read`, { method: "POST" });
+}
+
+function previewJourneyChange(changeId: number): Promise<ChangePreviewResponseDTO> {
+  return request(`/api/v1/portal/me/journey/changes/${changeId}/preview`);
+}
+
+function acceptJourneyChange(changeId: number): Promise<AcceptChangeResponseDTO> {
+  return request(`/api/v1/portal/me/journey/changes/${changeId}/accept`, { method: "POST" });
+}
+
+function acceptAllJourneyChanges(noticeId: number): Promise<AcceptChangeResponseDTO> {
+  return request(`/api/v1/portal/me/journey/notices/${noticeId}/accept-all`, { method: "POST" });
+}
+
+function dismissJourneyChange(changeId: number): Promise<void> {
+  return requestNoContent(`/api/v1/portal/me/journey/changes/${changeId}/dismiss`, { method: "POST" });
 }
 
 function completeTask(employeeTaskId: number): Promise<EmployeeTaskResponseDTO> {
@@ -317,6 +412,20 @@ export const portalHrApi = {
   acceptAiTaskProposal,
   originalDocumentUrl,
   getMyJourney,
+  createEmployeeJourney,
+  createStageVersion,
+  updateStageVersionNote,
+  deleteStageVersion,
+  createTaskInVersion,
+  previewApplyVersion,
+  applyStageVersion,
+  getVersionRollout,
+  listMyJourneyNotices,
+  markJourneyNoticeRead,
+  previewJourneyChange,
+  acceptJourneyChange,
+  acceptAllJourneyChanges,
+  dismissJourneyChange,
   getMyProfile,
   updateMyProfile,
   changeMyPassword,

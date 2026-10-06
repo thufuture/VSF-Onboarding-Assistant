@@ -25,10 +25,13 @@ export type CreateTicketRequestDTO = {
   note?: string | null;
   employee_task_id?: number | null;
   conversation_id?: number | null;
+  /** Mã ảnh/video đã tải lên (`POST /portal/ticket-attachments`), tối đa 5. */
+  attachment_ids?: number[];
 };
 
 export type AddTicketMessageRequestDTO = {
   body: string;
+  attachment_ids?: number[];
 };
 
 export type TicketStatusDTO = "OPEN" | "IN_PROGRESS" | "RESOLVED" | "CLOSED";

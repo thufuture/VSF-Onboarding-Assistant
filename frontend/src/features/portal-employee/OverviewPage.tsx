@@ -11,6 +11,8 @@ import { Link } from "@/i18n/navigation";
 import { DonutChart } from "./DonutChart";
 import shared from "./employee.module.scss";
 import { useJourney } from "./JourneyProvider";
+import { JourneyProblemNotice } from "./JourneyProblemNotice";
+import { PendingChangesBanner } from "./PendingChangesBanner";
 import { stateOf } from "./journeyModel";
 import styles from "./OverviewPage.module.scss";
 import { PageHero } from "./PageHero";
@@ -27,7 +29,7 @@ export function EmployeeOverviewPage() {
   const t = useTranslations("employee.overview");
   const tt = useTranslations("employee.task");
   const { user } = useSession();
-  const { days, tasks, progress, problem, loading } = useJourney();
+  const { days, tasks, progress, loading } = useJourney();
   const nextTasks = tasks.filter((task) => stateOf(task) === "ready").slice(0, 4);
   const recentDone = tasks
     .filter((task) => stateOf(task) === "done")
@@ -70,7 +72,8 @@ export function EmployeeOverviewPage() {
       />
 
       <div className={shared.container}>
-        {problem ? <p className={shared.banner}>{t(`problem.${problem}`)}</p> : null}
+        <JourneyProblemNotice />
+        <PendingChangesBanner />
 
         <div className={styles.kpis}>
           {kpis.map((kpi, i) => (

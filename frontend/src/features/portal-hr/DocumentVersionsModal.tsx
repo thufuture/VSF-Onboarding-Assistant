@@ -16,8 +16,6 @@ import {
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 
 import { JobProgress } from "@/components/job-progress/JobProgress";
 import { ConfirmModal, modalStyles as m, PortalModal } from "@/components/portal-modal/PortalModal";
@@ -381,13 +379,19 @@ export function DocumentVersionsModal({
                     </small>
                   </div>
                   <div className={styles.actions}>
-                    {detail.can_edit && !editing ? (
-                      <button className={m.btnSec} disabled={busy || activating} onClick={startEdit} type="button">
+                    {detail.can_edit ? (
+                      <button className={m.btnSec} disabled={busy || activating || editing} onClick={startEdit} type="button">
                         <Pencil aria-hidden="true" size={14} /> {t("edit")}
                       </button>
                     ) : null}
-                    {ACTIVATE_STATES.includes(detail.version.state) && !editing ? (
-                      <button className={m.btn} disabled={busy || activating} onClick={() => setConfirm({ kind: "activate", version: detail.version })} type="button">
+                    {ACTIVATE_STATES.includes(detail.version.state) ? (
+                      <button
+                        className={m.btn}
+                        disabled={busy || activating || editing}
+                        onClick={() => setConfirm({ kind: "activate", version: detail.version })}
+                        title={editing ? t("editor.saveFirst") : undefined}
+                        type="button"
+                      >
                         {detail.version.state === "DRAFT" ? (
                           <PlayCircle aria-hidden="true" size={14} />
                         ) : (
@@ -396,8 +400,14 @@ export function DocumentVersionsModal({
                         {detail.version.state === "DRAFT" ? t("activate") : t("setCurrent")}
                       </button>
                     ) : null}
-                    {detail.version.state === "DRAFT" && !editing ? (
-                      <button className={m.btnSec} disabled={busy || activating} onClick={() => setConfirm({ kind: "delete", version: detail.version })} type="button">
+                    {detail.version.state === "DRAFT" ? (
+                      <button
+                        className={m.btnSec}
+                        disabled={busy || activating || editing}
+                        onClick={() => setConfirm({ kind: "delete", version: detail.version })}
+                        title={editing ? t("editor.saveFirst") : undefined}
+                        type="button"
+                      >
                         <Trash2 aria-hidden="true" size={14} /> {t("deleteDraft")}
                       </button>
                     ) : null}
@@ -461,7 +471,7 @@ export function DocumentVersionsModal({
                       />
                     ) : (
                       <div className={styles.previewBox}>
-                        <ReactMarkdown remarkPlugins={[remarkGfm]}>{draftMarkdown}</ReactMarkdown>
+                        <DocumentReader compact markdown={draftMarkdown} tocLabel={tt("toc")} />
                       </div>
                     )}
                     <p className={styles.hint}>{t("editor.hint")}</p>
