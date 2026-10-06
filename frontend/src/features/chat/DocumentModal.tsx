@@ -3,6 +3,7 @@
 import { ExternalLink, FileText, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -100,7 +101,11 @@ export function DocumentModal({
   const normalizedTarget = sectionHeading?.trim().toLowerCase() ?? null;
   let matched = false;
 
-  return (
+  // Vẽ vào phần tử gốc của khung ứng dụng (portal), không vẽ tại chỗ: modal mở từ trang task/ngăn Viga nằm trong khối có lớp xếp
+  // chồng riêng (animation, sticky) nên z-index bên trong không thắng được header, phần đầu modal bị che. Không vẽ ra <body> vì
+  // bộ biến màu (--app-surface...) và chế độ sáng/tối được khai báo trên phần tử gốc `[data-theme]` của khung, ra ngoài là mất nền.
+  const host = document.querySelector<HTMLElement>("[data-theme]") ?? document.body;
+  return createPortal(
     <div className={styles.backdrop} onClick={onClose} role="presentation">
       <div
         aria-labelledby="document-modal-title"
@@ -162,6 +167,7 @@ export function DocumentModal({
           </button>
         </footer>
       </div>
-    </div>
+    </div>,
+    host,
   );
 }
