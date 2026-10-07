@@ -27,6 +27,10 @@ vi.mock("@/features/portal-hr/api", () => {
       getJob: vi.fn(),
       uploadDocument: vi.fn(),
       updateDocument: vi.fn(),
+      getDocumentImpact: vi.fn(),
+      deleteDocument: vi.fn(),
+      setDocumentStatus: vi.fn(),
+      applyStageVersion: vi.fn(),
     },
   };
 });
@@ -137,5 +141,51 @@ describe("Trang Tài liệu của HR", () => {
     await waitFor(() => expect(api.uploadDocument).toHaveBeenCalled());
     const form = api.uploadDocument.mock.calls[0]![0] as FormData;
     expect(form.get("category_slug")).toBe("tai-lieu-khac");
+  });
+  it("xóa tài liệu kèm xóa task: hỏi giữ hay xóa, sau đó hỏi có cập nhật cho nhân viên không và chỉ áp dụng khi HR đồng ý", async () => {
+    api.getDocumentImpact.mockResolvedValue({
+      only_tasks: [{ id: 11, title: "Nhận laptop", day_title: "Ngày 1", version_status: "APPLIED" }],
+      shared_tasks: [],
+      employee_copies: 2,
+      version_count: 1,
+      processing: false,
+    });
+    api.deleteDocument.mockResolvedValue({
+      stages_changed: [{ stage_id: 5, stage_title: "Ngày 1", version_id: 77, version_no: 2, removed_tasks: 1 }],
+    });
+    api.applyStageVersion.mockResolvedValue({ version: {} as never, notified_count: 2 });
+    renderPage();
+
+    await screen.findByText("Hướng dẫn ngày 1 onboarding");
+    fireEvent.click(screen.getAllByTitle(t.delete)[0]!);
+
+    const removal = within(await screen.findByRole("dialog"));
+    expect(await removal.findByText("Nhận laptop")).toBeInTheDocument();
+    fireEvent.click(removal.getByLabelText(new RegExp(viMessages.portalDocuments.removal.removeTasks.replace("{count}", "1"))));
+    fireEvent.click(removal.getByRole("button", { name: t.removal.deleteButton }));
+    await waitFor(() => expect(api.deleteDocument).toHaveBeenCalledWith(1, "DELETE"));
+
+    // Việc xóa mới nằm ở bản nháp: hỏi HR có cập nhật cho nhân viên không, chưa đồng ý thì chưa áp dụng.
+    const prompt = within(await screen.findByRole("dialog"));
+    expect(await prompt.findByText(/Ngày 1: xóa 1 task \(bản nháp 2\)/)).toBeInTheDocument();
+    expect(api.applyStageVersion).not.toHaveBeenCalled();
+    fireEvent.click(prompt.getByRole("button", { name: t.removal.applyNow }));
+    await waitFor(() => expect(api.applyStageVersion).toHaveBeenCalledWith(77));
+  });
+
+  it("xóa tài liệu không dính task thì xong luôn, không hỏi cập nhật cho nhân viên", async () => {
+    api.getDocumentImpact.mockResolvedValue({ only_tasks: [], shared_tasks: [], employee_copies: 0, version_count: 1, processing: false });
+    api.deleteDocument.mockResolvedValue({ stages_changed: [] });
+    renderPage();
+
+    await screen.findByText("Hướng dẫn ngày 1 onboarding");
+    fireEvent.click(screen.getAllByTitle(t.delete)[0]!);
+    const removal = within(await screen.findByRole("dialog"));
+    await waitFor(() => expect(removal.getByRole("button", { name: t.removal.deleteButton })).not.toBeDisabled());
+    fireEvent.click(removal.getByRole("button", { name: t.removal.deleteButton }));
+
+    await waitFor(() => expect(api.deleteDocument).toHaveBeenCalledWith(1, undefined));
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
+    expect(api.applyStageVersion).not.toHaveBeenCalled();
   });
 });

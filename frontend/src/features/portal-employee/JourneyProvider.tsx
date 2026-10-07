@@ -7,6 +7,7 @@ import { vigaApi } from "@/features/viga/api";
 import type { TicketSummaryResponseDTO } from "@/features/viga/dto/responseDTO/viga.response";
 
 import { useNotifications, type Notification } from "./notifications";
+import { summarizeNotice } from "./changeModel";
 import { isActionable, useJourneyNotices } from "./useJourneyNotices";
 import { useMyJourney } from "./useMyJourney";
 
@@ -46,24 +47,31 @@ export function JourneyProvider({ children }: { children: ReactNode }) {
     [tickets],
   );
 
-  // Lộ trình có thay đổi do HR áp dụng: mỗi lần áp dụng một ngày là một thông báo (đã đọc theo máy chủ, hết việc cần xử lý thì coi như đã đọc).
+  // Lộ trình có thay đổi do HR cập nhật: MỖI lần cập nhật một ngày là MỘT thông báo (không phải mỗi việc một cái). Bấm vào thì mở
+  // hộp thoại "đã đổi gì"; chưa mở thì còn chưa đọc (đã đọc lưu ở máy chủ).
   const { notices, markNoticeRead } = changes;
   const changeItems = useMemo(
     () =>
       notices
         .map((notice) => {
-          const actionable = notice.changes.filter(isActionable);
-          if (actionable.length === 0 && notice.read_at) return null;
-          const target = actionable.find((change) => change.employee_task_id !== null);
+          const summary = summarizeNotice(notice.changes);
+          const needs = summary.review.length;
+          if (needs === 0 && notice.read_at) return null;
           return {
             id: `change-${notice.id}`,
             kind: "change" as const,
-            taskId: target?.employee_task_id ?? null,
-            href: target ? null : "/me/changes",
-            title: t("changeTitle", { stage: notice.stage_title }),
-            body: t("changeBody", { count: actionable.length }),
+            taskId: null,
+            noticeId: notice.id,
+            title: notice.new_stage
+              ? t("newStageTitle", { stage: notice.stage_title })
+              : t("changeTitle", { stage: notice.stage_title }),
+            body: notice.new_stage
+              ? t("newStageBody", { count: summary.added.length })
+              : needs > 0
+                ? t("changeBody", { count: needs })
+                : t("changeAutoBody"),
             at: notice.created_at,
-            read: actionable.length === 0 || notice.read_at !== null,
+            read: notice.read_at !== null,
           };
         })
         .filter((item): item is NonNullable<typeof item> => item !== null),

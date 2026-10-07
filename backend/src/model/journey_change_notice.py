@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import BigInteger, ForeignKey, Index, UniqueConstraint
+from sqlalchemy import BigInteger, Boolean, ForeignKey, Index, UniqueConstraint, false
 from sqlalchemy.orm import Mapped, mapped_column
 
 from src.model.base import Base, TimestampTZ, created_at_column, id_column
@@ -27,5 +27,7 @@ class JourneyChangeNotice(Base):
     )
     target_version_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("stage_versions.id", ondelete="RESTRICT"))
     applied_by: Mapped[int | None] = mapped_column(BigInteger, ForeignKey("users.id", ondelete="SET NULL"))
+    # Ngày này CHƯA có trong lộ trình của nhân viên (HR thêm ngày mới): thông báo nói "bạn có ngày mới", không phải sửa ngày cũ.
+    new_stage: Mapped[bool] = mapped_column(Boolean, server_default=false(), default=False)
     read_at: Mapped[datetime | None] = mapped_column(TimestampTZ)
     created_at: Mapped[datetime] = created_at_column()

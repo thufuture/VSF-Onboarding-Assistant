@@ -8,29 +8,34 @@ các task. Người dùng chọn một trong hai:
 - `DELETE`: xóa các task **chỉ** dựa vào tài liệu này. Task còn trích dẫn tài liệu khác không bị xóa (chỉ mất nguồn từ tài liệu này
   nếu xóa tài liệu), vì nó vẫn có căn cứ ở chỗ khác.
 
-Nhân viên đã nhận bản sao riêng của task (`employee_tasks`) nên không bao giờ bị xóa theo: chỉ gỡ liên kết truy nguồn
-(`source_task_template_id` về NULL). Xóa tài liệu là xóa cứng, không hoàn tác: mọi phiên bản, mục, đoạn đã nhúng và liên kết nguồn.
+Chỉ xét task ở bản nháp và bản ĐANG ÁP DỤNG của một ngày (bản lưu trữ là lịch sử, không đụng). Task ở bản đang áp dụng KHÔNG bị xóa
+thẳng: việc xóa được ghi vào BẢN NHÁP của ngày đó (tạo từ bản đang áp dụng nếu chưa có). HR xem rồi bấm "Cập nhật cho nhân viên" thì
+mới áp dụng và mỗi nhân viên nhận đúng MỘT thông báo (xem `rollout_service`); không áp dụng thì lộ trình của ai cũng không đổi.
+
+Xóa tài liệu là xóa cứng, không hoàn tác: mọi phiên bản, mục, đoạn đã nhúng và liên kết nguồn.
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Literal
+from uuid import UUID
 
-from sqlalchemy import delete, func, select, update
+from sqlalchemy import delete, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.model.audit_log import AuditLog
 from src.model.document import Document
 from src.model.document_version import DocumentVersion
 from src.model.employee_task import EmployeeTask
-from src.model.enums import DocumentStatus, VersionStatus
+from src.model.enums import DocumentStatus, StageVersionStatus, VersionStatus
 from src.model.journey_stage import JourneyStage
 from src.model.stage_version import StageVersion
 from src.model.task_source_mapping import TaskSourceMapping
 from src.model.task_template import TaskTemplate
 from src.model.user import User
 from src.services.ingest.version_lifecycle import delete_sections_and_chunks
+from src.services.portal import stage_version_service
 from src.services.portal.errors import PortalError
 
 TaskChoice = Literal["KEEP", "DELETE"]
@@ -42,6 +47,19 @@ class TaskRef:
     title: str
     day_title: str
     version_status: str
+    origin_key: UUID
+    stage_id: int
+
+
+@dataclass(frozen=True)
+class StageDraftChange:
+    """Một ngày đã được ghi việc xóa task vào bản nháp (chưa áp dụng cho nhân viên)."""
+
+    stage_id: int
+    stage_title: str
+    version_id: int
+    version_no: int
+    removed_tasks: int
 
 
 @dataclass(frozen=True)
@@ -64,13 +82,21 @@ async def document_impact(session: AsyncSession, document_id: int) -> DocumentIm
     await _require_document(session, document_id)
     rows = (
         await session.execute(
-            select(TaskTemplate.id, TaskTemplate.title, JourneyStage.title, StageVersion.status)
+            select(
+                TaskTemplate.id,
+                TaskTemplate.title,
+                JourneyStage.title,
+                StageVersion.status,
+                TaskTemplate.origin_key,
+                TaskTemplate.journey_stage_id,
+            )
             .join(StageVersion, StageVersion.id == TaskTemplate.stage_version_id)
             .join(JourneyStage, JourneyStage.id == TaskTemplate.journey_stage_id)
             .where(
+                StageVersion.status.in_([StageVersionStatus.DRAFT.value, StageVersionStatus.APPLIED.value]),
                 TaskTemplate.id.in_(
                     select(TaskSourceMapping.task_template_id).where(TaskSourceMapping.document_id == document_id)
-                )
+                ),
             )
             .order_by(JourneyStage.sort_order, TaskTemplate.sort_order, TaskTemplate.id)
         )
@@ -89,8 +115,15 @@ async def document_impact(session: AsyncSession, document_id: int) -> DocumentIm
         )
     only: list[TaskRef] = []
     shared: list[TaskRef] = []
-    for task_id, title, day_title, version_status in rows:
-        ref = TaskRef(id=int(task_id), title=title, day_title=day_title, version_status=str(version_status))
+    for task_id, title, day_title, version_status, origin_key, stage_id in rows:
+        ref = TaskRef(
+            id=int(task_id),
+            title=title,
+            day_title=day_title,
+            version_status=str(version_status),
+            origin_key=origin_key,
+            stage_id=int(stage_id),
+        )
         (shared if ref.id in cited_elsewhere else only).append(ref)
     copies = 0
     if only:
@@ -121,17 +154,42 @@ async def document_impact(session: AsyncSession, document_id: int) -> DocumentIm
     )
 
 
-async def _delete_tasks(session: AsyncSession, task_ids: list[int]) -> int:
-    """Xóa task (kéo theo tiên quyết và nguồn trích dẫn của chúng). Bản sao của nhân viên được giữ, chỉ gỡ liên kết truy nguồn."""
-    if not task_ids:
-        return 0
-    await session.execute(
-        update(EmployeeTask)
-        .where(EmployeeTask.source_task_template_id.in_(task_ids))
-        .values(source_task_template_id=None)
-    )
-    await session.execute(delete(TaskTemplate).where(TaskTemplate.id.in_(task_ids)))
-    return len(task_ids)
+async def _delete_tasks(session: AsyncSession, refs: list[TaskRef], actor: User) -> list[StageDraftChange]:
+    """Ghi việc xóa task vào BẢN NHÁP của từng ngày. Bản đang áp dụng và lộ trình của nhân viên không đổi cho tới khi HR áp dụng.
+
+    Task đã nằm ở bản nháp thì xóa thẳng ở đó (chưa ai thấy); task ở bản đang áp dụng thì xóa bản sao cùng `origin_key` trong
+    bản nháp làm việc của ngày (tạo từ bản đang áp dụng nếu chưa có).
+    """
+    changes: list[StageDraftChange] = []
+    for stage_id in dict.fromkeys(ref.stage_id for ref in refs):
+        stage_refs = [ref for ref in refs if ref.stage_id == stage_id]
+        stage = await session.get(JourneyStage, stage_id)
+        if stage is None:
+            continue
+        live = [ref for ref in stage_refs if ref.version_status == StageVersionStatus.APPLIED.value]
+        draft = await stage_version_service.working_draft(session, stage, actor) if live else None
+        if draft is not None:
+            await session.execute(
+                delete(TaskTemplate).where(
+                    TaskTemplate.stage_version_id == draft.id,
+                    TaskTemplate.origin_key.in_([ref.origin_key for ref in live]),
+                )
+            )
+        draft_ids = [ref.id for ref in stage_refs if ref.version_status == StageVersionStatus.DRAFT.value]
+        if draft_ids:
+            await session.execute(delete(TaskTemplate).where(TaskTemplate.id.in_(draft_ids)))
+        if draft is None:
+            continue
+        changes.append(
+            StageDraftChange(
+                stage_id=stage.id,
+                stage_title=stage.title,
+                version_id=draft.id,
+                version_no=draft.version_no,
+                removed_tasks=len({ref.origin_key for ref in stage_refs}),
+            )
+        )
+    return changes
 
 
 def _audit(actor: User, action: str, document_id: int, before: dict[str, object], after: dict[str, object]) -> AuditLog:
@@ -147,14 +205,16 @@ async def set_status(
     status: DocumentStatus,
     tasks: TaskChoice | None,
     actor: User,
-) -> Document:
-    """Tắt hoặc bật lại tài liệu. Chỉ khi tắt mới xét `tasks`: `DELETE` xóa các task chỉ dựa vào tài liệu này, còn lại giữ nguyên."""
+) -> tuple[Document, list[StageDraftChange]]:
+    """Tắt hoặc bật lại tài liệu. Chỉ khi tắt mới xét `tasks`: `DELETE` ghi việc xóa các task chỉ dựa vào tài liệu này vào bản nháp."""
     document = await _require_document(session, document_id)
     previous = document.status
+    drafts: list[StageDraftChange] = []
     deleted = 0
     if status == DocumentStatus.ARCHIVED and tasks == "DELETE":
         impact = await document_impact(session, document_id)
-        deleted = await _delete_tasks(session, [ref.id for ref in impact.only_tasks])
+        deleted = len(impact.only_tasks)
+        drafts = await _delete_tasks(session, impact.only_tasks, actor)
     document.status = status.value
     action = "ARCHIVE_DOCUMENT" if status == DocumentStatus.ARCHIVED else "REACTIVATE_DOCUMENT"
     session.add(
@@ -167,10 +227,12 @@ async def set_status(
         )
     )
     await session.commit()
-    return document
+    return document, drafts
 
 
-async def delete_document(session: AsyncSession, *, document_id: int, tasks: TaskChoice | None, actor: User) -> None:
+async def delete_document(
+    session: AsyncSession, *, document_id: int, tasks: TaskChoice | None, actor: User
+) -> list[StageDraftChange]:
     """Xóa cứng tài liệu cùng mọi phiên bản. Có task trích dẫn thì BẮT BUỘC chọn `tasks` (giữ hoặc xóa), không tự quyết thay người dùng."""
     document = await _require_document(session, document_id)
     impact = await document_impact(session, document_id)
@@ -180,9 +242,11 @@ async def delete_document(session: AsyncSession, *, document_id: int, tasks: Tas
     if has_tasks and tasks is None:
         raise PortalError(409, "TASK_CHOICE_REQUIRED", "portal.task_choice_required")
 
+    drafts: list[StageDraftChange] = []
     deleted = 0
     if tasks == "DELETE":
-        deleted = await _delete_tasks(session, [ref.id for ref in impact.only_tasks])
+        deleted = len(impact.only_tasks)
+        drafts = await _delete_tasks(session, impact.only_tasks, actor)
     # Task còn lại (giữ, hoặc còn nguồn ở tài liệu khác) mất nguồn trích dẫn từ tài liệu này; khóa ngoại RESTRICT buộc phải gỡ trước.
     await session.execute(delete(TaskSourceMapping).where(TaskSourceMapping.document_id == document_id))
     version_ids = list(
@@ -206,3 +270,4 @@ async def delete_document(session: AsyncSession, *, document_id: int, tasks: Tas
     )
     await session.execute(delete(Document).where(Document.id == document_id))
     await session.commit()
+    return drafts

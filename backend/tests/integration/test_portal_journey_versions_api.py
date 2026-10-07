@@ -358,7 +358,7 @@ async def test_hr_adds_a_journey_for_an_employee_of_their_team_only(
 # ───────────────────────────── Áp dụng bản mới: báo và để nhân viên tự cập nhật ─────────────────────────────
 
 
-async def test_applying_a_new_version_does_not_change_existing_journeys_and_employees_update_themselves(
+async def test_applying_adds_and_removes_automatically_and_employees_only_confirm_edited_tasks(
     app: FastAPI, session_factory: async_sessionmaker[AsyncSession], team: SimpleNamespace, make_member: MakeMember
 ) -> None:
     hr = await client_as(app, await make_member("HR", team.id))
@@ -402,14 +402,16 @@ async def test_applying_a_new_version_does_not_change_existing_journeys_and_empl
     applied = await hr.post(f"{API}/stage-versions/{v2['id']}/apply")
     assert applied.status_code == 200 and applied.json()["notified_count"] == 2
 
-    # (1) Lộ trình đã tạo KHÔNG đổi: cùng tên, nội dung, trạng thái; không có việc mới; việc bị bỏ vẫn còn.
+    # (1) Thêm và bỏ việc được áp dụng NGAY (nhân viên không phải bấm gì); việc bị SỬA vẫn giữ nội dung cũ chờ nhân viên xem.
     for client in (an, binh):
         tasks = await my_tasks(client)
-        assert set(tasks) == {"Nhận laptop", "Đăng nhập Outlook", "Ảnh đại diện"}
+        assert set(tasks) == {"Nhận laptop", "Đăng nhập Outlook", "Ký hợp đồng"}  # D đã thêm, C đã rời lộ trình
         assert tasks["Nhận laptop"]["body_markdown"] == original_body
+        assert tasks["Ký hợp đồng"]["status"] == "LOCKED"  # cần B, B chưa xong
     after_apply = await my_tasks(an)
     assert after_apply["Nhận laptop"]["status"] == "DONE" and after_apply["Đăng nhập Outlook"]["status"] == "READY"
     assert after_apply["Nhận laptop"]["pending_change_id"] is not None  # nhãn "Có chỉnh sửa"
+    assert after_apply["Ký hợp đồng"]["pending_change_id"] is None  # việc mới không cần chấp nhận
 
     # (2) Thông báo có TRƯỚC và SAU, kèm việc đã làm hay chưa.
     notices = (await an.get(f"{API}/me/journey/notices")).json()
@@ -423,23 +425,24 @@ async def test_applying_a_new_version_does_not_change_existing_journeys_and_empl
     }
     laptop = changes["Nhận laptop"]
     assert laptop["status"] == "PENDING" and laptop["employee_status"] == "DONE"
+    assert (
+        changes["Ảnh đại diện"]["status"] == "ACCEPTED" and changes["Ký hợp đồng"]["status"] == "ACCEPTED"
+    )  # tự áp dụng
+    assert notices[0]["new_stage"] is False
     assert laptop["before"]["body_markdown"] == "Nhận laptop tại tầng 12."
     assert laptop["after"]["body_markdown"] == "Nhận laptop tại tầng 14."
     assert laptop["changed_fields"] == ["body_markdown"]
     assert changes["Đăng nhập Outlook và Teams"]["employee_status"] == "READY"
     assert changes["Đăng nhập Outlook và Teams"]["changed_fields"] == ["title"]
-    assert changes["Ký hợp đồng"]["employee_status"] is None  # việc mới, chưa có trong lộ trình
 
     # (3) Ghi chú trước khi bấm "Cập nhật" cho việc đã làm: vẫn là đã xong.
     note_done = (await an.get(f"{API}/me/journey/changes/{laptop['id']}/preview")).json()
     assert note_done["keeps_done"] is True and note_done["also_update"] == [] and note_done["locked_until"] == []
-    note_new = (await an.get(f"{API}/me/journey/changes/{changes['Ký hợp đồng']['id']}/preview")).json()
-    assert note_new["locked_until"] == [
-        "Đăng nhập Outlook"
-    ]  # tiên quyết B chưa xong nên việc mới sẽ bị khóa (B đang là bản cũ của An)
+    already = await an.get(f"{API}/me/journey/changes/{changes['Ký hợp đồng']['id']}/preview")
+    assert already.status_code == 409  # việc thêm đã được áp dụng, không còn gì để xem trước
 
-    # (4) An bấm "Cập nhật" từng việc.
-    for title in ("Nhận laptop", "Đăng nhập Outlook và Teams", "Ảnh đại diện", "Ký hợp đồng"):
+    # (4) An bấm "Cập nhật" hai việc bị sửa.
+    for title in ("Nhận laptop", "Đăng nhập Outlook và Teams"):
         response = await an.post(f"{API}/me/journey/changes/{changes[title]['id']}/accept")
         assert response.status_code == 200, (title, response.text)
     updated = await my_tasks(an)
@@ -460,12 +463,12 @@ async def test_applying_a_new_version_does_not_change_existing_journeys_and_empl
         ).all()
     assert v2["id"] in sources  # ngày của An đã theo kịp bản mới
 
-    # (5) Bình bấm "Giữ bản cũ": lộ trình giữ nguyên.
+    # (5) Bình bấm "Giữ bản cũ" cho hai việc bị sửa: nội dung giữ nguyên (việc thêm/bỏ đã tự áp dụng từ trước).
     binh_notice = (await binh.get(f"{API}/me/journey/notices")).json()[0]
-    for change in binh_notice["changes"]:
+    for change in (c for c in binh_notice["changes"] if c["status"] == "PENDING"):
         assert (await binh.post(f"{API}/me/journey/changes/{change['id']}/dismiss")).status_code == 204
     kept = await my_tasks(binh)
-    assert set(kept) == {"Nhận laptop", "Đăng nhập Outlook", "Ảnh đại diện"}
+    assert set(kept) == {"Nhận laptop", "Đăng nhập Outlook", "Ký hợp đồng"}
     assert kept["Nhận laptop"]["body_markdown"] == original_body
 
     # (6) HR theo dõi triển khai.
@@ -508,14 +511,14 @@ async def test_not_done_task_keeps_its_content_until_the_employee_presses_update
     notice = (await employee.get(f"{API}/me/journey/notices")).json()[0]
     changes = {c["task_title"]: c for c in notice["changes"]}
     assert set(changes) == {"Ảnh đại diện", "Chụp ảnh"}
+    assert changes["Chụp ảnh"]["status"] == "ACCEPTED"  # việc mới đã tự vào lộ trình
+    assert (await my_tasks(employee))["Chụp ảnh"]["status"] == "READY"
     note = (await employee.get(f"{API}/me/journey/changes/{changes['Ảnh đại diện']['id']}/preview")).json()
-    assert note["also_update"] == ["Chụp ảnh"]  # cập nhật kèm việc liên quan, ghi rõ trong ghi chú
+    assert note["also_update"] == []  # việc liên quan đã được thêm sẵn, không cần cập nhật kèm
     assert note["locked_until"] == ["Chụp ảnh", "Đăng nhập Outlook"]  # sắp theo tên để ổn định
 
     accepted = await employee.post(f"{API}/me/journey/changes/{changes['Ảnh đại diện']['id']}/accept")
-    assert sorted(accepted.json()["updated_change_ids"]) == sorted(
-        [changes["Ảnh đại diện"]["id"], changes["Chụp ảnh"]["id"]]
-    )
+    assert accepted.json()["updated_change_ids"] == [changes["Ảnh đại diện"]["id"]]
     after = await my_tasks(employee)
     assert after["Chụp ảnh"]["status"] == "READY"  # việc mới không có tiên quyết
     assert after["Ảnh đại diện"]["status"] == "LOCKED"
@@ -623,8 +626,10 @@ async def test_removing_a_prerequisite_unlocks_the_dependents_and_a_done_task_is
     assert changes["Nhận laptop"]["informational"] is True  # việc đã làm bị bỏ: chỉ báo thông tin, không có nút
     assert changes["Nhận laptop"]["status"] == "DISMISSED"
     assert changes["Đăng nhập Outlook"]["kind"] == "REMOVED" and changes["Đăng nhập Outlook"]["informational"] is False
-    assert changes["Ảnh đại diện"]["kind"] == "PREREQUISITES"
-    assert (await my_tasks(employee))["Ảnh đại diện"]["status"] == "LOCKED"  # chưa cập nhật thì chưa đổi
+    assert changes["Đăng nhập Outlook"]["status"] == "ACCEPTED"  # việc chưa làm bị bỏ: tự rời lộ trình
+    assert changes["Ảnh đại diện"]["kind"] == "PREREQUISITES" and changes["Ảnh đại diện"]["status"] == "PENDING"
+    assert set(await my_tasks(employee)) == {"Nhận laptop", "Ảnh đại diện"}
+    assert (await my_tasks(employee))["Ảnh đại diện"]["status"] == "READY"  # tiên quyết đã rời lộ trình nên hết khóa
 
     accepted = await employee.post(f"{API}/me/journey/notices/{notice['id']}/accept-all")
     assert accepted.status_code == 200
@@ -637,7 +642,7 @@ async def test_removing_a_prerequisite_unlocks_the_dependents_and_a_done_task_is
     assert [row["state"] for row in rollout] == ["UPDATED"]
 
 
-async def test_a_day_added_after_journeys_exist_reaches_employees_as_a_notice(
+async def test_a_day_added_after_journeys_exist_reaches_employees_as_one_notice_without_accepting_each_task(
     app: FastAPI, team: SimpleNamespace, make_member: MakeMember
 ) -> None:
     hr = await client_as(app, await make_member("HR", team.id))
@@ -654,12 +659,16 @@ async def test_a_day_added_after_journeys_exist_reaches_employees_as_a_notice(
     applied = await hr.post(f"{API}/stage-versions/{day2['versions'][0]['id']}/apply")
     assert applied.status_code == 200 and applied.json()["notified_count"] == 1
 
-    assert set(await my_tasks(employee)) == {"Nhận laptop", "Đăng nhập Outlook", "Ảnh đại diện"}  # chưa đổi
-    notice = (await employee.get(f"{API}/me/journey/notices")).json()[0]
-    assert notice["stage_title"] == "Ngày 2" and {c["kind"] for c in notice["changes"]} == {"ADDED"}
-
-    assert (await employee.post(f"{API}/me/journey/notices/{notice['id']}/accept-all")).status_code == 200
+    # Một thông báo "bạn có ngày mới"; các việc của ngày đó vào lộ trình ngay, nhân viên không phải bấm chấp nhận từng việc.
+    notices = (await employee.get(f"{API}/me/journey/notices")).json()
+    assert len(notices) == 1
+    notice = notices[0]
+    assert notice["stage_title"] == "Ngày 2" and notice["new_stage"] is True
+    assert {c["kind"] for c in notice["changes"]} == {"ADDED"} and {c["status"] for c in notice["changes"]} == {
+        "ACCEPTED"
+    }
     tasks = await my_tasks(employee)
+    assert set(tasks) == {"Nhận laptop", "Đăng nhập Outlook", "Ảnh đại diện", "Đào tạo hội nhập", "Làm bài kiểm tra"}
     assert tasks["Đào tạo hội nhập"]["status"] == "READY" and tasks["Làm bài kiểm tra"]["status"] == "LOCKED"
     assert tasks["Đào tạo hội nhập"]["stage_title"] == "Ngày 2"
     assert tasks["Làm bài kiểm tra"]["prerequisites"] == [{"title": "Đào tạo hội nhập", "done": False}]

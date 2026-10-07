@@ -24,6 +24,7 @@ import type {
   DocumentCategoryResponseDTO,
   DocumentImpactResponseDTO,
   DocumentListItemResponseDTO,
+  DocumentRemovalResultResponseDTO,
   DocumentUploadResponseDTO,
   DocumentVersionDetailResponseDTO,
   DocumentVersionResponseDTO,
@@ -281,9 +282,9 @@ function getDocumentImpact(documentId: number): Promise<DocumentImpactResponseDT
   return request(`/api/v1/portal/documents/${documentId}/impact`);
 }
 
-function deleteDocument(documentId: number, tasks?: DocumentTaskChoiceDTO): Promise<void> {
+function deleteDocument(documentId: number, tasks?: DocumentTaskChoiceDTO): Promise<DocumentRemovalResultResponseDTO> {
   const query = tasks ? `?tasks=${tasks}` : "";
-  return requestNoContent(`/api/v1/portal/documents/${documentId}${query}`, { method: "DELETE" });
+  return request(`/api/v1/portal/documents/${documentId}${query}`, { method: "DELETE" });
 }
 
 function listMyTemplates(): Promise<TemplateNodeResponseDTO[]> {

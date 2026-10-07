@@ -33,6 +33,7 @@ from src.model.user import User
 from src.services.portal.errors import PortalError
 from src.services.portal.version_diff import TaskChange, TaskView, changed_fields, diff_tasks, summarize
 
+AUTO_APPLIED_KINDS = (ChangeKind.ADDED, ChangeKind.REMOVED)  # tự áp dụng khi HR áp dụng bản mới
 KEPT_DONE = "kept_done"  # việc đã làm bị bỏ ở bản mới: giữ nguyên, chỉ báo thông tin
 
 
@@ -196,24 +197,32 @@ async def create_notices(session: AsyncSession, *, version: StageVersion, applie
             journey_stage_id=version.journey_stage_id,
             target_version_id=version.id,
             applied_by=applied_by,
+            new_stage=employee_stage is None,
         )
         session.add(notice)
         await session.flush()
+        automatic: list[EmployeeTaskChange] = []
         for change in changes:
             informational = change.informational
-            session.add(
-                EmployeeTaskChange(
-                    notice_id=notice.id,
-                    employee_task_id=change.employee_task_id,
-                    origin_key=change.origin_key,
-                    kind=change.kind.value,
-                    status=(ChangeStatus.DISMISSED if informational else ChangeStatus.PENDING).value,
-                    task_title=change.title,
-                    before=change.before,
-                    after={"note": KEPT_DONE} if informational else change.after,
-                    resolved_at=now if informational else None,
-                )
+            row = EmployeeTaskChange(
+                notice_id=notice.id,
+                employee_task_id=change.employee_task_id,
+                origin_key=change.origin_key,
+                kind=change.kind.value,
+                status=(ChangeStatus.DISMISSED if informational else ChangeStatus.PENDING).value,
+                task_title=change.title,
+                before=change.before,
+                after={"note": KEPT_DONE} if informational else change.after,
+                resolved_at=now if informational else None,
             )
+            session.add(row)
+            if not informational and change.kind in AUTO_APPLIED_KINDS:
+                automatic.append(row)
+        await session.flush()
+        # Thêm việc (kể cả cả một ngày mới) và bỏ việc chỉ BÁO: nhân viên không có gì để quyết định nên áp dụng luôn.
+        # Chỉ việc bị SỬA nội dung hoặc đổi tiên quyết mới chờ nhân viên xem và chấp nhận.
+        if automatic:
+            await _apply(session, notice, automatic, now=now)
         created += 1
     return created
 
@@ -276,6 +285,7 @@ class NoticeDetail:
     version_no: int
     created_at: datetime
     read_at: datetime | None
+    new_stage: bool = False
     changes: list[ChangeDetail] = field(default_factory=list)
 
 
@@ -349,6 +359,7 @@ async def list_notices(session: AsyncSession, user: User, *, limit: int = 50) ->
             version_no=version_nos.get(notice.target_version_id, 0),
             created_at=notice.created_at,
             read_at=notice.read_at,
+            new_stage=notice.new_stage,
         )
     for row in rows:
         detail = result[row.notice_id]
@@ -742,6 +753,8 @@ async def rollout_for_version(session: AsyncSession, version: StageVersion) -> l
         ).all():
             if _is_informational(row):
                 continue  # dòng chỉ báo thông tin không cần nhân viên làm gì
+            if row.kind in {kind.value for kind in AUTO_APPLIED_KINDS} and row.status == ChangeStatus.ACCEPTED.value:
+                continue  # thêm/bỏ việc được áp dụng tự động, không phải nhân viên đã bấm "Cập nhật"
             counts[row.status] = counts.get(row.status, 0) + 1
         pending = counts.get(ChangeStatus.PENDING.value, 0)
         accepted = counts.get(ChangeStatus.ACCEPTED.value, 0)

@@ -492,4 +492,69 @@ describe("Chỉnh sửa lộ trình do HR áp dụng", () => {
     await waitFor(() => expect(portalHrApi.dismissJourneyChange).toHaveBeenCalledWith(90));
     expect(portalHrApi.acceptJourneyChange).not.toHaveBeenCalled();
   });
+  it("bấm thông báo trên chuông mở hộp thoại tóm tắt đã đổi gì; Xem chi tiết mở trang chỉnh sửa", async () => {
+    const mixed: JourneyNoticeResponseDTO = {
+      ...NOTICE,
+      changes: [
+        ...NOTICE.changes,
+        { ...NOTICE.changes[0]!, id: 91, kind: "ADDED", status: "ACCEPTED", task_title: "Ký hợp đồng", employee_status: null, changed_fields: [] },
+        { ...NOTICE.changes[0]!, id: 92, kind: "REMOVED", status: "ACCEPTED", task_title: "Ảnh đại diện", changed_fields: [] },
+      ],
+    };
+    vi.mocked(portalHrApi.listMyJourneyNotices).mockResolvedValue([mixed]);
+    renderEmployee(<EmployeeTasksPage />);
+
+    fireEvent.click(await screen.findByRole("button", { name: m.nav.notifications }));
+    const card = screen.getByRole("menu", { name: m.nav.notifications });
+    // MỘT thông báo cho cả ngày, không phải mỗi việc một thông báo.
+    expect(within(card).getAllByText("Ngày 1 có chỉnh sửa")).toHaveLength(1);
+    fireEvent.click(within(card).getByText("Ngày 1 có chỉnh sửa"));
+
+    const dialog = within(await screen.findByRole("dialog"));
+    expect(dialog.getByText("Đã thêm vào lộ trình (1)")).toBeInTheDocument();
+    expect(dialog.getByText("Ký hợp đồng")).toBeInTheDocument();
+    expect(dialog.getByText("Đã bỏ khỏi lộ trình (1)")).toBeInTheDocument();
+    expect(dialog.getByText("Ảnh đại diện")).toBeInTheDocument();
+    expect(dialog.getByText("Cần bạn xem và chấp nhận (1)")).toBeInTheDocument();
+    expect(portalHrApi.markJourneyNoticeRead).toHaveBeenCalledWith(70);
+
+    fireEvent.click(dialog.getByRole("button", { name: m.changes.detail }));
+    expect(push).toHaveBeenCalledWith("/me/changes");
+  });
+
+  it("HR thêm ngày mới: một thông báo báo có ngày mới, các việc đã vào lộ trình và không có nút chấp nhận từng việc", async () => {
+    const newDay: JourneyNoticeResponseDTO = {
+      id: 71,
+      journey_stage_id: 2,
+      stage_title: "Ngày 2",
+      version_no: 1,
+      created_at: "2026-10-01T03:00:00Z",
+      read_at: null,
+      new_stage: true,
+      changes: ["Đào tạo hội nhập", "Làm bài kiểm tra"].map((title, index) => ({
+        ...NOTICE.changes[0]!,
+        id: 100 + index,
+        notice_id: 71,
+        kind: "ADDED" as const,
+        status: "ACCEPTED" as const,
+        task_title: title,
+        employee_status: null,
+        stage_title: "Ngày 2",
+        changed_fields: [],
+      })),
+    };
+    vi.mocked(portalHrApi.listMyJourneyNotices).mockResolvedValue([newDay]);
+    renderEmployee(<EmployeeTasksPage />);
+
+    fireEvent.click(await screen.findByRole("button", { name: m.nav.notifications }));
+    const card = screen.getByRole("menu", { name: m.nav.notifications });
+    expect(within(card).getByText("Bạn có ngày mới: Ngày 2")).toBeInTheDocument();
+    expect(screen.queryByTestId("pending-changes-banner")).not.toBeInTheDocument(); // không có gì chờ quyết định
+    fireEvent.click(within(card).getByText("Bạn có ngày mới: Ngày 2"));
+
+    const dialog = within(await screen.findByRole("dialog"));
+    expect(dialog.getByText(/Bạn có ngày mới Ngày 2 với 2 việc/)).toBeInTheDocument();
+    expect(dialog.getByText("Đào tạo hội nhập")).toBeInTheDocument();
+    expect(dialog.queryByRole("button", { name: m.changes.accept })).not.toBeInTheDocument();
+  });
 });

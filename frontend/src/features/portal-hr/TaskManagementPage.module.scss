@@ -122,6 +122,23 @@
   color: var(--app-success);
 }
 
+.bannerWarn {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border-color: #e0c98f;
+  background: #f7efdc;
+  color: #7a530d;
+}
+
+.bannerActions {
+  display: flex;
+  gap: 8px;
+}
+
+
 // ── KPI (.hr14-kpi) ──
 .kpis {
   display: grid;

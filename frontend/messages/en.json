@@ -515,10 +515,15 @@
       "createDraftBody": "The new draft copies every task of the version you are viewing so you can edit it. Nobody is affected until you press Apply.",
       "createDraftConfirm": "Create draft"
     },
+    "draftBanner": {
+      "text": "{day} has draft {n} that employees have not received. They only see changes after you update.",
+      "view": "View draft",
+      "apply": "Update employees"
+    },
     "apply": {
-      "title": "Apply version {n} of {day}?",
-      "body": "Tasks edited: {modified}, added: {added}, removed: {removed}. This becomes the applied version and the old one is archived. The journeys of {employees} employee(s) do NOT change by themselves: they get a notice and choose Update or Keep my version.",
-      "confirm": "Apply"
+      "title": "Update employees with version {n} of {day}?",
+      "body": "Tasks edited: {modified}, added: {added}, removed: {removed}. This becomes the applied version; the old one is archived. {employees} employee(s) with a journey get ONE notice: added and removed tasks update automatically (finished tasks are kept); only tasks whose content was edited need them to review and accept.",
+      "confirm": "Update employees"
     },
     "rollout": {
       "title": "Rollout of version {n}",
@@ -705,6 +710,14 @@
       "removeTasks": "Delete the {count} tasks created only from this document",
       "removeHint": "Tasks that also rely on other documents ({shared} tasks) are kept because they still have a basis.",
       "removeNone": "No task relies solely on this document.",
+      "applyTitle": "Update employees?",
+      "applyBody": "The removal was written to the draft of {count} day(s). Employees only see it when you update: they get one notice per day, removed tasks leave their journey automatically (finished tasks are kept).",
+      "applyDay": "{day}: remove {count} task(s) (draft {n})",
+      "applyLater": "Later",
+      "applyNow": "Update employees",
+      "applyEmpty": "{day} has no tasks left, so it cannot be applied. Add a task or delete the day.",
+      "applyOpenTasks": "Open task management",
+      "applyDone": "Updated {days} day(s); employees get one notice per day.",
       "employeeCopies": "Employees already received {count} tasks from these: employee copies are always kept, never deleted."
     },
     "cancel": "Cancel",
@@ -1486,8 +1499,11 @@
       "unreadMark": "Unread",
       "ticketTitle": "HR replied: {subject}",
       "ticketBody": "Open the request to read the reply.",
-      "changeTitle": "{stage} was edited",
-      "changeBody": "HR updated the journey. {count} task(s) wait for you to update or keep your version."
+      "changeTitle": "{stage} has changes",
+      "changeBody": "HR updated your journey. {count} edited task(s) wait for your review.",
+      "changeAutoBody": "HR updated your journey: added and removed tasks were updated automatically.",
+      "newStageTitle": "You have a new day: {stage}",
+      "newStageBody": "HR added this day with {count} task(s) to your journey."
     },
     "profile": {
       "title": "My profile",
@@ -1719,6 +1735,20 @@
       "emptyTitle": "No changes yet",
       "emptyBody": "When HR applies a new version of a day, the changed tasks show up here. Your journey never changes by itself.",
       "noticeTitle": "{stage} · version {version}",
+      "newStageTitle": "New day: {stage}",
+      "modalTitle": "{stage} has changes",
+      "modalNewStage": "You have a new day: {stage}",
+      "detail": "View details",
+      "close": "Close",
+      "summary": {
+        "newStage": "You have a new day {stage} with {count} tasks. They were added to your journey.",
+        "added": "Added to your journey ({count})",
+        "removed": "Removed from your journey ({count})",
+        "keptDone": "Kept because you already finished them ({count})",
+        "review": "Needs your review ({count})",
+        "more": "… and {count} more",
+        "autoNote": "Added and removed tasks update automatically; only tasks whose content was edited need your decision."
+      },
       "acceptAll": "Update all {count} tasks",
       "banner": "HR edited the journey: {count} task(s) wait for your decision.",
       "bannerLink": "See changes",

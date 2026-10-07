@@ -242,6 +242,19 @@ export type HrDashboardResponseDTO = {
   document_count: number;
 };
 
+/** Một ngày đã ghi việc xóa task vào bản nháp (chưa áp dụng): HR bấm "Cập nhật cho nhân viên" thì mới gửi thông báo. */
+export type StageDraftChangeResponseDTO = {
+  stage_id: number;
+  stage_title: string;
+  version_id: number;
+  version_no: number;
+  removed_tasks: number;
+};
+
+export type DocumentRemovalResultResponseDTO = {
+  stages_changed: StageDraftChangeResponseDTO[];
+};
+
 export type DocumentListItemResponseDTO = {
   id: number;
   title: string;
@@ -259,6 +272,8 @@ export type DocumentListItemResponseDTO = {
   draft_count: number;
   processing_count: number;
   processing_version_ids: number[];
+  /** Chỉ có khi tắt tài liệu kèm xóa task. */
+  stages_changed?: StageDraftChangeResponseDTO[];
 };
 
 export type DocumentTaskRefResponseDTO = {
@@ -401,6 +416,8 @@ export type JourneyNoticeResponseDTO = {
   version_no: number;
   created_at: string;
   read_at: string | null;
+  /** HR thêm ngày mới: nhân viên được báo "bạn có ngày mới", các việc đã vào lộ trình. */
+  new_stage?: boolean;
   changes: TaskChangeResponseDTO[];
 };
 
