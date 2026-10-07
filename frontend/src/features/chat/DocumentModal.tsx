@@ -2,7 +2,7 @@
 
 import { ExternalLink, FileText, X } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { type ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -42,6 +42,8 @@ export type DocumentModalProps = {
   sectionHeading: string | null;
   /** Đoạn trích nguyên văn cần tô (không có thì chỉ tô cả mục). */
   quote?: string | null;
+  /** Nút hành động đặt cạnh nút Đóng (ví dụ "Tạo task từ mục này"). */
+  actions?: ReactNode;
   onClose: () => void;
 };
 
@@ -53,6 +55,7 @@ export function DocumentModal({
   documentUrl,
   sectionHeading,
   quote,
+  actions,
   onClose,
 }: DocumentModalProps) {
   const t = useTranslations("chat.documentModal");
@@ -162,9 +165,12 @@ export function DocumentModal({
           ) : (
             <span />
           )}
-          <button onClick={onClose} type="button">
-            {t("close")}
-          </button>
+          <div className={styles.footerActions}>
+            {actions}
+            <button onClick={onClose} type="button">
+              {t("close")}
+            </button>
+          </div>
         </footer>
       </div>
     </div>,

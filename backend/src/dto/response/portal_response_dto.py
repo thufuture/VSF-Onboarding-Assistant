@@ -162,6 +162,23 @@ class DocumentListItemResponseDTO(BaseModel):
     processing_version_ids: list[int] = []
 
 
+class DocumentTaskRefResponseDTO(BaseModel):
+    id: int
+    title: str
+    day_title: str
+    version_status: str
+
+
+class DocumentImpactResponseDTO(BaseModel):
+    """Việc tắt hoặc xóa một tài liệu sẽ chạm tới những gì: task chỉ dựa vào nó, task còn có nguồn khác, bản sao đã giao nhân viên."""
+
+    only_tasks: list[DocumentTaskRefResponseDTO]
+    shared_tasks: list[DocumentTaskRefResponseDTO]
+    employee_copies: int
+    version_count: int
+    processing: bool
+
+
 class DocumentCategoryResponseDTO(BaseModel):
     slug: str
     name: str

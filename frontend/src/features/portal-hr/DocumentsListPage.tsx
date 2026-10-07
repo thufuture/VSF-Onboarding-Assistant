@@ -14,6 +14,7 @@ import {
   Pencil,
   RotateCcw,
   Search,
+  Trash2,
   UploadCloud,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -23,6 +24,7 @@ import { FlatIcon } from "@/components/flat-icons/FlatIcon";
 import { JobProgress } from "@/components/job-progress/JobProgress";
 import { ConfirmModal, modalStyles as m, PortalModal, useToast } from "@/components/portal-modal/PortalModal";
 import { portalHrApi, PortalError } from "@/features/portal-hr/api";
+import type { DocumentTaskChoiceDTO } from "@/features/portal-hr/dto/requestDTO/portal.request";
 import type {
   DocumentCategoryResponseDTO,
   DocumentListItemResponseDTO,
@@ -31,6 +33,7 @@ import type {
 
 import { CategoryPicker } from "./CategoryPicker";
 import { categoryFlat, categoryStyle, type DocTone } from "./docCategory";
+import { DocumentRemovalModal } from "./DocumentRemovalModal";
 import styles from "./DocumentsListPage.module.scss";
 import { DocumentVersionsModal } from "./DocumentVersionsModal";
 import { isJobFinished, useActiveActivations, useJob } from "./useJob";
@@ -43,6 +46,9 @@ const HEAD_HEIGHT = 41;
 const API_ERROR_KEYS: Record<string, string> = {
   INGEST_FAILED: "errors.ingestFailed",
   CATEGORY_NOT_FOUND: "errors.categoryNotFound",
+  DOCUMENT_PROCESSING: "errors.documentProcessing",
+  TASK_CHOICE_REQUIRED: "errors.taskChoiceRequired",
+  DOCUMENT_NOT_FOUND: "errors.documentNotFound",
 };
 
 function errorMessage(t: (key: string) => string, error: unknown): string {
@@ -129,6 +135,7 @@ type Modal =
   | { kind: "edit"; doc: DocumentListItemResponseDTO }
   | { kind: "versions"; doc: DocumentListItemResponseDTO }
   | { kind: "archive"; doc: DocumentListItemResponseDTO }
+  | { kind: "delete"; doc: DocumentListItemResponseDTO }
   | { kind: "reactivate"; doc: DocumentListItemResponseDTO };
 
 /** "Tài liệu nguồn" thật — cổng bố cục và flow modal của prototype v15 (thêm / xem mục lục / sửa / phiên bản mới /
@@ -305,11 +312,31 @@ export function DocumentsListPage() {
     }
   }
 
-  async function confirmStatus(doc: DocumentListItemResponseDTO, next: "ACTIVE" | "ARCHIVED") {
+  async function confirmDelete(doc: DocumentListItemResponseDTO, tasks: DocumentTaskChoiceDTO | undefined) {
     setError(null);
     setBusy(true);
     try {
-      await portalHrApi.setDocumentStatus(doc.id, { status: next });
+      await portalHrApi.deleteDocument(doc.id, tasks);
+      setModal(null);
+      showToast(t("notice.deleted"));
+      reload();
+    } catch (caught) {
+      setError(errorMessage(t, caught));
+      setModal(null);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function confirmStatus(
+    doc: DocumentListItemResponseDTO,
+    next: "ACTIVE" | "ARCHIVED",
+    tasks?: DocumentTaskChoiceDTO,
+  ) {
+    setError(null);
+    setBusy(true);
+    try {
+      await portalHrApi.setDocumentStatus(doc.id, { status: next, tasks });
       setModal(null);
       showToast(next === "ARCHIVED" ? t("notice.archived") : t("notice.reactivated"));
       reload();
@@ -668,6 +695,14 @@ export function DocumentsListPage() {
                               <RotateCcw aria-hidden="true" size={13} />
                             </button>
                           )}
+                          <button
+                            className={`${styles.iconBtn} ${styles.iconDanger}`}
+                            onClick={() => setModal({ kind: "delete", doc })}
+                            title={t("delete")}
+                            type="button"
+                          >
+                            <Trash2 aria-hidden="true" size={13} />
+                          </button>
                         </div>
                       </td>
                     </tr>
@@ -873,18 +908,22 @@ export function DocumentsListPage() {
       ) : null}
 
       {modal?.kind === "archive" ? (
-        <ConfirmModal
-          body={t("archiveConfirmBody")}
+        <DocumentRemovalModal
           busy={busy}
-          cancelLabel={t("cancel")}
-          closeLabel={t("close")}
-          confirmIcon={Archive}
-          confirmLabel={t("archiveConfirmButton")}
-          danger
-          icon={Archive}
+          doc={modal.doc}
+          mode="archive"
           onCancel={() => setModal(null)}
-          onConfirm={() => confirmStatus(modal.doc, "ARCHIVED")}
-          title={t("archiveConfirmTitle", { title: modal.doc.title })}
+          onConfirm={(tasks) => confirmStatus(modal.doc, "ARCHIVED", tasks)}
+        />
+      ) : null}
+
+      {modal?.kind === "delete" ? (
+        <DocumentRemovalModal
+          busy={busy}
+          doc={modal.doc}
+          mode="delete"
+          onCancel={() => setModal(null)}
+          onConfirm={(tasks) => confirmDelete(modal.doc, tasks)}
         />
       ) : null}
 

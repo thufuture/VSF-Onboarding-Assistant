@@ -784,6 +784,83 @@ async def _propose_legacy(
     return ProposalResult(proposals=proposals, truncated=truncated, uncovered=uncovered)
 
 
+async def _default_task_group(session: AsyncSession, document_version_id: int) -> str | None:
+    category_slug = await session.scalar(
+        select(DocumentCategory.slug)
+        .join(Document, Document.category_id == DocumentCategory.id)
+        .join(DocumentVersion, DocumentVersion.document_id == Document.id)
+        .where(DocumentVersion.id == document_version_id)
+    )
+    return CATEGORY_TASK_GROUP.get(category_slug or "")
+
+
+async def load_section(session: AsyncSession, document_version_id: int, section_id: int) -> DocumentSection:
+    section = await session.scalar(
+        select(DocumentSection).where(
+            DocumentSection.id == section_id, DocumentSection.version_id == document_version_id
+        )
+    )
+    if section is None:
+        raise PortalError(404, "SECTION_NOT_FOUND", "portal.section_not_found")
+    return section
+
+
+async def section_order(session: AsyncSession, document_version_id: int) -> list[int]:
+    ids = (
+        await session.scalars(
+            select(DocumentSection.id)
+            .where(DocumentSection.version_id == document_version_id)
+            .order_by(DocumentSection.section_index)
+        )
+    ).all()
+    if not ids:
+        raise PortalError(404, "DOCUMENT_VERSION_NOT_FOUND", "portal.document_version_not_found")
+    return list(ids)
+
+
+# HR đã đọc mục và xác nhận có việc cho nhân viên: không được bỏ qua như lúc AI tự đánh giá.
+_FAST_FORCED_RULES = (
+    _FAST_RULES
+    + " HR ĐÃ ĐỌC các mục dưới đây và xác nhận mỗi mục có việc cho nhân viên: mỗi mục PHẢI có ít nhất một task riêng, "
+    "tuyệt đối không ghi vào skipped_sections. Việc nào tài liệu không nói rõ cách làm thì để steps rỗng và ghi lý do vào warnings."
+)
+
+
+async def propose_tasks_for_sections(
+    session: AsyncSession,
+    *,
+    document_version_id: int,
+    section_ids: Sequence[int],
+    llm: ChatCompletionPort,
+    options: ProposalOptions | None = None,
+) -> list[AiTaskProposalResponseDTO]:
+    """Tạo task cho đúng các mục HR chọn (thường là mục AI đã bỏ qua vì tưởng chỉ có thông tin), một lần gọi AI.
+
+    Nguồn trích vẫn được kiểm nguyên văn như mọi đề xuất. Không có đề xuất hợp lệ nào thì báo lỗi rõ thay vì trả danh sách rỗng.
+    """
+    options = options or ProposalOptions()
+    sections = [
+        await load_section(session, document_version_id, section_id) for section_id in dict.fromkeys(section_ids)
+    ]
+    default_group = await _default_task_group(session, document_version_id)
+    section_by_id = {section.id: section for section in sections}
+    drafts, _, errors = await _run_batches(
+        [sections], _FAST_FORCED_RULES, llm, options, section_by_id, default_group, _ignore_progress
+    )
+    if not drafts:
+        if errors:
+            raise errors[0]
+        raise PortalError(422, "NO_TASK_FROM_SECTION", "portal.no_task_from_section")
+    return [
+        draft.proposal.model_copy(update={"order": number, "prerequisites": []})
+        for number, draft in enumerate(sorted(drafts, key=lambda d: d.position), start=1)
+    ]
+
+
+async def _ignore_progress(done: int, total: int) -> None:
+    return None
+
+
 async def propose_tasks_detailed(
     session: AsyncSession,
     *,
@@ -805,13 +882,7 @@ async def propose_tasks_detailed(
         raise PortalError(404, "DOCUMENT_VERSION_NOT_FOUND", "portal.document_version_not_found")
     kept, truncated = _within_budget(sections)
 
-    category_slug = await session.scalar(
-        select(DocumentCategory.slug)
-        .join(Document, Document.category_id == DocumentCategory.id)
-        .join(DocumentVersion, DocumentVersion.document_id == Document.id)
-        .where(DocumentVersion.id == document_version_id)
-    )
-    default_group = CATEGORY_TASK_GROUP.get(category_slug or "")
+    default_group = await _default_task_group(session, document_version_id)
     await progress.update(STEP_READ, done=1, total=1)
     if options.mode == "legacy":
         await progress.update(STEP_DRAFT, done=0, total=1)

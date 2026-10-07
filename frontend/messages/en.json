@@ -679,10 +679,34 @@
       "unavailable": "Something went wrong, try again later.",
       "network": "Could not reach the server.",
       "ingestFailed": "Could not read this file (wrong format or too short).",
-      "categoryNotFound": "Document group does not exist."
+      "categoryNotFound": "Document group does not exist.",
+      "documentProcessing": "The document is being processed; wait until it finishes before deleting.",
+      "taskChoiceRequired": "Choose whether to keep or delete the tasks created from this document.",
+      "documentNotFound": "The document no longer exists."
     },
     "close": "Close",
     "closeButton": "Close",
+    "delete": "Delete document",
+    "removal": {
+      "deleteTitle": "Delete document?",
+      "deleteBody": "Permanently deletes the document with its {count} versions, parsed sections and search data. This cannot be undone. To just stop using it, choose Stop using (it can be reactivated).",
+      "deleteButton": "Delete document",
+      "loading": "Checking the tasks that use this document…",
+      "loadFailed": "Could not check the tasks that use this document. Close this dialog and try again.",
+      "processing": "The document is being processed in the background and cannot be deleted yet. Try again when it finishes.",
+      "warnDelete": "{count} tasks cite this document. If you delete it, the remaining tasks lose their citation from this document.",
+      "warnArchive": "{count} tasks cite this document. What should happen to them?",
+      "sharedTag": "has other sources",
+      "more": "… and {count} more tasks",
+      "choose": "For the tasks created from this document",
+      "keep": "Keep the tasks already created",
+      "keepHintArchive": "Tasks and their citations stay as they are; only the document is retired.",
+      "keepHintDelete": "Tasks remain but lose their citation from this document (it is deleted).",
+      "removeTasks": "Delete the {count} tasks created only from this document",
+      "removeHint": "Tasks that also rely on other documents ({shared} tasks) are kept because they still have a basis.",
+      "removeNone": "No task relies solely on this document.",
+      "employeeCopies": "Employees already received {count} tasks from these: employee copies are always kept, never deleted."
+    },
     "cancel": "Cancel",
     "save": "Save",
     "view": "Versions and content",
@@ -700,6 +724,7 @@
     "notice": {
       "updated": "Document details saved.",
       "archived": "Document is no longer in use.",
+      "deleted": "Document deleted.",
       "reactivated": "Document reactivated."
     },
     "parsedIngested": "Parsed · Ingested",
@@ -987,8 +1012,20 @@
         "LLM_UNAVAILABLE": "The AI service is temporarily unavailable",
         "DOCUMENT_VERSION_NOT_FOUND": "Could not read the document content"
       },
-      "uncovered": "{count} sections without a task: {names}",
-      "skippedInfo": "AI treated {count} sections as information only and created no task: {names}"
+      "uncoveredLead": "{count} sections have no task. Review them and create a task if needed:",
+      "skippedInfoLead": "AI treated {count} sections as information only and created no task. Review them and create a task if there is work in them:",
+      "section": {
+        "view": "View",
+        "create": "Create task",
+        "creating": "Creating…",
+        "createFromThis": "Create task from this section",
+        "dismiss": "Dismiss",
+        "untitled": "(untitled section)",
+        "added": "Added to the roadmap at position Task {position}: {title}. Review it, then click Add to task management.",
+        "duplicate": "The roadmap already has a task with the same name; not added again.",
+        "noTask": "AI still found no work in this section, so no task was created. It may be information only.",
+        "failed": "Could not create a task from this section, try again later."
+      }
     }
   },
   "portalAdmin": {

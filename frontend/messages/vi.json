@@ -679,10 +679,34 @@
       "unavailable": "Có lỗi xảy ra, thử lại sau.",
       "network": "Không kết nối được server.",
       "ingestFailed": "Không đọc được nội dung tệp này (sai định dạng hoặc quá ngắn).",
-      "categoryNotFound": "Nhóm tài liệu không tồn tại."
+      "categoryNotFound": "Nhóm tài liệu không tồn tại.",
+      "documentProcessing": "Tài liệu đang được xử lý, chờ xử lý xong rồi hãy xóa.",
+      "taskChoiceRequired": "Hãy chọn giữ hay xóa các task tạo từ tài liệu này.",
+      "documentNotFound": "Tài liệu không còn tồn tại."
     },
     "close": "Đóng",
     "closeButton": "Đóng",
+    "delete": "Xóa tài liệu",
+    "removal": {
+      "deleteTitle": "Xóa tài liệu?",
+      "deleteBody": "Xóa vĩnh viễn tài liệu cùng {count} phiên bản, nội dung đã tách mục và dữ liệu tìm kiếm. Không thể hoàn tác. Nếu chỉ muốn ngừng dùng, hãy chọn Ngừng sử dụng (có thể kích hoạt lại).",
+      "deleteButton": "Xóa tài liệu",
+      "loading": "Đang kiểm tra các task đang dùng tài liệu này…",
+      "loadFailed": "Không kiểm tra được các task đang dùng tài liệu này. Đóng hộp thoại và thử lại.",
+      "processing": "Tài liệu đang được xử lý nền nên chưa thể xóa. Chờ xử lý xong rồi thử lại.",
+      "warnDelete": "Có {count} task đang trích dẫn tài liệu này. Xóa tài liệu thì các task còn lại sẽ mất nguồn trích dẫn từ tài liệu này.",
+      "warnArchive": "Có {count} task đang trích dẫn tài liệu này. Bạn muốn xử lý các task đó thế nào?",
+      "sharedTag": "còn nguồn khác",
+      "more": "… và {count} task khác",
+      "choose": "Với các task đã tạo từ tài liệu này",
+      "keep": "Giữ lại các task đã tạo",
+      "keepHintArchive": "Task và nguồn trích dẫn giữ nguyên, chỉ tài liệu bị ngừng sử dụng.",
+      "keepHintDelete": "Task vẫn còn nhưng mất nguồn trích dẫn từ tài liệu này (tài liệu đã bị xóa).",
+      "removeTasks": "Xóa {count} task chỉ tạo từ tài liệu này",
+      "removeHint": "Task còn dựa vào tài liệu khác ({shared} task) vẫn được giữ lại vì còn căn cứ.",
+      "removeNone": "Không có task nào chỉ dựa vào tài liệu này.",
+      "employeeCopies": "Nhân viên đã nhận {count} task từ các task này: bản sao của nhân viên luôn được giữ nguyên, không bị xóa."
+    },
     "cancel": "Hủy",
     "save": "Lưu",
     "view": "Phiên bản và nội dung",
@@ -700,6 +724,7 @@
     "notice": {
       "updated": "Đã lưu thông tin tài liệu.",
       "archived": "Đã ngừng sử dụng tài liệu.",
+      "deleted": "Đã xóa tài liệu.",
       "reactivated": "Đã kích hoạt lại tài liệu."
     },
     "parsedIngested": "Đã parse · Đã ingest",
@@ -987,8 +1012,20 @@
         "LLM_UNAVAILABLE": "Dịch vụ AI tạm thời không phản hồi",
         "DOCUMENT_VERSION_NOT_FOUND": "Không đọc được nội dung tài liệu"
       },
-      "uncovered": "{count} mục chưa có task: {names}",
-      "skippedInfo": "AI coi {count} mục là chỉ có thông tin nên không tạo task: {names}"
+      "uncoveredLead": "{count} mục chưa có task. Xem lại mục, nếu cần thì tạo task cho mục đó:",
+      "skippedInfoLead": "AI coi {count} mục là chỉ có thông tin nên không tạo task. Xem lại mục, nếu có việc thì tạo task cho mục đó:",
+      "section": {
+        "view": "Xem",
+        "create": "Tạo task",
+        "creating": "Đang tạo…",
+        "createFromThis": "Tạo task từ mục này",
+        "dismiss": "Loại bỏ",
+        "untitled": "(mục không có tiêu đề)",
+        "added": "Đã thêm vào roadmap ở vị trí Task {position}: {title}. Xem lại rồi bấm Thêm vào Quản lý task.",
+        "duplicate": "Roadmap đã có task trùng tên với đề xuất này, không thêm lại.",
+        "noTask": "AI vẫn không thấy việc nào trong mục này nên không tạo task. Có thể mục chỉ là thông tin.",
+        "failed": "Không tạo được task từ mục này, thử lại sau."
+      }
     }
   },
   "portalAdmin": {

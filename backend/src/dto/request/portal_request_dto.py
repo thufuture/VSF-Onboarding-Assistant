@@ -68,6 +68,8 @@ class UpdateDocumentRequestDTO(BaseModel):
 
 class SetDocumentStatusRequestDTO(BaseModel):
     status: Literal["ACTIVE", "ARCHIVED"]
+    # Chỉ có nghĩa khi tắt tài liệu đang có task trích dẫn: KEEP giữ mọi task, DELETE xóa task chỉ dựa vào tài liệu này.
+    tasks: Literal["KEEP", "DELETE"] | None = None
 
 
 class UpdateMyProfileRequestDTO(BaseModel):
@@ -99,6 +101,13 @@ class ActivateDocumentVersionRequestDTO(BaseModel):
 
 class CreateAiTaskProposalJobRequestDTO(BaseModel):
     document_version_ids: list[int] = Field(min_length=1, max_length=20)
+
+
+class CreateAiTaskProposalFromSectionsRequestDTO(BaseModel):
+    """Tạo task cho đúng các mục HR chọn trong một phiên bản tài liệu (mục AI đã bỏ qua hoặc chưa phủ)."""
+
+    document_version_id: int
+    section_ids: list[int] = Field(min_length=1, max_length=10)
 
 
 class CreateStageVersionRequestDTO(BaseModel):

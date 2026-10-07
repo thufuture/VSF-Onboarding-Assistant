@@ -29,6 +29,7 @@ import { AiRoadmapReview, nextReviewKey, type Review } from "./AiRoadmapReview";
 import { categoryStyle } from "./docCategory";
 import styles from "./AiTasksPage.module.scss";
 import { ProposalProgress } from "./ProposalProgress";
+import { SectionNotice } from "./SectionNotice";
 import { useJob } from "./useJob";
 
 function errorMessage(t: (key: string) => string, error: unknown): string {
@@ -103,6 +104,9 @@ export function AiTasksPage() {
   const [creating, setCreating] = useState<{ done: number; total: number } | null>(null);
   // Task đã tạo trong lượt này (tên → mã) để đổi "tiên quyết theo tên" của AI thành tiên quyết thật khi tạo tiếp.
   const createdByTitle = useRef(new Map<string, number>());
+  // Thứ tự mục của từng phiên bản tài liệu (tải một lần) để chèn task mới đúng chỗ; và bản mới nhất của roadmap cho hàm bất đồng bộ.
+  const sectionOrders = useRef(new Map<number, number[]>());
+  const reviewsRef = useRef<Review[] | null>(null);
 
   function finishProposalJob(job: JobResponseDTO) {
     setBusy((current) => (current === "propose" ? null : current));
@@ -124,6 +128,10 @@ export function AiTasksPage() {
     );
     setAcceptedCount(0);
   }
+
+  useEffect(() => {
+    reviewsRef.current = reviews;
+  }, [reviews]);
 
   const proposalJob = useJob(proposalJobId, finishProposalJob);
 
@@ -282,6 +290,49 @@ export function AiTasksPage() {
       setNotice(t("propose.acceptedAll", { count: created }));
     }
     setBusy(null);
+  }
+
+  /** Chèn task do AI soạn cho mục HR chọn vào roadmap ĐÚNG VỊ TRÍ theo thứ tự mục trong tài liệu (không dồn xuống cuối), rồi báo
+   * đã thêm vào task thứ mấy. HR vẫn bấm "Thêm vào Quản lý task" như mọi thẻ khác. Bỏ trùng tên với task đang có. */
+  async function addSectionProposals(
+    entry: AiProposalDocumentResultDTO,
+    sectionId: number,
+    proposals: AiTaskProposalResponseDTO[],
+  ): Promise<boolean> {
+    const current = reviewsRef.current ?? [];
+    const existing = new Set(current.map((review) => review.proposal.title));
+    const fresh = proposals.filter((proposal) => !existing.has(proposal.title));
+    if (fresh.length === 0) {
+      setNotice(t("result.section.duplicate"));
+      return false;
+    }
+    let order = sectionOrders.current.get(entry.version_id);
+    if (!order) {
+      order = await portalHrApi.getDocumentSectionOrder(entry.version_id).catch(() => []);
+      sectionOrders.current.set(entry.version_id, order);
+    }
+    const rank = (id: number) => order.indexOf(id);
+    const wanted = rank(sectionId);
+    const origin = { versionId: entry.version_id, title: entry.document_title, label: entry.version_label };
+    const latest = reviewsRef.current ?? [];
+    // Thứ tự một thẻ cũ trong tài liệu = mục sớm nhất nó trích; thẻ chưa biết thì bỏ qua khi tìm chỗ chèn.
+    const rankOf = (review: Review) => {
+      const ranks = review.proposal.source_chunks.map((chunk) => rank(chunk.document_section_id)).filter((n) => n >= 0);
+      return ranks.length > 0 ? Math.min(...ranks) : null;
+    };
+    let at = latest.length;
+    if (wanted >= 0) {
+      const sameDoc = latest
+        .map((review, index) => ({ index, review, place: review.origin?.versionId === entry.version_id ? rankOf(review) : null }))
+        .filter((item) => item.place !== null);
+      const after = sameDoc.find((item) => (item.place as number) > wanted);
+      if (after) at = after.index;
+      else if (sameDoc.length > 0) at = sameDoc[sameDoc.length - 1]!.index + 1;
+    }
+    const added = fresh.map((proposal) => ({ key: nextReviewKey(), proposal, status: "pending" as const, origin }));
+    setReviews([...latest.slice(0, at), ...added, ...latest.slice(at)]);
+    setNotice(t("result.section.added", { position: at + 1, title: fresh[0]!.title, count: fresh.length }));
+    return true;
   }
 
   function resetReview() {
@@ -590,26 +641,26 @@ export function AiTasksPage() {
                 <em>{t("result.truncated", { count: entry.truncated_sections })}</em>
               ) : null}
               {entry.uncovered_sections && entry.uncovered_sections.length > 0 ? (
-                <em title={entry.uncovered_sections.map((item) => item.heading ?? "").join("\n")}>
-                  {t("result.uncovered", {
-                    count: entry.uncovered_sections.length,
-                    names: entry.uncovered_sections
-                      .slice(0, 3)
-                      .map((item) => item.heading ?? "")
-                      .join("; "),
-                  })}
-                </em>
+                <SectionNotice
+                  disabled={busy !== null}
+                  documentTitle={entry.document_title}
+                  kind="uncovered"
+                  onAdd={(sectionId, proposals) => addSectionProposals(entry, sectionId, proposals)}
+                  sections={entry.uncovered_sections}
+                  versionId={entry.version_id}
+                  versionLabel={entry.version_label}
+                />
               ) : null}
               {entry.skipped_info_sections && entry.skipped_info_sections.length > 0 ? (
-                <em title={entry.skipped_info_sections.map((item) => item.heading ?? "").join("\n")}>
-                  {t("result.skippedInfo", {
-                    count: entry.skipped_info_sections.length,
-                    names: entry.skipped_info_sections
-                      .slice(0, 3)
-                      .map((item) => item.heading ?? "")
-                      .join("; "),
-                  })}
-                </em>
+                <SectionNotice
+                  disabled={busy !== null}
+                  documentTitle={entry.document_title}
+                  kind="skippedInfo"
+                  onAdd={(sectionId, proposals) => addSectionProposals(entry, sectionId, proposals)}
+                  sections={entry.skipped_info_sections}
+                  versionId={entry.version_id}
+                  versionLabel={entry.version_label}
+                />
               ) : null}
               {entry.status === "FAILED" ? (
                 <button

@@ -4,9 +4,9 @@ Route journey/task thủ công đầy đủ (dependency, publish) chưa có ở 
 upload → AI đề xuất → accept chạy được end-to-end (P4B mục 8).
 """
 
-from typing import Annotated
+from typing import Annotated, Literal
 
-from fastapi import APIRouter, Depends, Response
+from fastapi import APIRouter, Depends, Query, Response
 from fastapi.responses import FileResponse, RedirectResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -23,6 +23,7 @@ from src.config import Settings, get_settings
 from src.dto.request.portal_request_dto import (
     AcceptAiTaskProposalRequestDTO,
     ChangeMyPasswordRequestDTO,
+    CreateAiTaskProposalFromSectionsRequestDTO,
     CreateAiTaskProposalRequestDTO,
     CreateJourneyStageRequestDTO,
     CreateJourneyTemplateRequestDTO,
@@ -35,7 +36,9 @@ from src.dto.request.portal_request_dto import (
 from src.dto.response.portal_response_dto import (
     AiTaskProposalResponseDTO,
     DocumentCategoryResponseDTO,
+    DocumentImpactResponseDTO,
     DocumentListItemResponseDTO,
+    DocumentTaskRefResponseDTO,
     EmployeeDocumentResponseDTO,
     EmployeeJourneyCreatedResponseDTO,
     EmployeeJourneyResponseDTO,
@@ -65,6 +68,7 @@ from src.services.auth.auth_service import start_session
 from src.services.auth.errors import AuthError
 from src.services.portal import (
     ai_task_service,
+    document_removal_service,
     employee_service,
     journey_service,
     profile_service,
@@ -384,6 +388,35 @@ async def propose_ai_tasks(
     )
 
 
+@router.post("/ai/task-proposals/from-sections")
+async def propose_ai_tasks_from_sections(
+    body: CreateAiTaskProposalFromSectionsRequestDTO,
+    user: Annotated[User, Depends(require_role(UserRole.HR, UserRole.ADMIN))],
+    db: Annotated[AsyncSession, Depends(get_db)],
+    llm: Annotated[ChatCompletionPort, Depends(get_chat_completion_port)],
+    settings: Annotated[Settings, Depends(get_settings)],
+) -> list[AiTaskProposalResponseDTO]:
+    """HR đã đọc mục AI bỏ qua và đồng ý: tạo task cho đúng các mục đó (một lần gọi AI). Kết quả là đề xuất, chưa tạo task thật."""
+    options = ProposalOptions(
+        mode=settings.task_proposal_mode,
+        batch_words=settings.task_proposal_batch_words,
+        call_timeout_seconds=settings.task_proposal_call_timeout_seconds,
+    )
+    return await ai_task_service.propose_tasks_for_sections(
+        db, document_version_id=body.document_version_id, section_ids=body.section_ids, llm=llm, options=options
+    )
+
+
+@router.get("/document-versions/{version_id}/section-order")
+async def get_document_section_order(
+    version_id: int,
+    user: Annotated[User, Depends(require_role(UserRole.HR, UserRole.ADMIN))],
+    db: Annotated[AsyncSession, Depends(get_db)],
+) -> list[int]:
+    """Mã các mục của phiên bản theo thứ tự trong tài liệu, để giao diện chèn task mới đúng vị trí trên roadmap."""
+    return await ai_task_service.section_order(db, version_id)
+
+
 @router.post("/stages/{stage_id}/tasks/from-proposal", response_model=TaskTemplateResponseDTO)
 async def accept_ai_task_proposal(
     stage_id: int,
@@ -406,13 +439,51 @@ async def set_document_status(
     user: Annotated[User, Depends(require_role(UserRole.HR, UserRole.ADMIN))],
     db: Annotated[AsyncSession, Depends(get_db)],
 ) -> DocumentListItemResponseDTO:
-    """Ẩn/kích hoạt lại tài liệu — không xóa cứng (giữ lịch sử ingest và task đang trích dẫn)."""
-    await template_service.set_document_status(db, document_id=document_id, status=DocumentStatus(body.status))
+    """Ẩn/kích hoạt lại tài liệu — không xóa cứng (giữ lịch sử ingest). Khi tắt, `tasks` chọn giữ hay xóa task chỉ dựa vào tài liệu."""
+    await document_removal_service.set_status(
+        db, document_id=document_id, status=DocumentStatus(body.status), tasks=body.tasks, actor=user
+    )
     items = [item for item in await template_service.list_documents(db) if item.id == document_id]
     if not items:
         raise PortalError(404, "DOCUMENT_NOT_FOUND", "portal.document_not_found")
     item = items[0]
     return _document_item(item)
+
+
+def _task_refs(refs: list[document_removal_service.TaskRef]) -> list[DocumentTaskRefResponseDTO]:
+    return [
+        DocumentTaskRefResponseDTO(id=r.id, title=r.title, day_title=r.day_title, version_status=r.version_status)
+        for r in refs
+    ]
+
+
+@router.get("/documents/{document_id}/impact", response_model=DocumentImpactResponseDTO)
+async def document_impact(
+    document_id: int,
+    user: Annotated[User, Depends(require_role(UserRole.HR, UserRole.ADMIN))],
+    db: Annotated[AsyncSession, Depends(get_db)],
+) -> DocumentImpactResponseDTO:
+    """Cho giao diện cảnh báo trước khi tắt/xóa: bao nhiêu task trích dẫn tài liệu này và bao nhiêu chỉ dựa vào riêng nó."""
+    impact = await document_removal_service.document_impact(db, document_id)
+    return DocumentImpactResponseDTO(
+        only_tasks=_task_refs(impact.only_tasks),
+        shared_tasks=_task_refs(impact.shared_tasks),
+        employee_copies=impact.employee_copies,
+        version_count=impact.version_count,
+        processing=impact.processing,
+    )
+
+
+@router.delete("/documents/{document_id}", status_code=204)
+async def delete_document(
+    document_id: int,
+    user: Annotated[User, Depends(require_role(UserRole.HR, UserRole.ADMIN))],
+    db: Annotated[AsyncSession, Depends(get_db)],
+    tasks: Annotated[Literal["KEEP", "DELETE"] | None, Query()] = None,
+) -> Response:
+    """Xóa cứng tài liệu và mọi phiên bản (không hoàn tác). Tài liệu đang có task trích dẫn thì phải chọn `tasks`=KEEP hoặc DELETE."""
+    await document_removal_service.delete_document(db, document_id=document_id, tasks=tasks, actor=user)
+    return Response(status_code=204)
 
 
 def _task_node_dto(

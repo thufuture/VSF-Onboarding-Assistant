@@ -261,6 +261,22 @@ export type DocumentListItemResponseDTO = {
   processing_version_ids: number[];
 };
 
+export type DocumentTaskRefResponseDTO = {
+  id: number;
+  title: string;
+  day_title: string;
+  version_status: string;
+};
+
+/** Ảnh hưởng của việc tắt/xóa tài liệu lên các task đã trích dẫn nó. */
+export type DocumentImpactResponseDTO = {
+  only_tasks: DocumentTaskRefResponseDTO[];
+  shared_tasks: DocumentTaskRefResponseDTO[];
+  employee_copies: number;
+  version_count: number;
+  processing: boolean;
+};
+
 export type DocumentCategoryResponseDTO = {
   slug: string;
   name: string;
