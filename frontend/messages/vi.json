@@ -451,7 +451,7 @@
       "duplicated": "Đã nhân bản task.",
       "stageCreated": "Đã tạo giai đoạn.",
       "draftCreated": "Đã tạo bản nháp {n}.",
-      "applied": "Đã áp dụng bản {n}. {count} nhân viên sẽ nhận thông báo chỉnh sửa.",
+      "applied": "Đã cập nhật bản {n}. {count} nhân viên nhận một thông báo.",
       "draftDeleted": "Đã xóa bản nháp."
     },
     "errors": {
@@ -515,10 +515,15 @@
       "createDraftBody": "Bản nháp mới sao chép toàn bộ việc của bản đang xem để bạn sửa. Chưa ai bị ảnh hưởng cho tới khi bạn bấm Áp dụng.",
       "createDraftConfirm": "Tạo bản nháp"
     },
+    "draftBanner": {
+      "text": "{day} có bản nháp {n} chưa cập nhật cho nhân viên. Nhân viên chỉ thấy thay đổi sau khi bạn cập nhật.",
+      "view": "Xem bản nháp",
+      "apply": "Cập nhật cho nhân viên"
+    },
     "apply": {
-      "title": "Áp dụng bản {n} của {day}?",
-      "body": "Việc sửa: {modified}, việc thêm: {added}, việc bỏ: {removed}. Bản này thành bản đang áp dụng; bản cũ được lưu trữ. Lộ trình của {employees} nhân viên đã tạo KHÔNG tự đổi: họ nhận thông báo để tự bấm Cập nhật hoặc Giữ bản cũ.",
-      "confirm": "Áp dụng"
+      "title": "Cập nhật bản {n} của {day} cho nhân viên?",
+      "body": "Việc sửa: {modified}, việc thêm: {added}, việc bỏ: {removed}. Bản này thành bản đang áp dụng; bản cũ được lưu trữ. {employees} nhân viên đã có lộ trình sẽ nhận MỘT thông báo: việc thêm và việc bỏ tự cập nhật (việc đã làm xong được giữ), chỉ việc bị sửa nội dung mới cần họ xem và chấp nhận.",
+      "confirm": "Cập nhật cho nhân viên"
     },
     "rollout": {
       "title": "Triển khai bản {n}",
@@ -705,6 +710,14 @@
       "removeTasks": "Xóa {count} task chỉ tạo từ tài liệu này",
       "removeHint": "Task còn dựa vào tài liệu khác ({shared} task) vẫn được giữ lại vì còn căn cứ.",
       "removeNone": "Không có task nào chỉ dựa vào tài liệu này.",
+      "applyTitle": "Cập nhật cho nhân viên?",
+      "applyBody": "Việc xóa task đã được ghi vào bản nháp của {count} ngày. Nhân viên chỉ thấy thay đổi khi bạn cập nhật: mỗi ngày họ nhận một thông báo, các việc bị xóa tự rời lộ trình (việc đã làm xong được giữ).",
+      "applyDay": "{day}: xóa {count} task (bản nháp {n})",
+      "applyLater": "Để sau",
+      "applyNow": "Cập nhật cho nhân viên",
+      "applyEmpty": "{day} không còn task nào nên không cập nhật được. Hãy thêm task hoặc xóa ngày này.",
+      "applyOpenTasks": "Mở Quản lý task",
+      "applyDone": "Đã cập nhật {days} ngày, nhân viên nhận một thông báo cho mỗi ngày.",
       "employeeCopies": "Nhân viên đã nhận {count} task từ các task này: bản sao của nhân viên luôn được giữ nguyên, không bị xóa."
     },
     "cancel": "Hủy",
@@ -1487,7 +1500,10 @@
       "ticketTitle": "HR đã trả lời: {subject}",
       "ticketBody": "Mở yêu cầu để xem phản hồi.",
       "changeTitle": "{stage} có chỉnh sửa",
-      "changeBody": "HR vừa cập nhật lộ trình. Có {count} việc chờ bạn quyết định cập nhật hay giữ bản cũ."
+      "changeBody": "HR vừa cập nhật lộ trình. Có {count} việc sửa nội dung chờ bạn xem và quyết định.",
+      "changeAutoBody": "HR vừa cập nhật lộ trình: việc thêm và việc bỏ đã được tự cập nhật.",
+      "newStageTitle": "Bạn có ngày mới: {stage}",
+      "newStageBody": "HR vừa thêm ngày này với {count} việc vào lộ trình của bạn."
     },
     "profile": {
       "title": "Hồ sơ của tôi",
@@ -1719,6 +1735,20 @@
       "emptyTitle": "Chưa có chỉnh sửa nào",
       "emptyBody": "Khi HR áp dụng bản mới của một ngày, các việc thay đổi sẽ hiện ở đây. Lộ trình của bạn không tự đổi.",
       "noticeTitle": "{stage} · bản {version}",
+      "newStageTitle": "Ngày mới: {stage}",
+      "modalTitle": "{stage} có thay đổi",
+      "modalNewStage": "Bạn có ngày mới: {stage}",
+      "detail": "Xem chi tiết",
+      "close": "Đóng",
+      "summary": {
+        "newStage": "Bạn có ngày mới {stage} với {count} việc. Các việc đã được thêm vào lộ trình của bạn.",
+        "added": "Đã thêm vào lộ trình ({count})",
+        "removed": "Đã bỏ khỏi lộ trình ({count})",
+        "keptDone": "Giữ lại vì bạn đã làm xong ({count})",
+        "review": "Cần bạn xem và chấp nhận ({count})",
+        "more": "… và {count} việc khác",
+        "autoNote": "Việc thêm và việc bỏ được cập nhật tự động; chỉ việc bị sửa nội dung cần bạn quyết định."
+      },
       "acceptAll": "Cập nhật cả {count} việc",
       "banner": "HR vừa chỉnh sửa lộ trình: {count} việc đang chờ bạn quyết định.",
       "bannerLink": "Xem chỉnh sửa",

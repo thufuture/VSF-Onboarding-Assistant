@@ -25,3 +25,29 @@ export function plainBody(markdown: string): string {
 export function isPending(change: Pick<TaskChangeResponseDTO, "status" | "informational">): boolean {
   return change.status === "PENDING" && !change.informational;
 }
+
+/** Việc thêm hoặc bỏ đã được áp dụng TỰ ĐỘNG khi HR cập nhật (nhân viên không phải bấm gì). */
+export function isAutoApplied(change: Pick<TaskChangeResponseDTO, "kind" | "status">): boolean {
+  return (change.kind === "ADDED" || change.kind === "REMOVED") && change.status === "ACCEPTED";
+}
+
+export type NoticeSummaryData = {
+  added: string[];
+  removed: string[];
+  /** Việc HR đã bỏ nhưng bạn đã làm xong nên vẫn được giữ. */
+  keptDone: string[];
+  /** Việc cần bạn xem và quyết định (sửa nội dung, đổi tiên quyết; cả thông báo cũ chưa xử lý). */
+  review: string[];
+};
+
+/** Gói các thay đổi của một thông báo thành các nhóm để hiện "đã đổi gì" trong một khung. */
+export function summarizeNotice(changes: TaskChangeResponseDTO[]): NoticeSummaryData {
+  const titles = (pick: (change: TaskChangeResponseDTO) => boolean) =>
+    changes.filter(pick).map((change) => change.task_title);
+  return {
+    added: titles((c) => c.kind === "ADDED" && isAutoApplied(c)),
+    removed: titles((c) => c.kind === "REMOVED" && isAutoApplied(c)),
+    keptDone: titles((c) => c.informational),
+    review: titles((c) => isPending(c)),
+  };
+}

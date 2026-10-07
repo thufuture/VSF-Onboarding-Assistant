@@ -29,11 +29,13 @@ import type {
   DocumentCategoryResponseDTO,
   DocumentListItemResponseDTO,
   JobResponseDTO,
+  StageDraftChangeResponseDTO,
 } from "@/features/portal-hr/dto/responseDTO/portal.response";
 
 import { CategoryPicker } from "./CategoryPicker";
 import { categoryFlat, categoryStyle, type DocTone } from "./docCategory";
 import { DocumentRemovalModal } from "./DocumentRemovalModal";
+import { StageApplyPrompt } from "./StageApplyPrompt";
 import styles from "./DocumentsListPage.module.scss";
 import { DocumentVersionsModal } from "./DocumentVersionsModal";
 import { isJobFinished, useActiveActivations, useJob } from "./useJob";
@@ -136,7 +138,8 @@ type Modal =
   | { kind: "versions"; doc: DocumentListItemResponseDTO }
   | { kind: "archive"; doc: DocumentListItemResponseDTO }
   | { kind: "delete"; doc: DocumentListItemResponseDTO }
-  | { kind: "reactivate"; doc: DocumentListItemResponseDTO };
+  | { kind: "reactivate"; doc: DocumentListItemResponseDTO }
+  | { kind: "applyDrafts"; changes: StageDraftChangeResponseDTO[] };
 
 /** "Tài liệu nguồn" thật — cổng bố cục và flow modal của prototype v15 (thêm / xem mục lục / sửa / phiên bản mới /
  * ngừng sử dụng có xác nhận / kích hoạt lại). "Xóa" của v15 được thay bằng chuyển trạng thái ARCHIVED để giữ lịch sử ingest. */
@@ -312,13 +315,22 @@ export function DocumentsListPage() {
     }
   }
 
+  /** Xóa/tắt xong: nếu việc xóa task đã được ghi vào bản nháp của ngày nào thì hỏi HR có cập nhật cho nhân viên không. */
+  function afterRemoval(changes: StageDraftChangeResponseDTO[], message: string) {
+    if (changes.length > 0) {
+      setModal({ kind: "applyDrafts", changes });
+      return;
+    }
+    setModal(null);
+    showToast(message);
+  }
+
   async function confirmDelete(doc: DocumentListItemResponseDTO, tasks: DocumentTaskChoiceDTO | undefined) {
     setError(null);
     setBusy(true);
     try {
-      await portalHrApi.deleteDocument(doc.id, tasks);
-      setModal(null);
-      showToast(t("notice.deleted"));
+      const result = await portalHrApi.deleteDocument(doc.id, tasks);
+      afterRemoval(result.stages_changed, t("notice.deleted"));
       reload();
     } catch (caught) {
       setError(errorMessage(t, caught));
@@ -336,9 +348,8 @@ export function DocumentsListPage() {
     setError(null);
     setBusy(true);
     try {
-      await portalHrApi.setDocumentStatus(doc.id, { status: next, tasks });
-      setModal(null);
-      showToast(next === "ARCHIVED" ? t("notice.archived") : t("notice.reactivated"));
+      const result = await portalHrApi.setDocumentStatus(doc.id, { status: next, tasks });
+      afterRemoval(result.stages_changed ?? [], next === "ARCHIVED" ? t("notice.archived") : t("notice.reactivated"));
       reload();
     } catch (caught) {
       setError(errorMessage(t, caught));
@@ -940,6 +951,17 @@ export function DocumentsListPage() {
           onConfirm={() => confirmStatus(modal.doc, "ACTIVE")}
           title={t("reactivateConfirmTitle", { title: modal.doc.title })}
           tone="teal"
+        />
+      ) : null}
+
+      {modal?.kind === "applyDrafts" ? (
+        <StageApplyPrompt
+          changes={modal.changes}
+          onClose={() => setModal(null)}
+          onDone={(message) => {
+            setModal(null);
+            showToast(message);
+          }}
         />
       ) : null}
 

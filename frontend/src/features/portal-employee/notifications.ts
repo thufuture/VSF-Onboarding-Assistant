@@ -17,6 +17,8 @@ export type Notification = {
   taskId: number | null;
   /** Đường dẫn mở khi bấm (thông báo ticket); thông báo việc dùng `taskId`. */
   href?: string | null;
+  /** Thông báo lộ trình có thay đổi: bấm thì mở hộp thoại "đã đổi gì" của thông báo này. */
+  noticeId?: number;
   title: string;
   body: string;
   at: string | null;

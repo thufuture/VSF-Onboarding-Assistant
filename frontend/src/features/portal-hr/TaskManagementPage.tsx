@@ -153,6 +153,8 @@ export function TaskManagementPage() {
     stageVersions.find((v) => v.id === selectedStage?.default_version_id) ??
     stageVersions[0] ??
     null;
+  // Bản nháp mới nhất của ngày (nếu có): nhân viên CHƯA thấy gì cho tới khi HR bấm "Cập nhật cho nhân viên".
+  const pendingDraft = [...stageVersions].filter((v) => v.status === "DRAFT").sort((a, b) => b.version_no - a.version_no)[0] ?? null;
   // Chỉ bản nháp sửa được; bản đang áp dụng và lưu trữ chỉ xem (sửa nhầm sẽ đổi lộ trình mà không ai biết).
   const readOnly = selectedVersion?.status !== "DRAFT";
 
@@ -460,6 +462,22 @@ export function TaskManagementPage() {
       </div>
 
       {error ? <p className={styles.banner + " " + styles.bannerError}>{error}</p> : null}
+
+      {pendingDraft ? (
+        <div className={styles.banner + " " + styles.bannerWarn} data-testid="draft-banner">
+          <span>{t("draftBanner.text", { day: selectedStage?.title ?? "", n: pendingDraft.version_no })}</span>
+          <span className={styles.bannerActions}>
+            {pendingDraft.id !== selectedVersion?.id ? (
+              <button className={styles.btnSec} onClick={() => setPickedVersionId(pendingDraft.id)} type="button">
+                {t("draftBanner.view")}
+              </button>
+            ) : null}
+            <button className={styles.btn} disabled={busy !== null} onClick={() => void openApply(pendingDraft)} type="button">
+              <CheckCircle2 aria-hidden="true" size={14} /> {t("draftBanner.apply")}
+            </button>
+          </span>
+        </div>
+      ) : null}
 
       {selectedStage ? (
         <section className={styles.journey}>

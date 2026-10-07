@@ -6,9 +6,10 @@ import { FlatIcon } from "@/components/flat-icons/FlatIcon";
 import { useSession } from "@/features/auth/SessionProvider";
 
 import { ChangeCard } from "./ChangeCard";
-import { isPending } from "./changeModel";
+import { isAutoApplied, isPending } from "./changeModel";
 import shared from "./employee.module.scss";
 import { useJourney } from "./JourneyProvider";
+import { NoticeSummary } from "./NoticeSummary";
 import { PageHero } from "./PageHero";
 
 /**
@@ -49,7 +50,11 @@ export function EmployeeChangesPage() {
               return (
                 <section key={notice.id} style={{ display: "grid", gap: 10 }}>
                   <div className={shared.cardHead} style={{ padding: "0 2px", border: 0 }}>
-                    <h2>{t("noticeTitle", { stage: notice.stage_title, version: notice.version_no })}</h2>
+                    <h2>
+                      {notice.new_stage
+                        ? t("newStageTitle", { stage: notice.stage_title })
+                        : t("noticeTitle", { stage: notice.stage_title, version: notice.version_no })}
+                    </h2>
                     {pending.length > 1 ? (
                       <button
                         className={shared.btn}
@@ -61,7 +66,12 @@ export function EmployeeChangesPage() {
                       </button>
                     ) : null}
                   </div>
-                  {notice.changes.map((change) => (
+                  <div className={shared.card} style={{ padding: 16 }}>
+                    <NoticeSummary notice={notice} />
+                  </div>
+                  {notice.changes
+                    .filter((change) => !isAutoApplied(change) && !change.informational)
+                    .map((change) => (
                     <ChangeCard
                       busy={busyChangeId === change.id || busyChangeId === -notice.id}
                       change={change}

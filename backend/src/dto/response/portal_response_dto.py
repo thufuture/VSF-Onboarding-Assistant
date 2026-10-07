@@ -143,6 +143,16 @@ class HrDashboardResponseDTO(BaseModel):
     document_count: int
 
 
+class StageDraftChangeResponseDTO(BaseModel):
+    """Một ngày đã ghi việc xóa task vào bản nháp (chưa áp dụng): HR bấm "Cập nhật cho nhân viên" thì mới gửi thông báo."""
+
+    stage_id: int
+    stage_title: str
+    version_id: int
+    version_no: int
+    removed_tasks: int
+
+
 class DocumentListItemResponseDTO(BaseModel):
     id: int
     title: str
@@ -160,6 +170,8 @@ class DocumentListItemResponseDTO(BaseModel):
     draft_count: int = 0
     processing_count: int = 0
     processing_version_ids: list[int] = []
+    # Chỉ có khi tắt tài liệu kèm xóa task: các ngày đã ghi việc xóa vào bản nháp (chưa áp dụng cho nhân viên).
+    stages_changed: list[StageDraftChangeResponseDTO] = []
 
 
 class DocumentTaskRefResponseDTO(BaseModel):
@@ -167,6 +179,10 @@ class DocumentTaskRefResponseDTO(BaseModel):
     title: str
     day_title: str
     version_status: str
+
+
+class DocumentRemovalResultResponseDTO(BaseModel):
+    stages_changed: list[StageDraftChangeResponseDTO] = []
 
 
 class DocumentImpactResponseDTO(BaseModel):
@@ -403,6 +419,7 @@ class JourneyNoticeResponseDTO(BaseModel):
     version_no: int
     created_at: datetime
     read_at: datetime | None
+    new_stage: bool = False  # HR thêm ngày mới: nhân viên được báo "bạn có ngày mới"
     changes: list[TaskChangeResponseDTO]
 
 

@@ -1,0 +1,47 @@
+.summary {
+  display: grid;
+  gap: 12px;
+}
+
+.lead {
+  margin: 0;
+  color: var(--app-ink);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.group {
+  display: grid;
+  gap: 4px;
+
+  b {
+    color: var(--app-ink);
+    font-size: 13px;
+    font-weight: 600;
+  }
+  ul {
+    display: grid;
+    gap: 3px;
+    margin: 0;
+    padding-left: 18px;
+    color: var(--app-ink-2);
+    font-size: 13px;
+  }
+}
+
+.more {
+  list-style: none;
+  margin-left: -18px;
+  color: var(--app-ink-2);
+  font-size: 12px;
+}
+
+.note {
+  margin: 0;
+  padding: 8px 10px;
+  border-radius: 5px;
+  background: var(--app-surface-2);
+  color: var(--app-ink-2);
+  font-size: 12.5px;
+  line-height: 1.45;
+}

@@ -220,11 +220,34 @@ describe("Quản lý task theo phiên bản", () => {
 
     const dialog = await screen.findByRole("dialog");
     expect(await within(dialog).findByText(/Việc sửa: 2, việc thêm: 1, việc bỏ: 0/)).toBeInTheDocument();
-    expect(within(dialog).getByText(/4 nhân viên đã tạo KHÔNG tự đổi/)).toBeInTheDocument();
+    expect(within(dialog).getByText(/4 nhân viên đã có lộ trình sẽ nhận MỘT thông báo/)).toBeInTheDocument();
     expect(api.applyStageVersion).not.toHaveBeenCalled();
 
     fireEvent.click(within(dialog).getByRole("button", { name: t.apply.confirm }));
     await waitFor(() => expect(api.applyStageVersion).toHaveBeenCalledWith(2));
+  });
+
+  it("ngày có bản nháp chưa gửi (ví dụ vừa xóa task theo tài liệu): banner nhắc cập nhật cho nhân viên và mở hộp xem trước", async () => {
+    api.listMyTemplates.mockResolvedValue(tree([APPLIED, DRAFT], 1)); // đang xem bản áp dụng, bản nháp nằm riêng
+    api.previewApplyVersion.mockResolvedValue({ modified: 0, added: 0, removed: 1, employee_count: 3, has_applied_before: true });
+    withIntl(<TaskManagementPage />);
+
+    const banner = await screen.findByTestId("draft-banner");
+    expect(banner).toHaveTextContent(/Ngày 1 có bản nháp 2 chưa cập nhật cho nhân viên/);
+    fireEvent.click(within(banner).getByRole("button", { name: t.draftBanner.apply }));
+
+    const dialog = await screen.findByRole("dialog");
+    expect(api.previewApplyVersion).toHaveBeenCalledWith(2);
+    expect(await within(dialog).findByText(/3 nhân viên đã có lộ trình sẽ nhận MỘT thông báo/)).toBeInTheDocument();
+    expect(api.applyStageVersion).not.toHaveBeenCalled(); // chưa xác nhận thì chưa gửi gì
+  });
+
+  it("không có bản nháp thì không hiện banner", async () => {
+    api.listMyTemplates.mockResolvedValue(tree([APPLIED], 1));
+    withIntl(<TaskManagementPage />);
+
+    expect(await screen.findByRole("button", { name: t.versions.label })).toBeInTheDocument();
+    expect(screen.queryByTestId("draft-banner")).not.toBeInTheDocument();
   });
 });
 

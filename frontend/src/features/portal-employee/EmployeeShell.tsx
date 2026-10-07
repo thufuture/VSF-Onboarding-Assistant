@@ -19,6 +19,7 @@ import styles from "./EmployeeShell.module.scss";
 import { useTicketUnread } from "@/features/viga/useTicketUnread";
 
 import { useJourney } from "./JourneyProvider";
+import { NoticeModal } from "./NoticeModal";
 import { VigaPanel } from "./VigaPanel";
 import { useVigaPanel } from "./vigaPanelStore";
 
@@ -70,7 +71,7 @@ export function EmployeeShell({ children }: { children: ReactNode }) {
   const tc = useTranslations("common");
   const { user, logout } = useSession();
   const { theme, toggleTheme } = useTheme();
-  const { notifications, unreadCount, markRead, markAllRead } = useJourney();
+  const { notifications, unreadCount, markRead, markAllRead, notices } = useJourney();
   const { open: vigaOpen, toggle: toggleViga } = useVigaPanel();
   const pathname = usePathname();
   const ticketUnread = useTicketUnread();
@@ -79,6 +80,8 @@ export function EmployeeShell({ children }: { children: ReactNode }) {
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [bellOpen, setBellOpen] = useState(false);
+  const [openNoticeId, setOpenNoticeId] = useState<number | null>(null);
+  const openNotice = notices.find((notice) => notice.id === openNoticeId) ?? null;
   const [bellFilter, setBellFilter] = useState<"all" | "unread">("all");
   const menuRef = useDismiss(menuOpen, () => setMenuOpen(false));
   const bellRef = useDismiss(bellOpen, () => setBellOpen(false));
@@ -191,7 +194,10 @@ export function EmployeeShell({ children }: { children: ReactNode }) {
                               className={`${styles.bellItem} ${item.read ? styles.bellRead : styles.bellUnread}`}
                               onClick={() => {
                                 markRead(item.id);
-                                if (item.taskId) {
+                                if (item.noticeId !== undefined) {
+                                  setBellOpen(false);
+                                  setOpenNoticeId(item.noticeId);
+                                } else if (item.taskId) {
                                   setBellOpen(false);
                                   router.push(`/me/tasks/${item.taskId}`);
                                 } else if (item.href) {
@@ -296,6 +302,7 @@ export function EmployeeShell({ children }: { children: ReactNode }) {
 
         {onVigaPage ? null : <VigaPanel />}
       </div>
+      {openNotice ? <NoticeModal notice={openNotice} onClose={() => setOpenNoticeId(null)} /> : null}
     </div>
   );
 }

@@ -192,6 +192,7 @@ async def list_my_notices(user: CurrentUser, db: Db) -> list[JourneyNoticeRespon
             version_no=n.version_no,
             created_at=n.created_at,
             read_at=n.read_at,
+            new_stage=n.new_stage,
             changes=[_change_dto(c) for c in n.changes],
         )
         for n in notices

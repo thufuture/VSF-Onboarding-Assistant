@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
-import { fieldValue, isPending, plainBody, visibleFields } from "./changeModel";
+import { fieldValue, isAutoApplied, isPending, plainBody, summarizeNotice, visibleFields } from "./changeModel";
+import type { TaskChangeResponseDTO } from "@/features/portal-hr/dto/responseDTO/portal.response";
 
 describe("changeModel", () => {
   it("việc sửa chỉ hiện các trường đã đổi, theo thứ tự cố định", () => {
@@ -29,5 +30,25 @@ describe("changeModel", () => {
     expect(isPending({ status: "PENDING", informational: false })).toBe(true);
     expect(isPending({ status: "PENDING", informational: true })).toBe(false);
     expect(isPending({ status: "ACCEPTED", informational: false })).toBe(false);
+  });
+
+  it("việc thêm và bỏ đã áp dụng là tự động; việc sửa hoặc còn chờ thì không", () => {
+    expect(isAutoApplied({ kind: "ADDED", status: "ACCEPTED" })).toBe(true);
+    expect(isAutoApplied({ kind: "REMOVED", status: "ACCEPTED" })).toBe(true);
+    expect(isAutoApplied({ kind: "MODIFIED", status: "ACCEPTED" })).toBe(false);
+    expect(isAutoApplied({ kind: "ADDED", status: "PENDING" })).toBe(false); // thông báo cũ chưa xử lý vẫn cần chấp nhận
+  });
+
+  it("gói một thông báo thành việc thêm, bỏ, giữ lại vì đã xong và việc cần xem", () => {
+    const row = (kind: TaskChangeResponseDTO["kind"], status: TaskChangeResponseDTO["status"], title: string, informational = false) =>
+      ({ kind, status, task_title: title, informational }) as TaskChangeResponseDTO;
+    const summary = summarizeNotice([
+      row("ADDED", "ACCEPTED", "A"),
+      row("REMOVED", "ACCEPTED", "B"),
+      row("REMOVED", "DISMISSED", "C", true),
+      row("MODIFIED", "PENDING", "D"),
+      row("MODIFIED", "ACCEPTED", "E"),
+    ]);
+    expect(summary).toEqual({ added: ["A"], removed: ["B"], keptDone: ["C"], review: ["D"] });
   });
 });

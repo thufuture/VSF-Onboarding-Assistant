@@ -38,6 +38,7 @@ from src.dto.response.portal_response_dto import (
     DocumentCategoryResponseDTO,
     DocumentImpactResponseDTO,
     DocumentListItemResponseDTO,
+    DocumentRemovalResultResponseDTO,
     DocumentTaskRefResponseDTO,
     EmployeeDocumentResponseDTO,
     EmployeeJourneyCreatedResponseDTO,
@@ -49,6 +50,7 @@ from src.dto.response.portal_response_dto import (
     HrDashboardResponseDTO,
     JourneyStageResponseDTO,
     JourneyTemplateResponseDTO,
+    StageDraftChangeResponseDTO,
     StageNodeResponseDTO,
     StageOptionResponseDTO,
     TaskNodeResponseDTO,
@@ -432,6 +434,10 @@ async def accept_ai_task_proposal(
     return TaskTemplateResponseDTO.model_validate(task, from_attributes=True)
 
 
+def _stage_changes(changes: list[document_removal_service.StageDraftChange]) -> list[StageDraftChangeResponseDTO]:
+    return [StageDraftChangeResponseDTO(**vars(change)) for change in changes]
+
+
 @router.patch("/documents/{document_id}/status", response_model=DocumentListItemResponseDTO)
 async def set_document_status(
     document_id: int,
@@ -439,15 +445,19 @@ async def set_document_status(
     user: Annotated[User, Depends(require_role(UserRole.HR, UserRole.ADMIN))],
     db: Annotated[AsyncSession, Depends(get_db)],
 ) -> DocumentListItemResponseDTO:
-    """Ẩn/kích hoạt lại tài liệu — không xóa cứng (giữ lịch sử ingest). Khi tắt, `tasks` chọn giữ hay xóa task chỉ dựa vào tài liệu."""
-    await document_removal_service.set_status(
+    """Ẩn/kích hoạt lại tài liệu — không xóa cứng (giữ lịch sử ingest). Khi tắt, `tasks` chọn giữ hay xóa task chỉ dựa vào tài liệu.
+
+    `stages_changed`: các ngày đã ghi việc xóa task vào bản nháp (HR áp dụng bản nháp thì nhân viên mới nhận thông báo).
+    """
+    _, drafts = await document_removal_service.set_status(
         db, document_id=document_id, status=DocumentStatus(body.status), tasks=body.tasks, actor=user
     )
     items = [item for item in await template_service.list_documents(db) if item.id == document_id]
     if not items:
         raise PortalError(404, "DOCUMENT_NOT_FOUND", "portal.document_not_found")
-    item = items[0]
-    return _document_item(item)
+    result = _document_item(item=items[0])
+    result.stages_changed = _stage_changes(drafts)
+    return result
 
 
 def _task_refs(refs: list[document_removal_service.TaskRef]) -> list[DocumentTaskRefResponseDTO]:
@@ -474,16 +484,19 @@ async def document_impact(
     )
 
 
-@router.delete("/documents/{document_id}", status_code=204)
+@router.delete("/documents/{document_id}", response_model=DocumentRemovalResultResponseDTO)
 async def delete_document(
     document_id: int,
     user: Annotated[User, Depends(require_role(UserRole.HR, UserRole.ADMIN))],
     db: Annotated[AsyncSession, Depends(get_db)],
     tasks: Annotated[Literal["KEEP", "DELETE"] | None, Query()] = None,
-) -> Response:
-    """Xóa cứng tài liệu và mọi phiên bản (không hoàn tác). Tài liệu đang có task trích dẫn thì phải chọn `tasks`=KEEP hoặc DELETE."""
-    await document_removal_service.delete_document(db, document_id=document_id, tasks=tasks, actor=user)
-    return Response(status_code=204)
+) -> DocumentRemovalResultResponseDTO:
+    """Xóa cứng tài liệu và mọi phiên bản (không hoàn tác). Tài liệu đang có task trích dẫn thì phải chọn `tasks`=KEEP hoặc DELETE.
+
+    `tasks`=DELETE ghi việc xóa vào BẢN NHÁP của từng ngày (trả ở `stages_changed`), không xóa thẳng bản đang áp dụng.
+    """
+    drafts = await document_removal_service.delete_document(db, document_id=document_id, tasks=tasks, actor=user)
+    return DocumentRemovalResultResponseDTO(stages_changed=_stage_changes(drafts))
 
 
 def _task_node_dto(
