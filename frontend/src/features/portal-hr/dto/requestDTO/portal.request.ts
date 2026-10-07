@@ -84,7 +84,16 @@ export type UpdateDocumentRequestDTO = {
 
 export type SetDocumentStatusRequestDTO = {
   status: "ACTIVE" | "ARCHIVED";
+  /** Chỉ dùng khi tắt: KEEP giữ mọi task, DELETE xóa các task chỉ dựa vào tài liệu này. */
+  tasks?: DocumentTaskChoiceDTO;
 };
+
+export type CreateAiTaskProposalFromSectionsRequestDTO = {
+  document_version_id: number;
+  section_ids: number[];
+};
+
+export type DocumentTaskChoiceDTO = "KEEP" | "DELETE";
 
 export type CreateStageVersionRequestDTO = {
   /** Sao chép từ bản này; bỏ trống = bản đang áp dụng. */

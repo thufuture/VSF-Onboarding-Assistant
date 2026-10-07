@@ -29,6 +29,8 @@ vi.mock("@/features/portal-hr/api", () => {
       listActiveJobs: vi.fn(),
       createAiTaskProposalJob: vi.fn(),
       acceptAiTaskProposal: vi.fn(),
+      proposeAiTasksFromSections: vi.fn(),
+      getDocumentSection: vi.fn(),
     },
   };
 });
@@ -186,7 +188,8 @@ describe("Tạo task bằng AI: thứ tự và tiên quyết", () => {
     fireEvent.click(screen.getByRole("button", { name: t.document.done }));
     fireEvent.click(await screen.findByRole("button", { name: new RegExp(t.run.submitCount.replace("{count}", "1")) }));
 
-    expect(await screen.findByText(/1 mục chưa có task: Nghe nội quy/)).toBeInTheDocument();
+    expect(await screen.findByText(/1 mục chưa có task/)).toBeInTheDocument();
+    expect(screen.getByText("Nghe nội quy")).toBeInTheDocument();
     fireEvent.click(await screen.findByRole("button", { name: new RegExp(t.propose.acceptPending) }));
     fireEvent.click(screen.getByRole("button", { name: new RegExp(t.propose.addToTasks) }));
 
@@ -197,5 +200,83 @@ describe("Tạo task bằng AI: thứ tự và tiên quyết", () => {
       { stageId: 70, title: "Cài Outlook", dependsOn: [101] },
       { stageId: 70, title: "Gửi ticket", dependsOn: [102] }, // tên không có thật bị bỏ, không gửi mã lạ
     ]);
+  });
+  it("mục AI bỏ qua: xem nội dung gốc rồi tạo task, task được thêm thẳng vào roadmap và mục biến khỏi cảnh báo", async () => {
+    api.listDocuments.mockResolvedValue([
+      {
+        id: 1,
+        title: "Hướng dẫn ngày 1",
+        category_name: "Onboarding",
+        status: "ACTIVE",
+        updated_at: "2026-10-01T00:00:00Z",
+        latest_version_id: 31,
+        section_count: 17,
+        source_key: "day1",
+        category_slug: "onboarding",
+        owner_name: "HR",
+        task_titles: [],
+        current_version_label: "1.0",
+        version_count: 1,
+        draft_count: 0,
+        processing_count: 0,
+        processing_version_ids: [],
+      },
+    ]);
+    api.listStageOptions.mockResolvedValue([
+      { id: 70, journey_template_id: 7, title: "Ngày 1", template_title: "Lộ trình onboarding" },
+    ]);
+    api.createAiTaskProposalJob.mockResolvedValue({ id: 500 } as never);
+    api.getJob.mockResolvedValue({
+      id: 500,
+      kind: "AI_TASK_PROPOSAL",
+      status: "SUCCEEDED",
+      progress_percent: 100,
+      stage: null,
+      error: null,
+      document_version_id: null,
+      created_at: "2026-10-02T00:00:00Z",
+      finished_at: "2026-10-02T00:01:00Z",
+      result: {
+        documents: [
+          {
+            version_id: 31,
+            document_title: "Hướng dẫn ngày 1",
+            version_label: "1.0",
+            status: "DONE",
+            proposals: [proposalOf("Nhận laptop", 1)],
+            skipped_info_sections: [{ section_id: 9, heading: "ẢNH ĐẠI DIỆN CHỮ KÝ SLIDE" }],
+          },
+        ],
+      },
+    } as never);
+    api.getDocumentSection.mockResolvedValue({
+      id: 9,
+      heading: "ẢNH ĐẠI DIỆN CHỮ KÝ SLIDE",
+      content: "Cập nhật ảnh đại diện Teams và cài chữ ký email.",
+      document_title: "Hướng dẫn ngày 1",
+      version_label: "1.0",
+    });
+    api.proposeAiTasksFromSections.mockResolvedValue([proposalOf("Cập nhật ảnh đại diện và chữ ký", 9)]);
+    renderPage();
+
+    fireEvent.click(await screen.findByRole("button", { name: new RegExp(t.document.pick) }));
+    fireEvent.click(await screen.findByRole("button", { name: /Hướng dẫn ngày 1/ }));
+    fireEvent.click(screen.getByRole("button", { name: t.document.done }));
+    fireEvent.click(await screen.findByRole("button", { name: new RegExp(t.run.submitCount.replace("{count}", "1")) }));
+
+    expect(await screen.findByText(/AI coi 1 mục là chỉ có thông tin/)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: t.result.section.view }));
+
+    const dialog = within(await screen.findByRole("dialog"));
+    expect(await dialog.findByText("Cập nhật ảnh đại diện Teams và cài chữ ký email.")).toBeInTheDocument();
+    expect(api.getDocumentSection).toHaveBeenCalledWith(31, 9);
+    fireEvent.click(dialog.getByRole("button", { name: new RegExp(t.result.section.createFromThis) }));
+
+    await waitFor(() =>
+      expect(api.proposeAiTasksFromSections).toHaveBeenCalledWith({ document_version_id: 31, section_ids: [9] }),
+    );
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
+    expect((await screen.findAllByText("Cập nhật ảnh đại diện và chữ ký")).length).toBeGreaterThan(0);
+    expect(screen.queryByText("ẢNH ĐẠI DIỆN CHỮ KÝ SLIDE")).not.toBeInTheDocument();
   });
 });

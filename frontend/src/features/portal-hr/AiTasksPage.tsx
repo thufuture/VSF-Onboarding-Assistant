@@ -29,6 +29,7 @@ import { AiRoadmapReview, nextReviewKey, type Review } from "./AiRoadmapReview";
 import { categoryStyle } from "./docCategory";
 import styles from "./AiTasksPage.module.scss";
 import { ProposalProgress } from "./ProposalProgress";
+import { SectionNotice } from "./SectionNotice";
 import { useJob } from "./useJob";
 
 function errorMessage(t: (key: string) => string, error: unknown): string {
@@ -282,6 +283,23 @@ export function AiTasksPage() {
       setNotice(t("propose.acceptedAll", { count: created }));
     }
     setBusy(null);
+  }
+
+  /** Đưa task do AI soạn cho mục HR chọn vào roadmap đang duyệt (bỏ trùng tên); HR vẫn bấm "Thêm vào Quản lý task" như mọi thẻ khác. */
+  function addSectionProposals(entry: AiProposalDocumentResultDTO, proposals: AiTaskProposalResponseDTO[]): boolean {
+    const origin = { versionId: entry.version_id, title: entry.document_title, label: entry.version_label };
+    const existing = new Set((reviews ?? []).map((review) => review.proposal.title));
+    const fresh = proposals.filter((proposal) => !existing.has(proposal.title));
+    if (fresh.length === 0) {
+      setNotice(t("result.section.duplicate"));
+      return false;
+    }
+    setReviews((current) => [
+      ...(current ?? []),
+      ...fresh.map((proposal) => ({ key: nextReviewKey(), proposal, status: "pending" as const, origin })),
+    ]);
+    setNotice(t("result.section.added", { count: fresh.length }));
+    return true;
   }
 
   function resetReview() {
@@ -590,26 +608,22 @@ export function AiTasksPage() {
                 <em>{t("result.truncated", { count: entry.truncated_sections })}</em>
               ) : null}
               {entry.uncovered_sections && entry.uncovered_sections.length > 0 ? (
-                <em title={entry.uncovered_sections.map((item) => item.heading ?? "").join("\n")}>
-                  {t("result.uncovered", {
-                    count: entry.uncovered_sections.length,
-                    names: entry.uncovered_sections
-                      .slice(0, 3)
-                      .map((item) => item.heading ?? "")
-                      .join("; "),
-                  })}
-                </em>
+                <SectionNotice
+                  disabled={busy !== null}
+                  kind="uncovered"
+                  onAdd={(proposals) => addSectionProposals(entry, proposals)}
+                  sections={entry.uncovered_sections}
+                  versionId={entry.version_id}
+                />
               ) : null}
               {entry.skipped_info_sections && entry.skipped_info_sections.length > 0 ? (
-                <em title={entry.skipped_info_sections.map((item) => item.heading ?? "").join("\n")}>
-                  {t("result.skippedInfo", {
-                    count: entry.skipped_info_sections.length,
-                    names: entry.skipped_info_sections
-                      .slice(0, 3)
-                      .map((item) => item.heading ?? "")
-                      .join("; "),
-                  })}
-                </em>
+                <SectionNotice
+                  disabled={busy !== null}
+                  kind="skippedInfo"
+                  onAdd={(proposals) => addSectionProposals(entry, proposals)}
+                  sections={entry.skipped_info_sections}
+                  versionId={entry.version_id}
+                />
               ) : null}
               {entry.status === "FAILED" ? (
                 <button

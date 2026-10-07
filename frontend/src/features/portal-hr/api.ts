@@ -2,12 +2,14 @@ import type {
   AcceptAiTaskProposalRequestDTO,
   ActivateDocumentVersionRequestDTO,
   CopyDocumentVersionRequestDTO,
+  CreateAiTaskProposalFromSectionsRequestDTO,
   CreateAiTaskProposalJobRequestDTO,
   CreateAiTaskProposalRequestDTO,
   CreateJourneyStageRequestDTO,
   CreateJourneyTemplateRequestDTO,
   CreateStageVersionRequestDTO,
   CreateTaskManualRequestDTO,
+  DocumentTaskChoiceDTO,
   SetDocumentStatusRequestDTO,
   UpdateDocumentRequestDTO,
   UpdateDocumentVersionRequestDTO,
@@ -20,7 +22,9 @@ import type {
   ApplyResultResponseDTO,
   ChangePreviewResponseDTO,
   DocumentCategoryResponseDTO,
+  DocumentImpactResponseDTO,
   DocumentListItemResponseDTO,
+  DocumentSectionResponseDTO,
   DocumentUploadResponseDTO,
   DocumentVersionDetailResponseDTO,
   DocumentVersionResponseDTO,
@@ -274,6 +278,15 @@ function setDocumentStatus(
   });
 }
 
+function getDocumentImpact(documentId: number): Promise<DocumentImpactResponseDTO> {
+  return request(`/api/v1/portal/documents/${documentId}/impact`);
+}
+
+function deleteDocument(documentId: number, tasks?: DocumentTaskChoiceDTO): Promise<void> {
+  const query = tasks ? `?tasks=${tasks}` : "";
+  return requestNoContent(`/api/v1/portal/documents/${documentId}${query}`, { method: "DELETE" });
+}
+
 function listMyTemplates(): Promise<TemplateNodeResponseDTO[]> {
   return request("/api/v1/portal/journey-templates/mine");
 }
@@ -396,6 +409,20 @@ function listActiveJobs(kind?: string): Promise<JobResponseDTO[]> {
   return request(`/api/v1/portal/jobs?active=true${query}`);
 }
 
+function proposeAiTasksFromSections(
+  body: CreateAiTaskProposalFromSectionsRequestDTO,
+): Promise<AiTaskProposalResponseDTO[]> {
+  return request("/api/v1/portal/ai/task-proposals/from-sections", {
+    method: "POST",
+    headers: JSON_HEADERS,
+    body: JSON.stringify(body),
+  });
+}
+
+function getDocumentSection(versionId: number, sectionId: number): Promise<DocumentSectionResponseDTO> {
+  return request(`/api/v1/portal/document-versions/${versionId}/sections/${sectionId}`);
+}
+
 function createAiTaskProposalJob(body: CreateAiTaskProposalJobRequestDTO): Promise<JobResponseDTO> {
   return request("/api/v1/portal/ai/task-proposal-jobs", {
     method: "POST",
@@ -435,6 +462,8 @@ export const portalHrApi = {
   listDocuments,
   listStageOptions,
   setDocumentStatus,
+  getDocumentImpact,
+  deleteDocument,
   listMyTemplates,
   createTaskManual,
   updateTaskTemplate,
@@ -452,4 +481,6 @@ export const portalHrApi = {
   getJob,
   listActiveJobs,
   createAiTaskProposalJob,
+  proposeAiTasksFromSections,
+  getDocumentSection,
 };

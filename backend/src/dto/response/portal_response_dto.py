@@ -91,6 +91,16 @@ class AiTaskSourceChunkResponseDTO(BaseModel):
     heading: str | None = None  # tiêu đề mục chứa đoạn trích, để HR biết đoạn nằm ở đâu
 
 
+class DocumentSectionResponseDTO(BaseModel):
+    """Một mục của tài liệu, để HR đọc lại mục AI đã bỏ qua."""
+
+    id: int
+    heading: str | None
+    content: str
+    document_title: str
+    version_label: str
+
+
 class AiTaskProposalResponseDTO(BaseModel):
     """Theo đúng contract v14 §14 — KHÔNG có `completion_mode` (P0A D1: mọi task chỉ tự-hoàn-thành)."""
 
@@ -160,6 +170,23 @@ class DocumentListItemResponseDTO(BaseModel):
     draft_count: int = 0
     processing_count: int = 0
     processing_version_ids: list[int] = []
+
+
+class DocumentTaskRefResponseDTO(BaseModel):
+    id: int
+    title: str
+    day_title: str
+    version_status: str
+
+
+class DocumentImpactResponseDTO(BaseModel):
+    """Việc tắt hoặc xóa một tài liệu sẽ chạm tới những gì: task chỉ dựa vào nó, task còn có nguồn khác, bản sao đã giao nhân viên."""
+
+    only_tasks: list[DocumentTaskRefResponseDTO]
+    shared_tasks: list[DocumentTaskRefResponseDTO]
+    employee_copies: int
+    version_count: int
+    processing: bool
 
 
 class DocumentCategoryResponseDTO(BaseModel):

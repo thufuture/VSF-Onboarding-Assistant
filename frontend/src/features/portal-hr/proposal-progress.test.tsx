@@ -286,7 +286,8 @@ describe("AiTasksPage: tiếp tục lượt đang chạy khi tải lại trang",
     fireEvent.click(screen.getByRole("button", { name: new RegExp(t.propose.addToTasks) }));
 
     // Mục AI bỏ qua vì chỉ là thông tin vẫn được báo để HR tự kiểm tra.
-    expect(await screen.findByText(/AI coi 1 mục là chỉ có thông tin nên không tạo task: Giới thiệu công ty/)).toBeInTheDocument();
+    expect(await screen.findByText(/AI coi 1 mục là chỉ có thông tin nên không tạo task/)).toBeInTheDocument();
+    expect(screen.getByText("Giới thiệu công ty")).toBeInTheDocument();
     expect(await screen.findByText("Đang tạo task 0/2")).toBeInTheDocument();
     await waitFor(() => expect(release).toHaveLength(1));
     await act(async () => release[0]!());
