@@ -30,6 +30,12 @@ variable "dev_ip_cidr" {
   default     = ""
 }
 
+variable "extra_dev_cidrs" {
+  description = "Các IP /32 khác của máy dev cũng được gọi cổng 8080 (mạng nhà cung cấp có thể ra internet qua nhiều IP luân phiên)."
+  type        = list(string)
+  default     = []
+}
+
 variable "embedder_az" {
   description = "AZ của máy embedding, trùng AZ máy chính để giảm độ trễ."
   type        = string
@@ -62,7 +68,7 @@ resource "aws_security_group" "embedder" {
       from_port   = 8080
       to_port     = 8080
       protocol    = "tcp"
-      cidr_blocks = [ingress.value]
+      cidr_blocks = distinct(concat([ingress.value], var.extra_dev_cidrs))
     }
   }
   ingress {

@@ -418,7 +418,12 @@ async def test_document_answer_has_a_validated_source_and_history_only_feeds_the
             await login(client, employee)
             first = (await ask(client, "Nghỉ phép năm được bao nhiêu ngày?")).json()
             second = (await ask(client, "còn nhân viên thử việc thì sao?", first["conversation_id"])).json()
+            # Câu hỏi có ký tự cú pháp của công cụ tìm kiếm (dấu hai chấm, ngoặc, nháy...) vẫn phải được trả lời, không ERROR.
+            special = (
+                await ask(client, 'Nghỉ phép năm: được (bao nhiêu) ngày? "12" + - ^ ~ * ? [x] {y} ! / thử')
+            ).json()
 
+        assert special["response_type"] == "ANSWER", special["message"]
         assert first["response_type"] == "ANSWER"
         assert first["claims"][0]["source"]["document_title"] == "Quy định nghỉ phép thử"
         assert first["claims"][0]["quote"] == quote

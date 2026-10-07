@@ -6,6 +6,7 @@ Cú pháp BM25/dense đã spike thật trên DB dev (mục 2, kế hoạch) — 
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from datetime import date
 
@@ -39,11 +40,22 @@ def _format_vector_literal(vector: list[float]) -> str:
     return "[" + ",".join(repr(v) for v in vector) + "]"
 
 
+_QUERY_SYNTAX = re.compile(r"[^\w\s]")
+
+
+def bm25_safe_query(query: str) -> str:
+    """Làm sạch câu hỏi trước khi đưa vào `@@@`: ParadeDB đọc chuỗi đó theo cú pháp truy vấn riêng, nên ký tự như `:` `(` `)` `"` `+` `-`
+    `^` `~` `*` `?` `[` `]` `{` `}` `!` `/` và dấu gạch chéo ngược làm câu lệnh không phân tích được và cả câu hỏi báo ERROR (nhân viên gõ "Nghỉ phép: mấy
+    ngày?" là dính). Chỉ giữ chữ, số, gạch dưới (nối từ ghép) và khoảng trắng; hạ chữ thường để `AND`/`OR`/`NOT` không thành toán tử."""
+    return " ".join(_QUERY_SYNTAX.sub(" ", query).lower().split())
+
+
 async def _bm25_search(
     session: AsyncSession, *, lexical_query: str, as_of: date, model_version: str, top_k: int
 ) -> list[tuple[int, int]]:
     """Trả về [(chunk_id, section_id)] sắp theo điểm BM25 giảm dần."""
-    if not lexical_query.strip():
+    lexical_query = bm25_safe_query(lexical_query)
+    if not lexical_query:
         return []
     rows = await session.execute(
         text(
