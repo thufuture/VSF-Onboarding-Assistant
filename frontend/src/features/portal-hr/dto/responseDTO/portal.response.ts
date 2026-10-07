@@ -261,14 +261,6 @@ export type DocumentListItemResponseDTO = {
   processing_version_ids: number[];
 };
 
-export type DocumentSectionResponseDTO = {
-  id: number;
-  heading: string | null;
-  content: string;
-  document_title: string;
-  version_label: string;
-};
-
 export type DocumentTaskRefResponseDTO = {
   id: number;
   title: string;

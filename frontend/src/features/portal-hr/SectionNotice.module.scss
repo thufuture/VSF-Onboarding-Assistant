@@ -79,24 +79,3 @@
   color: #b3261e;
   font-size: 12.5px;
 }
-
-.muted {
-  margin: 10px 0 0;
-  color: var(--app-ink-2);
-  font-size: 12.5px;
-}
-
-.content {
-  max-height: 46vh;
-  margin: 0;
-  padding: 12px 14px;
-  overflow: auto;
-  border: 1px solid var(--app-border);
-  border-radius: 5px;
-  background: var(--app-surface-2);
-  color: var(--app-ink);
-  font: inherit;
-  font-size: 13.5px;
-  line-height: 1.55;
-  white-space: pre-wrap;
-}

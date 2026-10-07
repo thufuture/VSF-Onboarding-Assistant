@@ -24,7 +24,6 @@ import type {
   DocumentCategoryResponseDTO,
   DocumentImpactResponseDTO,
   DocumentListItemResponseDTO,
-  DocumentSectionResponseDTO,
   DocumentUploadResponseDTO,
   DocumentVersionDetailResponseDTO,
   DocumentVersionResponseDTO,
@@ -419,8 +418,8 @@ function proposeAiTasksFromSections(
   });
 }
 
-function getDocumentSection(versionId: number, sectionId: number): Promise<DocumentSectionResponseDTO> {
-  return request(`/api/v1/portal/document-versions/${versionId}/sections/${sectionId}`);
+function getDocumentSectionOrder(versionId: number): Promise<number[]> {
+  return request(`/api/v1/portal/document-versions/${versionId}/section-order`);
 }
 
 function createAiTaskProposalJob(body: CreateAiTaskProposalJobRequestDTO): Promise<JobResponseDTO> {
@@ -482,5 +481,5 @@ export const portalHrApi = {
   listActiveJobs,
   createAiTaskProposalJob,
   proposeAiTasksFromSections,
-  getDocumentSection,
+  getDocumentSectionOrder,
 };

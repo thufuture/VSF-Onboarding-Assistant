@@ -805,6 +805,19 @@ async def load_section(session: AsyncSession, document_version_id: int, section_
     return section
 
 
+async def section_order(session: AsyncSession, document_version_id: int) -> list[int]:
+    ids = (
+        await session.scalars(
+            select(DocumentSection.id)
+            .where(DocumentSection.version_id == document_version_id)
+            .order_by(DocumentSection.section_index)
+        )
+    ).all()
+    if not ids:
+        raise PortalError(404, "DOCUMENT_VERSION_NOT_FOUND", "portal.document_version_not_found")
+    return list(ids)
+
+
 # HR đã đọc mục và xác nhận có việc cho nhân viên: không được bỏ qua như lúc AI tự đánh giá.
 _FAST_FORCED_RULES = (
     _FAST_RULES

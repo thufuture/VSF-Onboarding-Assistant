@@ -269,3 +269,15 @@
     }
   }
 }
+
+.footerActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  button[data-primary] {
+    border-color: var(--app-accent);
+    background: var(--app-accent);
+    color: var(--app-on-accent);
+  }
+}

@@ -7,7 +7,7 @@ from typing import Any
 
 import pytest
 
-from src.services.portal.ai_task_service import propose_tasks_for_sections
+from src.services.portal.ai_task_service import propose_tasks_for_sections, section_order
 from src.services.portal.errors import PortalError
 from src.services.portal.proposal_options import ProposalOptions
 
@@ -120,3 +120,27 @@ async def test_a_task_whose_source_cannot_be_verified_is_dropped() -> None:
             options=OPTIONS,
         )
     assert raised.value.code == "NO_TASK_FROM_SECTION"
+
+
+class _Rows:
+    def __init__(self, items: list[Any]) -> None:
+        self._items = items
+
+    def all(self) -> list[Any]:
+        return self._items
+
+
+class _OrderSession:
+    def __init__(self, ids: list[int]) -> None:
+        self._ids = ids
+
+    async def scalars(self, _query: object) -> _Rows:
+        return _Rows(self._ids)
+
+
+async def test_section_order_returns_ids_in_document_order_and_404_for_an_unknown_version() -> None:
+    assert await section_order(_OrderSession([3, 9, 20]), 5) == [3, 9, 20]
+
+    with pytest.raises(PortalError) as raised:
+        await section_order(_OrderSession([]), 999)
+    assert raised.value.code == "DOCUMENT_VERSION_NOT_FOUND"

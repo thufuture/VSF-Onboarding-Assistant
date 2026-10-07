@@ -30,10 +30,27 @@ vi.mock("@/features/portal-hr/api", () => {
       createAiTaskProposalJob: vi.fn(),
       acceptAiTaskProposal: vi.fn(),
       proposeAiTasksFromSections: vi.fn(),
-      getDocumentSection: vi.fn(),
+      getDocumentSectionOrder: vi.fn(),
     },
   };
 });
+vi.mock("@/features/chat/DocumentModal", () => ({
+  DocumentModal: ({
+    documentTitle,
+    sectionHeading,
+    actions,
+  }: {
+    documentTitle: string;
+    sectionHeading: string | null;
+    actions?: React.ReactNode;
+  }) => (
+    <div role="dialog">
+      <b>{documentTitle}</b>
+      <span>mở tại mục: {sectionHeading}</span>
+      {actions}
+    </div>
+  ),
+}));
 vi.mock("@/i18n/navigation", () => ({
   Link: ({ href, children }: { href: string; children: React.ReactNode }) => <a href={href}>{children}</a>,
   usePathname: () => "/admin/ai-tasks",
@@ -201,7 +218,7 @@ describe("Tạo task bằng AI: thứ tự và tiên quyết", () => {
       { stageId: 70, title: "Gửi ticket", dependsOn: [102] }, // tên không có thật bị bỏ, không gửi mã lạ
     ]);
   });
-  it("mục AI bỏ qua: xem nội dung gốc rồi tạo task, task được thêm thẳng vào roadmap và mục biến khỏi cảnh báo", async () => {
+  it("mục AI bỏ qua: Xem mở tài liệu đúng mục, Tạo task chèn vào đúng vị trí theo thứ tự tài liệu và báo task thứ mấy", async () => {
     api.listDocuments.mockResolvedValue([
       {
         id: 1,
@@ -243,19 +260,17 @@ describe("Tạo task bằng AI: thứ tự và tiên quyết", () => {
             document_title: "Hướng dẫn ngày 1",
             version_label: "1.0",
             status: "DONE",
-            proposals: [proposalOf("Nhận laptop", 1)],
-            skipped_info_sections: [{ section_id: 9, heading: "ẢNH ĐẠI DIỆN CHỮ KÝ SLIDE" }],
+            // Task A trích mục 1, task B trích mục 20; mục bị bỏ qua là mục 9 nằm GIỮA hai mục đó trong tài liệu.
+            proposals: [proposalOf("Task A", 1), proposalOf("Task B", 20)],
+            skipped_info_sections: [
+              { section_id: 9, heading: "ẢNH ĐẠI DIỆN CHỮ KÝ SLIDE" },
+              { section_id: 30, heading: "Mục cuối bị bỏ" },
+            ],
           },
         ],
       },
     } as never);
-    api.getDocumentSection.mockResolvedValue({
-      id: 9,
-      heading: "ẢNH ĐẠI DIỆN CHỮ KÝ SLIDE",
-      content: "Cập nhật ảnh đại diện Teams và cài chữ ký email.",
-      document_title: "Hướng dẫn ngày 1",
-      version_label: "1.0",
-    });
+    api.getDocumentSectionOrder.mockResolvedValue([1, 9, 20, 30]);
     api.proposeAiTasksFromSections.mockResolvedValue([proposalOf("Cập nhật ảnh đại diện và chữ ký", 9)]);
     renderPage();
 
@@ -264,19 +279,24 @@ describe("Tạo task bằng AI: thứ tự và tiên quyết", () => {
     fireEvent.click(screen.getByRole("button", { name: t.document.done }));
     fireEvent.click(await screen.findByRole("button", { name: new RegExp(t.run.submitCount.replace("{count}", "1")) }));
 
-    expect(await screen.findByText(/AI coi 1 mục là chỉ có thông tin/)).toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", { name: t.result.section.view }));
-
+    expect(await screen.findByText(/AI coi 2 mục là chỉ có thông tin/)).toBeInTheDocument();
+    // Xem: mở đúng tài liệu, tại đúng mục đó (cùng hộp thoại xem nguồn của task).
+    fireEvent.click(screen.getAllByRole("button", { name: t.result.section.view })[0]!);
     const dialog = within(await screen.findByRole("dialog"));
-    expect(await dialog.findByText("Cập nhật ảnh đại diện Teams và cài chữ ký email.")).toBeInTheDocument();
-    expect(api.getDocumentSection).toHaveBeenCalledWith(31, 9);
+    expect(dialog.getByText("mở tại mục: ẢNH ĐẠI DIỆN CHỮ KÝ SLIDE")).toBeInTheDocument();
     fireEvent.click(dialog.getByRole("button", { name: new RegExp(t.result.section.createFromThis) }));
 
     await waitFor(() =>
       expect(api.proposeAiTasksFromSections).toHaveBeenCalledWith({ document_version_id: 31, section_ids: [9] }),
     );
     await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
-    expect((await screen.findAllByText("Cập nhật ảnh đại diện và chữ ký")).length).toBeGreaterThan(0);
+    // Chèn giữa Task A và Task B (vị trí 2), không dồn xuống cuối; báo rõ vị trí.
+    expect(await screen.findByText(/vị trí Task 2: Cập nhật ảnh đại diện và chữ ký/)).toBeInTheDocument();
     expect(screen.queryByText("ẢNH ĐẠI DIỆN CHỮ KÝ SLIDE")).not.toBeInTheDocument();
+
+    // Loại bỏ: mục còn lại biến khỏi cảnh báo mà không gọi AI.
+    fireEvent.click(screen.getByRole("button", { name: t.result.section.dismiss }));
+    expect(screen.queryByText("Mục cuối bị bỏ")).not.toBeInTheDocument();
+    expect(api.proposeAiTasksFromSections).toHaveBeenCalledTimes(1);
   });
 });

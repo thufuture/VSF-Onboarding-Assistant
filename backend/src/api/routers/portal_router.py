@@ -8,7 +8,6 @@ from typing import Annotated, Literal
 
 from fastapi import APIRouter, Depends, Query, Response
 from fastapi.responses import FileResponse, RedirectResponse
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.api.dependencies import (
@@ -39,7 +38,6 @@ from src.dto.response.portal_response_dto import (
     DocumentCategoryResponseDTO,
     DocumentImpactResponseDTO,
     DocumentListItemResponseDTO,
-    DocumentSectionResponseDTO,
     DocumentTaskRefResponseDTO,
     EmployeeDocumentResponseDTO,
     EmployeeJourneyCreatedResponseDTO,
@@ -60,8 +58,6 @@ from src.dto.response.portal_response_dto import (
     VersionNodeResponseDTO,
 )
 from src.infrastructure.ai.chat_completion_port import ChatCompletionPort
-from src.model.document import Document
-from src.model.document_version import DocumentVersion
 from src.model.employee_journey import EmployeeJourney
 from src.model.enums import DocumentStatus, UserRole
 from src.model.journey_stage import JourneyStage
@@ -411,28 +407,14 @@ async def propose_ai_tasks_from_sections(
     )
 
 
-@router.get("/document-versions/{version_id}/sections/{section_id}", response_model=DocumentSectionResponseDTO)
-async def get_document_section(
+@router.get("/document-versions/{version_id}/section-order")
+async def get_document_section_order(
     version_id: int,
-    section_id: int,
     user: Annotated[User, Depends(require_role(UserRole.HR, UserRole.ADMIN))],
     db: Annotated[AsyncSession, Depends(get_db)],
-) -> DocumentSectionResponseDTO:
-    section = await ai_task_service.load_section(db, version_id, section_id)
-    row = (
-        await db.execute(
-            select(Document.title, DocumentVersion.version_label)
-            .join(DocumentVersion, DocumentVersion.document_id == Document.id)
-            .where(DocumentVersion.id == version_id)
-        )
-    ).one()
-    return DocumentSectionResponseDTO(
-        id=section.id,
-        heading=section.heading,
-        content=ai_task_service.section_text(section),
-        document_title=row[0],
-        version_label=row[1],
-    )
+) -> list[int]:
+    """Mã các mục của phiên bản theo thứ tự trong tài liệu, để giao diện chèn task mới đúng vị trí trên roadmap."""
+    return await ai_task_service.section_order(db, version_id)
 
 
 @router.post("/stages/{stage_id}/tasks/from-proposal", response_model=TaskTemplateResponseDTO)

@@ -91,16 +91,6 @@ class AiTaskSourceChunkResponseDTO(BaseModel):
     heading: str | None = None  # tiêu đề mục chứa đoạn trích, để HR biết đoạn nằm ở đâu
 
 
-class DocumentSectionResponseDTO(BaseModel):
-    """Một mục của tài liệu, để HR đọc lại mục AI đã bỏ qua."""
-
-    id: int
-    heading: str | None
-    content: str
-    document_title: str
-    version_label: str
-
-
 class AiTaskProposalResponseDTO(BaseModel):
     """Theo đúng contract v14 §14 — KHÔNG có `completion_mode` (P0A D1: mọi task chỉ tự-hoàn-thành)."""
 
