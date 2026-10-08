@@ -80,6 +80,29 @@ compose pull backend caddy db
 # 3. Khởi động db, chờ healthy
 compose up -d --wait db
 
+# 3b. Embedding tự host cùng máy (xem deploy/aws/embedder): build ảnh khi thiếu hoặc mã nguồn đổi, rồi bật. Lỗi ở đây KHÔNG chặn
+# việc deploy backend (embedder hỏng thì Viga/nạp tài liệu hỏng, nhưng backend vẫn lên để xem và sửa), chỉ cảnh báo.
+EMBEDDER_DIR="$ROOT/deploy/aws/embedder"
+EMBEDDER_IMAGE="vsf-embedder:bge-m3"
+ensure_embedder_image() {
+  local want have
+  want="$(cat "$EMBEDDER_DIR/Dockerfile" "$EMBEDDER_DIR/requirements.txt" "$EMBEDDER_DIR/server.py" | sha256sum | cut -c1-16)"
+  have="$(docker image inspect "$EMBEDDER_IMAGE" --format '{{index .Config.Labels "vsf.embedder.src"}}' 2>/dev/null || true)"
+  if [ "$have" = "$want" ]; then return 0; fi
+  echo "Build ảnh embedder ($want), mất vài phút và chạy ở mức ưu tiên thấp để không làm chậm backend..."
+  nice -n 19 ionice -c3 docker build --label "vsf.embedder.src=$want" -t "$EMBEDDER_IMAGE" "$EMBEDDER_DIR"
+  docker builder prune -af > /dev/null || true # bộ nhớ đệm build có thể lên tới ~10 GB; ảnh đã nằm trong kho ảnh
+}
+if [ -f "$ROOT/env/embedder.env" ]; then
+  if ensure_embedder_image && compose up -d embedder; then
+    echo "Embedder đã bật."
+  else
+    echo "CẢNH BÁO: embedder chưa chạy được (xem: docker compose logs embedder). Backend vẫn được deploy." >&2
+  fi
+else
+  echo "env/embedder.env chưa có: bỏ qua embedder tự host (backend dùng EMBEDDING_ENDPOINT hiện tại)."
+fi
+
 # 4. Backup trước migrate (bỏ qua lần deploy đầu). backup-db.sh (scripts/vps/) nhận VSF_ROOT + COMPOSE_FILE
 # để trỏ đúng thư mục/compose file AWS — không cần bản riêng.
 if [ -n "$previous" ]; then VSF_ROOT="$ROOT" COMPOSE_FILE="$COMPOSE_FILE" "$VPS_SCRIPTS/backup-db.sh"; fi
@@ -97,6 +120,7 @@ if [ -n "$previous" ]; then echo "$previous" > "$STATE/previous-image"; fi
 echo "$BACKEND_IMAGE" > "$STATE/current-image"
 
 # 10. Dọn
-docker image prune -af --filter "until=168h" > /dev/null || true
+# Không dọn ảnh embedder (9 GB, build lâu) kể cả khi container đang tạm dừng: nó mang nhãn vsf.embedder.src.
+docker image prune -af --filter "until=168h" --filter "label!=vsf.embedder.src" > /dev/null || true
 docker logout "${IMAGE_PREFIX%%/*}" > /dev/null 2>&1 || true
 echo "Deploy xong: $BACKEND_IMAGE"
