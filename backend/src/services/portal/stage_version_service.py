@@ -173,8 +173,11 @@ async def create_draft(
     note: str | None,
     user: User,
     commit: bool = True,
+    empty: bool = False,
 ) -> StageVersion:
-    """Tạo bản nháp mới của một ngày, sao chép từ `from_version_id` (mặc định: bản đang áp dụng, không thì bản mới nhất)."""
+    """Tạo bản nháp mới của một ngày, sao chép từ `from_version_id` (mặc định: bản đang áp dụng, không thì bản mới nhất).
+
+    `empty=True`: bản nháp RỖNG (không sao chép task nào), dùng khi thay cả ngày bằng một roadmap mới (ví dụ vừa tạo bằng AI)."""
     versions = await versions_of_stage(session, stage.id)
     source: StageVersion | None
     if from_version_id is not None:
@@ -193,7 +196,7 @@ async def create_draft(
     )
     session.add(draft)
     await session.flush()
-    if source is not None:
+    if source is not None and not empty:
         await _clone_tasks(session, source, draft)
     if commit:
         await session.commit()

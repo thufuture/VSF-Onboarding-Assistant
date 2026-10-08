@@ -100,6 +100,8 @@ export function AiTasksPage() {
   const [busy, setBusy] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [acceptedCount, setAcceptedCount] = useState(0);
+  // Ngày đích đã có task: thay thế bằng roadmap vừa tạo (bản nháp mới chỉ gồm task vừa tạo) hay nối thêm vào task hiện có.
+  const [placement, setPlacement] = useState<"replace" | "append">("replace");
   // Đang tạo task thật sau khi HR duyệt: số đã tạo / tổng, để hiện "Đang tạo task 3/16".
   const [creating, setCreating] = useState<{ done: number; total: number } | null>(null);
   // Task đã tạo trong lượt này (tên → mã) để đổi "tiên quyết theo tên" của AI thành tiên quyết thật khi tạo tiếp.
@@ -177,6 +179,9 @@ export function AiTasksPage() {
   // Bước 1 tới khi bấm phân tích; đang chạy là "AI dựng roadmap"; có đề xuất là "HR chấp nhận"; đã chấp nhận là bước cuối.
   const stepIndex = reviews !== null ? (acceptedCount > 0 && reviews.length === 0 ? 3 : 2) : busy === "propose" ? 1 : 0;
 
+  const targetStage = stages?.find((stage) => stage.id === selectedStageId) ?? null;
+  const existingTasks = targetStage?.existing_task_count ?? 0;
+
   const readyDocs = (documents ?? []).filter((d) => d.latest_version_id !== null && d.status === "ACTIVE");
   const pickerDocs = readyDocs.filter((d) => {
     const q = pickerQuery.trim().toLowerCase();
@@ -240,7 +245,7 @@ export function AiTasksPage() {
     }
   }
 
-  async function acceptOne(proposal: AiTaskProposalResponseDTO): Promise<boolean> {
+  async function acceptOne(proposal: AiTaskProposalResponseDTO, versionId?: number): Promise<boolean> {
     if (!selectedStageId) return false;
     try {
       const dependsOn = (proposal.prerequisites ?? [])
@@ -257,6 +262,7 @@ export function AiTasksPage() {
         warnings: proposal.warnings,
         task_group: proposal.task_group ?? null,
         depends_on: dependsOn,
+        stage_version_id: versionId,
       });
       createdByTitle.current.set(proposal.title, created.id);
       return true;
@@ -275,10 +281,24 @@ export function AiTasksPage() {
     let created = 0;
     const remaining = [...reviews];
     const total = remaining.length;
+    // Thay thế: một bản nháp RỖNG của ngày nhận toàn bộ task vừa tạo (không sao chép task cũ, bản đang áp dụng giữ nguyên).
+    let versionId: number | undefined;
+    let draftNo: number | null = null;
+    if (existingTasks > 0 && placement === "replace") {
+      try {
+        const draft = await portalHrApi.createStageVersion(selectedStageId, { empty: true, note: t("placement.draftNote") });
+        versionId = draft.id;
+        draftNo = draft.version_no;
+      } catch (caught) {
+        setError(errorMessage(t, caught));
+        setBusy(null);
+        return;
+      }
+    }
     setCreating({ done: 0, total });
     while (remaining.length > 0) {
       const next = remaining[0]!;
-      if (!(await acceptOne(next.proposal))) break;
+      if (!(await acceptOne(next.proposal, versionId))) break;
       remaining.shift();
       created += 1;
       setCreating({ done: created, total });
@@ -287,7 +307,12 @@ export function AiTasksPage() {
     setReviews(remaining);
     if (created > 0) {
       setAcceptedCount((n) => n + created);
-      setNotice(t("propose.acceptedAll", { count: created }));
+      setNotice(
+        draftNo !== null
+          ? t("placement.replacedAll", { count: created, n: draftNo })
+          : t("propose.acceptedAll", { count: created }),
+      );
+      loadStages(); // số task hiện có và bản nháp của ngày đã đổi
     }
     setBusy(null);
   }
@@ -675,6 +700,26 @@ export function AiTasksPage() {
             </li>
           ))}
         </ul>
+      ) : null}
+
+      {reviews && existingTasks > 0 ? (
+        <fieldset className={styles.placement} data-testid="placement">
+          <legend>{t("placement.legend", { day: targetStage?.title ?? "", count: existingTasks })}</legend>
+          <label className={placement === "replace" ? styles.placementOn : ""}>
+            <input checked={placement === "replace"} name="placement" onChange={() => setPlacement("replace")} type="radio" />
+            <span>
+              <b>{t("placement.replace")}</b>
+              <small>{t("placement.replaceHint", { count: existingTasks })}</small>
+            </span>
+          </label>
+          <label className={placement === "append" ? styles.placementOn : ""}>
+            <input checked={placement === "append"} name="placement" onChange={() => setPlacement("append")} type="radio" />
+            <span>
+              <b>{t("placement.append")}</b>
+              <small>{t("placement.appendHint", { count: existingTasks })}</small>
+            </span>
+          </label>
+        </fieldset>
       ) : null}
 
       {reviews ? (

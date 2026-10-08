@@ -208,6 +208,7 @@ class StageOptionResponseDTO(BaseModel):
     draft_version_id: int | None = None  # bản nháp sẽ nhận task AI (chưa có thì tạo khi tạo task đầu tiên)
     draft_version_no: int | None = None
     applied_version_no: int | None = None
+    existing_task_count: int = 0  # task đang có trong bản sẽ nhận task AI: >0 thì HR chọn thay thế hay nối thêm
 
 
 class TaskNodeResponseDTO(BaseModel):

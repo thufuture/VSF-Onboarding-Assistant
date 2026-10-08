@@ -99,4 +99,6 @@ export type CreateStageVersionRequestDTO = {
   /** Sao chép từ bản này; bỏ trống = bản đang áp dụng. */
   from_version_id?: number | null;
   note?: string | null;
+  /** Bản nháp rỗng (không sao chép task): thay cả ngày bằng roadmap mới thay vì nối thêm vào task cũ. */
+  empty?: boolean;
 };

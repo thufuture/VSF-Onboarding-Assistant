@@ -1014,6 +1014,15 @@
       "unavailable": "Something went wrong, try again later.",
       "network": "Could not reach the server."
     },
+    "placement": {
+      "legend": "{day} already has {count} tasks. The tasks you just created will:",
+      "replace": "Replace with the new roadmap",
+      "replaceHint": "Creates a new draft with only the tasks you just created; the {count} old tasks are not copied. The applied version stays as it is until you update employees.",
+      "append": "Add to the existing tasks",
+      "appendHint": "Appends the new tasks after the {count} old ones in the draft (easy to duplicate if you regenerate from the same documents).",
+      "draftNote": "AI-generated roadmap (replacement)",
+      "replacedAll": "Created draft {n} with the {count} new tasks (not sent to employees yet). Review it in Task management, then click Update employees."
+    },
     "result": {
       "heading": "Result per document",
       "done": "{count} proposals",
@@ -1494,6 +1503,10 @@
       "unlockedBody": "Nothing is blocking this task any more.",
       "doneTitle": "Completed: {title}",
       "doneBody": "This task is recorded in your journey.",
+      "unlockedManyTitle": "You have {count} tasks you can do now",
+      "unlockedManyBody": "None of them wait on a prerequisite. Open Tasks to pick one.",
+      "doneManyTitle": "You finished {count} tasks",
+      "doneManyBody": "They are recorded in your journey.",
       "reminderTitle": "{day} still has open tasks",
       "reminderBody": "{count} required tasks left on this day.",
       "unreadMark": "Unread",

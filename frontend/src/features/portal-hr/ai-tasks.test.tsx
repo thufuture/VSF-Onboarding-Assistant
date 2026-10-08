@@ -30,6 +30,7 @@ vi.mock("@/features/portal-hr/api", () => {
       createAiTaskProposalJob: vi.fn(),
       acceptAiTaskProposal: vi.fn(),
       proposeAiTasksFromSections: vi.fn(),
+      createStageVersion: vi.fn(),
       getDocumentSectionOrder: vi.fn(),
     },
   };
@@ -298,5 +299,96 @@ describe("Tạo task bằng AI: thứ tự và tiên quyết", () => {
     fireEvent.click(screen.getByRole("button", { name: t.result.section.dismiss }));
     expect(screen.queryByText("Mục cuối bị bỏ")).not.toBeInTheDocument();
     expect(api.proposeAiTasksFromSections).toHaveBeenCalledTimes(1);
+  });
+  async function runForDayWithTasks(existing: number) {
+    api.listDocuments.mockResolvedValue([
+      {
+        id: 1,
+        title: "Hướng dẫn ngày 1",
+        category_name: "Onboarding",
+        status: "ACTIVE",
+        updated_at: "2026-10-01T00:00:00Z",
+        latest_version_id: 31,
+        section_count: 17,
+        source_key: "day1",
+        category_slug: "onboarding",
+        owner_name: "HR",
+        task_titles: [],
+        current_version_label: "1.0",
+        version_count: 1,
+        draft_count: 0,
+        processing_count: 0,
+        processing_version_ids: [],
+      },
+    ]);
+    api.listStageOptions.mockResolvedValue([
+      { id: 70, journey_template_id: 7, title: "Ngày 3", template_title: "Lộ trình onboarding", existing_task_count: existing },
+    ]);
+    api.createAiTaskProposalJob.mockResolvedValue({ id: 500 } as never);
+    api.getJob.mockResolvedValue({
+      id: 500,
+      kind: "AI_TASK_PROPOSAL",
+      status: "SUCCEEDED",
+      progress_percent: 100,
+      stage: null,
+      error: null,
+      document_version_id: null,
+      created_at: "2026-10-02T00:00:00Z",
+      finished_at: "2026-10-02T00:01:00Z",
+      result: {
+        documents: [
+          {
+            version_id: 31,
+            document_title: "Hướng dẫn ngày 1",
+            version_label: "1.0",
+            status: "DONE",
+            proposals: [proposalOf("Việc A", 1), proposalOf("Việc B", 2)],
+          },
+        ],
+      },
+    } as never);
+    api.createStageVersion.mockResolvedValue({ id: 900, version_no: 4 } as never);
+    let nextId = 100;
+    api.acceptAiTaskProposal.mockImplementation(async () => ({ id: ++nextId }) as never);
+    renderPage();
+
+    fireEvent.click(await screen.findByRole("button", { name: new RegExp(t.document.pick) }));
+    fireEvent.click(await screen.findByRole("button", { name: /Hướng dẫn ngày 1/ }));
+    fireEvent.click(screen.getByRole("button", { name: t.document.done }));
+    fireEvent.click(await screen.findByRole("button", { name: new RegExp(t.run.submitCount.replace("{count}", "1")) }));
+  }
+
+  it("ngày đã có task: mặc định THAY THẾ, tạo bản nháp rỗng và đưa toàn bộ task vừa tạo vào đó (không nối thêm vào task cũ)", async () => {
+    await runForDayWithTasks(19);
+
+    const placement = within(await screen.findByTestId("placement"));
+    expect(placement.getByRole("radio", { name: new RegExp(t.placement.replace) })).toBeChecked();
+    fireEvent.click(await screen.findByRole("button", { name: new RegExp(t.propose.acceptPending) }));
+    fireEvent.click(screen.getByRole("button", { name: new RegExp(t.propose.addToTasks) }));
+
+    await waitFor(() => expect(api.acceptAiTaskProposal).toHaveBeenCalledTimes(2));
+    expect(api.createStageVersion).toHaveBeenCalledWith(70, { empty: true, note: t.placement.draftNote });
+    expect(api.acceptAiTaskProposal.mock.calls.map(([, body]) => body.stage_version_id)).toEqual([900, 900]);
+    expect(await screen.findByText(/Đã tạo bản nháp 4 gồm 2 task vừa tạo/)).toBeInTheDocument();
+  });
+
+  it("chọn nối thêm: không tạo bản nháp rỗng, task vào bản nháp hiện có", async () => {
+    await runForDayWithTasks(19);
+
+    const placement = within(await screen.findByTestId("placement"));
+    fireEvent.click(placement.getByRole("radio", { name: new RegExp(t.placement.append) }));
+    fireEvent.click(await screen.findByRole("button", { name: new RegExp(t.propose.acceptPending) }));
+    fireEvent.click(screen.getByRole("button", { name: new RegExp(t.propose.addToTasks) }));
+
+    await waitFor(() => expect(api.acceptAiTaskProposal).toHaveBeenCalledTimes(2));
+    expect(api.createStageVersion).not.toHaveBeenCalled();
+    expect(api.acceptAiTaskProposal.mock.calls.map(([, body]) => body.stage_version_id)).toEqual([undefined, undefined]);
+  });
+
+  it("ngày chưa có task: không hỏi thay thế hay nối thêm", async () => {
+    await runForDayWithTasks(0);
+
+    expect(await screen.findByRole("button", { name: new RegExp(t.propose.acceptPending) })).toBeInTheDocument();
+    expect(screen.queryByTestId("placement")).not.toBeInTheDocument();
   });
 });

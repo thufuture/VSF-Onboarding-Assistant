@@ -76,7 +76,7 @@ async def create_stage_version(
     template = await template_service.get_journey_template(db, stage.journey_template_id)
     await _check_template_scope(db, user, template)
     version = await stage_version_service.create_draft(
-        db, stage=stage, from_version_id=body.from_version_id, note=body.note, user=user
+        db, stage=stage, from_version_id=body.from_version_id, note=body.note, user=user, empty=body.empty
     )
     return await _version_dto(db, version)
 

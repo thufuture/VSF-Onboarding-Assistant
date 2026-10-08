@@ -200,21 +200,39 @@ describe("Khung của nhân viên mới", () => {
     expect(within(menu).getByRole("menuitem", { name: new RegExp(m.menu.logout) })).toBeInTheDocument();
   });
 
-  it("chuông đếm số chưa đọc và mở thẻ thông báo suy ra từ lộ trình thật", async () => {
+  it("chuông hiện thẻ gợi ý suy ra từ lộ trình nhưng chúng không tính vào số chưa đọc", async () => {
     renderEmployee(<p>nội dung</p>);
 
     const bell = await screen.findByRole("button", { name: m.nav.notifications });
-    // 1 việc làm được ngay + 1 nhắc việc của ngày + 1 lời chào = 3 thông báo chưa đọc.
-    await waitFor(() => expect(within(bell).getByText("3")).toBeInTheDocument());
-
     fireEvent.click(bell);
-    const card = screen.getByRole("menu", { name: m.nav.notifications });
+    const card = await screen.findByRole("menu", { name: m.nav.notifications });
     expect(within(card).getByText(`Bạn làm được ngay: ${LAPTOP.title}`)).toBeInTheDocument();
     expect(within(card).queryByRole("link")).not.toBeInTheDocument(); // không còn trang thông báo riêng
-    expect(within(card).getByRole("tab", { name: /Chưa đọc/ })).toBeInTheDocument();
+    expect(within(card).getByRole("tab", { name: /Chưa đọc \(0\)/ })).toBeInTheDocument();
+    // Việc làm được ngay + nhắc việc + lời chào chỉ là gợi ý: không có số trên chuông.
+    expect(within(bell).queryByText(/^\d+$/)).not.toBeInTheDocument();
+  });
+
+  it("nhiều việc làm được ngay chỉ là MỘT dòng, và số trên chuông chỉ đếm thông báo thật (không bằng số việc)", async () => {
+    const many = Array.from({ length: 14 }, (_, i) => task({ id: 100 + i, title: `Việc ${i + 1}` }));
+    vi.mocked(portalHrApi.getMyJourney).mockResolvedValue({ ...JOURNEY, tasks: many });
+    vi.mocked(portalHrApi.listMyJourneyNotices).mockResolvedValue([NOTICE]);
+    // Máy chủ ghi đã đọc: lần nạp lại sau đó trả thông báo có read_at.
+    vi.mocked(portalHrApi.markJourneyNoticeRead).mockImplementation(async () => {
+      vi.mocked(portalHrApi.listMyJourneyNotices).mockResolvedValue([{ ...NOTICE, read_at: "2026-10-01T00:00:00Z" }]);
+    });
+    renderEmployee(<p>nội dung</p>);
+
+    const bell = await screen.findByRole("button", { name: m.nav.notifications });
+    await waitFor(() => expect(within(bell).getByText("1")).toBeInTheDocument()); // đúng một thông báo thật
+    fireEvent.click(bell);
+    const card = screen.getByRole("menu", { name: m.nav.notifications });
+    expect(within(card).getAllByText("Bạn có 14 việc làm được ngay")).toHaveLength(1);
+    expect(within(card).queryByText("Bạn làm được ngay: Việc 1")).not.toBeInTheDocument();
+    expect(within(card).getByText("Ngày 1 có chỉnh sửa")).toBeInTheDocument();
 
     fireEvent.click(within(card).getByRole("button", { name: new RegExp(m.notifications.markAll) }));
-    await waitFor(() => expect(within(bell).queryByText("3")).not.toBeInTheDocument());
+    await waitFor(() => expect(within(bell).queryByText("1")).not.toBeInTheDocument());
   });
 
   it("mở ngăn Viga, hỏi qua API thật và hiện câu trả lời đã dịch theo khóa", async () => {

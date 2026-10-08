@@ -233,6 +233,8 @@ export type StageOptionResponseDTO = {
   draft_version_id?: number | null;
   draft_version_no?: number | null;
   applied_version_no?: number | null;
+  /** Task đang có trong bản sẽ nhận task AI: lớn hơn 0 thì HR chọn thay thế hay nối thêm. */
+  existing_task_count?: number;
 };
 
 export type HrDashboardResponseDTO = {

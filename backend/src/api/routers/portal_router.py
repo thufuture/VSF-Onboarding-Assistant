@@ -326,6 +326,7 @@ async def list_stage_options(
             draft_version_id=o.draft_version_id,
             draft_version_no=o.draft_version_no,
             applied_version_no=o.applied_version_no,
+            existing_task_count=o.existing_task_count,
         )
         for o in options
     ]

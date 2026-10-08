@@ -115,6 +115,8 @@ class CreateStageVersionRequestDTO(BaseModel):
 
     from_version_id: int | None = None
     note: str | None = None
+    # Bản nháp rỗng (không sao chép task): để thay cả ngày bằng roadmap mới thay vì nối thêm vào task cũ.
+    empty: bool = False
 
 
 class UpdateStageVersionRequestDTO(BaseModel):
