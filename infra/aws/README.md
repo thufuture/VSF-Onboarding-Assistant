@@ -55,3 +55,16 @@ Xóa sạch EC2, Security Group, Key Pair, Elastic IP trong một lệnh. **Mấ
 backup ra ngoài instance) — chạy `scripts/aws/deploy.sh` sẽ tự backup trước mỗi lần deploy sau lần đầu, nhưng
 bản backup nằm trên chính instance đó nên `destroy` cũng xóa luôn — tải bản backup mới nhất về máy bạn trước
 khi `destroy` nếu cần giữ dữ liệu.
+
+## Embedding BGE-M3
+
+Máy EC2 `vsf-embedder` riêng đã được **gỡ (08/10/2026)**; embedding chạy như service `embedder` cùng máy `vsf-aws`
+(xem `deploy/aws/embedder/README.md`). Không còn resource Terraform nào cho embedder.
+
+## Cảnh báo: không chạy `terraform apply` toàn bộ
+
+`terraform plan` hiện còn hai thay đổi có sẵn từ trước, **sẽ làm hỏng hệ thống nếu apply toàn bộ**:
+- `aws_security_group.vsf`: muốn xóa luật SSH `3.0.5.32/29` (EC2 Instance Connect, được thêm tay ngoài Terraform).
+- `aws_iam_role_policy.github_deploy`: muốn xóa chính sách `temporary-runner-ssh`, là thứ cho phép CI mở SSH tạm để deploy.
+
+Chỉ apply có chọn lọc (`-target=...`) và luôn đọc kỹ kế hoạch ("Plan: x to add, y to change, z to destroy") trước khi áp dụng.
