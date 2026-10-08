@@ -1,5 +1,11 @@
 # Kế hoạch: tự host BGE-M3 trên AWS để giảm độ trễ embedding (chưa làm gì trên AWS)
 
+> **Cập nhật 08/10/2026:** máy `vsf-embedder` đã được **gỡ**; embedder chạy cùng máy `vsf-aws` như service trong compose
+> (xem `deploy/aws/embedder/README.md`). Đo trước khi gộp: máy riêng chỉ dùng 2,7/7,6 GiB RAM và tải CPU ~0; trên máy chính
+> embedder giữ nguyên độ chính xác (cosine 1,000000, cùng `model_version`), một câu hỏi ~120 ms, lô 32 đoạn dài ~30 giây
+> (giới hạn 1,5 vCPU) mà `/api/v1/ready` của backend vẫn p95 26 ms. Tiết kiệm khoảng 87 USD/tháng. Nội dung dưới đây ghi lại
+> giai đoạn thử nghiệm trên máy riêng.
+
 Ngày viết: 06/10/2026. Trạng thái: **đã thực hiện đến bước đo và báo cáo**; xem `bao-cao-embedding-tu-host.md`. Đây là bản kế hoạch gốc, giữ nguyên để đối chiếu; những chỗ khác với thực tế được ghi ở phần cuối.
 
 ## 1. Vì sao làm

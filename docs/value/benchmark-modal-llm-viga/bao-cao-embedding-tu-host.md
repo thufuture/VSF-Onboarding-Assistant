@@ -1,5 +1,11 @@
 # Báo cáo: tự host BGE-M3 trên AWS so với Modal (độ trễ chính, độ chính xác)
 
+> **Cập nhật 08/10/2026:** máy `vsf-embedder` đã được **gỡ**; embedder chạy cùng máy `vsf-aws` như service trong compose
+> (xem `deploy/aws/embedder/README.md`). Đo trước khi gộp: máy riêng chỉ dùng 2,7/7,6 GiB RAM và tải CPU ~0; trên máy chính
+> embedder giữ nguyên độ chính xác (cosine 1,000000, cùng `model_version`), một câu hỏi ~120 ms, lô 32 đoạn dài ~30 giây
+> (giới hạn 1,5 vCPU) mà `/api/v1/ready` của backend vẫn p95 26 ms. Tiết kiệm khoảng 87 USD/tháng. Nội dung dưới đây ghi lại
+> giai đoạn thử nghiệm trên máy riêng.
+
 Ngày đo: 06/10/2026. Số liệu thô: `ket-qua/embedding_*.json` (bản chạy lỗi đầu tiên với chuỗi phiên bản sai đã bỏ). Kế hoạch gốc: `ke-hoach-tu-host-bge-m3-tren-aws.md`. Báo cáo LLM: `bao-cao-benchmark-llm-viga.md`.
 
 ## 1. Tóm tắt
