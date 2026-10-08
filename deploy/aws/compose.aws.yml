@@ -36,6 +36,35 @@ services:
         condition: service_healthy
     logging: *logging
 
+  embedder:
+    # Embedding BGE-M3 tự host, chạy cùng máy này (thay máy EC2 riêng). Backend gọi http://embedder:8080 qua mạng riêng,
+    # KHÔNG publish cổng nào ra ngoài. Ảnh được build NGAY TRÊN MÁY này từ ./embedder (scripts/aws/deploy.sh tự build khi
+    # thiếu hoặc khi mã nguồn đổi) nên không có bước pull. Khóa API và cấu hình nằm ở env/embedder.env (ngoài repo, quyền 600).
+    image: vsf-embedder:bge-m3
+    pull_policy: never
+    restart: unless-stopped
+    init: true
+    expose: ["8080"]
+    env_file:
+      - path: ${ENV_DIR:-/opt/vsf-aws/env}/embedder.env
+        required: false # máy chưa có file thì deploy.sh bỏ qua embedder, các service khác vẫn chạy
+    networks: [private]
+    # Giới hạn để một lô nạp tài liệu lớn không bóp nghẹt Postgres và backend trên cùng máy 2 vCPU/8 GiB. Đo thật 08/10/2026:
+    # lô 32 đoạn dài ~30 giây, đỉnh RAM mô hình ~1,7 GB, /api/v1/ready của backend vẫn p95 26 ms khi embedder chạy hết công suất.
+    cpus: 1.5
+    mem_limit: 3500m
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import json,urllib.request,sys; sys.exit(0 if json.load(urllib.request.urlopen('http://localhost:8080/health', timeout=4)).get('status') == 'ok' else 1)"
+      interval: 15s
+      timeout: 6s
+      retries: 5
+      start_period: 120s
+    logging: *logging
+
   db:
     # KHÔNG ghi đè `command`: lệnh mặc định của image đã nạp pg_search,pg_cron,pg_stat_statements.
     image: paradedb/paradedb:${PARADEDB_TAG:-v0.25.4-pg16}
