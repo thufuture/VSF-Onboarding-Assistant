@@ -6,9 +6,9 @@ import type { EmployeeJourneyResponseDTO, EmployeeTaskResponseDTO } from "@/feat
 
 import { stateOf, type Day } from "./journeyModel";
 
-// Portal chưa có API thông báo (bảng `tickets`/`notifications` chưa có router), nên danh sách này được SUY RA từ
-// chính lộ trình thật: việc vừa mở khóa, việc đã xong, việc bắt buộc còn lại. Trạng thái "đã đọc" lưu ở trình duyệt
-// của từng người (localStorage), không gửi lên máy chủ.
+// Thông báo THẬT (lộ trình có thay đổi, ticket được HR trả lời) đến từ máy chủ qua `extras`, đã đọc lưu ở máy chủ.
+// Ngoài ra danh sách có vài dòng SUY RA từ chính lộ trình (việc làm được ngay, việc đã xong, nhắc việc, lời chào): chỉ là gợi
+// ý trạng thái, mỗi loại GỘP thành một dòng và KHÔNG tính vào số chưa đọc trên chuông (nếu không số đó bằng số việc của bạn).
 export type NotificationKind = "unlocked" | "done" | "reminder" | "welcome" | "ticket" | "change";
 
 export type Notification = {
@@ -66,8 +66,12 @@ export type NotificationText = {
   welcomeBody: string;
   unlockedTitle: (title: string) => string;
   unlockedBody: string;
+  unlockedManyTitle: (count: number) => string;
+  unlockedManyBody: string;
   doneTitle: (title: string) => string;
   doneBody: string;
+  doneManyTitle: (count: number) => string;
+  doneManyBody: string;
   reminderTitle: (day: string) => string;
   reminderBody: (count: number) => string;
 };
@@ -81,7 +85,10 @@ function buildList(
   if (!journey) return [];
   const items: Omit<Notification, "read">[] = [];
 
-  for (const task of tasks.filter((row) => stateOf(row) === "ready")) {
+  // Việc làm được ngay và việc đã xong: MỘT dòng cho mỗi loại (một việc thì nêu tên việc, nhiều việc thì nêu số lượng).
+  const ready = tasks.filter((row) => stateOf(row) === "ready");
+  if (ready.length === 1) {
+    const task = ready[0]!;
     items.push({
       id: `unlocked-${task.id}`,
       kind: "unlocked",
@@ -90,9 +97,21 @@ function buildList(
       body: text.unlockedBody,
       at: null,
     });
+  } else if (ready.length > 1) {
+    items.push({
+      id: `unlocked-many-${ready.length}`,
+      kind: "unlocked",
+      taskId: null,
+      href: "/me/tasks",
+      title: text.unlockedManyTitle(ready.length),
+      body: text.unlockedManyBody,
+      at: null,
+    });
   }
 
-  for (const task of tasks.filter((row) => stateOf(row) === "done")) {
+  const finished = tasks.filter((row) => stateOf(row) === "done");
+  if (finished.length === 1) {
+    const task = finished[0]!;
     items.push({
       id: `done-${task.id}`,
       kind: "done",
@@ -100,6 +119,16 @@ function buildList(
       title: text.doneTitle(task.title),
       body: text.doneBody,
       at: task.completed_at,
+    });
+  } else if (finished.length > 1) {
+    items.push({
+      id: `done-many-${finished.length}`,
+      kind: "done",
+      taskId: null,
+      href: "/me/tasks",
+      title: text.doneManyTitle(finished.length),
+      body: text.doneManyBody,
+      at: finished.map((task) => task.completed_at ?? "").sort().at(-1) || null,
     });
   }
 
@@ -142,7 +171,9 @@ export function useNotifications(
 
   const items = useMemo(() => {
     const read = new Set(readIdList);
-    const all: (Omit<Notification, "read"> & { read?: boolean })[] = [...extras, ...buildList(journey, tasks, days, text)];
+    // Dòng suy ra từ lộ trình luôn ở trạng thái đã đọc: không tính vào số chưa đọc của chuông.
+    const derived = buildList(journey, tasks, days, text).map((item) => ({ ...item, read: true }));
+    const all: (Omit<Notification, "read"> & { read?: boolean })[] = [...extras, ...derived];
     return all.map((item) => ({ ...item, read: item.read ?? read.has(item.id) }));
     // `text` là đối tượng dựng lại mỗi lần render nên không đưa vào dependency (nội dung chỉ đổi khi đổi ngôn ngữ).
     // eslint-disable-next-line react-hooks/exhaustive-deps

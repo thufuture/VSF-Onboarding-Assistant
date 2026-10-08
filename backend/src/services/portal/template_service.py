@@ -88,6 +88,8 @@ class StageOption:
     draft_version_id: int | None = None
     draft_version_no: int | None = None
     applied_version_no: int | None = None
+    # Số task đang có trong bản sẽ nhận task AI (bản nháp mới nhất, không có thì bản đang áp dụng).
+    existing_task_count: int = 0
 
 
 async def list_stage_options(session: AsyncSession, *, team_id: int | None) -> list[StageOption]:
@@ -111,11 +113,24 @@ async def list_stage_options(session: AsyncSession, *, team_id: int | None) -> l
     by_stage: dict[int, list[StageVersion]] = {}
     for version in versions.all() if versions is not None else []:
         by_stage.setdefault(version.journey_stage_id, []).append(version)
+    counts: dict[int, int] = {}
+    if rows:
+        counts = {
+            int(version_id): int(count)
+            for version_id, count in (
+                await session.execute(
+                    select(TaskTemplate.stage_version_id, func.count())
+                    .where(TaskTemplate.journey_stage_id.in_([stage.id for stage, _ in rows]))
+                    .group_by(TaskTemplate.stage_version_id)
+                )
+            ).all()
+        }
     options: list[StageOption] = []
     for stage, template_title in rows:
         items = sorted(by_stage.get(stage.id, []), key=lambda v: v.version_no)
         drafts = [v for v in items if v.status == StageVersionStatus.DRAFT]
         applied = next((v for v in items if v.status == StageVersionStatus.APPLIED), None)
+        receiving = drafts[-1] if drafts else applied
         options.append(
             StageOption(
                 id=stage.id,
@@ -125,6 +140,7 @@ async def list_stage_options(session: AsyncSession, *, team_id: int | None) -> l
                 draft_version_id=drafts[-1].id if drafts else None,
                 draft_version_no=drafts[-1].version_no if drafts else None,
                 applied_version_no=applied.version_no if applied else None,
+                existing_task_count=counts.get(receiving.id, 0) if receiving else 0,
             )
         )
     return options

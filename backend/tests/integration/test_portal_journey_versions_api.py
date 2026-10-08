@@ -700,3 +700,61 @@ async def test_concurrent_applies_and_concurrent_journey_creation_leave_exactly_
     async with session_factory() as session:
         journeys = (await session.scalars(select(EmployeeJourney.id).where(EmployeeJourney.user_id == member.id))).all()
     assert len(journeys) == 1  # index duy nhất từng phần: yêu cầu thua lấy lại lộ trình của yêu cầu thắng
+
+
+# ───────────────────────────── Thay cả ngày bằng roadmap mới (tạo task bằng AI vào ngày đã có task) ─────────────────────────────
+
+
+async def test_an_empty_draft_replaces_the_day_instead_of_appending_to_the_old_tasks(
+    app: FastAPI, team: SimpleNamespace, make_member: MakeMember
+) -> None:
+    hr = await client_as(app, await make_member("HR", team.id))
+    ids = await build_roadmap(hr)  # ngày đã có 3 task đang áp dụng
+    employee = await client_as(app, await make_member("USER", team.id))
+    assert (await employee.post(f"{API}/me/journey")).status_code == 201
+
+    options = (await hr.get(f"{API}/stages")).json()
+    assert (
+        next(o for o in options if o["id"] == ids.stage_id)["existing_task_count"] == 3
+    )  # để giao diện hỏi thay thế hay nối thêm
+
+    # Bản nháp RỖNG: không sao chép 3 task cũ; bản đang áp dụng không đổi.
+    created = await hr.post(f"{API}/stages/{ids.stage_id}/versions", json={"empty": True, "note": "Roadmap mới"})
+    assert created.status_code == 201, created.text
+    draft = created.json()
+    day = await tree_day(hr, ids.template_id)
+    assert version_by_no(day, draft["version_no"])["tasks"] == []
+    assert len(version_by_no(day, 1)["tasks"]) == 3
+    # Chưa thêm gì thì chưa áp dụng được (không có ngày rỗng).
+    assert (await hr.post(f"{API}/stage-versions/{draft['id']}/apply")).status_code == 409
+
+    await add_task(hr, draft["id"], "Việc mới 1", "Làm việc mới 1.")
+    await add_task(hr, draft["id"], "Việc mới 2", "Làm việc mới 2.")
+    day = await tree_day(hr, ids.template_id)
+    assert {t["title"] for t in version_by_no(day, draft["version_no"])["tasks"]} == {
+        "Việc mới 1",
+        "Việc mới 2",
+    }  # 2, không phải 5
+    # Ngày đang có bản nháp: lần AI tiếp theo nối vào bản nháp này, nên số task hiện có là của bản nháp.
+    options = (await hr.get(f"{API}/stages")).json()
+    assert next(o for o in options if o["id"] == ids.stage_id)["existing_task_count"] == 2
+
+    applied = await hr.post(f"{API}/stage-versions/{draft['id']}/apply")
+    assert applied.status_code == 200 and applied.json()["notified_count"] == 1
+    # Nhân viên: MỘT thông báo; 3 việc cũ rời lộ trình, 2 việc mới vào, không bấm gì.
+    notices = (await employee.get(f"{API}/me/journey/notices")).json()
+    assert len(notices) == 1
+    assert {c["status"] for c in notices[0]["changes"]} == {"ACCEPTED"}
+    assert set(await my_tasks(employee)) == {"Việc mới 1", "Việc mới 2"}
+
+
+async def test_a_draft_is_still_cloned_from_the_applied_version_by_default(
+    app: FastAPI, team: SimpleNamespace, make_member: MakeMember
+) -> None:
+    hr = await client_as(app, await make_member("HR", team.id))
+    ids = await build_roadmap(hr)
+
+    draft = await new_draft(hr, ids.stage_id)
+
+    day = await tree_day(hr, ids.template_id)
+    assert len(version_by_no(day, draft["version_no"])["tasks"]) == 3

@@ -92,8 +92,12 @@ export function JourneyProvider({ children }: { children: ReactNode }) {
     welcomeBody: t("welcomeBody"),
     unlockedTitle: (title) => t("unlockedTitle", { title }),
     unlockedBody: t("unlockedBody"),
+    unlockedManyTitle: (count) => t("unlockedManyTitle", { count }),
+    unlockedManyBody: t("unlockedManyBody"),
     doneTitle: (title) => t("doneTitle", { title }),
     doneBody: t("doneBody"),
+    doneManyTitle: (count) => t("doneManyTitle", { count }),
+    doneManyBody: t("doneManyBody"),
     reminderTitle: (day) => t("reminderTitle", { day }),
     reminderBody: (count) => t("reminderBody", { count }),
   }, [...changeItems, ...ticketItems]);

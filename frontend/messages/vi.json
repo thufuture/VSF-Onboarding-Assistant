@@ -1014,6 +1014,15 @@
       "unavailable": "Có lỗi xảy ra, thử lại sau.",
       "network": "Không kết nối được server."
     },
+    "placement": {
+      "legend": "{day} đã có {count} task. Task vừa tạo sẽ:",
+      "replace": "Thay thế bằng roadmap vừa tạo",
+      "replaceHint": "Tạo bản nháp mới chỉ gồm các task vừa tạo; {count} task cũ không được sao chép sang. Bản đang áp dụng giữ nguyên cho tới khi bạn cập nhật cho nhân viên.",
+      "append": "Thêm vào task hiện có",
+      "appendHint": "Nối task vừa tạo vào sau {count} task cũ trong bản nháp (dễ bị trùng nếu tạo lại từ cùng tài liệu).",
+      "draftNote": "Roadmap tạo bằng AI (thay thế)",
+      "replacedAll": "Đã tạo bản nháp {n} gồm {count} task vừa tạo (chưa gửi cho nhân viên). Xem lại ở Quản lý task rồi bấm Cập nhật cho nhân viên."
+    },
     "result": {
       "heading": "Kết quả theo từng tài liệu",
       "done": "{count} đề xuất",
@@ -1494,6 +1503,10 @@
       "unlockedBody": "Việc này không còn vướng việc tiên quyết nào.",
       "doneTitle": "Đã hoàn thành: {title}",
       "doneBody": "Việc này đã được ghi nhận trong lộ trình của bạn.",
+      "unlockedManyTitle": "Bạn có {count} việc làm được ngay",
+      "unlockedManyBody": "Các việc này không còn vướng việc tiên quyết nào. Mở Nhiệm vụ để chọn việc.",
+      "doneManyTitle": "Bạn đã hoàn thành {count} việc",
+      "doneManyBody": "Các việc này đã được ghi nhận trong lộ trình của bạn.",
       "reminderTitle": "{day} còn việc chưa xong",
       "reminderBody": "Còn {count} việc bắt buộc trong ngày này.",
       "unreadMark": "Chưa xem",
