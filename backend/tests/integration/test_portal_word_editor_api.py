@@ -5,12 +5,14 @@ import json
 import zipfile
 from pathlib import Path
 from types import SimpleNamespace
+from typing import Any
 from uuid import uuid4
 
 import httpx
 import pytest
 from fastapi import FastAPI
 from portal_docs_fixtures import (  # noqa: F401  (fixture được pytest tìm theo tên trong module này)
+    SECRET,
     MakeMember,
     app,
     category,
@@ -35,7 +37,7 @@ pytestmark = pytest.mark.integration
 
 SECRET = "test-onlyoffice-secret"
 PUBLIC = "http://oo.test:8081"
-SETTINGS = {
+SETTINGS: dict[str, Any] = {
     "word_editor_enabled": True,
     "onlyoffice_public_url": PUBLIC,
     "onlyoffice_internal_url": "http://oo-internal:80",
@@ -118,7 +120,9 @@ def office() -> FakeOnlyOffice:
 
 @pytest.fixture
 def editor_app(app: FastAPI, office: FakeOnlyOffice, tmp_path: Path) -> FastAPI:
-    settings = Settings(_env_file=None, storage_provider="local", storage_path=str(tmp_path), **SETTINGS)  # type: ignore[arg-type]
+    settings = Settings(
+        _env_file=None, session_secret=SECRET, storage_provider="local", storage_path=str(tmp_path), **SETTINGS
+    )
     app.dependency_overrides[get_settings] = lambda: settings
     app.dependency_overrides[get_onlyoffice_client] = lambda: word_editor.OnlyOfficeClient(
         settings, transport=httpx.MockTransport(office.handler)
@@ -142,7 +146,9 @@ async def test_capabilities_follow_the_flag(
     async with client_for(editor_app) as client:
         await login(client, hr)
         assert (await client.get("/api/v1/portal/capabilities")).json() == {"word_editor": True}
-        editor_app.dependency_overrides[get_settings] = lambda: Settings(_env_file=None, word_editor_enabled=False)
+        editor_app.dependency_overrides[get_settings] = lambda: Settings(
+            _env_file=None, session_secret=SECRET, word_editor_enabled=False
+        )
         assert (await client.get("/api/v1/portal/capabilities")).json() == {"word_editor": False}
 
 
@@ -156,7 +162,9 @@ async def test_session_is_disabled_by_default_and_only_for_drafts(
     hr = await make_member("HR", team.id)
     source_key = f"ed-{uuid4().hex[:10]}"
     cleanup_documents.append(source_key)
-    app.dependency_overrides[get_settings] = lambda: Settings(_env_file=None, word_editor_enabled=False)
+    app.dependency_overrides[get_settings] = lambda: Settings(
+        _env_file=None, session_secret=SECRET, word_editor_enabled=False
+    )
     async with client_for(app) as client:
         await login(client, hr)
         doc_id, version_id = await make_draft(client, category, source_key, markdown_doc(BODIES))
@@ -191,7 +199,7 @@ async def test_session_config_is_signed_and_links_are_scoped(
         doc_url = config["document"]["url"]
         token = doc_url.rsplit("/", 1)[1]
         html_token = word_editor.make_link_token(
-            Settings(_env_file=None, **SETTINGS),  # type: ignore[arg-type]
+            Settings(_env_file=None, **SETTINGS),
             version_id=version_id,
             kind="html",
             user_id=1,
