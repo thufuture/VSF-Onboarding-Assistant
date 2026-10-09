@@ -256,6 +256,9 @@ $tone-failed: #c0392b;
   border-bottom: 1px solid var(--app-border);
 
   button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     padding: 7px 14px;
     border: 0;
     border-bottom: 2px solid transparent;
@@ -404,6 +407,9 @@ $tone-failed: #c0392b;
   background: var(--app-surface-2);
 
   button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     height: 30px;
     padding: 0 13px;
     border: 0;
@@ -503,4 +509,18 @@ $tone-failed: #c0392b;
 
 .pageBar .barActions > button:active:not(:disabled) {
   transform: translateY(0);
+}
+
+// "Bản gốc": khung chứa trình xem PDF; trang riêng thì lấp đầy chiều cao còn lại, cửa sổ nổi dùng chiều cao cố định.
+.originalFrame {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+}
+
+.originalFrameModal {
+  display: flex;
+  height: min(74vh, 860px);
+  flex-direction: column;
 }

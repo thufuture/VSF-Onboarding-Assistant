@@ -2,11 +2,13 @@
 
 import {
   AlertTriangle,
+  AlignLeft,
   ArrowLeft,
   CheckCircle2,
   Copy,
   FileEdit,
   FileText,
+  GitCompare,
   History,
   Pencil,
   PlayCircle,
@@ -33,6 +35,7 @@ import type {
 
 import { DocumentReader } from "./DocumentReader";
 import styles from "./DocumentVersionsModal.module.scss";
+import { PdfViewer } from "./PdfViewer";
 import { isJobFinished, useJob } from "./useJob";
 import { VersionComparePanel } from "./VersionComparePanel";
 import { VersionPicker } from "./VersionPicker";
@@ -76,6 +79,8 @@ function effectiveText(t: Translate, v: DocumentVersionResponseDTO): string {
 
 const ACTIVATE_STATES: DocumentVersionStateDTO[] = ["DRAFT", "SUPERSEDED"];
 
+type ViewTab = "original" | "content" | "compare";
+
 type Confirm = { kind: "activate"; version: DocumentVersionResponseDTO } | { kind: "delete"; version: DocumentVersionResponseDTO };
 
 /** Quản lý phiên bản của một tài liệu (mục 16): xem bản bất kỳ, sao chép thành bản nháp, sửa nháp (khóa lạc quan),
@@ -108,7 +113,8 @@ export function DocumentVersionsModal({
   // Đang sửa đúng phiên bản nào; đổi sang phiên bản khác thì `editing` tự thành false.
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editTab, setEditTab] = useState<"write" | "preview">("write");
-  const [viewTab, setViewTab] = useState<"content" | "compare">("content");
+  // Tab đang chọn theo từng phiên bản (chưa chọn thì mặc định: "Bản gốc" nếu xem được, không thì "Nội dung").
+  const [tabByVersion, setTabByVersion] = useState<Record<number, ViewTab>>({});
   // Trình soạn thảo kiểu Word (chỉ khi máy chủ bật `WORD_EDITOR_ENABLED`): đang mở cho phiên bản nào, và đang chờ đồng bộ nội dung.
   const [canWordEdit, setCanWordEdit] = useState(false);
   const [wordEditingId, setWordEditingId] = useState<number | null>(null);
@@ -126,6 +132,26 @@ export function DocumentVersionsModal({
   const selected = useMemo(() => versions?.find((v) => v.id === selectedId) ?? null, [versions, selectedId]);
   const detail = detailState !== null && detailState.id === selectedId ? detailState.data : null;
   const wordEditing = wordEditingId !== null && wordEditingId === selectedId;
+  const originalName = detail?.version.original_filename.toLowerCase() ?? "";
+  // "Bản gốc": PDF mở thẳng; Word được chuyển sang PDF ở máy chủ (cần trình soạn thảo bật); Markdown thì không có bố cục để xem.
+  const originalUrl =
+    detail === null
+      ? null
+      : originalName.endsWith(".pdf")
+        ? portalHrApi.previewDocumentUrl(detail.version.id)
+        : originalName.endsWith(".docx") && canWordEdit
+          ? portalHrApi.previewDocumentUrl(detail.version.id)
+          : null;
+  const viewTab: ViewTab = (selectedId !== null ? tabByVersion[selectedId] : undefined) ?? (originalUrl ? "original" : "content");
+  const setViewTab = (tab: ViewTab) => {
+    if (selectedId !== null) setTabByVersion((current) => ({ ...current, [selectedId]: tab }));
+  };
+  const resetTab = (id: number) =>
+    setTabByVersion((current) => {
+      const next = { ...current };
+      delete next[id];
+      return next;
+    });
   const editing = (editingId !== null && editingId === selectedId) || wordEditing;
   const overrides = draftEdit !== null && draftEdit.id === selectedId ? draftEdit : null;
   const draftMarkdown = overrides?.markdown ?? detail?.markdown ?? "";
@@ -237,7 +263,6 @@ export function DocumentVersionsModal({
       onChanged();
       setDraftEdit(null);
       setWordEditingId(null);
-      setViewTab("content");
       // Có trình soạn thảo Word thì chỉ chọn bản nháp vừa tạo (HR bấm "Soạn thảo Word" để sửa); không thì mở sẵn khung sửa Markdown.
       if (canWordEdit) setEditingId(null);
       else {
@@ -287,7 +312,7 @@ export function DocumentVersionsModal({
     } finally {
       await loadVersions(id);
       onChanged();
-      setViewTab("content");
+      resetTab(id);
       setSyncing(false);
     }
   }
@@ -474,28 +499,53 @@ export function DocumentVersionsModal({
           <AlertTriangle aria-hidden="true" size={14} /> {t("lastFailure", { error: detail.version.failure_reason })}
         </p>
       ) : null}
-      {structureNote ? (
-        <p className={styles.bannerWarn}>
-          <AlertTriangle aria-hidden="true" size={14} /> {structureNote}
-        </p>
-      ) : null}
-      {detail.version.ocr ? (
-        <p className={detail.version.state === "PROCESSING" ? styles.bannerInfo : styles.bannerWarn}>
-          <ScanText aria-hidden="true" size={14} />{" "}
-          {detail.version.state === "PROCESSING" ? t("ocr.pending") : t("ocr.review")}
-        </p>
-      ) : null}
-      {detail.version.ai_split === "APPLIED" ? (
+      {detail.version.ocr && detail.version.state === "PROCESSING" ? (
         <p className={styles.bannerInfo}>
-          <Sparkles aria-hidden="true" size={14} /> {t("structure.aiApplied")}
+          <ScanText aria-hidden="true" size={14} /> {t("ocr.pending")}
         </p>
       ) : null}
-      {detail.version.original_filename && detail.version.source === "EDITED" && !isPage ? (
-        <p className={styles.hint}>{t("originalNote", { name: detail.version.original_filename })}</p>
-      ) : null}
+      {/* Trang riêng không hiện các ghi chú tư vấn (chất lượng cấu trúc, OCR cần soát, AI đã tách mục…); cửa sổ nổi vẫn giữ. */}
+      {isPage ? null : (
+        <>
+          {structureNote ? (
+            <p className={styles.bannerWarn}>
+              <AlertTriangle aria-hidden="true" size={14} /> {structureNote}
+            </p>
+          ) : null}
+          {detail.version.ocr && detail.version.state !== "PROCESSING" ? (
+            <p className={styles.bannerWarn}>
+              <ScanText aria-hidden="true" size={14} /> {t("ocr.review")}
+            </p>
+          ) : null}
+          {detail.version.ai_split === "APPLIED" ? (
+            <p className={styles.bannerInfo}>
+              <Sparkles aria-hidden="true" size={14} /> {t("structure.aiApplied")}
+            </p>
+          ) : null}
+          {detail.version.original_filename && detail.version.source === "EDITED" ? (
+            <p className={styles.hint}>{t("originalNote", { name: detail.version.original_filename })}</p>
+          ) : null}
+        </>
+      )}
       {syncing ? <p className={styles.hint}>{t("wordEditor.syncing")}</p> : null}
     </>
   ) : null;
+
+  const tabButtons = (
+    <>
+      {originalUrl ? (
+        <button aria-selected={viewTab === "original"} onClick={() => setViewTab("original")} role="tab" type="button">
+          <FileText aria-hidden="true" size={14} /> {t("compare.tabOriginal")}
+        </button>
+      ) : null}
+      <button aria-selected={viewTab === "content"} onClick={() => setViewTab("content")} role="tab" type="button">
+        <AlignLeft aria-hidden="true" size={14} /> {t("compare.tabContent")}
+      </button>
+      <button aria-selected={viewTab === "compare"} onClick={() => setViewTab("compare")} role="tab" type="button">
+        <GitCompare aria-hidden="true" size={14} /> {t("compare.tabCompare")}
+      </button>
+    </>
+  );
 
   const content = detail ? (
     wordEditing ? (
@@ -554,15 +604,14 @@ export function DocumentVersionsModal({
       <>
         {isPage ? null : (
         <div className={styles.tabs} role="tablist">
-          <button aria-selected={viewTab === "content"} onClick={() => setViewTab("content")} role="tab" type="button">
-            {t("compare.tabContent")}
-          </button>
-          <button aria-selected={viewTab === "compare"} onClick={() => setViewTab("compare")} role="tab" type="button">
-            {t("compare.tabCompare")}
-          </button>
+          {tabButtons}
         </div>
         )}
-        {viewTab === "compare" ? (
+        {viewTab === "original" && originalUrl ? (
+          <div className={isPage ? styles.originalFrame : styles.originalFrameModal}>
+            <PdfViewer label={t("compare.tabOriginal")} url={originalUrl} />
+          </div>
+        ) : viewTab === "compare" ? (
           <div className={isPage ? styles.pageScroll : undefined}>
             <VersionComparePanel documentId={doc.id} key={detail.version.id} versionId={detail.version.id} />
           </div>
@@ -647,12 +696,7 @@ export function DocumentVersionsModal({
   // Trang riêng: một thanh đầu trang duy nhất (quay lại, tên + hiệu lực, chọn phiên bản, tab, thao tác); còn lại dành hết cho nội dung.
   const pageTabs = (
     <div className={styles.segment} role="tablist">
-      <button aria-selected={viewTab === "content"} onClick={() => setViewTab("content")} role="tab" type="button">
-        {t("compare.tabContent")}
-      </button>
-      <button aria-selected={viewTab === "compare"} onClick={() => setViewTab("compare")} role="tab" type="button">
-        {t("compare.tabCompare")}
-      </button>
+      {tabButtons}
     </div>
   );
 

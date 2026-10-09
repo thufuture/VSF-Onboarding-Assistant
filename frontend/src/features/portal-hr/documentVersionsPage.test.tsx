@@ -29,9 +29,11 @@ vi.mock("@/features/portal-hr/api", () => {
       getCapabilities: vi.fn(),
       listActiveJobs: vi.fn(),
       originalDocumentUrl: (id: number) => `/original/${id}`,
+      previewDocumentUrl: (id: number) => `/preview/${id}`,
     },
   };
 });
+vi.mock("./PdfViewer", () => ({ PdfViewer: ({ url }: { url: string }) => <div data-testid="pdf-viewer" data-url={url} /> }));
 
 const api = vi.mocked(portalHrApi);
 
@@ -126,5 +128,44 @@ describe("DocumentVersionsPage", () => {
     } satisfies DocumentVersionDetailResponseDTO);
     renderPage();
     expect(await screen.findByText(/Đang nhận dạng chữ \(OCR\)/)).toBeInTheDocument();
+  });
+
+  it("không hiện ghi chú soát lại OCR trên trang riêng khi bản nháp OCR đã xong", async () => {
+    const done = { ...VERSION, ocr: true, state: "DRAFT" as const, status: "DRAFT" as const };
+    api.listDocumentVersions.mockResolvedValue([done]);
+    api.getDocumentVersion.mockResolvedValue({
+      version: done,
+      document_id: 9,
+      document_title: DOC.title,
+      markdown: "# Quy chế\n\nNghỉ phép mười hai ngày.",
+      can_edit: true,
+    } satisfies DocumentVersionDetailResponseDTO);
+    renderPage();
+    expect(await screen.findByRole("heading", { name: "Quy chế nghỉ phép" })).toBeInTheDocument();
+    await screen.findByText(/Nghỉ phép mười hai ngày/);
+    expect(screen.queryByText(/hãy soát lại/i)).toBeNull();
+  });
+
+  it("mở sẵn tab Bản gốc bằng trình xem PDF riêng (không nhúng khung của trình duyệt) khi file gốc là PDF", async () => {
+    const pdf = { ...VERSION, original_filename: "luat.pdf" };
+    api.listDocumentVersions.mockResolvedValue([pdf]);
+    api.getDocumentVersion.mockResolvedValue({
+      version: pdf,
+      document_id: 9,
+      document_title: DOC.title,
+      markdown: "# Luật\n\nNội dung.",
+      can_edit: false,
+    } satisfies DocumentVersionDetailResponseDTO);
+    const { container } = render(
+      <NextIntlClientProvider locale="vi" messages={viMessages}>
+        <DocumentVersionsPage documentId={9} />
+      </NextIntlClientProvider>,
+    );
+    await waitFor(() => expect(screen.getByTestId("pdf-viewer")).toBeInTheDocument());
+    expect(screen.getByTestId("pdf-viewer")).toHaveAttribute("data-url", "/preview/5");
+    expect(container.querySelector("iframe")).toBeNull();
+    expect(screen.getByRole("tab", { name: "Bản gốc" })).toHaveAttribute("aria-selected", "true");
+    fireEvent.click(screen.getByRole("tab", { name: "Nội dung" }));
+    await waitFor(() => expect(screen.queryByTestId("pdf-viewer")).toBeNull());
   });
 });

@@ -864,7 +864,8 @@
         "renamedFrom": "was: {name}",
         "noHeading": "(start of document)",
         "before": "Old",
-        "after": "This version"
+        "after": "This version",
+        "tabOriginal": "Original"
       },
       "wordEditor": {
         "open": "Edit in Word",

@@ -556,6 +556,42 @@ async def finalize_original(
         logger.warning("editor_finalize_failed version=%s format=%s error=%s", version_id, fmt, type(exc).__name__)
 
 
+PREVIEW_KEY = "preview_pdf"
+
+
+async def preview_pdf_for(
+    session: AsyncSession,
+    version: DocumentVersion,
+    settings: Settings,
+    client: OnlyOfficeClient,
+    storage: StoragePort,
+    *,
+    user_id: int,
+) -> bytes:
+    """PDF để xem "Bản gốc" của file Word: chuyển bằng ONLYOFFICE rồi lưu kèm, lần sau dùng lại (hợp lệ khi file gốc chưa đổi)."""
+    cached = version.quality_report.get(PREVIEW_KEY)
+    if isinstance(cached, dict) and cached.get("file_checksum") == version.file_checksum and cached.get("storage_key"):
+        try:
+            return await _read_stored_file(str(cached["storage_key"]), settings)
+        except (OSError, httpx.HTTPError):
+            pass  # mất bản lưu thì chuyển lại
+    token = make_link_token(settings, version_id=version.id, kind="docx", user_id=user_id)
+    url = f"{settings.onlyoffice_backend_url.rstrip('/')}/api/v1/portal/editor-files/{token}"
+    content = await client.convert(
+        source_url=url, filetype="docx", outputtype="pdf", key=f"v{document_key(version)}{int(time.time())}"
+    )
+    try:
+        storage_key = await storage.store(content, checksum=hashlib.sha256(content).hexdigest(), filename="xem.pdf")
+    except Exception as exc:
+        raise PortalError(502, "STORAGE_FAILED", "portal.storage_failed") from exc
+    version.quality_report = {
+        **version.quality_report,
+        PREVIEW_KEY: {"file_checksum": version.file_checksum, "storage_key": storage_key},
+    }
+    await session.commit()
+    return content
+
+
 async def load_version(session: AsyncSession, *, version_id: int, document_id: int | None = None) -> DocumentVersion:
     query = select(DocumentVersion).where(DocumentVersion.id == version_id)
     if document_id is not None:

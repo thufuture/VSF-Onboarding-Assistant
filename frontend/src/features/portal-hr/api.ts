@@ -128,6 +128,10 @@ function acceptAiTaskProposal(
   });
 }
 
+function previewDocumentUrl(versionId: number): string {
+  return `/api/v1/portal/documents/${versionId}/preview`;
+}
+
 function originalDocumentUrl(versionId: number): string {
   return `/api/v1/portal/documents/${versionId}/original`;
 }
@@ -470,6 +474,7 @@ export const portalHrApi = {
   proposeAiTasks,
   acceptAiTaskProposal,
   originalDocumentUrl,
+  previewDocumentUrl,
   getMyJourney,
   createEmployeeJourney,
   createStageVersion,

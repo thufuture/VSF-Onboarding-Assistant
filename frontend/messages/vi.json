@@ -864,7 +864,8 @@
         "renamedFrom": "trước đây: {name}",
         "noHeading": "(đầu tài liệu)",
         "before": "Bản cũ",
-        "after": "Bản này"
+        "after": "Bản này",
+        "tabOriginal": "Bản gốc"
       },
       "wordEditor": {
         "open": "Soạn thảo Word",

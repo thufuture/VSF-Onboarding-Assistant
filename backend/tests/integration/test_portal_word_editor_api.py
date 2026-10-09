@@ -416,6 +416,55 @@ async def test_pdf_original_is_converted_to_word_and_only_edited_text_is_patched
         assert different <= 4, different
 
 
+async def test_preview_of_a_word_original_is_converted_to_pdf_once_and_cached(
+    editor_app: FastAPI,
+    team: SimpleNamespace,
+    category: str,
+    make_member: MakeMember,
+    cleanup_documents: list[str],
+    office: FakeOnlyOffice,
+) -> None:
+    hr = await make_member("HR", team.id)
+    source_key = f"ed-{uuid4().hex[:10]}"
+    cleanup_documents.append(source_key)
+    async with client_for(editor_app) as client:
+        await login(client, hr)
+        form = {**upload_form(category, source_key), "version_label": "v1", "effective_from": "2024-01-01"}
+        created = (
+            await client.post(
+                "/api/v1/portal/documents",
+                data=form,
+                files={"file": ("goc.docx", EDITED_DOCX, word_editor.DOCX_MIME)},
+            )
+        ).json()
+        version_id = created["document_version_id"]
+        first = await client.get(f"/api/v1/portal/documents/{version_id}/preview")
+        assert first.status_code == 200 and first.content.startswith(b"%PDF")
+        assert first.headers["content-type"] == "application/pdf"
+        conversions = sum(1 for call in office.calls if call[1] == "/converter")
+        second = await client.get(f"/api/v1/portal/documents/{version_id}/preview")
+        assert second.content == first.content
+        assert sum(1 for call in office.calls if call[1] == "/converter") == conversions  # lần hai dùng bản đã lưu
+
+        # Markdown gốc không có bố cục để xem; PDF gốc đi qua /original.
+        md_key = f"ed-{uuid4().hex[:10]}"
+        cleanup_documents.append(md_key)
+        _, md_version = await make_draft(client, category, md_key, markdown_doc(BODIES))
+        assert (await client.get(f"/api/v1/portal/documents/{md_version}/preview")).status_code == 404
+        pdf_key = f"ed-{uuid4().hex[:10]}"
+        cleanup_documents.append(pdf_key)
+        pdf_form = {**upload_form(category, pdf_key), "version_label": "v1", "effective_from": "2024-01-01"}
+        pdf = (
+            await client.post(
+                "/api/v1/portal/documents", data=pdf_form, files={"file": ("goc.pdf", make_pdf(), "application/pdf")}
+            )
+        ).json()
+        direct = await client.get(f"/api/v1/portal/documents/{pdf['document_version_id']}/preview")
+        assert direct.status_code == 200 and direct.content.startswith(
+            b"%PDF"
+        )  # PDF gốc trả thẳng, không cần máy chủ soạn thảo
+
+
 async def test_cancel_discards_changes_because_nothing_is_written_without_save(
     editor_app: FastAPI,
     team: SimpleNamespace,
