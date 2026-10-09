@@ -114,4 +114,17 @@ describe("DocumentVersionsPage", () => {
     await waitFor(() => expect(screen.getByRole("alert")).toBeInTheDocument());
     expect(screen.getByRole("button", { name: /Quay lại danh sách tài liệu/ })).toBeInTheDocument();
   });
+
+  it("báo đang OCR rồi nhắc soát lại chữ khi bản nháp đến từ bản scan", async () => {
+    api.listDocumentVersions.mockResolvedValue([{ ...VERSION, ocr: true, state: "PROCESSING", status: "PROCESSING" }]);
+    api.getDocumentVersion.mockResolvedValue({
+      version: { ...VERSION, ocr: true, state: "PROCESSING", status: "PROCESSING" },
+      document_id: 9,
+      document_title: DOC.title,
+      markdown: "",
+      can_edit: false,
+    } satisfies DocumentVersionDetailResponseDTO);
+    renderPage();
+    expect(await screen.findByText(/Đang nhận dạng chữ \(OCR\)/)).toBeInTheDocument();
+  });
 });

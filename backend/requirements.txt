@@ -23,6 +23,10 @@ markitdown[docx,pdf]>=0.1.1,<1
 httpx>=0.28,<1.0
 # Dựng HTML từ Markdown để mở bản nháp trong trình soạn thảo Word (ONLYOFFICE).
 markdown-it-py>=3,<5
+# PDF sang Word giữ bố cục (pdf2docx, MIT; PyMuPDF kèm theo là AGPL). Chỉ dùng khi PDF_TO_WORD_ENABLED=true.
+pdf2docx>=0.5.8,<1
+# OCR cho PDF scan (cần thêm tesseract-ocr, tesseract-ocr-vie, ghostscript trong ảnh Docker). Chỉ dùng khi OCR_ENABLED=true.
+ocrmypdf>=16,<17
 underthesea>=6.8,<10
 # Lưu file tài liệu gốc khi STORAGE_PROVIDER=cloudinary (mặc định "local" không cần thư viện này ở runtime).
 cloudinary>=1.41,<2

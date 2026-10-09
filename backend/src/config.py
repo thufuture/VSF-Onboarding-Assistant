@@ -119,6 +119,16 @@ class Settings(BaseSettings):
     # public_url: địa chỉ trình duyệt dùng để tải trình soạn thảo; internal_url: backend gọi chuyển đổi/lưu; backend_url: địa chỉ
     # backend mà máy chủ ONLYOFFICE gọi tới (lấy file, callback lưu); jwt_secret: khóa JWT dùng chung với ONLYOFFICE.
     word_editor_enabled: bool = False
+    # PDF gốc -> Word giữ bố cục bằng pdf2docx (PyMuPDF: AGPL, cân nhắc pháp lý trước khi bật). Tắt thì dựng Word từ Markdown.
+    pdf_to_word_enabled: bool = False
+    pdf_to_word_max_pages: int = 100
+
+    # OCR cho PDF scan (OCRmyPDF + Tesseract, gói tiếng Việt). Chạy nền, tắt mặc định; cần cài công cụ trong ảnh Docker.
+    ocr_enabled: bool = False
+    ocr_languages: str = "vie+eng"
+    ocr_max_pages: int = 60
+    ocr_jobs: int = 1
+    ocr_timeout_seconds: int = 1800
     onlyoffice_public_url: str = ""
     onlyoffice_internal_url: str = ""
     onlyoffice_backend_url: str = ""

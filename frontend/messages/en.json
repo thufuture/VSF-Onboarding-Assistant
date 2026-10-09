@@ -906,7 +906,11 @@
       "backToList": "Back to documents",
       "uploadShort": "Upload version",
       "copyShort": "New version",
-      "originalFile": "Original file: {name}"
+      "originalFile": "Original file: {name}",
+      "ocr": {
+        "pending": "Recognising text (OCR) from the scan. This runs in the background and can take a few minutes; the page updates when done.",
+        "review": "This text was recognised by OCR from a scan and may contain errors. Please review it, especially figures, dates and reference numbers, before activating."
+      }
     },
     "category": {
       "hint": {

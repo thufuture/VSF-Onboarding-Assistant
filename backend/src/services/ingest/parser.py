@@ -24,6 +24,10 @@ class ParseError(Exception):
     """File không đọc được hoặc không đạt cổng chất lượng tối thiểu (mục 11.1/11.2)."""
 
 
+class TextTooShortError(ParseError):
+    """File đọc được nhưng gần như không có chữ (nghi là bản scan, cần OCR)."""
+
+
 @dataclass(frozen=True)
 class ParsedDocument:
     markdown: str
@@ -56,7 +60,7 @@ def parse_document(path: Path) -> ParsedDocument:
 
     markdown = unicodedata.normalize("NFC", result.text_content or "")
     if len(markdown.strip()) < MIN_TEXT_LENGTH:
-        raise ParseError(
+        raise TextTooShortError(
             f"nội dung quá ngắn ({len(markdown.strip())} ký tự, cần >= {MIN_TEXT_LENGTH}) — "
             "có thể là file scan; OCR chưa bật ở Phase 2 (xem Phase 5)"
         )

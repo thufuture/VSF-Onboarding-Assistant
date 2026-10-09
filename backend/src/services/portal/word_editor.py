@@ -33,9 +33,12 @@ from src.model.audit_log import AuditLog
 from src.model.document_version import DocumentVersion
 from src.model.enums import VersionSource, VersionStatus
 from src.model.user import User
+from src.services.ingest.markdown_patch import patch_markdown
 from src.services.ingest.parser import MAX_FILE_SIZE_BYTES, ParseError, parse_document
+from src.services.ingest.pdf_to_docx import PdfToWordError, convert_pdf_to_docx
 from src.services.ingest.storage import StoragePort
 from src.services.ingest.structure import analyze_structure
+from src.services.ingest.version_lifecycle import checksum_of
 from src.services.portal.errors import PortalError
 
 logger = logging.getLogger(__name__)
@@ -266,6 +269,10 @@ async def _read_stored_file(storage_key: str, settings: Settings) -> bytes:
     return await asyncio.to_thread((Path(settings.storage_path) / storage_key).read_bytes)
 
 
+async def read_stored_file(storage_key: str, settings: Settings) -> bytes:
+    return await _read_stored_file(storage_key, settings)
+
+
 async def docx_bytes_for(
     version: DocumentVersion, settings: Settings, client: OnlyOfficeClient, *, user_id: int
 ) -> bytes:
@@ -285,6 +292,47 @@ async def docx_bytes_for(
     )
 
 
+def is_pdf_original(version: DocumentVersion) -> bool:
+    return version.mime_type == "application/pdf" or version.original_filename.lower().endswith(".pdf")
+
+
+async def _markdown_of_docx(content: bytes) -> str:
+    with tempfile.NamedTemporaryFile(suffix=".docx", delete=False) as tmp:
+        tmp.write(content)
+        path = Path(tmp.name)
+    try:
+        return (await asyncio.to_thread(parse_document, path)).markdown
+    finally:
+        path.unlink(missing_ok=True)
+
+
+async def _store_text(storage: StoragePort, text: str) -> str:
+    data = text.encode("utf-8")
+    return await storage.store(data, checksum=hashlib.sha256(data).hexdigest(), filename="baseline.md")
+
+
+async def _working_from_pdf(
+    version: DocumentVersion, settings: Settings, storage: StoragePort
+) -> dict[str, str] | None:
+    """PDF gốc -> Word giữ bố cục (pdf2docx), kèm bản Markdown "mốc" B0 đọc từ chính bản Word đó để sau này biết HR sửa chỗ nào.
+    Trả None (dùng đường dựng từ Markdown) khi tính năng tắt, không phải PDF, hay không chuyển được."""
+    if not settings.pdf_to_word_enabled or not is_pdf_original(version) or version.quality_report.get("ocr"):
+        return None  # bản đã OCR: PDF là ảnh kèm lớp chữ vô hình, pdf2docx không dựng lại thành đoạn văn được
+    try:
+        pdf = await _read_stored_file(version.storage_key, settings)
+        docx = await asyncio.to_thread(convert_pdf_to_docx, pdf, max_pages=settings.pdf_to_word_max_pages)
+        baseline = await _markdown_of_docx(docx)
+    except (PdfToWordError, ParseError, OSError, httpx.HTTPError) as exc:
+        logger.warning("pdf_to_word_failed version=%s error=%s", version.id, type(exc).__name__)
+        return None
+    try:
+        docx_key = await storage.store(docx, checksum=hashlib.sha256(docx).hexdigest(), filename="tai-lieu.docx")
+        baseline_key = await _store_text(storage, baseline)
+    except Exception as exc:
+        raise PortalError(502, "STORAGE_FAILED", "portal.storage_failed") from exc
+    return {"storage_key": docx_key, "content_checksum": version.content_checksum, "baseline_key": baseline_key}
+
+
 async def ensure_docx_file(
     session: AsyncSession,
     version: DocumentVersion,
@@ -300,20 +348,20 @@ async def ensure_docx_file(
     được (đo thật: lời gọi chuyển đổi lồng bên trong bị quá giờ). File dựng ra là bản làm việc; file gốc của bản nháp không đổi."""
     if working_docx_key(version) is not None:
         return
-    html_token = make_link_token(settings, version_id=version.id, kind="html", user_id=user_id)
-    url = f"{settings.onlyoffice_backend_url.rstrip('/')}/api/v1/portal/editor-files/{html_token}"
-    content = await client.convert(
-        source_url=url, filetype="html", outputtype="docx", key=f"h{document_key(version)}{int(time.time())}"
-    )
-    checksum = hashlib.sha256(content).hexdigest()
-    try:
-        storage_key = await storage.store(content, checksum=checksum, filename="tai-lieu.docx")
-    except Exception as exc:
-        raise PortalError(502, "STORAGE_FAILED", "portal.storage_failed") from exc
-    version.quality_report = {
-        **version.quality_report,
-        WORKING_DOCX_KEY: {"storage_key": storage_key, "content_checksum": version.content_checksum},
-    }
+    working = await _working_from_pdf(version, settings, storage)
+    if working is None:
+        html_token = make_link_token(settings, version_id=version.id, kind="html", user_id=user_id)
+        url = f"{settings.onlyoffice_backend_url.rstrip('/')}/api/v1/portal/editor-files/{html_token}"
+        content = await client.convert(
+            source_url=url, filetype="html", outputtype="docx", key=f"h{document_key(version)}{int(time.time())}"
+        )
+        checksum = hashlib.sha256(content).hexdigest()
+        try:
+            storage_key = await storage.store(content, checksum=checksum, filename="tai-lieu.docx")
+        except Exception as exc:
+            raise PortalError(502, "STORAGE_FAILED", "portal.storage_failed") from exc
+        working = {"storage_key": storage_key, "content_checksum": version.content_checksum}
+    version.quality_report = {**version.quality_report, WORKING_DOCX_KEY: working}
     await session.commit()
     await session.refresh(version)
 
@@ -389,7 +437,13 @@ def verify_callback_jwt(settings: Settings, *, header: str | None, body: dict[st
 
 
 async def apply_saved_docx(
-    session: AsyncSession, *, version_id: int, user_id: int, content: bytes, storage: StoragePort
+    session: AsyncSession,
+    *,
+    version_id: int,
+    user_id: int,
+    content: bytes,
+    storage: StoragePort,
+    settings: Settings,
 ) -> SaveFormat | None:
     """Ghi file .docx HR vừa lưu: đọc thành Markdown và giữ làm bản làm việc. Trả về định dạng file gốc HR đã chọn (để dựng file
     gốc sau đó), hoặc None nếu không ghi gì (không có lệnh lưu, bản nháp đã bị kích hoạt, hay chưa có thay đổi)."""
@@ -413,19 +467,35 @@ async def apply_saved_docx(
     except Exception as exc:
         raise PortalError(502, "STORAGE_FAILED", "portal.storage_failed") from exc
 
-    markdown_changed = parsed.markdown != version.markdown
+    new_markdown, new_checksum, working = parsed.markdown, parsed.content_checksum, None
+    patch_note: dict[str, Any] = {}
+    previous = version.quality_report.get(WORKING_DOCX_KEY)
+    if isinstance(previous, dict) and previous.get("baseline_key"):
+        # Bản nháp từ PDF: vá đúng chỗ HR sửa vào Markdown gốc (đã chunk), giữ nguyên phần còn lại.
+        try:
+            baseline = (await _read_stored_file(str(previous["baseline_key"]), settings)).decode("utf-8")
+        except (OSError, httpx.HTTPError):
+            baseline = None
+        if baseline is not None:
+            result = await asyncio.to_thread(patch_markdown, version.markdown, baseline, parsed.markdown)
+            patch_note = {"patched": result.ok, "groups": result.groups, "reason": result.reason}
+            if result.ok:
+                new_markdown = result.markdown
+                new_checksum = checksum_of(new_markdown)
+            working = {"baseline_key": await _store_text(storage, parsed.markdown)}
+    markdown_changed = new_markdown != version.markdown
     version.parser = "markitdown"
-    version.markdown = parsed.markdown
-    version.content_checksum = parsed.content_checksum
+    version.markdown = new_markdown
+    version.content_checksum = new_checksum
     version.source = VersionSource.EDITED.value
     version.updated_by = user_id
-    _, structure = analyze_structure(parsed.markdown, infer=False)
+    _, structure = analyze_structure(new_markdown, infer=False)
     report = {k: v for k, v in version.quality_report.items() if k != PENDING_SAVE_KEY}
     version.quality_report = {
         **report,
         "structure": structure.as_dict(),
         "has_embedded_images": parsed.has_embedded_images,
-        WORKING_DOCX_KEY: {"storage_key": storage_key, "content_checksum": parsed.content_checksum},
+        WORKING_DOCX_KEY: {"storage_key": storage_key, "content_checksum": new_checksum, **(working or {})},
     }
     session.add(
         AuditLog(
@@ -433,7 +503,12 @@ async def apply_saved_docx(
             action="SAVE_FROM_WORD_EDITOR",
             entity_type="document_version",
             entity_id=str(version.id),
-            after={"document_id": version.document_id, "markdown_changed": markdown_changed, "original_format": fmt},
+            after={
+                "document_id": version.document_id,
+                "markdown_changed": markdown_changed,
+                "original_format": fmt,
+                **patch_note,
+            },
         )
     )
     await session.commit()

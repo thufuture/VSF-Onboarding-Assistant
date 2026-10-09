@@ -192,7 +192,7 @@ async def editor_callback(
             return {"error": 0}
         content = await onlyoffice.download(url)
         fmt = await word_editor.apply_saved_docx(
-            db, version_id=version_id, user_id=user_id, content=content, storage=storage
+            db, version_id=version_id, user_id=user_id, content=content, storage=storage, settings=settings
         )
     except PortalError as exc:
         logger.warning("editor_callback_failed version=%s code=%s", version_id, exc.code)

@@ -9,6 +9,7 @@ mới (từ bất kỳ bản nào), sửa trên nháp rồi kích hoạt. Nháp 
 from __future__ import annotations
 
 import asyncio
+import hashlib
 import mimetypes
 import tempfile
 from dataclasses import dataclass
@@ -36,7 +37,7 @@ from src.model.enums import (
 from src.model.job import Job
 from src.model.task_source_mapping import TaskSourceMapping
 from src.model.user import User
-from src.services.ingest.parser import MIN_TEXT_LENGTH, ParseError, parse_document
+from src.services.ingest.parser import MIN_TEXT_LENGTH, ParsedDocument, ParseError, TextTooShortError, parse_document
 from src.services.ingest.storage import StoragePort
 from src.services.ingest.structure import analyze_structure
 from src.services.ingest.version_lifecycle import DisplayState, checksum_of, display_state
@@ -58,6 +59,8 @@ class DraftResult:
     reused: bool  # True: đã có bản cùng nhãn, cùng nội dung (idempotent), không tạo mới
     structure_quality: str | None = None
     structure_warnings: tuple[str, ...] = ()
+    job_id: int | None = None  # có khi bản nháp đang chờ OCR (xử lý nền)
+    ocr_pending: bool = False
 
 
 @dataclass(frozen=True)
@@ -82,6 +85,7 @@ class VersionItem:
     structure_quality: str | None = None
     structure_warnings: tuple[str, ...] = ()
     ai_split: str | None = None  # None | APPLIED | SKIPPED
+    ocr: bool = False  # chữ do OCR nhận dạng từ bản scan: cần HR soát lại
 
 
 @dataclass(frozen=True)
@@ -173,6 +177,7 @@ async def create_draft_from_upload(
     title: str | None = None,
     category_slug: str | None = None,
     source_key: str | None = None,
+    ocr_enabled: bool = False,
 ) -> DraftResult:
     """Đọc file (markitdown), lưu file gốc, tạo **bản nháp**. Nhanh, không embedding (mục 16.3)."""
     label = _clean_label(version_label)
@@ -180,13 +185,19 @@ async def create_draft_from_upload(
     with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as tmp:
         tmp.write(content)
         tmp_path = Path(tmp.name)
+    parsed: ParsedDocument | None = None
     try:
         # markitdown chạy đồng bộ và nặng CPU: đưa ra luồng riêng để không chặn các request khác.
         parsed = await asyncio.to_thread(parse_document, tmp_path)
+    except TextTooShortError as exc:
+        # PDF gần như không có chữ (nghi là bản scan): nếu OCR bật thì chạy nền, không thì từ chối như trước.
+        if not (ocr_enabled and suffix.lower() == ".pdf"):
+            raise PortalError(422, "INGEST_FAILED", "portal.ingest_failed") from exc
     except ParseError as exc:
         raise PortalError(422, "INGEST_FAILED", "portal.ingest_failed") from exc
     finally:
         tmp_path.unlink(missing_ok=True)
+    file_checksum = parsed.file_checksum if parsed is not None else hashlib.sha256(content).hexdigest()
 
     created_document = False
     if document_id is not None:
@@ -219,7 +230,12 @@ async def create_draft_from_upload(
         )
     )
     if existing is not None:
-        if existing.content_checksum == parsed.content_checksum:
+        same = (
+            existing.file_checksum == file_checksum
+            if parsed is None
+            else existing.content_checksum == parsed.content_checksum
+        )
+        if same:
             report = existing.quality_report.get("structure") or {}
             return DraftResult(
                 document.id,
@@ -233,9 +249,23 @@ async def create_draft_from_upload(
 
     try:
         # Tên file theo checksum của FILE, nên hai file khác byte không ghi đè nhau trên Cloudinary.
-        storage_key = await storage.store(content, checksum=parsed.file_checksum, filename=filename)
+        storage_key = await storage.store(content, checksum=file_checksum, filename=filename)
     except Exception as exc:
         raise PortalError(502, "STORAGE_FAILED", "portal.storage_failed") from exc
+
+    if parsed is None:
+        return await _create_pending_ocr_draft(
+            session,
+            document=document,
+            created_document=created_document,
+            actor=actor,
+            label=label,
+            filename=filename,
+            content=content,
+            storage_key=storage_key,
+            file_checksum=file_checksum,
+            effective_from=effective_from,
+        )
 
     # Bậc 2 và 3 (mục 13): thăng tiêu đề giả nếu file không có heading thật và đo chất lượng cấu trúc. Bản nháp lưu
     # Markdown đã có heading để HR thấy và sửa được trước khi kích hoạt.
@@ -289,6 +319,61 @@ def _copied_report(source: DocumentVersion) -> dict[str, Any]:
     if working is not None:
         report[word_editor.WORKING_DOCX_KEY] = working
     return report
+
+
+async def _create_pending_ocr_draft(
+    session: AsyncSession,
+    *,
+    document: Document,
+    created_document: bool,
+    actor: User,
+    label: str,
+    filename: str,
+    content: bytes,
+    storage_key: str,
+    file_checksum: str,
+    effective_from: date | None,
+) -> DraftResult:
+    """Bản nháp cho PDF scan: giữ file, đặt PROCESSING và xếp việc nền OCR; xong việc thì thành DRAFT có Markdown."""
+    version = DocumentVersion(
+        document_id=document.id,
+        version_label=label,
+        revision_no=await _next_revision_no(session, document.id),
+        status=VersionStatus.PROCESSING.value,
+        original_filename=filename,
+        mime_type=mimetypes.guess_type(filename)[0] or "application/pdf",
+        size_bytes=len(content),
+        storage_key=storage_key,
+        file_checksum=file_checksum,
+        content_checksum=file_checksum,  # tạm: thay bằng mã của Markdown khi OCR xong
+        parser="pending-ocr",
+        markdown="",
+        quality_report={"ocr": {"pending": True}},
+        effective_from=effective_from,
+        embedding_model_version=PENDING_EMBEDDING_MODEL,
+        source=VersionSource.UPLOAD.value,
+        uploaded_by=actor.id,
+        updated_by=actor.id,
+    )
+    session.add(version)
+    try:
+        await session.flush()
+    except IntegrityError as exc:
+        await session.rollback()
+        raise PortalError(409, "VERSION_LABEL_EXISTS", "portal.version_label_exists") from exc
+    session.add(_audit(actor, "CREATE_DRAFT", version, source="UPLOAD_OCR"))
+    job = await enqueue_job(
+        session,
+        kind=JobKind.INGEST_VERSION.value,
+        payload={"version_id": version.id},
+        idempotency_key=f"ingest:{version.id}",
+        created_by=actor.id,
+        document_version_id=version.id,
+        max_attempts=1,
+    )
+    return DraftResult(
+        document.id, version.id, created_document=created_document, reused=False, job_id=job.id, ocr_pending=True
+    )
 
 
 async def copy_version(
@@ -489,6 +574,7 @@ def _item(version: DocumentVersion, uploader: str | None, sections: int, tasks: 
         structure_quality=structure.get("quality"),
         structure_warnings=tuple(structure.get("warnings", ())),
         ai_split=("APPLIED" if ai and ai.get("applied") else "SKIPPED") if ai else None,
+        ocr=bool(version.quality_report.get("ocr")),
     )
 
 

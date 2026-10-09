@@ -10,8 +10,10 @@ from __future__ import annotations
 
 import asyncio
 import contextlib
+import tempfile
 import time
 from datetime import UTC, date, datetime
+from pathlib import Path
 from typing import Any
 
 from sqlalchemy import func, select
@@ -30,6 +32,8 @@ from src.services.ingest.embedding.modal_adapter import EmbeddingServiceError
 from src.services.ingest.embedding.port import EmbeddingPort
 from src.services.ingest.embedding_reuse import find_reusable_vectors
 from src.services.ingest.ingest_service import chunk_markdown, today_in
+from src.services.ingest.ocr import OcrError
+from src.services.ingest.parser import ParseError, parse_document
 from src.services.ingest.structure import AiSplit, ai_split_markdown, analyze_structure
 from src.services.ingest.version_lifecycle import (
     activate_version_row,
@@ -282,6 +286,75 @@ async def cleanup_activate_version(ctx: JobContext, claimed: ClaimedJob, message
             await session.commit()
 
 
+async def run_ingest_version(ctx: JobContext, claimed: ClaimedJob, progress: JobProgress) -> dict[str, Any]:
+    """Bản nháp từ PDF scan: OCR để có lớp chữ, đọc thành Markdown, rồi mở khóa bản nháp (PROCESSING -> DRAFT)."""
+    version_id = int(claimed.payload["version_id"])
+    if ctx.read_file is None or ctx.ocr_pdf is None:
+        raise JobFailureError("OCR_DISABLED", "OCR chưa được bật trên máy chủ")
+    async with ctx.session_factory() as session:
+        version = await session.get(DocumentVersion, version_id)
+        if version is None or version.status != VersionStatus.PROCESSING:
+            raise JobFailureError("VERSION_STATE_CHANGED", "phiên bản không còn ở trạng thái chờ OCR")
+        storage_key, filename = version.storage_key, version.original_filename
+    await progress.update(5, "Đọc file scan")
+    try:
+        pdf = await ctx.read_file(storage_key)
+    except Exception as exc:
+        raise JobFailureError("FILE_UNREADABLE", "không đọc lại được file đã tải lên", retryable=True) from exc
+    await progress.update(10, "Đang nhận dạng chữ (OCR)")
+    started = time.perf_counter()
+    try:
+        searchable = await ctx.ocr_pdf(pdf)
+    except OcrError as exc:
+        raise JobFailureError("OCR_FAILED", f"OCR không thành công: {exc}") from exc
+    elapsed = round(time.perf_counter() - started, 1)
+    await progress.update(85, "Đọc văn bản sau OCR")
+    with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
+        tmp.write(searchable)
+        path = Path(tmp.name)
+    try:
+        parsed = await asyncio.to_thread(parse_document, path)
+    except ParseError as exc:
+        raise JobFailureError("OCR_EMPTY", "OCR không đọc được chữ nào trong file") from exc
+    finally:
+        path.unlink(missing_ok=True)
+    try:
+        new_key = await ctx.storage.store(searchable, checksum=parsed.file_checksum, filename=filename)
+    except Exception as exc:
+        raise JobFailureError("STORAGE_FAILED", "không lưu được file sau OCR", retryable=True) from exc
+    structured, structure = analyze_structure(parsed.markdown)
+    async with ctx.session_factory() as session:
+        locked = await session.scalar(select(DocumentVersion).where(DocumentVersion.id == version_id).with_for_update())
+        if locked is None or locked.status != VersionStatus.PROCESSING:
+            raise JobFailureError("VERSION_CHANGED", "phiên bản đã bị thay đổi trong lúc OCR")
+        locked.markdown = structured
+        locked.content_checksum = parsed.content_checksum
+        locked.storage_key = new_key
+        locked.file_checksum = parsed.file_checksum
+        locked.size_bytes = parsed.size_bytes
+        locked.parser = "markitdown+ocr"
+        locked.quality_report = {
+            "structure": structure.as_dict(),
+            "has_embedded_images": parsed.has_embedded_images,
+            "ocr": {"engine": "tesseract", "seconds": elapsed},
+        }
+        locked.failure_reason = None
+        locked.status = VersionStatus.DRAFT.value
+        await session.commit()
+    return {"version_id": version_id, "characters": len(structured), "ocr_seconds": elapsed}
+
+
+async def cleanup_ingest_version(ctx: JobContext, claimed: ClaimedJob, message: str) -> None:
+    """OCR hỏng hẳn: trả bản nháp về DRAFT (trống) kèm lý do để HR thấy và xóa được."""
+    version_id = int(claimed.payload["version_id"])
+    async with ctx.session_factory() as session:
+        version = await session.get(DocumentVersion, version_id)
+        if version is not None and version.status == VersionStatus.PROCESSING:
+            version.status = VersionStatus.DRAFT.value
+            version.failure_reason = message[:500]
+            await session.commit()
+
+
 async def _document_title(ctx: JobContext, version_id: int) -> tuple[str, str]:
     async with ctx.session_factory() as session:
         row = (
@@ -381,6 +454,7 @@ async def run_ai_task_proposal(ctx: JobContext, claimed: ClaimedJob, progress: J
 HANDLERS: dict[str, JobHandler] = {
     JobKind.ACTIVATE_VERSION.value: JobHandler(run=run_activate_version, on_final_failure=cleanup_activate_version),
     JobKind.AI_TASK_PROPOSAL.value: JobHandler(run=run_ai_task_proposal),
+    JobKind.INGEST_VERSION.value: JobHandler(run=run_ingest_version, on_final_failure=cleanup_ingest_version),
 }
 
 __all__ = ["HANDLERS", "current_model_version", "run_activate_version", "run_ai_task_proposal"]

@@ -113,9 +113,10 @@ async def upload_document(
         title=title,
         category_slug=category_slug,
         source_key=source_key,
+        ocr_enabled=settings.ocr_enabled,
     )
-    job_id: int | None = None
-    if activate and not draft.reused:
+    job_id: int | None = draft.job_id
+    if activate and not draft.reused and not draft.ocr_pending:
         job = await document_version_service.activate_version(
             db,
             document_id=draft.document_id,

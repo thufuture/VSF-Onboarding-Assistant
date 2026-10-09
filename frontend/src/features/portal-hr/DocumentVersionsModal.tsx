@@ -12,6 +12,7 @@ import {
   PlayCircle,
   RotateCcw,
   Save,
+  ScanText,
   Sparkles,
   Trash2,
   UploadCloud,
@@ -194,6 +195,13 @@ export function DocumentVersionsModal({
       cancelled = true;
     };
   }, [doc.id, selectedId, versions]);
+
+  const hasProcessing = versions?.some((v) => v.state === "PROCESSING") ?? false;
+  useEffect(() => {
+    if (!hasProcessing || jobId !== null) return;
+    const timer = setInterval(() => void loadVersions(), 4000);
+    return () => clearInterval(timer);
+  }, [hasProcessing, jobId, loadVersions]);
 
   const { job, lost } = useJob(jobId, (done) => {
     setFinishedJob(done);
@@ -469,6 +477,12 @@ export function DocumentVersionsModal({
       {structureNote ? (
         <p className={styles.bannerWarn}>
           <AlertTriangle aria-hidden="true" size={14} /> {structureNote}
+        </p>
+      ) : null}
+      {detail.version.ocr ? (
+        <p className={detail.version.state === "PROCESSING" ? styles.bannerInfo : styles.bannerWarn}>
+          <ScanText aria-hidden="true" size={14} />{" "}
+          {detail.version.state === "PROCESSING" ? t("ocr.pending") : t("ocr.review")}
         </p>
       ) : null}
       {detail.version.ai_split === "APPLIED" ? (
