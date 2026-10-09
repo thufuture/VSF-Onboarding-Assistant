@@ -112,6 +112,18 @@ class Settings(BaseSettings):
     structure_llm_min_words: int = 400
     structure_llm_daily_limit: int = 30
 
+    # Kích hoạt phiên bản chỉ tính embedding cho đoạn mới hoặc đã sửa, dùng lại vector của đoạn không đổi (cùng model).
+    embedding_cache_enabled: bool = False
+
+    # Trình soạn thảo kiểu Word (ONLYOFFICE Docs, máy chủ riêng) cho bản nháp. Tắt mặc định; cần đủ cả bốn địa chỉ/khóa bên dưới.
+    # public_url: địa chỉ trình duyệt dùng để tải trình soạn thảo; internal_url: backend gọi chuyển đổi/lưu; backend_url: địa chỉ
+    # backend mà máy chủ ONLYOFFICE gọi tới (lấy file, callback lưu); jwt_secret: khóa JWT dùng chung với ONLYOFFICE.
+    word_editor_enabled: bool = False
+    onlyoffice_public_url: str = ""
+    onlyoffice_internal_url: str = ""
+    onlyoffice_backend_url: str = ""
+    onlyoffice_jwt_secret: SecretStr | None = None
+
     @field_validator("app_timezone")
     @classmethod
     def _timezone_must_exist(cls, value: str) -> str:

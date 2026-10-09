@@ -318,3 +318,189 @@ $tone-failed: #c0392b;
     color: var(--app-ink);
   }
 }
+
+// ── Trang riêng /admin/documents/[id] (variant="page"): một thanh đầu trang duy nhất, còn lại dành hết cho nội dung ──
+.pageShell {
+  display: flex;
+  height: 100dvh;
+  flex-direction: column;
+  gap: 5px;
+  padding: 5px;
+  overflow: hidden;
+}
+
+// Một dòng duy nhất: tên tài liệu co lại (cắt bằng dấu ...) và nút phụ chỉ còn biểu tượng khi màn hình hẹp.
+.pageBar {
+  display: flex;
+  flex: none;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border: 1px solid var(--app-border);
+  border-radius: 5px;
+  background: var(--app-surface);
+
+  // Nút cùng kiểu với các trang khác, gọn hơn một chút để vừa một hàng.
+  .barActions > button,
+  .barActions > a,
+  .barEditor > div > button,
+  .barEditor > div > a {
+    height: 32px;
+    padding: 0 10px;
+    white-space: nowrap;
+  }
+}
+
+.backIcon {
+  display: inline-grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 1px solid var(--app-border-strong);
+  border-radius: 5px;
+  background: transparent;
+  color: var(--app-ink-2);
+  cursor: pointer;
+
+  &:hover {
+    border-color: $tone-processing;
+    color: $tone-processing;
+  }
+}
+
+.barTitle {
+  display: flex;
+  min-width: 0;
+  flex: 1 1 140px;
+  flex-direction: column;
+  gap: 1px;
+
+  h1 {
+    margin: 0;
+    overflow: hidden;
+    color: var(--app-ink);
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.25;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  small {
+    overflow: hidden;
+    color: var(--app-ink-2);
+    font-size: 12px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+// Hai tab Nội dung / So với bản trước nằm ngay trên đầu trang.
+.segment {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 5px;
+  background: var(--app-surface-2);
+
+  button {
+    height: 30px;
+    padding: 0 13px;
+    border: 0;
+    border-radius: 4px;
+    background: transparent;
+    color: var(--app-ink-2);
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+
+    &:hover {
+      color: var(--app-ink);
+    }
+    &[aria-selected="true"] {
+      background: var(--app-surface);
+      box-shadow: 0 1px 2px rgb(16 24 40 / 14%);
+      color: $tone-processing;
+    }
+  }
+}
+
+.barSpacer {
+  display: none;
+}
+
+.barActions {
+  display: flex;
+  flex: none;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.btnText {
+  @media (max-width: 1750px) {
+    display: none;
+  }
+}
+
+.barEditor {
+  display: flex;
+  flex: none;
+  align-items: center;
+}
+
+.pageMain {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 5px;
+
+  > .editor {
+    min-height: 0;
+    flex: 1;
+  }
+}
+
+// Vùng so sánh: thẻ trắng cuộn bên trong, cùng kiểu thẻ của các trang khác.
+.pageScroll {
+  min-height: 0;
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+  border: 1px solid var(--app-border);
+  border-radius: 5px;
+  background: light-dark(#fff, var(--app-surface));
+}
+
+.pageShell .textarea {
+  min-height: 0;
+  flex: 1;
+}
+
+.pageShell .previewBox {
+  min-height: 0;
+  flex: 1;
+}
+
+.pageBar .barActions > button,
+.pageBar .barActions > a,
+.segment button,
+.backIcon {
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.pageBar .barActions > button:hover:not(:disabled),
+.pageBar .barActions > a:hover {
+  box-shadow: 0 2px 8px rgb(16 24 40 / 14%);
+  transform: translateY(-1px);
+}
+
+.pageBar .barActions > button:active:not(:disabled) {
+  transform: translateY(0);
+}

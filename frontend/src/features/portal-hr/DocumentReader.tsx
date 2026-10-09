@@ -29,7 +29,18 @@ export function splitSections(markdown: string): Section[] {
 }
 
 /** Trình đọc tài liệu kiểu Word: mục lục đứng yên bên trái, trang giấy bên phải, làm nổi mục đang đọc theo vị trí cuộn. */
-export function DocumentReader({ markdown, tocLabel, compact = false }: { markdown: string; tocLabel: string; compact?: boolean }) {
+export function DocumentReader({
+  markdown,
+  tocLabel,
+  compact = false,
+  fill = false,
+}: {
+  markdown: string;
+  tocLabel: string;
+  compact?: boolean;
+  /** Trang riêng: kéo cao theo màn hình thay vì chiều cao cố định của cửa sổ nổi. */
+  fill?: boolean;
+}) {
   const sections = useMemo(() => splitSections(markdown), [markdown]);
   const canvasRef = useRef<HTMLDivElement>(null);
   const [activeSec, setActiveSec] = useState<string | null>(null);
@@ -57,7 +68,7 @@ export function DocumentReader({ markdown, tocLabel, compact = false }: { markdo
   }
 
   return (
-    <div className={`${styles.docRead} ${compact ? styles.docCompact : ""}`}>
+    <div className={`${styles.docRead} ${compact ? styles.docCompact : ""} ${fill ? styles.docFill : ""}`}>
       <nav aria-label={tocLabel} className={styles.docToc}>
         <b>{tocLabel}</b>
         <div className={styles.docTocList}>

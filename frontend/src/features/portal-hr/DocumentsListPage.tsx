@@ -31,13 +31,13 @@ import type {
   JobResponseDTO,
   StageDraftChangeResponseDTO,
 } from "@/features/portal-hr/dto/responseDTO/portal.response";
+import { useRouter } from "@/i18n/navigation";
 
 import { CategoryPicker } from "./CategoryPicker";
 import { categoryFlat, categoryStyle, type DocTone } from "./docCategory";
 import { DocumentRemovalModal } from "./DocumentRemovalModal";
 import { StageApplyPrompt } from "./StageApplyPrompt";
 import styles from "./DocumentsListPage.module.scss";
-import { DocumentVersionsModal } from "./DocumentVersionsModal";
 import { isJobFinished, useActiveActivations, useJob } from "./useJob";
 
 const PAGE_SIZE = 6;
@@ -135,7 +135,6 @@ type Modal =
   | { kind: "upload" }
   | { kind: "newVersion"; doc: DocumentListItemResponseDTO }
   | { kind: "edit"; doc: DocumentListItemResponseDTO }
-  | { kind: "versions"; doc: DocumentListItemResponseDTO }
   | { kind: "archive"; doc: DocumentListItemResponseDTO }
   | { kind: "delete"; doc: DocumentListItemResponseDTO }
   | { kind: "reactivate"; doc: DocumentListItemResponseDTO }
@@ -145,6 +144,7 @@ type Modal =
  * ngừng sử dụng có xác nhận / kích hoạt lại). "Xóa" của v15 được thay bằng chuyển trạng thái ARCHIVED để giữ lịch sử ingest. */
 export function DocumentsListPage() {
   const t = useTranslations("portalDocuments");
+  const router = useRouter();
   const [toastNode, showToast] = useToast();
 
   const [documents, setDocuments] = useState<DocumentListItemResponseDTO[] | null>(null);
@@ -254,7 +254,7 @@ export function DocumentsListPage() {
   }
 
   function openView(doc: DocumentListItemResponseDTO) {
-    setModal({ kind: "versions", doc });
+    router.push(`/admin/documents/${doc.id}`);
   }
 
   async function submitUpload(event: FormEvent, existing?: DocumentListItemResponseDTO) {
@@ -907,15 +907,6 @@ export function DocumentsListPage() {
             </div>
           </form>
         </PortalModal>
-      ) : null}
-
-      {modal?.kind === "versions" ? (
-        <DocumentVersionsModal
-          doc={modal.doc}
-          onChanged={() => reload()}
-          onClose={() => setModal(null)}
-          onUploadNewVersion={() => openNewVersion(modal.doc)}
-        />
       ) : null}
 
       {modal?.kind === "archive" ? (

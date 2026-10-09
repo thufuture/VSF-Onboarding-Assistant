@@ -18,6 +18,7 @@ from src.api.routers.auth_router import router as auth_router
 from src.api.routers.chat_router import router as chat_router
 from src.api.routers.health_router import router as health_router
 from src.api.routers.portal_document_router import router as portal_document_router
+from src.api.routers.portal_editor_router import router as portal_editor_router
 from src.api.routers.portal_router import router as portal_router
 from src.api.routers.portal_version_router import router as portal_version_router
 from src.api.routers.ticket_router import router as ticket_router
@@ -104,6 +105,7 @@ def _build_job_worker(app: FastAPI, settings: Settings) -> JobWorker | None:
         structure_llm_enabled=settings.structure_llm_enabled,
         structure_llm_min_words=settings.structure_llm_min_words,
         structure_llm_daily_limit=settings.structure_llm_daily_limit,
+        embedding_cache_enabled=settings.embedding_cache_enabled,
         proposal=ProposalOptions(
             mode=settings.task_proposal_mode,
             batch_words=settings.task_proposal_batch_words,
@@ -205,6 +207,7 @@ def create_app() -> FastAPI:
     app.include_router(auth_router)
     app.include_router(chat_router)
     app.include_router(portal_document_router)
+    app.include_router(portal_editor_router)
     app.include_router(portal_router)
     app.include_router(portal_version_router)
     app.include_router(ticket_router)

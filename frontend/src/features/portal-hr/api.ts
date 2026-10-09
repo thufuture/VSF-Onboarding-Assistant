@@ -28,6 +28,9 @@ import type {
   DocumentUploadResponseDTO,
   DocumentVersionDetailResponseDTO,
   DocumentVersionResponseDTO,
+  VersionComparisonResponseDTO,
+  CapabilitiesResponseDTO,
+  EditorSessionResponseDTO,
   EmployeeDocumentResponseDTO,
   EmployeeJourneyCreatedResponseDTO,
   EmployeeJourneyResponseDTO,
@@ -349,6 +352,35 @@ function getDocumentVersion(documentId: number, versionId: number): Promise<Docu
   return request(`/api/v1/portal/documents/${documentId}/versions/${versionId}`);
 }
 
+function compareDocumentVersion(documentId: number, versionId: number): Promise<VersionComparisonResponseDTO> {
+  return request(`/api/v1/portal/documents/${documentId}/versions/${versionId}/compare`);
+}
+
+function getCapabilities(): Promise<CapabilitiesResponseDTO> {
+  return request("/api/v1/portal/capabilities");
+}
+
+function openEditorSession(documentId: number, versionId: number): Promise<EditorSessionResponseDTO> {
+  return request(`/api/v1/portal/documents/${documentId}/versions/${versionId}/editor-session`, { method: "POST" });
+}
+
+function saveEditorSession(
+  documentId: number,
+  versionId: number,
+  documentKey: string,
+  format: "docx" | "pdf" | "markdown",
+): Promise<{ ok: boolean; changed: boolean }> {
+  return request(`/api/v1/portal/documents/${documentId}/versions/${versionId}/editor-session/save`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ document_key: documentKey, format }),
+  });
+}
+
+function exportVersionUrl(documentId: number, versionId: number, format: "docx" | "pdf"): string {
+  return `/api/v1/portal/documents/${documentId}/versions/${versionId}/export?format=${format}`;
+}
+
 function copyDocumentVersion(
   documentId: number,
   versionId: number,
@@ -474,6 +506,11 @@ export const portalHrApi = {
   publishTemplate,
   listDocumentVersions,
   getDocumentVersion,
+  compareDocumentVersion,
+  getCapabilities,
+  openEditorSession,
+  saveEditorSession,
+  exportVersionUrl,
   copyDocumentVersion,
   updateDocumentVersion,
   deleteDocumentVersion,

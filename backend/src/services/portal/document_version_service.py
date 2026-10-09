@@ -14,6 +14,7 @@ import tempfile
 from dataclasses import dataclass
 from datetime import date, datetime
 from pathlib import Path
+from typing import Any
 
 from sqlalchemy import func, select
 from sqlalchemy.exc import IntegrityError
@@ -39,6 +40,7 @@ from src.services.ingest.parser import MIN_TEXT_LENGTH, ParseError, parse_docume
 from src.services.ingest.storage import StoragePort
 from src.services.ingest.structure import analyze_structure
 from src.services.ingest.version_lifecycle import DisplayState, checksum_of, display_state
+from src.services.portal import word_editor
 from src.services.portal.errors import PortalError
 from src.services.portal.job_service import enqueue_job
 
@@ -276,6 +278,19 @@ async def create_draft_from_upload(
     )
 
 
+def _copied_report(source: DocumentVersion) -> dict[str, Any]:
+    """Báo cáo của bản sao; ghi nhớ file .docx dùng chung còn khớp nội dung để trình soạn thảo Word mở đúng file gốc."""
+    report = {
+        k: v
+        for k, v in source.quality_report.items()
+        if k not in (word_editor.DOCX_CHECKSUM_KEY, word_editor.WORKING_DOCX_KEY, word_editor.PENDING_SAVE_KEY)
+    }
+    working = word_editor.working_docx_for_copy(source)
+    if working is not None:
+        report[word_editor.WORKING_DOCX_KEY] = working
+    return report
+
+
 async def copy_version(
     session: AsyncSession, *, document_id: int, version_id: int, actor: User, label: str | None
 ) -> DocumentVersion:
@@ -302,7 +317,7 @@ async def copy_version(
         page_count=source.page_count,
         parser=source.parser,
         markdown=source.markdown,
-        quality_report=dict(source.quality_report),
+        quality_report=_copied_report(source),
         effective_from=None,
         embedding_model_version=PENDING_EMBEDDING_MODEL,
         parent_version_id=source.id,

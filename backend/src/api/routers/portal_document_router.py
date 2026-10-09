@@ -21,17 +21,21 @@ from src.dto.request.portal_request_dto import (
     UpdateDocumentVersionRequestDTO,
 )
 from src.dto.response.portal_response_dto import (
+    DiffSegmentResponseDTO,
     DocumentUploadResponseDTO,
     DocumentVersionDetailResponseDTO,
     DocumentVersionResponseDTO,
     JobResponseDTO,
+    RecomputeEstimateResponseDTO,
+    SectionChangeResponseDTO,
+    VersionComparisonResponseDTO,
 )
 from src.model.enums import UserRole
 from src.model.job import Job
 from src.model.user import User
 from src.services.ingest.ingest_service import today_in
 from src.services.ingest.storage import StoragePort
-from src.services.portal import ai_task_service, document_version_service, job_service
+from src.services.portal import ai_task_service, document_diff, document_version_service, job_service
 from src.services.portal.errors import PortalError
 
 router = APIRouter(prefix="/api/v1/portal", tags=["portal-documents"])
@@ -156,6 +160,52 @@ async def get_document_version(
         document_title=detail.document_title,
         markdown=detail.markdown,
         can_edit=detail.can_edit,
+    )
+
+
+@router.get("/documents/{document_id}/versions/{version_id}/compare", response_model=VersionComparisonResponseDTO)
+async def compare_document_version(
+    document_id: int, version_id: int, _user: StaffUser, db: Db, base_version_id: int | None = None
+) -> VersionComparisonResponseDTO:
+    """ "So với bản trước": mục thêm, xóa, sửa (kèm từng từ đổi) và ước lượng số đoạn phải tính lại embedding. Chỉ đọc."""
+    result = await document_diff.compare_with_base(
+        db, document_id=document_id, version_id=version_id, base_version_id=base_version_id
+    )
+    diff = result.diff
+    if diff is None:
+        return VersionComparisonResponseDTO(
+            has_base=False,
+            base_version_id=None,
+            base_version_label=None,
+            base_reason=None,
+            added=0,
+            removed=0,
+            modified=0,
+            unchanged=0,
+            sections=[],
+            recompute=None,
+        )
+    return VersionComparisonResponseDTO(
+        has_base=True,
+        base_version_id=result.base_version_id,
+        base_version_label=result.base_version_label,
+        base_reason=result.base_reason,
+        added=diff.added,
+        removed=diff.removed,
+        modified=diff.modified,
+        unchanged=diff.unchanged,
+        sections=[
+            SectionChangeResponseDTO(
+                status=change.status,
+                heading=change.heading,
+                old_heading=change.old_heading,
+                segments=[DiffSegmentResponseDTO(op=s.op, text=s.text) for s in change.segments],
+                added_words=change.added_words,
+                removed_words=change.removed_words,
+            )
+            for change in diff.sections
+        ],
+        recompute=RecomputeEstimateResponseDTO(**vars(diff.recompute)),
     )
 
 

@@ -100,6 +100,8 @@ export function AppShell({ children }: { children: ReactNode }) {
   const onTasksTree = user.role !== "USER" && pathname.startsWith("/admin/tasks");
   // Thanh bên thu gọn thì Quản lý task hiện thanh biểu tượng thường (không có cây ngày) để nhường chỗ cho trang.
   const showTree = onTasksTree && !collapsed;
+  // Trang riêng của một tài liệu (/admin/documents/<mã>): bỏ thanh bên, thanh trên và chân trang để dành chỗ cho trình soạn thảo.
+  const focus = user.role !== "USER" && /^\/admin\/documents\/\d+/.test(pathname);
   const collapseButton = (
     <button
       aria-label={collapsed ? t("expandSidebar") : t("collapseSidebar")}
@@ -121,7 +123,7 @@ export function AppShell({ children }: { children: ReactNode }) {
     : undefined;
 
   return (
-    <div className={styles.shell} data-collapsed={collapsed ? "true" : "false"} data-theme={theme}>
+    <div className={styles.shell} data-collapsed={collapsed ? "true" : "false"} data-focus={focus ? "true" : undefined} data-theme={theme}>
       <aside className={`${styles.sidebar} ${drawerOpen ? styles.sidebarOpen : ""}`} id="app-sidebar">
         <div className={styles.sidebarHead}>
           <Link aria-label={brandText("brand")} className={styles.brand} href={home}>
@@ -215,6 +217,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       {drawerOpen ? <div aria-hidden="true" className={styles.backdrop} onClick={() => setDrawerOpen(false)} /> : null}
 
       <div className={styles.content}>
+        {focus ? null : (
         <header className={styles.toolbar}>
           <button
             aria-controls="app-sidebar"
@@ -269,10 +272,11 @@ export function AppShell({ children }: { children: ReactNode }) {
             </button>
           </div>
         </header>
+        )}
         <div className={styles.page} data-fill={pathname.startsWith("/chat") ? undefined : "true"}>
           {children}
         </div>
-        <PortalFooter />
+        {focus ? null : <PortalFooter />}
       </div>
     </div>
   );
