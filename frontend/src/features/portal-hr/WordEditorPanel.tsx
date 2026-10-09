@@ -60,7 +60,16 @@ export function WordEditorPanel({
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [askFormat, setAskFormat] = useState(false);
-  const [format, setFormat] = useState<SaveFormat>("docx");
+  // Nhớ lựa chọn lần trước (mặc định PDF). Khung này chỉ dựng sau khi bấm "Soạn thảo Word" nên đọc localStorage ngay được.
+  const [format, setFormat] = useState<SaveFormat>(() => {
+    try {
+      const saved = window.localStorage.getItem("vsf-save-format");
+      if (saved === "docx" || saved === "pdf" || saved === "markdown") return saved;
+    } catch {
+      /* không đọc được thì dùng mặc định */
+    }
+    return "pdf";
+  });
   const [notice, setNotice] = useState<string | null>(null);
   const editorRef = useRef<DocEditorHandle | null>(null);
 
@@ -96,6 +105,11 @@ export function WordEditorPanel({
     setSaving(true);
     setNotice(null);
     try {
+      try {
+        window.localStorage.setItem("vsf-save-format", format);
+      } catch {
+        /* bỏ qua */
+      }
       const result = await portalHrApi.saveEditorSession(documentId, versionId, session.document_key, format);
       setAskFormat(false);
       if (!result.ok) setNotice("saveFailed");

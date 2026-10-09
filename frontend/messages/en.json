@@ -905,7 +905,8 @@
       },
       "backToList": "Back to documents",
       "uploadShort": "Upload version",
-      "copyShort": "New version"
+      "copyShort": "New version",
+      "originalFile": "Original file: {name}"
     },
     "category": {
       "hint": {

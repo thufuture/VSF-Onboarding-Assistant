@@ -905,7 +905,8 @@
       },
       "backToList": "Quay lại danh sách tài liệu",
       "uploadShort": "Tải bản mới",
-      "copyShort": "Tạo bản mới"
+      "copyShort": "Tạo bản mới",
+      "originalFile": "File gốc: {name}"
     },
     "category": {
       "hint": {

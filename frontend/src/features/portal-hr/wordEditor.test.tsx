@@ -71,8 +71,7 @@ describe("WordEditorPanel", () => {
     fireEvent.click(screen.getByRole("button", { name: /^Lưu$/ }));
     expect(api.saveEditorSession).not.toHaveBeenCalled();
     expect(await screen.findByText("Lưu tài liệu")).toBeInTheDocument();
-    expect(screen.getByRole("radio", { name: /^Word \(\.docx\)/ })).toBeChecked();
-    expect(screen.getByRole("radio", { name: /^PDF/ })).not.toBeChecked();
+    expect(screen.getByRole("radio", { name: /^PDF/ })).toBeChecked();
 
     fireEvent.click(screen.getByRole("radio", { name: /^Markdown/ }));
     fireEvent.click(screen.getAllByRole("button", { name: /^Lưu$/ }).at(-1) as HTMLElement);

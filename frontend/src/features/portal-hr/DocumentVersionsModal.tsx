@@ -562,7 +562,7 @@ export function DocumentVersionsModal({
   );
 
   const metaText = detail
-    ? `${effectiveText(t, detail.version)}${
+    ? `${effectiveText(t, detail.version)} · ${t("originalFile", { name: detail.version.original_filename })}${
         detail.version.parent_version_id
           ? ` · ${t("fromParent", {
               label: versions?.find((v) => v.id === detail.version.parent_version_id)?.version_label ?? "…",
