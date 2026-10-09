@@ -370,7 +370,14 @@ async def get_original_document(
     location = await resolve_original_document(db, document_version_id=document_version_id, settings=settings)
     if location.kind == "url":
         return RedirectResponse(location.value, status_code=307)
-    return FileResponse(location.value, media_type=location.mime_type, filename=location.filename)
+    # PDF mở thẳng trong trình duyệt để xem; các loại khác tải về.
+    inline = location.mime_type == "application/pdf"
+    return FileResponse(
+        location.value,
+        media_type=location.mime_type,
+        filename=location.filename,
+        content_disposition_type="inline" if inline else "attachment",
+    )
 
 
 @router.post("/ai/task-proposals")

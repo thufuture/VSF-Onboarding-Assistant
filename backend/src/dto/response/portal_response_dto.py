@@ -329,6 +329,42 @@ class DocumentVersionDetailResponseDTO(BaseModel):
     can_edit: bool
 
 
+class DiffSegmentResponseDTO(BaseModel):
+    op: Literal["equal", "insert", "delete"]
+    text: str
+
+
+class SectionChangeResponseDTO(BaseModel):
+    status: Literal["added", "removed", "modified", "unchanged"]
+    heading: str | None
+    old_heading: str | None  # chỉ có khi mục đổi tiêu đề
+    segments: list[DiffSegmentResponseDTO]  # rỗng với mục không đổi
+    added_words: int
+    removed_words: int
+
+
+class RecomputeEstimateResponseDTO(BaseModel):
+    chunks_total: int
+    chunks_reused: int
+    chunks_to_embed: int
+    estimated_seconds: int
+
+
+class VersionComparisonResponseDTO(BaseModel):
+    """So sánh phiên bản với bản nền. `has_base=false`: chưa có bản nào trước đó ("tài liệu mới"), các trường còn lại rỗng."""
+
+    has_base: bool
+    base_version_id: int | None
+    base_version_label: str | None
+    base_reason: Literal["requested", "parent", "previous_revision"] | None
+    added: int
+    removed: int
+    modified: int
+    unchanged: int
+    sections: list[SectionChangeResponseDTO]
+    recompute: RecomputeEstimateResponseDTO | None
+
+
 class JobResponseDTO(BaseModel):
     """Tiến độ một việc nền. Không chứa nội dung tài liệu (INV8); `error` chỉ có mã và mô tả ngắn."""
 

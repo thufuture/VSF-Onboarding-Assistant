@@ -2,8 +2,10 @@
 
 import {
   AlertTriangle,
+  ArrowLeft,
   CheckCircle2,
   Copy,
+  FileEdit,
   FileText,
   History,
   Pencil,
@@ -15,7 +17,7 @@ import {
   UploadCloud,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { type ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 
 import { JobProgress } from "@/components/job-progress/JobProgress";
 import { ConfirmModal, modalStyles as m, PortalModal } from "@/components/portal-modal/PortalModal";
@@ -31,6 +33,9 @@ import type {
 import { DocumentReader } from "./DocumentReader";
 import styles from "./DocumentVersionsModal.module.scss";
 import { isJobFinished, useJob } from "./useJob";
+import { VersionComparePanel } from "./VersionComparePanel";
+import { VersionPicker } from "./VersionPicker";
+import { type SaveFormat, WordEditorPanel } from "./WordEditorPanel";
 
 type Translate = (key: string, values?: Record<string, string | number>) => string;
 
@@ -79,11 +84,14 @@ export function DocumentVersionsModal({
   onClose,
   onChanged,
   onUploadNewVersion,
+  variant = "modal",
 }: {
   doc: DocumentListItemResponseDTO;
   onClose: () => void;
   onChanged: () => void;
   onUploadNewVersion: () => void;
+  /** `page`: trang riêng rộng (đường dẫn /admin/documents/[id]); `modal`: cửa sổ nổi như trước. */
+  variant?: "modal" | "page";
 }) {
   const t = useTranslations("portalDocuments.versions") as unknown as Translate;
   const tt = useTranslations("portalDocuments");
@@ -99,6 +107,13 @@ export function DocumentVersionsModal({
   // Đang sửa đúng phiên bản nào; đổi sang phiên bản khác thì `editing` tự thành false.
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editTab, setEditTab] = useState<"write" | "preview">("write");
+  const [viewTab, setViewTab] = useState<"content" | "compare">("content");
+  // Trình soạn thảo kiểu Word (chỉ khi máy chủ bật `WORD_EDITOR_ENABLED`): đang mở cho phiên bản nào, và đang chờ đồng bộ nội dung.
+  const [canWordEdit, setCanWordEdit] = useState(false);
+  const [wordEditingId, setWordEditingId] = useState<number | null>(null);
+  const [syncing, setSyncing] = useState(false);
+  // Chỗ trên thanh đầu trang để trình soạn thảo đặt nút Lưu/Xuất/Xong (chỉ trang riêng).
+  const [barNode, setBarNode] = useState<HTMLElement | null>(null);
   // Phần người dùng đã sửa của đúng phiên bản đang soạn; chưa sửa trường nào thì lấy nguyên giá trị đang lưu.
   const [draftEdit, setDraftEdit] = useState<{ id: number; markdown?: string; label?: string; effective?: string } | null>(
     null,
@@ -109,7 +124,8 @@ export function DocumentVersionsModal({
 
   const selected = useMemo(() => versions?.find((v) => v.id === selectedId) ?? null, [versions, selectedId]);
   const detail = detailState !== null && detailState.id === selectedId ? detailState.data : null;
-  const editing = editingId !== null && editingId === selectedId;
+  const wordEditing = wordEditingId !== null && wordEditingId === selectedId;
+  const editing = (editingId !== null && editingId === selectedId) || wordEditing;
   const overrides = draftEdit !== null && draftEdit.id === selectedId ? draftEdit : null;
   const draftMarkdown = overrides?.markdown ?? detail?.markdown ?? "";
   const draftLabel = overrides?.label ?? detail?.version.version_label ?? "";
@@ -157,6 +173,17 @@ export function DocumentVersionsModal({
   }, [loadVersions]);
 
   useEffect(() => {
+    let cancelled = false;
+    portalHrApi
+      .getCapabilities()
+      .then((result) => !cancelled && setCanWordEdit(result.word_editor))
+      .catch(() => undefined);
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
     if (selectedId === null) return;
     let cancelled = false;
     portalHrApi
@@ -201,8 +228,14 @@ export function DocumentVersionsModal({
       await loadVersions(created.id);
       onChanged();
       setDraftEdit(null);
-      setEditTab("write");
-      setEditingId(created.id);
+      setWordEditingId(null);
+      setViewTab("content");
+      // Có trình soạn thảo Word thì chỉ chọn bản nháp vừa tạo (HR bấm "Soạn thảo Word" để sửa); không thì mở sẵn khung sửa Markdown.
+      if (canWordEdit) setEditingId(null);
+      else {
+        setEditTab("write");
+        setEditingId(created.id);
+      }
     } catch (caught) {
       setError(errorKey(caught));
     } finally {
@@ -224,6 +257,30 @@ export function DocumentVersionsModal({
       setError(errorKey(caught));
     } finally {
       setBusy(false);
+    }
+  }
+
+  /** Đã bấm Lưu trong trình soạn thảo Word: ONLYOFFICE gửi file về backend, backend đọc thành Markdown rồi dựng file gốc theo
+   * định dạng đã chọn. Đợi tên file gốc đổi sang đuôi mới (xong bước cuối) rồi mới đọc lại bản nháp. */
+  async function finishWordEditing(format: SaveFormat, changed: boolean) {
+    const id = wordEditingId;
+    setWordEditingId(null);
+    if (id === null || !changed) return;
+    setSyncing(true);
+    const suffix = format === "pdf" ? ".pdf" : format === "docx" ? ".docx" : ".md";
+    try {
+      for (let attempt = 0; attempt < 20; attempt += 1) {
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        const latest = await portalHrApi.getDocumentVersion(doc.id, id);
+        if (latest.version.original_filename.toLowerCase().endsWith(suffix)) break;
+      }
+    } catch {
+      /* không đọc lại được thì thôi, danh sách bên dưới vẫn tải lại */
+    } finally {
+      await loadVersions(id);
+      onChanged();
+      setViewTab("content");
+      setSyncing(false);
     }
   }
 
@@ -265,235 +322,414 @@ export function DocumentVersionsModal({
         ? t("structure.MEDIUM")
         : null;
 
-  return (
-    <>
-      <PortalModal
-        closeLabel={tt("close")}
-        footer={
-          <button className={m.btnSec} onClick={onClose} type="button">
-            {tt("closeButton")}
-          </button>
-        }
-        headerActions={
-          <>
-            <button className={styles.headBtn} disabled={busy || activating} onClick={onUploadNewVersion} type="button">
-              <UploadCloud aria-hidden="true" size={14} /> {t("uploadNew")}
-            </button>
-            {selected ? (
-              <button className={styles.headBtn} disabled={busy || activating} onClick={() => copyVersion(selected)} type="button">
-                <Copy aria-hidden="true" size={14} /> {t("copy")}
-              </button>
-            ) : null}
-          </>
-        }
-        icon={History}
-        onClose={onClose}
-        subtitle={t("subtitle", { count: versions?.length ?? doc.version_count })}
-        title={doc.title}
-        tone="indigo"
-        vwide
-      >
-        {error ? (
-          <p className={styles.bannerError} role="alert">
-            <AlertTriangle aria-hidden="true" size={14} /> {t(error)}
-          </p>
-        ) : null}
+  const isPage = variant === "page";
+  const locked = busy || activating || editing || syncing;
 
-        <div className={styles.layout}>
-          <aside aria-label={t("listLabel")} className={styles.list}>
-            {versions === null ? (
-              <p className={m.faint}>{tt("loading")}</p>
-            ) : (
-              versions.map((v) => (
+  const headActions = (
+    <>
+      <button className={styles.headBtn} disabled={busy || activating} onClick={onUploadNewVersion} type="button">
+        <UploadCloud aria-hidden="true" size={14} /> {t("uploadNew")}
+      </button>
+      {selected ? (
+        <button className={styles.headBtn} disabled={busy || activating} onClick={() => copyVersion(selected)} type="button">
+          <Copy aria-hidden="true" size={14} /> {t("copy")}
+        </button>
+      ) : null}
+    </>
+  );
+
+  // Nút thao tác của phiên bản đang chọn: cùng kiểu với các trang khác, có chữ; riêng nút xóa trên trang riêng chỉ có biểu tượng.
+  const secondaryClass = m.btnSec;
+  const primaryClass = m.btn;
+  // `collapsible`: trên trang riêng, màn hình hẹp thì chỉ còn biểu tượng (có chú thích) để thanh đầu trang luôn nằm trên một dòng.
+  const withLabel = (icon: ReactNode, label: string, iconOnly = false, collapsible = false) =>
+    iconOnly ? (
+      icon
+    ) : (
+      <>
+        {icon} <span className={collapsible && isPage ? styles.btnText : undefined}>{label}</span>
+      </>
+    );
+
+  const actionButtons =
+    detail && selected ? (
+      <>
+        {detail.can_edit && !canWordEdit ? (
+          <button
+            aria-label={t("edit")}
+            className={secondaryClass}
+            disabled={locked}
+            onClick={startEdit}
+            title={t("edit")}
+            type="button"
+          >
+            {withLabel(<Pencil aria-hidden="true" size={14} />, t("edit"))}
+          </button>
+        ) : null}
+        {detail.can_edit && canWordEdit ? (
+          <button
+            className={primaryClass}
+            disabled={locked}
+            onClick={() => setWordEditingId(detail.version.id)}
+            type="button"
+          >
+            {withLabel(<FileEdit aria-hidden="true" size={14} />, t("wordEditor.open"))}
+          </button>
+        ) : null}
+        {ACTIVATE_STATES.includes(detail.version.state) ? (
+          <button
+            className={primaryClass}
+            disabled={busy || activating || editing}
+            onClick={() => setConfirm({ kind: "activate", version: detail.version })}
+            title={editing ? t("editor.saveFirst") : undefined}
+            type="button"
+          >
+            {withLabel(
+              detail.version.state === "DRAFT" ? (
+                <PlayCircle aria-hidden="true" size={14} />
+              ) : (
+                <RotateCcw aria-hidden="true" size={14} />
+              ),
+              detail.version.state === "DRAFT" ? t("activate") : t("setCurrent"),
+            )}
+          </button>
+        ) : null}
+        {detail.version.state === "DRAFT" ? (
+          <button
+            aria-label={t("deleteDraft")}
+            className={secondaryClass}
+            disabled={busy || activating || editing}
+            onClick={() => setConfirm({ kind: "delete", version: detail.version })}
+            title={editing ? t("editor.saveFirst") : t("deleteDraft")}
+            type="button"
+          >
+            {withLabel(<Trash2 aria-hidden="true" size={14} />, t("deleteDraft"), isPage)}
+          </button>
+        ) : null}
+        <a
+          aria-label={tt("viewOriginal")}
+          className={secondaryClass}
+          href={portalHrApi.originalDocumentUrl(detail.version.id)}
+          rel="noopener noreferrer"
+          target="_blank"
+          title={tt("viewOriginal")}
+        >
+          {withLabel(<FileText aria-hidden="true" size={14} />, tt("viewOriginal"), false, true)}
+        </a>
+      </>
+    ) : null;
+
+  const errorBanner = error ? (
+    <p className={styles.bannerError} role="alert">
+      <AlertTriangle aria-hidden="true" size={14} /> {t(error)}
+    </p>
+  ) : null;
+
+  const progressBlocks = (
+    <>
+      {jobId !== null && !finishedJob ? (
+        <div className={styles.progressBox}>
+          <b>{t("progress.title")}</b>
+          <JobProgress
+            percent={job?.progress_percent ?? 0}
+            stage={job?.stage ?? t("progress.waiting")}
+            state={job?.status === "FAILED" ? "failed" : job?.status === "SUCCEEDED" ? "done" : "running"}
+          />
+          {lost ? <small>{t("progress.lost")}</small> : null}
+        </div>
+      ) : null}
+      {finishedJob ? (
+        <p className={finishedJob.status === "SUCCEEDED" ? styles.bannerOk : styles.bannerError} role="status">
+          {finishedJob.status === "SUCCEEDED" ? (
+            <>
+              <CheckCircle2 aria-hidden="true" size={14} />{" "}
+              {t("progress.done", {
+                sections: Number(finishedJob.result?.section_count ?? 0),
+                chunks: Number(finishedJob.result?.chunk_count ?? 0),
+              })}
+              {finishedJob.result?.reused_embeddings ? ` ${t("progress.reused")}` : ""}
+            </>
+          ) : (
+            <>
+              <AlertTriangle aria-hidden="true" size={14} /> {t("progress.failed", { error: finishedJob.error ?? "" })}
+            </>
+          )}
+        </p>
+      ) : null}
+    </>
+  );
+
+  const detailBanners = detail ? (
+    <>
+      {detail.version.failure_reason ? (
+        <p className={styles.bannerError}>
+          <AlertTriangle aria-hidden="true" size={14} /> {t("lastFailure", { error: detail.version.failure_reason })}
+        </p>
+      ) : null}
+      {structureNote ? (
+        <p className={styles.bannerWarn}>
+          <AlertTriangle aria-hidden="true" size={14} /> {structureNote}
+        </p>
+      ) : null}
+      {detail.version.ai_split === "APPLIED" ? (
+        <p className={styles.bannerInfo}>
+          <Sparkles aria-hidden="true" size={14} /> {t("structure.aiApplied")}
+        </p>
+      ) : null}
+      {detail.version.original_filename && detail.version.source === "EDITED" && !isPage ? (
+        <p className={styles.hint}>{t("originalNote", { name: detail.version.original_filename })}</p>
+      ) : null}
+      {syncing ? <p className={styles.hint}>{t("wordEditor.syncing")}</p> : null}
+    </>
+  ) : null;
+
+  const content = detail ? (
+    wordEditing ? (
+      <WordEditorPanel
+        barTarget={isPage ? barNode : null}
+        documentId={doc.id}
+        fill={isPage}
+        onCancel={() => setWordEditingId(null)}
+        onSaved={finishWordEditing}
+        versionId={detail.version.id}
+      />
+    ) : editing ? (
+      <div className={styles.editor}>
+        <div className={styles.editGrid}>
+          <label>
+            {t("editor.label")}
+            <input maxLength={32} onChange={(e) => patchDraft({ label: e.target.value })} value={draftLabel} />
+          </label>
+          <label>
+            {t("editor.effective")}
+            <input onChange={(e) => patchDraft({ effective: e.target.value })} type="date" value={draftEffective} />
+          </label>
+        </div>
+        <div className={styles.tabs} role="tablist">
+          <button aria-selected={editTab === "write"} onClick={() => setEditTab("write")} role="tab" type="button">
+            {t("editor.write")}
+          </button>
+          <button aria-selected={editTab === "preview"} onClick={() => setEditTab("preview")} role="tab" type="button">
+            {t("editor.preview")}
+          </button>
+        </div>
+        {editTab === "write" ? (
+          <textarea
+            aria-label={t("editor.markdown")}
+            className={styles.textarea}
+            onChange={(e) => patchDraft({ markdown: e.target.value })}
+            spellCheck={false}
+            value={draftMarkdown}
+          />
+        ) : (
+          <div className={styles.previewBox}>
+            <DocumentReader compact markdown={draftMarkdown} tocLabel={tt("toc")} />
+          </div>
+        )}
+        <p className={styles.hint}>{t("editor.hint")}</p>
+        <div className={styles.actions}>
+          <button className={m.btnSec} disabled={busy} onClick={() => setEditingId(null)} type="button">
+            {tt("cancel")}
+          </button>
+          <button className={m.btn} disabled={busy} onClick={saveEdit} type="button">
+            <Save aria-hidden="true" size={14} /> {tt("save")}
+          </button>
+        </div>
+      </div>
+    ) : (
+      <>
+        {isPage ? null : (
+        <div className={styles.tabs} role="tablist">
+          <button aria-selected={viewTab === "content"} onClick={() => setViewTab("content")} role="tab" type="button">
+            {t("compare.tabContent")}
+          </button>
+          <button aria-selected={viewTab === "compare"} onClick={() => setViewTab("compare")} role="tab" type="button">
+            {t("compare.tabCompare")}
+          </button>
+        </div>
+        )}
+        {viewTab === "compare" ? (
+          <div className={isPage ? styles.pageScroll : undefined}>
+            <VersionComparePanel documentId={doc.id} key={detail.version.id} versionId={detail.version.id} />
+          </div>
+        ) : (
+          <DocumentReader fill={isPage} markdown={detail.markdown} tocLabel={tt("toc")} />
+        )}
+      </>
+    )
+  ) : (
+    <p className={m.faint}>{tt("loading")}</p>
+  );
+
+  const metaText = detail
+    ? `${effectiveText(t, detail.version)} · ${t("originalFile", { name: detail.version.original_filename })}${
+        detail.version.parent_version_id
+          ? ` · ${t("fromParent", {
+              label: versions?.find((v) => v.id === detail.version.parent_version_id)?.version_label ?? "…",
+            })}`
+          : ""
+      }`
+    : "";
+
+  const modalBody = (
+    <>
+      {errorBanner}
+      <div className={styles.layout}>
+        <aside aria-label={t("listLabel")} className={styles.list}>
+          {versions === null ? (
+            <p className={m.faint}>{tt("loading")}</p>
+          ) : (
+            versions.map((v) => (
+              <button
+                className={`${styles.vcard} ${v.id === selectedId ? styles.vcardOn : ""}`}
+                key={v.id}
+                onClick={() => setSelectedId(v.id)}
+                type="button"
+              >
+                <span className={styles.vtop}>
+                  <b>{v.version_label}</b>
+                  <i className={styles.chip} data-state={v.state}>
+                    {t(`state.${v.state}`)}
+                  </i>
+                </span>
+                <small>{effectiveText(t, v)}</small>
+                <small>
+                  {t(`source.${v.source}`)}
+                  {v.uploaded_by_name ? ` · ${v.uploaded_by_name}` : ""}
+                  {v.task_count > 0 ? ` · ${t("tasks", { count: v.task_count })}` : ""}
+                </small>
+              </button>
+            ))
+          )}
+        </aside>
+
+        <section className={styles.pane}>
+          {progressBlocks}
+          {detail && selected ? (
+            <>
+              <div className={styles.paneHead}>
+                <div>
+                  <h3>
+                    {detail.version.version_label}{" "}
+                    <i className={styles.chip} data-state={detail.version.state}>
+                      {t(`state.${detail.version.state}`)}
+                    </i>
+                  </h3>
+                  <small>{metaText}</small>
+                </div>
+                <div className={styles.actions}>{actionButtons}</div>
+              </div>
+              {detailBanners}
+              {content}
+            </>
+          ) : (
+            <p className={m.faint}>{tt("loading")}</p>
+          )}
+        </section>
+      </div>
+    </>
+  );
+
+  // Trang riêng: một thanh đầu trang duy nhất (quay lại, tên + hiệu lực, chọn phiên bản, tab, thao tác); còn lại dành hết cho nội dung.
+  const pageTabs = (
+    <div className={styles.segment} role="tablist">
+      <button aria-selected={viewTab === "content"} onClick={() => setViewTab("content")} role="tab" type="button">
+        {t("compare.tabContent")}
+      </button>
+      <button aria-selected={viewTab === "compare"} onClick={() => setViewTab("compare")} role="tab" type="button">
+        {t("compare.tabCompare")}
+      </button>
+    </div>
+  );
+
+  const pageBody = (
+    <div className={styles.pageShell}>
+      <div className={styles.pageBar}>
+        <button
+          aria-label={t("backToList")}
+          className={styles.backIcon}
+          onClick={onClose}
+          title={t("backToList")}
+          type="button"
+        >
+          <ArrowLeft aria-hidden="true" size={16} />
+        </button>
+        <div className={styles.barTitle}>
+          <h1 title={doc.title}>{doc.title}</h1>
+          <small>{metaText}</small>
+        </div>
+        {versions ? (
+          <VersionPicker
+            effectiveLabel={(v) => effectiveText(t, v)}
+            label={t("listLabel")}
+            onSelect={setSelectedId}
+            selectedId={selectedId}
+            stateLabel={(v) => t(`state.${v.state}`)}
+            versions={versions}
+          />
+        ) : null}
+        {wordEditing ? null : pageTabs}
+        <span className={styles.barSpacer} />
+        <div className={styles.barActions}>
+          {wordEditing ? (
+            <div className={styles.barEditor} ref={setBarNode} />
+          ) : (
+            <>
+              <button
+                className={m.btnSec}
+                disabled={busy || activating}
+                onClick={onUploadNewVersion}
+                title={t("uploadNew")}
+                type="button"
+              >
+                <UploadCloud aria-hidden="true" size={14} /> <span className={styles.btnText}>{t("uploadShort")}</span>
+              </button>
+              {selected ? (
                 <button
-                  className={`${styles.vcard} ${v.id === selectedId ? styles.vcardOn : ""}`}
-                  key={v.id}
-                  onClick={() => setSelectedId(v.id)}
+                  className={m.btnSec}
+                  disabled={busy || activating}
+                  onClick={() => copyVersion(selected)}
+                  title={t("copy")}
                   type="button"
                 >
-                  <span className={styles.vtop}>
-                    <b>{v.version_label}</b>
-                    <i className={styles.chip} data-state={v.state}>
-                      {t(`state.${v.state}`)}
-                    </i>
-                  </span>
-                  <small>{effectiveText(t, v)}</small>
-                  <small>
-                    {t(`source.${v.source}`)}
-                    {v.uploaded_by_name ? ` · ${v.uploaded_by_name}` : ""}
-                    {v.task_count > 0 ? ` · ${t("tasks", { count: v.task_count })}` : ""}
-                  </small>
+                  <Copy aria-hidden="true" size={14} /> <span className={styles.btnText}>{t("copyShort")}</span>
                 </button>
-              ))
-            )}
-          </aside>
-
-          <section className={styles.pane}>
-            {jobId !== null && !finishedJob ? (
-              <div className={styles.progressBox}>
-                <b>{t("progress.title")}</b>
-                <JobProgress
-                  percent={job?.progress_percent ?? 0}
-                  stage={job?.stage ?? t("progress.waiting")}
-                  state={job?.status === "FAILED" ? "failed" : job?.status === "SUCCEEDED" ? "done" : "running"}
-                />
-                {lost ? <small>{t("progress.lost")}</small> : null}
-              </div>
-            ) : null}
-            {finishedJob ? (
-              <p className={finishedJob.status === "SUCCEEDED" ? styles.bannerOk : styles.bannerError} role="status">
-                {finishedJob.status === "SUCCEEDED" ? (
-                  <>
-                    <CheckCircle2 aria-hidden="true" size={14} />{" "}
-                    {t("progress.done", {
-                      sections: Number(finishedJob.result?.section_count ?? 0),
-                      chunks: Number(finishedJob.result?.chunk_count ?? 0),
-                    })}
-                    {finishedJob.result?.reused_embeddings ? ` ${t("progress.reused")}` : ""}
-                  </>
-                ) : (
-                  <>
-                    <AlertTriangle aria-hidden="true" size={14} /> {t("progress.failed", { error: finishedJob.error ?? "" })}
-                  </>
-                )}
-              </p>
-            ) : null}
-
-            {detail && selected ? (
-              <>
-                <div className={styles.paneHead}>
-                  <div>
-                    <h3>
-                      {detail.version.version_label}{" "}
-                      <i className={styles.chip} data-state={detail.version.state}>
-                        {t(`state.${detail.version.state}`)}
-                      </i>
-                    </h3>
-                    <small>
-                      {effectiveText(t, detail.version)}
-                      {detail.version.parent_version_id
-                        ? ` · ${t("fromParent", {
-                            label: versions?.find((v) => v.id === detail.version.parent_version_id)?.version_label ?? "…",
-                          })}`
-                        : ""}
-                    </small>
-                  </div>
-                  <div className={styles.actions}>
-                    {detail.can_edit ? (
-                      <button className={m.btnSec} disabled={busy || activating || editing} onClick={startEdit} type="button">
-                        <Pencil aria-hidden="true" size={14} /> {t("edit")}
-                      </button>
-                    ) : null}
-                    {ACTIVATE_STATES.includes(detail.version.state) ? (
-                      <button
-                        className={m.btn}
-                        disabled={busy || activating || editing}
-                        onClick={() => setConfirm({ kind: "activate", version: detail.version })}
-                        title={editing ? t("editor.saveFirst") : undefined}
-                        type="button"
-                      >
-                        {detail.version.state === "DRAFT" ? (
-                          <PlayCircle aria-hidden="true" size={14} />
-                        ) : (
-                          <RotateCcw aria-hidden="true" size={14} />
-                        )}{" "}
-                        {detail.version.state === "DRAFT" ? t("activate") : t("setCurrent")}
-                      </button>
-                    ) : null}
-                    {detail.version.state === "DRAFT" ? (
-                      <button
-                        className={m.btnSec}
-                        disabled={busy || activating || editing}
-                        onClick={() => setConfirm({ kind: "delete", version: detail.version })}
-                        title={editing ? t("editor.saveFirst") : undefined}
-                        type="button"
-                      >
-                        <Trash2 aria-hidden="true" size={14} /> {t("deleteDraft")}
-                      </button>
-                    ) : null}
-                    <a
-                      className={m.btnSec}
-                      href={portalHrApi.originalDocumentUrl(detail.version.id)}
-                      rel="noopener noreferrer"
-                      target="_blank"
-                    >
-                      <FileText aria-hidden="true" size={14} /> {tt("viewOriginal")}
-                    </a>
-                  </div>
-                </div>
-
-                {detail.version.failure_reason ? (
-                  <p className={styles.bannerError}>
-                    <AlertTriangle aria-hidden="true" size={14} /> {t("lastFailure", { error: detail.version.failure_reason })}
-                  </p>
-                ) : null}
-                {structureNote ? (
-                  <p className={styles.bannerWarn}>
-                    <AlertTriangle aria-hidden="true" size={14} /> {structureNote}
-                  </p>
-                ) : null}
-                {detail.version.ai_split === "APPLIED" ? (
-                  <p className={styles.bannerInfo}>
-                    <Sparkles aria-hidden="true" size={14} /> {t("structure.aiApplied")}
-                  </p>
-                ) : null}
-                {detail.version.original_filename && detail.version.source === "EDITED" ? (
-                  <p className={styles.hint}>{t("originalNote", { name: detail.version.original_filename })}</p>
-                ) : null}
-
-                {editing ? (
-                  <div className={styles.editor}>
-                    <div className={styles.editGrid}>
-                      <label>
-                        {t("editor.label")}
-                        <input maxLength={32} onChange={(e) => patchDraft({ label: e.target.value })} value={draftLabel} />
-                      </label>
-                      <label>
-                        {t("editor.effective")}
-                        <input onChange={(e) => patchDraft({ effective: e.target.value })} type="date" value={draftEffective} />
-                      </label>
-                    </div>
-                    <div className={styles.tabs} role="tablist">
-                      <button aria-selected={editTab === "write"} onClick={() => setEditTab("write")} role="tab" type="button">
-                        {t("editor.write")}
-                      </button>
-                      <button aria-selected={editTab === "preview"} onClick={() => setEditTab("preview")} role="tab" type="button">
-                        {t("editor.preview")}
-                      </button>
-                    </div>
-                    {editTab === "write" ? (
-                      <textarea
-                        aria-label={t("editor.markdown")}
-                        className={styles.textarea}
-                        onChange={(e) => patchDraft({ markdown: e.target.value })}
-                        spellCheck={false}
-                        value={draftMarkdown}
-                      />
-                    ) : (
-                      <div className={styles.previewBox}>
-                        <DocumentReader compact markdown={draftMarkdown} tocLabel={tt("toc")} />
-                      </div>
-                    )}
-                    <p className={styles.hint}>{t("editor.hint")}</p>
-                    <div className={styles.actions}>
-                      <button className={m.btnSec} disabled={busy} onClick={() => setEditingId(null)} type="button">
-                        {tt("cancel")}
-                      </button>
-                      <button className={m.btn} disabled={busy} onClick={saveEdit} type="button">
-                        <Save aria-hidden="true" size={14} /> {tt("save")}
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  <DocumentReader markdown={detail.markdown} tocLabel={tt("toc")} />
-                )}
-              </>
-            ) : (
-              <p className={m.faint}>{tt("loading")}</p>
-            )}
-          </section>
+              ) : null}
+              {actionButtons}
+            </>
+          )}
         </div>
-      </PortalModal>
+      </div>
+      {errorBanner}
+      {progressBlocks}
+      {detailBanners}
+      <div className={styles.pageMain}>{content}</div>
+    </div>
+  );
+
+  return (
+    <>
+      {isPage ? (
+        pageBody
+      ) : (
+        <PortalModal
+          closeLabel={tt("close")}
+          footer={
+            <button className={m.btnSec} onClick={onClose} type="button">
+              {tt("closeButton")}
+            </button>
+          }
+          headerActions={headActions}
+          icon={History}
+          onClose={onClose}
+          subtitle={t("subtitle", { count: versions?.length ?? doc.version_count })}
+          title={doc.title}
+          tone="indigo"
+          vwide
+        >
+          {modalBody}
+        </PortalModal>
+      )}
 
       {confirm?.kind === "activate" ? (
         <PortalModal

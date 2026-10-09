@@ -840,7 +840,73 @@
         "VERSION_NOT_ACTIVATABLE": "This version is being processed or cannot be activated.",
         "VERSION_NOT_DELETABLE": "Only drafts that were never activated can be deleted.",
         "DOCUMENT_ARCHIVED": "The document is retired: reactivate the document first."
-      }
+      },
+      "compare": {
+        "tabContent": "Content",
+        "tabCompare": "Compared to previous",
+        "loading": "Comparing…",
+        "failed": "Could not compare right now, try again later.",
+        "noBase": "This is the first version of the document, so there is nothing to compare.",
+        "against": "Compared to “{label}”",
+        "noChange": "No change in the text.",
+        "summary": "{modified} sections edited, {added} new, {removed} removed, {unchanged} unchanged",
+        "estimate": "Activating needs about {embed} of {total} chunks re-embedded (roughly {seconds} s); unchanged chunks reuse their old vectors.",
+        "filter": {
+          "changed": "Changed sections only",
+          "all": "All sections"
+        },
+        "status": {
+          "added": "New",
+          "removed": "Removed",
+          "modified": "Edited",
+          "unchanged": "Unchanged"
+        },
+        "renamedFrom": "was: {name}",
+        "noHeading": "(start of document)",
+        "before": "Old",
+        "after": "This version"
+      },
+      "wordEditor": {
+        "open": "Edit in Word",
+        "save": "Save",
+        "exportDocx": "Export Word",
+        "exportPdf": "Export PDF",
+        "hint": "Edit as in Word; content is saved back to the system. The Word file is the master, PDF is export-only. Viga is not affected until you activate.",
+        "syncing": "Syncing content from the editor…",
+        "notice": {
+          "noChanges": "Nothing to save.",
+          "saveFailed": "Could not save, try again."
+        },
+        "errors": {
+          "openFailed": "Could not open the editor (the editing server is not ready or this version is no longer a draft).",
+          "scriptFailed": "Could not load the editor; check the editing server address."
+        },
+        "cancel": "Cancel",
+        "cancelHint": "Close the editor and discard unsaved changes",
+        "saveModal": {
+          "title": "Save document",
+          "intro": "Choose the format of this version's original file. The text is always re-read for Viga search and comparison.",
+          "close": "Close",
+          "cancel": "Back to editing",
+          "confirm": "Save",
+          "docx": {
+            "title": "Word (.docx)",
+            "hint": "The original file is the Word document itself, keeping its formatting and opening in Microsoft Word."
+          },
+          "pdf": {
+            "title": "PDF",
+            "hint": "The original file is a PDF exported from the Word draft, keeping the printed layout. The Word draft is kept for further editing."
+          },
+          "markdown": {
+            "title": "Markdown",
+            "hint": "The original file is a Markdown text file: text only, no page formatting."
+          }
+        }
+      },
+      "backToList": "Back to documents",
+      "uploadShort": "Upload version",
+      "copyShort": "New version",
+      "originalFile": "Original file: {name}"
     },
     "category": {
       "hint": {

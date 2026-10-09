@@ -31,6 +31,7 @@ vi.mock("@/features/portal-hr/api", () => {
     portalHrApi: {
       listDocumentVersions: vi.fn(),
       getDocumentVersion: vi.fn(),
+      getCapabilities: vi.fn(),
       copyDocumentVersion: vi.fn(),
       updateDocumentVersion: vi.fn(),
       deleteDocumentVersion: vi.fn(),
@@ -203,6 +204,7 @@ describe("DocumentVersionsModal", () => {
     vi.resetAllMocks();
     api.listDocumentVersions.mockResolvedValue([v2, v1, v0]);
     api.listActiveJobs.mockResolvedValue([]);
+    api.getCapabilities.mockResolvedValue({ word_editor: false });
     api.getDocumentVersion.mockImplementation((_doc, id) =>
       Promise.resolve(detailOf([v1, v2, v0].find((v) => v.id === id) as DocumentVersionResponseDTO)),
     );

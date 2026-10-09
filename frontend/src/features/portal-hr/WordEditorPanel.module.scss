@@ -1,0 +1,151 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.hint {
+  margin: 0;
+  color: var(--app-ink-2);
+  font-size: 12px;
+}
+
+.notice {
+  margin: 0;
+  color: #1f7f4a;
+  font-size: 12.5px;
+}
+
+.error {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  color: #c0392b;
+  font-size: 13px;
+}
+
+.host {
+  height: min(70vh, 760px);
+  overflow: hidden;
+  border: 1px solid var(--app-border);
+  border-radius: 5px;
+  background: var(--app-surface);
+
+  > div {
+    height: 100%;
+  }
+}
+
+// Trang riêng: trình soạn thảo chiếm hết chiều cao còn lại của màn hình, không cuộn cả trang.
+.wrapFill {
+  height: 100%;
+  min-height: 0;
+  flex: 1;
+}
+
+.hostFill {
+  min-height: 0;
+  flex: 1;
+  height: auto;
+  border-radius: 5px;
+}
+
+.wrapFill {
+  gap: 4px;
+
+  .bar > * {
+    height: 28px;
+    padding: 0 10px;
+    font-size: 12px;
+  }
+}
+
+// Nút nằm trong thanh đầu trang (portal): cùng chiều cao 30px với các nút khác của thanh.
+.barInline {
+  align-items: center;
+  flex-wrap: nowrap;
+
+  > button,
+  > a {
+    height: 30px;
+    padding: 0 11px;
+    font-size: 12.5px;
+  }
+}
+
+.errorInline {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #c0392b;
+  font-size: 12.5px;
+}
+
+.noticeInline {
+  color: #1f7f4a;
+  font-size: 12.5px;
+}
+
+.barDivider {
+  width: 1px;
+  height: 20px;
+  background: var(--app-border-strong);
+}
+
+.formats {
+  display: grid;
+  gap: 10px;
+}
+
+.format {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1px solid var(--app-border);
+  border-radius: 5px;
+  background: var(--app-surface);
+  color: var(--app-ink-2);
+  cursor: pointer;
+
+  input {
+    margin-top: 3px;
+    accent-color: #4f5bbf;
+  }
+  span {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  b {
+    color: var(--app-ink);
+    font-size: 14px;
+  }
+  small {
+    font-size: 12.5px;
+    line-height: 1.5;
+  }
+
+  &:hover {
+    border-color: #4f5bbf;
+  }
+}
+
+.formatOn {
+  border-color: #4f5bbf;
+  background: color-mix(in srgb, #4f5bbf 7%, var(--app-surface));
+}
+
+.btnText {
+  @media (max-width: 1750px) {
+    display: none;
+  }
+}

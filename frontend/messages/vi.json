@@ -840,7 +840,73 @@
         "VERSION_NOT_ACTIVATABLE": "Bản này đang được xử lý hoặc không kích hoạt được.",
         "VERSION_NOT_DELETABLE": "Chỉ xóa được bản nháp chưa từng kích hoạt.",
         "DOCUMENT_ARCHIVED": "Tài liệu đang ngừng sử dụng: hãy kích hoạt lại tài liệu trước."
-      }
+      },
+      "compare": {
+        "tabContent": "Nội dung",
+        "tabCompare": "So với bản trước",
+        "loading": "Đang so sánh…",
+        "failed": "Không so sánh được lúc này, thử lại sau.",
+        "noBase": "Đây là bản đầu tiên của tài liệu nên chưa có gì để so sánh.",
+        "against": "So với bản “{label}”",
+        "noChange": "Không có thay đổi về nội dung chữ.",
+        "summary": "{modified} mục đã sửa, {added} mới, {removed} đã xóa, {unchanged} giữ nguyên",
+        "estimate": "Khi kích hoạt cần tính lại embedding khoảng {embed}/{total} đoạn (ước chừng {seconds} giây); các đoạn không đổi dùng lại vector cũ.",
+        "filter": {
+          "changed": "Chỉ mục đã đổi",
+          "all": "Tất cả mục"
+        },
+        "status": {
+          "added": "Mới",
+          "removed": "Đã xóa",
+          "modified": "Đã sửa",
+          "unchanged": "Giữ nguyên"
+        },
+        "renamedFrom": "trước đây: {name}",
+        "noHeading": "(đầu tài liệu)",
+        "before": "Bản cũ",
+        "after": "Bản này"
+      },
+      "wordEditor": {
+        "open": "Soạn thảo Word",
+        "save": "Lưu",
+        "exportDocx": "Xuất Word",
+        "exportPdf": "Xuất PDF",
+        "hint": "Sửa như trong Word; nội dung được lưu về hệ thống. Bản chính là file Word, PDF chỉ để xuất ra xem hoặc gửi. Chưa ảnh hưởng Viga cho tới khi kích hoạt.",
+        "syncing": "Đang đồng bộ nội dung từ trình soạn thảo…",
+        "notice": {
+          "noChanges": "Không có thay đổi nào để lưu.",
+          "saveFailed": "Không lưu được, thử lại."
+        },
+        "errors": {
+          "openFailed": "Không mở được trình soạn thảo (máy chủ soạn thảo chưa sẵn sàng hoặc bản này không còn là bản nháp).",
+          "scriptFailed": "Không tải được trình soạn thảo; kiểm tra địa chỉ máy chủ soạn thảo."
+        },
+        "cancel": "Hủy",
+        "cancelHint": "Đóng trình soạn thảo và bỏ các thay đổi chưa lưu",
+        "saveModal": {
+          "title": "Lưu tài liệu",
+          "intro": "Chọn định dạng cho file gốc của phiên bản này. Nội dung chữ luôn được đọc lại để Viga tra cứu và so sánh.",
+          "close": "Đóng",
+          "cancel": "Quay lại soạn",
+          "confirm": "Lưu",
+          "docx": {
+            "title": "Word (.docx)",
+            "hint": "File gốc là chính bản Word đang soạn, giữ nguyên định dạng và có thể mở lại bằng Microsoft Word."
+          },
+          "pdf": {
+            "title": "PDF",
+            "hint": "File gốc là PDF xuất từ bản Word, giữ bố cục như khi in. Bản Word vẫn được giữ để soạn tiếp."
+          },
+          "markdown": {
+            "title": "Markdown",
+            "hint": "File gốc là file văn bản Markdown, chỉ có chữ, không có định dạng trang."
+          }
+        }
+      },
+      "backToList": "Quay lại danh sách tài liệu",
+      "uploadShort": "Tải bản mới",
+      "copyShort": "Tạo bản mới",
+      "originalFile": "File gốc: {name}"
     },
     "category": {
       "hint": {

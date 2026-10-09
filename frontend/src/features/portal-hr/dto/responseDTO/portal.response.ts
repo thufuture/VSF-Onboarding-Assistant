@@ -60,6 +60,43 @@ export type DocumentVersionDetailResponseDTO = {
   can_edit: boolean;
 };
 
+export type DiffSegmentDTO = { op: "equal" | "insert" | "delete"; text: string };
+
+export type SectionChangeDTO = {
+  status: "added" | "removed" | "modified" | "unchanged";
+  heading: string | null;
+  old_heading: string | null;
+  segments: DiffSegmentDTO[];
+  added_words: number;
+  removed_words: number;
+};
+
+export type VersionComparisonResponseDTO = {
+  has_base: boolean;
+  base_version_id: number | null;
+  base_version_label: string | null;
+  base_reason: "requested" | "parent" | "previous_revision" | null;
+  added: number;
+  removed: number;
+  modified: number;
+  unchanged: number;
+  sections: SectionChangeDTO[];
+  recompute: {
+    chunks_total: number;
+    chunks_reused: number;
+    chunks_to_embed: number;
+    estimated_seconds: number;
+  } | null;
+};
+
+export type CapabilitiesResponseDTO = { word_editor: boolean };
+
+export type EditorSessionResponseDTO = {
+  api_js_url: string;
+  config: Record<string, unknown>;
+  document_key: string;
+};
+
 export type JobStatusDTO = "PENDING" | "RUNNING" | "SUCCEEDED" | "FAILED";
 
 export type AiProposalDocumentResultDTO = {

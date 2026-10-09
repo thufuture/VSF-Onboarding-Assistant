@@ -15,12 +15,18 @@
   }
 }
 
+.docFill {
+  height: auto;
+  min-height: 0;
+  flex: 1;
+}
+
 .docToc {
   display: flex;
   min-height: 0;
   flex-direction: column;
   border-right: 1px solid var(--app-border);
-  background: var(--app-surface-2);
+  background: light-dark(#fff, var(--app-surface));
 
   > b {
     padding: 14px 16px 10px;

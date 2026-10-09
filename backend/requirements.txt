@@ -21,6 +21,8 @@ pgvector>=0.3.6,<1
 # Nạp tài liệu (2-B): parse .docx/.pdf/.md, gọi dịch vụ embedding, tách từ tiếng Việt cho BM25.
 markitdown[docx,pdf]>=0.1.1,<1
 httpx>=0.28,<1.0
+# Dựng HTML từ Markdown để mở bản nháp trong trình soạn thảo Word (ONLYOFFICE).
+markdown-it-py>=3,<5
 underthesea>=6.8,<10
 # Lưu file tài liệu gốc khi STORAGE_PROVIDER=cloudinary (mặc định "local" không cần thư viện này ở runtime).
 cloudinary>=1.41,<2

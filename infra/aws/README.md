@@ -68,3 +68,18 @@ Máy EC2 `vsf-embedder` riêng đã được **gỡ (08/10/2026)**; embedding ch
 - `aws_iam_role_policy.github_deploy`: muốn xóa chính sách `temporary-runner-ssh`, là thứ cho phép CI mở SSH tạm để deploy.
 
 Chỉ apply có chọn lọc (`-target=...`) và luôn đọc kỹ kế hoạch ("Plan: x to add, y to change, z to destroy") trước khi áp dụng.
+
+## Máy chủ soạn thảo Word (ONLYOFFICE)
+
+`onlyoffice.tf` tạo máy riêng `vsf-onlyoffice` (c7i-flex.large, 4 GiB, trong danh sách Free Plan) cùng Elastic IP và Security
+Group `vsf-onlyoffice`. Cloud-init cài Docker rồi chạy ONLYOFFICE Document Server (ảnh cố định theo digest, JWT bật) sau Caddy tự xin
+chứng chỉ; tên miền là `<ip-dấu-gạch>.sslip.io` suy ra từ Elastic IP nên không cần DuckDNS.
+
+- Khóa JWT: đặt `onlyoffice_jwt_secret` trong `terraform.tfvars` (git bỏ qua) và dùng cùng giá trị cho `ONLYOFFICE_JWT_SECRET` ở
+  `/opt/vsf-aws/env/backend.env`. Không đưa vào repo.
+- Chỉ apply có chọn lọc:
+  `terraform apply -target=aws_security_group.onlyoffice -target=aws_eip.onlyoffice -target=aws_instance.onlyoffice -target=aws_eip_association.onlyoffice`
+- Nối với backend: các biến `WORD_EDITOR_ENABLED`, `ONLYOFFICE_PUBLIC_URL`, `ONLYOFFICE_INTERNAL_URL` (cả hai là `terraform output onlyoffice_url`),
+  `ONLYOFFICE_BACKEND_URL` (= `https://vsf-assistant.duckdns.org`) và `ONLYOFFICE_JWT_SECRET`, xem `deploy/aws/env/backend.env.example`.
+- Tắt tính năng: bỏ `WORD_EDITOR_ENABLED` rồi tạo lại container backend; hoặc dừng máy (`aws ec2 stop-instances`) để khỏi tốn tài nguyên.
+- Gỡ: `terraform destroy` với bốn `-target` ở trên.

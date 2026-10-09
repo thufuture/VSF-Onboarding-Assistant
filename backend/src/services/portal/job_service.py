@@ -64,6 +64,8 @@ class JobContext:
     structure_llm_enabled: bool = True
     structure_llm_min_words: int = 400
     structure_llm_daily_limit: int = 30
+    # Dùng lại vector của đoạn không đổi so với các phiên bản khác (mặc định tắt, bật bằng EMBEDDING_CACHE_ENABLED).
+    embedding_cache_enabled: bool = False
     # Cách đề xuất task bằng AI (đường nhanh/cũ, kích thước lô, giờ chờ mỗi lời gọi).
     proposal: ProposalOptions = field(default_factory=ProposalOptions)
 

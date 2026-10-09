@@ -28,6 +28,7 @@ from src.model.llm_call import LlmCall
 from src.services.ingest.chunker import ChunkDraft, SectionDraft
 from src.services.ingest.embedding.modal_adapter import EmbeddingServiceError
 from src.services.ingest.embedding.port import EmbeddingPort
+from src.services.ingest.embedding_reuse import find_reusable_vectors
 from src.services.ingest.ingest_service import chunk_markdown, today_in
 from src.services.ingest.structure import AiSplit, ai_split_markdown, analyze_structure
 from src.services.ingest.version_lifecycle import (
@@ -161,6 +162,7 @@ async def run_activate_version(ctx: JobContext, claimed: ClaimedJob, progress: J
 
     chunks_by_section: list[tuple[SectionDraft, list[ChunkDraft]]] = []
     vectors: list[list[float]] = []
+    reused_chunks = 0
     ai_info: dict[str, Any] | None = None
     if reuse:
         await progress.update(80, "Dùng lại dữ liệu đã embedding")
@@ -192,14 +194,28 @@ async def run_activate_version(ctx: JobContext, claimed: ClaimedJob, progress: J
         if not all_chunks:
             raise JobFailureError("NO_CHUNKS", "không tách được đoạn nào từ tài liệu (0 đoạn)")
         await progress.update(20, "Đã cắt mục và đoạn")
-        vectors = await _embed_in_batches(
-            ctx,
-            [embedding_text_of(chunk) for chunk in all_chunks],
-            progress,
-            start_percent=20,
-            span_percent=60,
-            operation="ingest.embed",
-        )
+        texts = [embedding_text_of(chunk) for chunk in all_chunks]
+        cached: dict[str, list[float]] = {}
+        if ctx.embedding_cache_enabled:
+            async with ctx.session_factory() as session:
+                cached = await find_reusable_vectors(
+                    session, all_chunks, model_version=target_model, dimension=ctx.embedding.dimension
+                )
+        if not ctx.embedding_cache_enabled:
+            vectors = await _embed_in_batches(
+                ctx, texts, progress, start_percent=20, span_percent=60, operation="ingest.embed"
+            )
+        else:
+            # Chỉ tính các đoạn chưa có vector cùng model (đoạn trùng nhau trong cùng tài liệu cũng chỉ tính một lần).
+            missing = list(dict.fromkeys(text for text in texts if text not in cached))
+            reused_chunks = sum(1 for text in texts if text in cached)
+            if cached:
+                await progress.update(22, f"Dùng lại {reused_chunks}/{len(texts)} đoạn đã embedding")
+            computed = await _embed_in_batches(
+                ctx, missing, progress, start_percent=22, span_percent=58, operation="ingest.embed"
+            )
+            fresh = dict(zip(missing, computed, strict=True))
+            vectors = [cached[text] if text in cached else fresh[text] for text in texts]
 
     await progress.update(90, "Đang ghi dữ liệu")
     section_count = len(chunks_by_section)
@@ -250,6 +266,7 @@ async def run_activate_version(ctx: JobContext, claimed: ClaimedJob, progress: J
         "chunk_count": chunks_total,
         "closed_version_ids": closed,
         "reused_embeddings": reuse,
+        "reused_chunks": reused_chunks,
     }
 
 
