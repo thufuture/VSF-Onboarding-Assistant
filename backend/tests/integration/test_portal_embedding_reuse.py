@@ -6,6 +6,7 @@
 
 from dataclasses import replace
 from types import SimpleNamespace
+from typing import Any
 from uuid import uuid4
 
 import pytest
@@ -78,7 +79,7 @@ async def activate_two_versions(
     ctx_first: JobContext,
     ctx_second: JobContext,
     second_markdown: str,
-) -> tuple[int, int, dict[str, object]]:
+) -> tuple[int, int, dict[str, Any]]:
     async with client_for(app) as client:
         await login(client, hr)
         first = (

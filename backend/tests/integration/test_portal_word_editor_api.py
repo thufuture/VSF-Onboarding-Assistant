@@ -413,7 +413,8 @@ async def test_callback_rejects_forged_requests_and_foreign_hosts(
 
     async with session_factory() as session:
         version = await session.scalar(select(DocumentVersion).where(DocumentVersion.id == version_id))
-        assert version is not None and version.markdown == markdown_doc(BODIES).strip() or version.source == "UPLOAD"
+        assert version is not None
+        assert version.source == "UPLOAD"  # URL ngoài danh sách cho phép: không tải, không ghi gì
 
 
 async def test_export_pdf_and_docx_and_forcesave(
