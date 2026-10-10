@@ -45,8 +45,51 @@ def _drop_intermediate_sections(docx: bytes) -> bytes:
     return out.getvalue()
 
 
-def convert_pdf_to_docx(pdf: bytes, *, max_pages: int) -> bytes:
-    """Chuyển đồng bộ (nặng CPU, gọi qua `asyncio.to_thread`). Ném `PdfToWordError` khi không chuyển được."""
+_OCR_FONTS = (
+    "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+    "/usr/share/fonts/dejavu/DejaVuSans.ttf",
+    "C:/Windows/Fonts/arial.ttf",
+)
+
+
+def _visible_text_pdf(pdf: bytes) -> bytes:
+    """PDF đã OCR (ảnh trang + lớp chữ vô hình) -> PDF mới chỉ có chữ thấy được, mỗi dòng đúng vị trí và cỡ như Tesseract nhận ra.
+
+    pdf2docx bỏ qua chữ vô hình và bỏ trống ảnh scan; dựng lại từng dòng bằng font có đủ tiếng Việt thì nó nhận ra đoạn, cỡ chữ,
+    khoảng cách và chuyển được thành Word sửa được (đo thật trên bản scan SYN_E01: giữ đúng tiêu đề, dòng, đoạn; mất chữ đậm)."""
+    import pymupdf
+
+    font_path = next((path for path in _OCR_FONTS if Path(path).exists()), None)
+    if font_path is None:
+        raise PdfToWordError("không có font tiếng Việt để dựng lại chữ OCR")
+    font = pymupdf.Font(fontfile=font_path)  # type: ignore[no-untyped-call]
+    source = pymupdf.open(stream=pdf, filetype="pdf")  # type: ignore[no-untyped-call]
+    target = pymupdf.open()  # type: ignore[no-untyped-call]
+    try:
+        for page in source:  # type: ignore[attr-defined]
+            new = target.new_page(width=page.rect.width, height=page.rect.height)
+            new.insert_font(fontname="ocr", fontfile=font_path)  # type: ignore[no-untyped-call]
+            lines: dict[tuple[int, int], list[tuple[float, float, float, float, str]]] = {}
+            for x0, y0, x1, y1, word, block, line, _ in page.get_text("words"):
+                lines.setdefault((block, line), []).append((x0, y0, x1, y1, word))
+            for words in lines.values():
+                words.sort()
+                text = " ".join(item[4] for item in words)
+                left, right = min(w[0] for w in words), max(w[2] for w in words)
+                top, bottom = min(w[1] for w in words), max(w[3] for w in words)
+                natural = font.text_length(text, fontsize=10)  # type: ignore[no-untyped-call]
+                size = max(5.0, min(40.0, 10 * (right - left) / natural)) if natural else 10.0
+                new.insert_text((left, bottom - (bottom - top) * 0.22), text, fontname="ocr", fontsize=size)
+        return bytes(target.tobytes())  # type: ignore[no-untyped-call]
+    finally:
+        source.close()  # type: ignore[no-untyped-call]
+        target.close()  # type: ignore[no-untyped-call]
+
+
+def convert_pdf_to_docx(pdf: bytes, *, max_pages: int, ocr: bool = False) -> bytes:
+    """Chuyển đồng bộ (nặng CPU, gọi qua `asyncio.to_thread`). Ném `PdfToWordError` khi không chuyển được.
+
+    `ocr=True`: PDF là bản scan đã OCR; dựng lại lớp chữ thành chữ thấy được trước khi chuyển."""
     try:
         import pymupdf
         from pdf2docx import Converter
@@ -56,7 +99,12 @@ def convert_pdf_to_docx(pdf: bytes, *, max_pages: int) -> bytes:
     with tempfile.TemporaryDirectory() as directory:
         source = Path(directory) / "in.pdf"
         target = Path(directory) / "out.docx"
-        source.write_bytes(pdf)
+        try:
+            source.write_bytes(_visible_text_pdf(pdf) if ocr else pdf)
+        except PdfToWordError:
+            raise
+        except Exception as exc:
+            raise PdfToWordError("không dựng lại được chữ OCR") from exc
         try:
             with pymupdf.open(source) as document:  # type: ignore[no-untyped-call]
                 pages = len(document)

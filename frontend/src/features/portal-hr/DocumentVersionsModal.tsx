@@ -71,7 +71,10 @@ function formatDay(iso: string | null): string {
 
 function effectiveText(t: Translate, v: DocumentVersionResponseDTO): string {
   if (v.effective_from && v.effective_to) {
-    return t("effective.range", { from: formatDay(v.effective_from), to: formatDay(v.effective_to) });
+    return t("effective.range", {
+      from: formatDay(v.effective_from),
+      to: formatDay(v.effective_to),
+    });
   }
   if (v.effective_from) return t("effective.from", { from: formatDay(v.effective_from) });
   return t("effective.none");
@@ -81,7 +84,8 @@ const ACTIVATE_STATES: DocumentVersionStateDTO[] = ["DRAFT", "SUPERSEDED"];
 
 type ViewTab = "original" | "content" | "compare";
 
-type Confirm = { kind: "activate"; version: DocumentVersionResponseDTO } | { kind: "delete"; version: DocumentVersionResponseDTO };
+type Confirm =
+  { kind: "activate"; version: DocumentVersionResponseDTO } | { kind: "delete"; version: DocumentVersionResponseDTO };
 
 /** Quản lý phiên bản của một tài liệu (mục 16): xem bản bất kỳ, sao chép thành bản nháp, sửa nháp (khóa lạc quan),
  * kích hoạt chạy nền có phần trăm, đặt lại bản cũ làm bản áp dụng. Bản đang áp dụng và đã thay thế không sửa tại chỗ. */
@@ -104,7 +108,10 @@ export function DocumentVersionsModal({
 
   const [versions, setVersions] = useState<DocumentVersionResponseDTO[] | null>(null);
   const [selectedId, setSelectedId] = useState<number | null>(null);
-  const [detailState, setDetailState] = useState<{ id: number; data: DocumentVersionDetailResponseDTO } | null>(null);
+  const [detailState, setDetailState] = useState<{
+    id: number;
+    data: DocumentVersionDetailResponseDTO;
+  } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [confirm, setConfirm] = useState<Confirm | null>(null);
@@ -122,9 +129,12 @@ export function DocumentVersionsModal({
   // Chỗ trên thanh đầu trang để trình soạn thảo đặt nút Lưu/Xuất/Xong (chỉ trang riêng).
   const [barNode, setBarNode] = useState<HTMLElement | null>(null);
   // Phần người dùng đã sửa của đúng phiên bản đang soạn; chưa sửa trường nào thì lấy nguyên giá trị đang lưu.
-  const [draftEdit, setDraftEdit] = useState<{ id: number; markdown?: string; label?: string; effective?: string } | null>(
-    null,
-  );
+  const [draftEdit, setDraftEdit] = useState<{
+    id: number;
+    markdown?: string;
+    label?: string;
+    effective?: string;
+  } | null>(null);
 
   const [jobId, setJobId] = useState<number | null>(null);
   const [finishedJob, setFinishedJob] = useState<JobResponseDTO | null>(null);
@@ -142,7 +152,8 @@ export function DocumentVersionsModal({
         : originalName.endsWith(".docx") && canWordEdit
           ? portalHrApi.previewDocumentUrl(detail.version.id)
           : null;
-  const viewTab: ViewTab = (selectedId !== null ? tabByVersion[selectedId] : undefined) ?? (originalUrl ? "original" : "content");
+  const viewTab: ViewTab =
+    (selectedId !== null ? tabByVersion[selectedId] : undefined) ?? (originalUrl ? "original" : "content");
   const setViewTab = (tab: ViewTab) => {
     if (selectedId !== null) setTabByVersion((current) => ({ ...current, [selectedId]: tab }));
   };
@@ -160,7 +171,11 @@ export function DocumentVersionsModal({
 
   function patchDraft(patch: { markdown?: string; label?: string; effective?: string }) {
     if (selectedId === null) return;
-    setDraftEdit((current) => ({ ...(current?.id === selectedId ? current : {}), id: selectedId, ...patch }));
+    setDraftEdit((current) => ({
+      ...(current?.id === selectedId ? current : {}),
+      id: selectedId,
+      ...patch,
+    }));
   }
 
   const loadVersions = useCallback(
@@ -364,7 +379,12 @@ export function DocumentVersionsModal({
         <UploadCloud aria-hidden="true" size={14} /> {t("uploadNew")}
       </button>
       {selected ? (
-        <button className={styles.headBtn} disabled={busy || activating} onClick={() => copyVersion(selected)} type="button">
+        <button
+          className={styles.headBtn}
+          disabled={busy || activating}
+          onClick={() => copyVersion(selected)}
+          type="button"
+        >
           <Copy aria-hidden="true" size={14} /> {t("copy")}
         </button>
       ) : null}
@@ -603,9 +623,9 @@ export function DocumentVersionsModal({
     ) : (
       <>
         {isPage ? null : (
-        <div className={styles.tabs} role="tablist">
-          {tabButtons}
-        </div>
+          <div className={styles.tabs} role="tablist">
+            {tabButtons}
+          </div>
         )}
         {viewTab === "original" && originalUrl ? (
           <div className={isPage ? styles.originalFrame : styles.originalFrameModal}>
@@ -701,63 +721,68 @@ export function DocumentVersionsModal({
   );
 
   const pageBody = (
-    <div className={styles.pageShell}>
-      <div className={styles.pageBar}>
-        <button
-          aria-label={t("backToList")}
-          className={styles.backIcon}
-          onClick={onClose}
-          title={t("backToList")}
-          type="button"
-        >
-          <ArrowLeft aria-hidden="true" size={16} />
-        </button>
-        <div className={styles.barTitle}>
-          <h1 title={doc.title}>{doc.title}</h1>
-          <small>{metaText}</small>
-        </div>
-        {versions ? (
-          <VersionPicker
-            effectiveLabel={(v) => effectiveText(t, v)}
-            label={t("listLabel")}
-            onSelect={setSelectedId}
-            selectedId={selectedId}
-            stateLabel={(v) => t(`state.${v.state}`)}
-            versions={versions}
-          />
-        ) : null}
-        {wordEditing ? null : pageTabs}
-        <span className={styles.barSpacer} />
-        <div className={styles.barActions}>
-          {wordEditing ? (
-            <div className={styles.barEditor} ref={setBarNode} />
-          ) : (
-            <>
-              <button
-                className={m.btnSec}
-                disabled={busy || activating}
-                onClick={onUploadNewVersion}
-                title={t("uploadNew")}
-                type="button"
-              >
-                <UploadCloud aria-hidden="true" size={14} /> <span className={styles.btnText}>{t("uploadShort")}</span>
-              </button>
-              {selected ? (
+    <div className={`${styles.pageShell} ${wordEditing ? styles.pageShellEditing : ""}`}>
+      {wordEditing ? (
+        // Đang soạn Word: bỏ thanh tiêu đề của trang, đặt nút Hủy/Lưu lên chỗ trống của thanh menu ONLYOFFICE.
+        <div className={styles.floatingBar} ref={setBarNode} />
+      ) : (
+        <div className={styles.pageBar}>
+          <button
+            aria-label={t("backToList")}
+            className={styles.backIcon}
+            onClick={onClose}
+            title={t("backToList")}
+            type="button"
+          >
+            <ArrowLeft aria-hidden="true" size={16} />
+          </button>
+          <div className={styles.barTitle}>
+            <h1 title={metaText ? `${doc.title} · ${metaText}` : doc.title}>{doc.title}</h1>
+          </div>
+          {versions ? (
+            <VersionPicker
+              effectiveLabel={(v) => effectiveText(t, v)}
+              label={t("listLabel")}
+              onSelect={setSelectedId}
+              selectedId={selectedId}
+              stateLabel={(v) => t(`state.${v.state}`)}
+              versions={versions}
+            />
+          ) : null}
+          {wordEditing ? null : pageTabs}
+          <span className={styles.barSpacer} />
+          <div className={styles.barActions}>
+            {wordEditing ? (
+              <div className={styles.barEditor} ref={setBarNode} />
+            ) : (
+              <>
                 <button
                   className={m.btnSec}
                   disabled={busy || activating}
-                  onClick={() => copyVersion(selected)}
-                  title={t("copy")}
+                  onClick={onUploadNewVersion}
+                  title={t("uploadNew")}
                   type="button"
                 >
-                  <Copy aria-hidden="true" size={14} /> <span className={styles.btnText}>{t("copyShort")}</span>
+                  <UploadCloud aria-hidden="true" size={14} />{" "}
+                  <span className={styles.btnText}>{t("uploadShort")}</span>
                 </button>
-              ) : null}
-              {actionButtons}
-            </>
-          )}
+                {selected ? (
+                  <button
+                    className={m.btnSec}
+                    disabled={busy || activating}
+                    onClick={() => copyVersion(selected)}
+                    title={t("copy")}
+                    type="button"
+                  >
+                    <Copy aria-hidden="true" size={14} /> <span className={styles.btnText}>{t("copyShort")}</span>
+                  </button>
+                ) : null}
+                {actionButtons}
+              </>
+            )}
+          </div>
         </div>
-      </div>
+      )}
       {errorBanner}
       {progressBlocks}
       {detailBanners}
@@ -780,7 +805,9 @@ export function DocumentVersionsModal({
           headerActions={headActions}
           icon={History}
           onClose={onClose}
-          subtitle={t("subtitle", { count: versions?.length ?? doc.version_count })}
+          subtitle={t("subtitle", {
+            count: versions?.length ?? doc.version_count,
+          })}
           title={doc.title}
           tone="indigo"
           vwide
@@ -805,13 +832,19 @@ export function DocumentVersionsModal({
           }
           icon={PlayCircle}
           onClose={() => setConfirm(null)}
-          title={t("confirm.activateTitle", { label: confirm.version.version_label })}
+          title={t("confirm.activateTitle", {
+            label: confirm.version.version_label,
+          })}
           tone="indigo"
         >
           <p className={styles.confirmText}>
             {confirm.version.state === "SUPERSEDED"
-              ? t("confirm.setCurrentBody", { label: confirm.version.version_label })
-              : t("confirm.activateBody", { label: confirm.version.version_label })}
+              ? t("confirm.setCurrentBody", {
+                  label: confirm.version.version_label,
+                })
+              : t("confirm.activateBody", {
+                  label: confirm.version.version_label,
+                })}
           </p>
           <label className={styles.confirmDate}>
             {t("confirm.effectiveFrom")}
@@ -832,7 +865,9 @@ export function DocumentVersionsModal({
           icon={Trash2}
           onCancel={() => setConfirm(null)}
           onConfirm={() => removeDraft(confirm.version)}
-          title={t("confirm.deleteTitle", { label: confirm.version.version_label })}
+          title={t("confirm.deleteTitle", {
+            label: confirm.version.version_label,
+          })}
         />
       ) : null}
     </>

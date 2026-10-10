@@ -25,7 +25,9 @@ MAX_SLIDE = 80  # tối đa số từ trượt ra xa chỗ sửa để tìm mỏ
 MIN_SIMILARITY = 0.985  # sau khi vá, M phải giống B1 đến mức này (theo từ)
 
 _TOKEN = re.compile(r"\S+")
-_MARKUP = re.compile(r"[#*_|>`\[\]\\]+")
+_MARKUP = re.compile(
+    "[#*_|>`\\[\\]\\\\•·\ue000-\uf8ff]+"
+)  # dấu Markdown và ký hiệu đầu dòng (kể cả ký tự font Symbol của Word)
 
 
 @dataclass(frozen=True)
@@ -76,8 +78,58 @@ def _groups(ops: Sequence[tuple[str, int, int, int, int]]) -> list[list[int]]:
     return merged
 
 
+_EDGES = re.compile(r"^(\W*)(.*?)(\W*)$", re.DOTALL)
+MAX_PIECES = 5
+
+
+def _letters_only(token: str) -> bool:
+    return token.isalpha()
+
+
+def _resegment(text: str, vocabulary: set[str]) -> str:
+    """Tách lại các từ bị dính ("chỉdẫn" -> "chỉ dẫn") theo từ vựng của M.
+
+    Hai bộ đọc PDF khác nhau (pdfminer cho M, PyMuPDF trong pdf2docx cho B0/B1) quyết định chỗ có dấu cách khác nhau khi PDF không có ký tự
+    dấu cách thật giữa hai từ; nếu không chữa thì M và B0 lệch từng từ và bước vá luôn thất bại. Chỉ tách khi từ dính không có trong M và
+    ghép được đúng từ các từ có trong M (tối đa MAX_PIECES), nên văn bản mới HR gõ hầu như không bị đổi."""
+
+    def split(core: str) -> list[str] | None:
+        best: list[list[str] | None] = [None] * (len(core) + 1)
+        best[0] = []
+        for end in range(1, len(core) + 1):
+            for start in range(max(0, end - 20), end):
+                head = best[start]
+                piece = core[start:end]
+                if (
+                    head is None
+                    or len(head) >= MAX_PIECES
+                    or (len(piece) < 2 and piece.lower() != "ở")
+                    or piece not in vocabulary
+                ):
+                    continue
+                if best[end] is None or len(head) + 1 < len(best[end] or []):
+                    best[end] = [*head, piece]
+        found = best[len(core)]
+        return found if found and len(found) > 1 else None
+
+    def fix(match: re.Match[str]) -> str:
+        parts = _EDGES.match(match.group())
+        if parts is None:
+            return match.group()
+        prefix, core, suffix = parts.groups()
+        if len(core) < 4 or not _letters_only(core) or unicodedata.normalize("NFC", core) in vocabulary:
+            return match.group()
+        pieces = split(unicodedata.normalize("NFC", core))
+        return f"{prefix}{' '.join(pieces)}{suffix}" if pieces else match.group()
+
+    return _TOKEN.sub(fix, text)
+
+
 def patch_markdown(m: str, b0: str, b1: str) -> PatchResult:
-    tm, t0, t1 = _tokens(m), _tokens(b0), _tokens(b1)
+    tm = _tokens(m)
+    vocabulary = {t.norm for t in tm if _letters_only(t.norm)}
+    b0, b1 = _resegment(b0, vocabulary), _resegment(b1, vocabulary)
+    t0, t1 = _tokens(b0), _tokens(b1)
     n0, n1 = [t.norm for t in t0], [t.norm for t in t1]
     ops = [op for op in SequenceMatcher(None, n0, n1, autojunk=False).get_opcodes() if op[0] != "equal"]
     if not ops:

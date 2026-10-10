@@ -1,7 +1,55 @@
+.root {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.toolbar {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 4px;
+  color: var(--app-ink-2);
+  font-size: 12.5px;
+
+  button {
+    display: inline-flex;
+    width: 28px;
+    height: 28px;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--app-border);
+    border-radius: 5px;
+    background: var(--app-surface);
+    color: var(--app-ink);
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+      background: var(--app-surface-2);
+    }
+    &:disabled {
+      cursor: default;
+      opacity: 0.45;
+    }
+  }
+
+  span {
+    min-width: 42px;
+    text-align: center;
+    font-weight: 600;
+  }
+
+  small {
+    margin-left: 8px;
+  }
+}
+
 .scroller {
   min-height: 0;
   flex: 1;
-  overflow-y: auto;
+  overflow: auto;
   padding: 14px 16px 24px;
   border: 1px solid var(--app-border);
   border-radius: 5px;

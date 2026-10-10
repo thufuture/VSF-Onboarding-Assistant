@@ -35,6 +35,7 @@ from src.model.enums import VersionSource, VersionStatus
 from src.model.user import User
 from src.services.ingest.markdown_patch import patch_markdown
 from src.services.ingest.parser import MAX_FILE_SIZE_BYTES, ParseError, parse_document
+from src.services.ingest.pdf_markdown import normalize_symbol_bullets
 from src.services.ingest.pdf_to_docx import PdfToWordError, convert_pdf_to_docx
 from src.services.ingest.storage import StoragePort
 from src.services.ingest.structure import analyze_structure
@@ -301,7 +302,7 @@ async def _markdown_of_docx(content: bytes) -> str:
         tmp.write(content)
         path = Path(tmp.name)
     try:
-        return (await asyncio.to_thread(parse_document, path)).markdown
+        return normalize_symbol_bullets((await asyncio.to_thread(parse_document, path)).markdown)
     finally:
         path.unlink(missing_ok=True)
 
@@ -316,11 +317,13 @@ async def _working_from_pdf(
 ) -> dict[str, str] | None:
     """PDF gốc -> Word giữ bố cục (pdf2docx), kèm bản Markdown "mốc" B0 đọc từ chính bản Word đó để sau này biết HR sửa chỗ nào.
     Trả None (dùng đường dựng từ Markdown) khi tính năng tắt, không phải PDF, hay không chuyển được."""
-    if not settings.pdf_to_word_enabled or not is_pdf_original(version) or version.quality_report.get("ocr"):
-        return None  # bản đã OCR: PDF là ảnh kèm lớp chữ vô hình, pdf2docx không dựng lại thành đoạn văn được
+    if not settings.pdf_to_word_enabled or not is_pdf_original(version):
+        return None
+    # bản đã OCR: PDF là ảnh scan kèm lớp chữ vô hình; dựng lại lớp chữ đó thành chữ thấy được rồi mới chuyển
+    ocr = bool(version.quality_report.get("ocr"))
     try:
         pdf = await _read_stored_file(version.storage_key, settings)
-        docx = await asyncio.to_thread(convert_pdf_to_docx, pdf, max_pages=settings.pdf_to_word_max_pages)
+        docx = await asyncio.to_thread(convert_pdf_to_docx, pdf, max_pages=settings.pdf_to_word_max_pages, ocr=ocr)
         baseline = await _markdown_of_docx(docx)
     except (PdfToWordError, ParseError, OSError, httpx.HTTPError) as exc:
         logger.warning("pdf_to_word_failed version=%s error=%s", version.id, type(exc).__name__)
@@ -467,7 +470,11 @@ async def apply_saved_docx(
     except Exception as exc:
         raise PortalError(502, "STORAGE_FAILED", "portal.storage_failed") from exc
 
-    new_markdown, new_checksum, working = parsed.markdown, parsed.content_checksum, None
+    # Markdown đọc từ Word: ký hiệu đầu dòng của font Symbol (hiện thành ô vuông) đổi về "- "; B0 và B1 đều qua bước này để so sánh đúng
+    saved_markdown = normalize_symbol_bullets(parsed.markdown)
+    new_markdown = saved_markdown
+    new_checksum = parsed.content_checksum if saved_markdown == parsed.markdown else checksum_of(saved_markdown)
+    working: dict[str, str] | None = None
     patch_note: dict[str, Any] = {}
     previous = version.quality_report.get(WORKING_DOCX_KEY)
     if isinstance(previous, dict) and previous.get("baseline_key"):
@@ -477,12 +484,12 @@ async def apply_saved_docx(
         except (OSError, httpx.HTTPError):
             baseline = None
         if baseline is not None:
-            result = await asyncio.to_thread(patch_markdown, version.markdown, baseline, parsed.markdown)
+            result = await asyncio.to_thread(patch_markdown, version.markdown, baseline, saved_markdown)
             patch_note = {"patched": result.ok, "groups": result.groups, "reason": result.reason}
             if result.ok:
                 new_markdown = result.markdown
                 new_checksum = checksum_of(new_markdown)
-            working = {"baseline_key": await _store_text(storage, parsed.markdown)}
+            working = {"baseline_key": await _store_text(storage, saved_markdown)}
     markdown_changed = new_markdown != version.markdown
     version.parser = "markitdown"
     version.markdown = new_markdown

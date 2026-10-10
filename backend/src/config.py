@@ -123,6 +123,9 @@ class Settings(BaseSettings):
     pdf_to_word_enabled: bool = False
     pdf_to_word_max_pages: int = 100
 
+    # Đọc PDF có chữ giữ cấu trúc: tiêu đề theo cỡ chữ/độ đậm, đoạn, danh sách (pdfminer, không thêm thư viện). Tắt thì dùng bộ đọc phẳng cũ.
+    pdf_structure_enabled: bool = False
+
     # OCR cho PDF scan (OCRmyPDF + Tesseract, gói tiếng Việt). Chạy nền, tắt mặc định; cần cài công cụ trong ảnh Docker.
     ocr_enabled: bool = False
     ocr_languages: str = "vie+eng"
