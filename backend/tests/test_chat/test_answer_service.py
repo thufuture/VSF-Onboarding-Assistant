@@ -148,3 +148,12 @@ async def test_empty_items_returns_empty_without_calling_llm() -> None:
 
     assert claims == []
     assert calls == []
+
+
+def test_use_reasoning_modes() -> None:
+    from src.services.viga.answer_service import use_reasoning
+
+    assert use_reasoning(1, "always") is True
+    assert use_reasoning(3, "off") is False
+    assert use_reasoning(1, "adaptive") is False
+    assert use_reasoning(2, "adaptive") is True
