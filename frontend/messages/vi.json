@@ -864,7 +864,8 @@
         "renamedFrom": "trước đây: {name}",
         "noHeading": "(đầu tài liệu)",
         "before": "Bản cũ",
-        "after": "Bản này"
+        "after": "Bản này",
+        "tabOriginal": "Bản gốc"
       },
       "wordEditor": {
         "open": "Soạn thảo Word",
@@ -906,7 +907,11 @@
       "backToList": "Quay lại danh sách tài liệu",
       "uploadShort": "Tải bản mới",
       "copyShort": "Tạo bản mới",
-      "originalFile": "File gốc: {name}"
+      "originalFile": "File gốc: {name}",
+      "ocr": {
+        "pending": "Đang nhận dạng chữ (OCR) từ bản scan. Việc này chạy nền và có thể mất vài phút; trang tự cập nhật khi xong.",
+        "review": "Văn bản này do OCR nhận dạng từ bản scan nên có thể sai chữ. Hãy soát lại, nhất là số liệu, ngày tháng và số hiệu, trước khi kích hoạt."
+      }
     },
     "category": {
       "hint": {

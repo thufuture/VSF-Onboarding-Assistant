@@ -18,6 +18,11 @@ ENV PATH="/opt/venv/bin:$PATH" \
 
 COPY --from=builder /opt/venv /opt/venv
 
+# OCR cho PDF scan (OCR_ENABLED): Tesseract kèm gói tiếng Việt và Ghostscript.
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends tesseract-ocr tesseract-ocr-vie tesseract-ocr-eng ghostscript fonts-dejavu-core \
+    && rm -rf /var/lib/apt/lists/*
+
 # uid cố định, không chạy bằng root.
 RUN useradd --create-home --uid 10001 appuser && chown -R appuser:appuser /app
 

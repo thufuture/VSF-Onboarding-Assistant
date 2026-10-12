@@ -38,7 +38,7 @@ plugins = ["pydantic.mypy"]
 
 # Thư viện ngoài không có type stub (2-B: nạp tài liệu).
 [[tool.mypy.overrides]]
-module = ["underthesea", "cloudinary", "cloudinary.uploader", "markitdown", "langfuse"]
+module = ["underthesea", "cloudinary", "cloudinary.uploader", "markitdown", "langfuse", "lxml", "lxml.etree", "pdf2docx", "pymupdf", "markdown_it", "pikepdf"]
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]

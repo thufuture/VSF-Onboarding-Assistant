@@ -50,6 +50,7 @@ export type DocumentVersionResponseDTO = {
   structure_quality: StructureQualityDTO | null;
   structure_warnings: string[];
   ai_split: "APPLIED" | "SKIPPED" | null;
+  ocr?: boolean;
 };
 
 export type DocumentVersionDetailResponseDTO = {

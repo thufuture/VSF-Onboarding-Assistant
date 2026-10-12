@@ -1,5 +1,6 @@
 """Điểm vào ứng dụng: lifespan (engine DB), middleware X-Request-ID, đăng ký router."""
 
+import asyncio
 import logging
 import re
 import uuid
@@ -33,6 +34,8 @@ from src.services.auth.login_throttle import LoginThrottle
 from src.services.auth.seed import assert_no_dev_accounts
 from src.services.ingest.embedding.keep_warm import KeepWarm
 from src.services.ingest.embedding.modal_adapter import EmbeddingServiceError, ModalEmbeddingAdapter
+from src.services.ingest.ocr import ocr_pdf
+from src.services.portal import word_editor
 from src.services.portal.errors import PortalError
 from src.services.portal.job_handlers import HANDLERS
 from src.services.portal.job_service import JobContext, JobWorker
@@ -45,6 +48,20 @@ logger = logging.getLogger(__name__)
 
 # Chỉ nhận ID từ client nếu đơn giản và ngắn; nếu không thì tự tạo (tránh chèn ký tự lạ vào log/header).
 _REQUEST_ID_PATTERN = re.compile(r"^[A-Za-z0-9._-]{1,64}$")
+
+
+def _ocr_runner(settings: Settings) -> Callable[[bytes], Awaitable[bytes]]:
+    async def run(pdf: bytes) -> bytes:
+        return await asyncio.to_thread(
+            ocr_pdf,
+            pdf,
+            languages=settings.ocr_languages,
+            max_pages=settings.ocr_max_pages,
+            jobs=settings.ocr_jobs,
+            timeout_seconds=settings.ocr_timeout_seconds,
+        )
+
+    return run
 
 
 @asynccontextmanager
@@ -106,6 +123,8 @@ def _build_job_worker(app: FastAPI, settings: Settings) -> JobWorker | None:
         structure_llm_min_words=settings.structure_llm_min_words,
         structure_llm_daily_limit=settings.structure_llm_daily_limit,
         embedding_cache_enabled=settings.embedding_cache_enabled,
+        read_file=(lambda key: word_editor.read_stored_file(key, settings)) if settings.ocr_enabled else None,
+        ocr_pdf=_ocr_runner(settings) if settings.ocr_enabled else None,
         proposal=ProposalOptions(
             mode=settings.task_proposal_mode,
             batch_words=settings.task_proposal_batch_words,

@@ -22,6 +22,7 @@ from portal_docs_fixtures import (  # noqa: F401  (fixture được pytest tìm 
     make_member,
     session_factory,
     team,
+    upload_form,
 )
 from pydantic import SecretStr
 from sqlalchemy import select
@@ -43,6 +44,7 @@ SETTINGS: dict[str, Any] = {
     "onlyoffice_internal_url": "http://oo-internal:80",
     "onlyoffice_backend_url": "http://backend.test:8000",
     "onlyoffice_jwt_secret": SecretStr(SECRET),
+    "pdf_to_word_enabled": True,
 }
 BODIES = [f"Nội dung điều số {i} có nhiều chữ khác nhau để thành một đoạn riêng. " * 6 for i in range(1, 4)]
 
@@ -93,6 +95,7 @@ class FakeOnlyOffice:
     def __init__(self) -> None:
         self.calls: list[tuple[str, str]] = []
         self.command_error = 0
+        self.saved_docx = EDITED_DOCX
         self.converted_docx = make_docx([("Heading1", "Dựng từ Markdown"), (None, "Nội dung. " * 40)])
 
     def handler(self, request: httpx.Request) -> httpx.Response:
@@ -107,7 +110,7 @@ class FakeOnlyOffice:
         if request.url.path.startswith("/cache/pdf"):
             return httpx.Response(200, content=b"%PDF-1.7 fake")
         if request.url.path.startswith("/cache/saved"):
-            return httpx.Response(200, content=EDITED_DOCX)
+            return httpx.Response(200, content=self.saved_docx)
         if request.url.path == "/command":
             return httpx.Response(200, json={"error": self.command_error})
         return httpx.Response(404)
@@ -329,6 +332,137 @@ async def test_save_as_word_keeps_the_word_file_as_the_original(
             assert version.original_filename == "v1.docx" and version.mime_type == word_editor.DOCX_MIME
         original = await client.get(f"/api/v1/portal/documents/{version_id}/original")
         assert original.content == EDITED_DOCX
+
+
+def make_pdf(pages: int = 3) -> bytes:
+    """PDF nhiều đoạn chữ không dấu, từ nào cũng khác nhau để Markdown đọc ra có mỏ neo duy nhất."""
+    pymupdf: Any = __import__("pymupdf")
+    document = pymupdf.open()
+    for page_no in range(pages):
+        page = document.new_page()
+        lines = []
+        for para in range(4):
+            words = [f"tu{page_no}x{para}x{i}" for i in range(45)]
+            lines.append(" ".join(words))
+        page.insert_textbox(pymupdf.Rect(50, 50, 545, 790), "\n\n".join(lines), fontsize=10, fontname="helv")
+    return bytes(document.tobytes())
+
+
+async def test_pdf_original_is_converted_to_word_and_only_edited_text_is_patched(
+    editor_app: FastAPI,
+    team: SimpleNamespace,
+    category: str,
+    make_member: MakeMember,
+    cleanup_documents: list[str],
+    office: FakeOnlyOffice,
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    hr = await make_member("HR", team.id)
+    source_key = f"ed-{uuid4().hex[:10]}"
+    cleanup_documents.append(source_key)
+    async with client_for(editor_app) as client:
+        await login(client, hr)
+        form = {**upload_form(category, source_key), "version_label": "v1", "effective_from": "2024-01-01"}
+        created = (
+            await client.post(
+                "/api/v1/portal/documents",
+                data=form,
+                files={"file": ("goc.pdf", make_pdf(), "application/pdf")},
+            )
+        ).json()
+        doc_id, version_id = created["document_id"], created["document_version_id"]
+        async with session_factory() as session:
+            before = await session.scalar(select(DocumentVersion).where(DocumentVersion.id == version_id))
+            assert before is not None
+            markdown_before = before.markdown
+
+        config = (await client.post(f"/api/v1/portal/documents/{doc_id}/versions/{version_id}/editor-session")).json()[
+            "config"
+        ]
+        # Không dựng từ HTML qua bộ chuyển đổi: bản Word do pdf2docx dựng từ chính PDF.
+        assert ("POST", "/converter") not in office.calls
+        token = config["document"]["url"].rsplit("/", 1)[1]
+        working = (await client.get(f"/api/v1/portal/editor-files/{token}")).content
+        assert working[:2] == b"PK"
+
+        # HR sửa đúng một từ trong bản Word.
+        edited = zipfile.ZipFile(io.BytesIO(working))
+        out = io.BytesIO()
+        with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as target:
+            for item in edited.infolist():
+                data = edited.read(item.filename)
+                if item.filename == "word/document.xml":
+                    xml = data.decode("utf-8")
+                    assert "tu1x2x20" in xml
+                    data = xml.replace("tu1x2x20", "TUDASUA", 1).encode("utf-8")
+                target.writestr(item, data)
+        office.saved_docx = out.getvalue()
+
+        callback = "/api/v1/portal/editor-callback/" + config["editorConfig"]["callbackUrl"].rsplit("/", 1)[1]
+        save_path = f"/api/v1/portal/documents/{doc_id}/versions/{version_id}/editor-session/save"
+        assert (await client.post(save_path, json={"document_key": "k", "format": "pdf"})).json()["ok"] is True
+        saved = {"key": "k", "status": 6, "url": f"{PUBLIC}/cache/saved/output.docx"}
+        assert (await client.post(callback, json=saved, headers=callback_headers(saved))).json() == {"error": 0}
+
+    async with session_factory() as session:
+        after = await session.scalar(select(DocumentVersion).where(DocumentVersion.id == version_id))
+        assert after is not None
+        assert "TUDASUA" in after.markdown and "tu1x2x20" not in after.markdown.split()
+        # Markdown gốc đọc từ PDF được giữ: chỉ vài dòng quanh chỗ sửa khác đi, không phải cả tài liệu.
+        old_lines, new_lines = markdown_before.split("\n"), after.markdown.split("\n")
+        different = sum(1 for a, b in zip(old_lines, new_lines, strict=False) if a != b) + abs(
+            len(old_lines) - len(new_lines)
+        )
+        assert different <= 4, different
+
+
+async def test_preview_of_a_word_original_is_converted_to_pdf_once_and_cached(
+    editor_app: FastAPI,
+    team: SimpleNamespace,
+    category: str,
+    make_member: MakeMember,
+    cleanup_documents: list[str],
+    office: FakeOnlyOffice,
+) -> None:
+    hr = await make_member("HR", team.id)
+    source_key = f"ed-{uuid4().hex[:10]}"
+    cleanup_documents.append(source_key)
+    async with client_for(editor_app) as client:
+        await login(client, hr)
+        form = {**upload_form(category, source_key), "version_label": "v1", "effective_from": "2024-01-01"}
+        created = (
+            await client.post(
+                "/api/v1/portal/documents",
+                data=form,
+                files={"file": ("goc.docx", EDITED_DOCX, word_editor.DOCX_MIME)},
+            )
+        ).json()
+        version_id = created["document_version_id"]
+        first = await client.get(f"/api/v1/portal/documents/{version_id}/preview")
+        assert first.status_code == 200 and first.content.startswith(b"%PDF")
+        assert first.headers["content-type"] == "application/pdf"
+        conversions = sum(1 for call in office.calls if call[1] == "/converter")
+        second = await client.get(f"/api/v1/portal/documents/{version_id}/preview")
+        assert second.content == first.content
+        assert sum(1 for call in office.calls if call[1] == "/converter") == conversions  # lần hai dùng bản đã lưu
+
+        # Markdown gốc không có bố cục để xem; PDF gốc đi qua /original.
+        md_key = f"ed-{uuid4().hex[:10]}"
+        cleanup_documents.append(md_key)
+        _, md_version = await make_draft(client, category, md_key, markdown_doc(BODIES))
+        assert (await client.get(f"/api/v1/portal/documents/{md_version}/preview")).status_code == 404
+        pdf_key = f"ed-{uuid4().hex[:10]}"
+        cleanup_documents.append(pdf_key)
+        pdf_form = {**upload_form(category, pdf_key), "version_label": "v1", "effective_from": "2024-01-01"}
+        pdf = (
+            await client.post(
+                "/api/v1/portal/documents", data=pdf_form, files={"file": ("goc.pdf", make_pdf(), "application/pdf")}
+            )
+        ).json()
+        direct = await client.get(f"/api/v1/portal/documents/{pdf['document_version_id']}/preview")
+        assert direct.status_code == 200 and direct.content.startswith(
+            b"%PDF"
+        )  # PDF gốc trả thẳng, không cần máy chủ soạn thảo
 
 
 async def test_cancel_discards_changes_because_nothing_is_written_without_save(

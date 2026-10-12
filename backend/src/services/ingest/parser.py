@@ -15,6 +15,9 @@ from pathlib import Path
 
 from markitdown import MarkItDown
 
+from src.config import get_settings
+from src.services.ingest.pdf_markdown import pdf_to_markdown
+
 ALLOWED_SUFFIXES = {".docx", ".pdf", ".md"}
 MAX_FILE_SIZE_BYTES = 20 * 1024 * 1024  # 20 MB (mục 11.1)
 MIN_TEXT_LENGTH = 200  # dưới ngưỡng này coi như có thể là file scan (system-design mục 5.1)
@@ -22,6 +25,10 @@ MIN_TEXT_LENGTH = 200  # dưới ngưỡng này coi như có thể là file scan
 
 class ParseError(Exception):
     """File không đọc được hoặc không đạt cổng chất lượng tối thiểu (mục 11.1/11.2)."""
+
+
+class TextTooShortError(ParseError):
+    """File đọc được nhưng gần như không có chữ (nghi là bản scan, cần OCR)."""
 
 
 @dataclass(frozen=True)
@@ -33,7 +40,17 @@ class ParsedDocument:
     has_embedded_images: bool
 
 
-def parse_document(path: Path) -> ParsedDocument:
+def _pdf_markdown(path: Path) -> str | None:
+    """Markdown có cấu trúc của PDF có chữ; None nếu không đủ chữ hoặc lỗi (bộ gọi quay về bộ đọc cũ)."""
+    try:
+        text = unicodedata.normalize("NFC", pdf_to_markdown(path))
+    except Exception:
+        return None
+    return text if len(text.strip()) >= MIN_TEXT_LENGTH else None
+
+
+def parse_document(path: Path, *, pdf_structure: bool | None = None) -> ParsedDocument:
+    """`pdf_structure`: None = theo cấu hình `PDF_STRUCTURE_ENABLED`."""
     suffix = path.suffix.lower()
     if suffix not in ALLOWED_SUFFIXES:
         raise ParseError(f"đuôi file không được hỗ trợ: '{suffix}' (chỉ nhận {sorted(ALLOWED_SUFFIXES)})")
@@ -49,14 +66,17 @@ def parse_document(path: Path) -> ParsedDocument:
     raw = path.read_bytes()
     file_checksum = hashlib.sha256(raw).hexdigest()
 
-    try:
-        result = MarkItDown().convert(str(path))
-    except Exception as exc:  # thư viện ngoài có thể ném nhiều loại lỗi khác nhau khi file hỏng/sai định dạng
-        raise ParseError(f"không đọc được file (có thể hỏng hoặc sai định dạng): {exc}") from exc
-
-    markdown = unicodedata.normalize("NFC", result.text_content or "")
+    use_structure = get_settings().pdf_structure_enabled if pdf_structure is None else pdf_structure
+    structured = _pdf_markdown(path) if suffix == ".pdf" and use_structure else None
+    markdown = structured or ""
+    if structured is None:
+        try:
+            result = MarkItDown().convert(str(path))
+        except Exception as exc:  # thư viện ngoài có thể ném nhiều loại lỗi khác nhau khi file hỏng/sai định dạng
+            raise ParseError(f"không đọc được file (có thể hỏng hoặc sai định dạng): {exc}") from exc
+        markdown = unicodedata.normalize("NFC", result.text_content or "")
     if len(markdown.strip()) < MIN_TEXT_LENGTH:
-        raise ParseError(
+        raise TextTooShortError(
             f"nội dung quá ngắn ({len(markdown.strip())} ký tự, cần >= {MIN_TEXT_LENGTH}) — "
             "có thể là file scan; OCR chưa bật ở Phase 2 (xem Phase 5)"
         )

@@ -117,6 +117,32 @@ async def save_editor_session(
     return EditorSaveResponseDTO(ok=True, changed=True)
 
 
+@router.get("/documents/{version_id}/preview")
+async def preview_original(
+    version_id: int,
+    user: StaffUser,
+    db: Db,
+    settings: AppSettings,
+    onlyoffice: OnlyOffice,
+    storage: Annotated[StoragePort, Depends(get_storage_port)],
+) -> Response:
+    """Nội dung PDF để trang tự vẽ "Bản gốc" (cùng nguồn gốc với trang nên trình duyệt đọc được, khác với chuyển hướng sang Cloudinary).
+    PDF gốc được trả thẳng; file Word được chuyển sang PDF bằng máy chủ soạn thảo (cần bật)."""
+    version = await word_editor.load_version(db, version_id=version_id)
+    headers = {"Content-Disposition": "inline", "Cache-Control": "private, max-age=300"}
+    if version.mime_type == "application/pdf":
+        try:
+            content = await word_editor.read_stored_file(version.storage_key, settings)
+        except Exception as exc:
+            raise PortalError(404, "PREVIEW_UNAVAILABLE", "portal.preview_unavailable") from exc
+        return Response(content, media_type="application/pdf", headers=headers)
+    word_editor.require_enabled(settings)
+    if word_editor.working_docx_key(version) is None or not version.original_filename.lower().endswith(".docx"):
+        raise PortalError(404, "PREVIEW_UNAVAILABLE", "portal.preview_unavailable")
+    content = await word_editor.preview_pdf_for(db, version, settings, onlyoffice, storage, user_id=user.id)
+    return Response(content, media_type="application/pdf", headers=headers)
+
+
 @router.get("/documents/{document_id}/versions/{version_id}/export")
 async def export_version(
     document_id: int,
@@ -192,7 +218,7 @@ async def editor_callback(
             return {"error": 0}
         content = await onlyoffice.download(url)
         fmt = await word_editor.apply_saved_docx(
-            db, version_id=version_id, user_id=user_id, content=content, storage=storage
+            db, version_id=version_id, user_id=user_id, content=content, storage=storage, settings=settings
         )
     except PortalError as exc:
         logger.warning("editor_callback_failed version=%s code=%s", version_id, exc.code)

@@ -319,6 +319,7 @@ class DocumentVersionResponseDTO(BaseModel):
     structure_quality: Literal["GOOD", "MEDIUM", "POOR"] | None = None
     structure_warnings: list[str] = []
     ai_split: Literal["APPLIED", "SKIPPED"] | None = None
+    ocr: bool = False
 
 
 class DocumentVersionDetailResponseDTO(BaseModel):

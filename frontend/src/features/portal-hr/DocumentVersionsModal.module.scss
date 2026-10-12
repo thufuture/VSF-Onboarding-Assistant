@@ -256,6 +256,9 @@ $tone-failed: #c0392b;
   border-bottom: 1px solid var(--app-border);
 
   button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     padding: 7px 14px;
     border: 0;
     border-bottom: 2px solid transparent;
@@ -336,7 +339,7 @@ $tone-failed: #c0392b;
   flex-wrap: nowrap;
   align-items: center;
   gap: 10px;
-  padding: 8px 12px;
+  padding: 4px 10px;
   border: 1px solid var(--app-border);
   border-radius: 5px;
   background: var(--app-surface);
@@ -346,7 +349,7 @@ $tone-failed: #c0392b;
   .barActions > a,
   .barEditor > div > button,
   .barEditor > div > a {
-    height: 32px;
+    height: 30px;
     padding: 0 10px;
     white-space: nowrap;
   }
@@ -354,8 +357,8 @@ $tone-failed: #c0392b;
 
 .backIcon {
   display: inline-grid;
-  width: 34px;
-  height: 34px;
+  width: 30px;
+  height: 30px;
   place-items: center;
   border: 1px solid var(--app-border-strong);
   border-radius: 5px;
@@ -404,6 +407,9 @@ $tone-failed: #c0392b;
   background: var(--app-surface-2);
 
   button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     height: 30px;
     padding: 0 13px;
     border: 0;
@@ -503,4 +509,59 @@ $tone-failed: #c0392b;
 
 .pageBar .barActions > button:active:not(:disabled) {
   transform: translateY(0);
+}
+
+// "Bản gốc": khung chứa trình xem PDF; trang riêng thì lấp đầy chiều cao còn lại, cửa sổ nổi dùng chiều cao cố định.
+.originalFrame {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+}
+
+.originalFrameModal {
+  display: flex;
+  height: min(74vh, 860px);
+  flex-direction: column;
+}
+
+// Nút Hủy/Lưu nổi lên thanh menu của ONLYOFFICE (chỗ trống giữa các tab menu và nút "Editing").
+.pageShellEditing {
+  position: relative;
+}
+
+.floatingBar {
+  position: absolute;
+  z-index: 5;
+  top: 2px;
+  right: 235px;
+  height: 40px;
+  display: flex;
+  max-width: 45%;
+  align-items: center;
+}
+
+// Chữ thường như các mục menu của ONLYOFFICE (không nền, không viền), chỉ "Lưu" tô màu nhấn.
+.floatingBar.floatingBar button {
+  height: 28px;
+  padding: 0 10px;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  color: #444;
+  font-family: "Open Sans", "Segoe UI", Arial, sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+
+  &:hover:not(:disabled) {
+    background: rgb(0 0 0 / 6%);
+    transform: none;
+  }
+  &:last-of-type {
+    color: $tone-processing;
+    font-weight: 600;
+  }
+  &:disabled {
+    opacity: 0.5;
+  }
 }
