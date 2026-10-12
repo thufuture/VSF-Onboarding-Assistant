@@ -25,6 +25,7 @@ from typing import Any
 
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
+from src.config import get_settings
 from src.infrastructure.ai.chat_completion_port import ChatCompletionPort
 from src.infrastructure.observability.langfuse_tracer import LangfuseTracer
 from src.model.enums import ChatRole, GapKind
@@ -262,6 +263,8 @@ async def _decide(
     if decision is None:
         return await _documents(question, route="FALLBACK", **docs)  # type: ignore[arg-type]
     if decision.tool == "none":
+        if decision.kind in ("out_of_scope", "injection") and get_settings().viga_router_v2:
+            return _exit("OUT_OF_SCOPE", "outOfScope", "LLM", can_report=True)
         return _exit("INFO", "smalltalk", "LLM")
     if decision.confidence < CONFIDENCE_THRESHOLD and not decision.clarify:
         return await _documents(question, route="FALLBACK", **docs)  # type: ignore[arg-type]

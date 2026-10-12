@@ -1,0 +1,164 @@
+{
+ "mô_tả": "10 câu cần khớp đúng chuỗi (mã form, email, địa chỉ, viết tắt); nhãn = mọi mục chứa chuỗi đó. Chỉ dùng để đo truy hồi. Từ em_11: câu chỉ gồm riêng chuỗi cần khớp (khó hơn).",
+ "câu_hỏi": [
+  {
+   "id": "em_01",
+   "question": "Form IT-SW-01 dùng để làm gì?",
+   "chuỗi_cần_khớp": "IT-SW-01",
+   "mục_đúng": [
+    560
+   ]
+  },
+  {
+   "id": "em_02",
+   "question": "FAC-02 là form gì vậy?",
+   "chuỗi_cần_khớp": "FAC-02",
+   "mục_đúng": [
+    561
+   ]
+  },
+  {
+   "id": "em_03",
+   "question": "IT-DEV-01 để yêu cầu việc gì?",
+   "chuỗi_cần_khớp": "IT-DEV-01",
+   "mục_đúng": [
+    560
+   ]
+  },
+  {
+   "id": "em_04",
+   "question": "Khi nào thì gửi mail cho soc-oncall@vsf-demo.example?",
+   "chuỗi_cần_khớp": "soc-oncall@vsf-demo.example",
+   "mục_đúng": [
+    564,
+    565
+   ]
+  },
+  {
+   "id": "em_05",
+   "question": "facilities@vsf-demo.example là liên hệ về việc gì?",
+   "chuỗi_cần_khớp": "facilities@vsf-demo.example",
+   "mục_đúng": [
+    561,
+    565
+   ]
+  },
+  {
+   "id": "em_06",
+   "question": "Chương trình đào tạo hội nhập liên hệ v.thudq@vinsmartfuture.tech đúng không?",
+   "chuỗi_cần_khớp": "v.thudq@vinsmartfuture.tech",
+   "mục_đúng": [
+    161,
+    534
+   ]
+  },
+  {
+   "id": "em_07",
+   "question": "WAF, ZTNA, PAM là gì và ai quyết định có dùng không?",
+   "chuỗi_cần_khớp": "ZTNA",
+   "mục_đúng": [
+    169,
+    502,
+    536,
+    547
+   ]
+  },
+  {
+   "id": "em_08",
+   "question": "it.vsf-demo.example/software-catalog là trang gì?",
+   "chuỗi_cần_khớp": "software-catalog",
+   "mục_đúng": [
+    554,
+    560
+   ]
+  },
+  {
+   "id": "em_09",
+   "question": "Security request form to VINSOC nằm ở đâu?",
+   "chuỗi_cần_khớp": "Security request form to VINSOC",
+   "mục_đúng": [
+    170
+   ]
+  },
+  {
+   "id": "em_10",
+   "question": "support.vinsmartfuture.tech/app/vinithelpdesk dùng để làm gì?",
+   "chuỗi_cần_khớp": "support.vinsmartfuture.tech",
+   "mục_đúng": [
+    167
+   ]
+  },
+  {
+   "id": "em_11",
+   "question": "IT-ACC-01",
+   "chuỗi_cần_khớp": "IT-ACC-01",
+   "mục_đúng": [
+    555,
+    560
+   ]
+  },
+  {
+   "id": "em_12",
+   "question": "FAC-01",
+   "chuỗi_cần_khớp": "FAC-01",
+   "mục_đúng": [
+    561
+   ]
+  },
+  {
+   "id": "em_13",
+   "question": "ZTNA",
+   "chuỗi_cần_khớp": "ZTNA",
+   "mục_đúng": [
+    169,
+    502,
+    536,
+    547
+   ]
+  },
+  {
+   "id": "em_14",
+   "question": "VINSOC",
+   "chuỗi_cần_khớp": "VINSOC",
+   "mục_đúng": [
+    170,
+    505
+   ]
+  },
+  {
+   "id": "em_15",
+   "question": "soc-oncall",
+   "chuỗi_cần_khớp": "soc-oncall",
+   "mục_đúng": [
+    564,
+    565
+   ]
+  },
+  {
+   "id": "em_16",
+   "question": "OSlq7VPRkk",
+   "chuỗi_cần_khớp": "OSlq7VPRkk",
+   "mục_đúng": [
+    170
+   ]
+  },
+  {
+   "id": "em_17",
+   "question": "hr.vsf-demo.example",
+   "chuỗi_cần_khớp": "hr.vsf-demo.example",
+   "mục_đúng": [
+    554,
+    559
+   ]
+  },
+  {
+   "id": "em_18",
+   "question": "PTVH",
+   "chuỗi_cần_khớp": "PTVH",
+   "mục_đúng": [
+    161,
+    534
+   ]
+  }
+ ]
+}

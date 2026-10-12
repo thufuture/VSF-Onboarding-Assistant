@@ -17,6 +17,7 @@ from typing import Any
 
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
+from src.config import get_settings, resolve_retrieval_tuning
 from src.infrastructure.ai.chat_completion_port import ChatCompletionPort
 from src.infrastructure.observability.call_metrics import Collected, call_context, collect_calls
 from src.infrastructure.observability.langfuse_tracer import LangfuseTracer
@@ -24,6 +25,7 @@ from src.services.ingest.embedding.port import EmbeddingPort
 from src.services.ingest.lexical import to_lexical_text
 from src.services.retrieval.hybrid_search import SectionEvidence, search_to_sections
 from src.services.viga.answer_service import Claim, QuestionEvidence, answer_with_claims
+from src.services.viga.context_limit import limit_context
 from src.services.viga.query_rewrite import rewrite_query
 from src.services.viga.validator import validate_claims
 
@@ -56,6 +58,8 @@ async def _evidence_for_question(
     model_version: str,
 ) -> QuestionEvidence:
     # Mỗi câu hỏi con mở session riêng: chạy song song trên MỘT AsyncSession dùng chung không an toàn.
+    settings = get_settings()
+    tuning = resolve_retrieval_tuning(settings)
     async with session_factory() as session:
         sections = await search_to_sections(
             session,
@@ -63,6 +67,12 @@ async def _evidence_for_question(
             query_vector=query_vector,
             as_of=as_of,
             model_version=model_version,
+            max_sections=tuning.max_sections,
+            min_score_ratio=settings.retrieval_min_score_ratio,
+            rrf_k=tuning.rrf_k,
+            bm25_weight=tuning.weight_bm25,
+            vector_weight=tuning.weight_vector,
+            bm25_reserve=tuning.bm25_reserve,
         )
     return QuestionEvidence(question=question, sections=sections)
 
@@ -139,6 +149,11 @@ async def _run_document_qa(
                 "sections": [[s.heading for s in item.sections] for item in items],
             }
         )
+
+    settings = get_settings()
+    items = limit_context(
+        items, dedupe=settings.retrieval_dedupe_sections, total_token_cap=settings.retrieval_total_token_cap
+    )
 
     # 3. Một lời gọi LLM duy nhất trả claims[] cho toàn bộ câu hỏi con.
     with (

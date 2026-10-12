@@ -325,3 +325,23 @@ def test_route_prompt_has_no_personal_data_and_wraps_the_question() -> None:
 def test_every_exit_template_exists_for_each_response_key() -> None:
     for key in ("noBasis", "outOfScope", "assistantUnavailable", "smalltalk", "clarifyTask", "noJourney"):
         assert tools.render(key)
+
+
+def test_parse_route_reads_none_kind() -> None:
+    from src.services.viga.router import parse_route
+
+    decision = parse_route(
+        '{"tool": "none", "args": {}, "confidence": 0.9, "clarify": null, "kind": "out_of_scope"}', None
+    )
+
+    assert decision is not None and decision.kind == "out_of_scope"
+
+
+def test_parse_route_ignores_kind_for_other_tools_and_bad_values() -> None:
+    from src.services.viga.router import parse_route
+
+    with_tool = parse_route('{"tool": "get_progress", "args": {}, "confidence": 0.9, "kind": "injection"}', None)
+    bad_kind = parse_route('{"tool": "none", "args": {}, "confidence": 0.9, "kind": "weird"}', None)
+
+    assert with_tool is not None and with_tool.kind is None
+    assert bad_kind is not None and bad_kind.kind is None

@@ -7,6 +7,7 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass
 
+from src.config import get_settings
 from src.infrastructure.ai.chat_completion_port import ChatCompletionPort
 from src.infrastructure.observability.call_metrics import call_context
 from src.services.retrieval.hybrid_search import SectionEvidence
@@ -49,6 +50,15 @@ class Claim:
     chunk_id: int | None
 
 
+def use_reasoning(item_count: int, mode: str) -> bool:
+    """Có bật suy luận ẩn ở bước trả lời không: "always" bật, "off" tắt, "adaptive" chỉ bật khi có nhiều hơn một câu hỏi con."""
+    if mode == "off":
+        return False
+    if mode == "adaptive":
+        return item_count > 1
+    return True
+
+
 async def answer_with_claims(items: list[QuestionEvidence], llm: ChatCompletionPort) -> list[Claim]:
     if not items:
         return []
@@ -58,7 +68,11 @@ async def answer_with_claims(items: list[QuestionEvidence], llm: ChatCompletionP
         return [Claim(item.question, "NO_BASIS", "no_evidence", None, None, None) for item in items]
 
     with call_context(operation="chat.answer"):
-        raw = await llm.complete_json(system_prompt=SYSTEM_PROMPT, user_prompt=build_user_prompt(items))
+        raw = await llm.complete_json(
+            system_prompt=SYSTEM_PROMPT,
+            user_prompt=build_user_prompt(items),
+            reasoning=use_reasoning(len(items), get_settings().answer_thinking_mode),
+        )
     try:
         data = json.loads(raw)
         raw_claims = data["claims"]

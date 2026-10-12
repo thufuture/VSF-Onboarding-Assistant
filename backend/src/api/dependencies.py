@@ -2,6 +2,7 @@
 
 from collections.abc import AsyncIterator, Callable, Coroutine
 from dataclasses import dataclass
+from functools import lru_cache
 from typing import Annotated, Any
 
 from fastapi import Cookie, Depends, Request
@@ -11,6 +12,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 from src.config import Settings, get_settings
 from src.infrastructure.ai.chat_completion_port import ChatCompletionPort
 from src.infrastructure.ai.deepseek_adapter import DeepSeekChatCompletion
+from src.infrastructure.ai.fallback_chat_completion import CircuitBreaker, FallbackChatCompletion
 from src.infrastructure.ai.llm_gate import shared_gate
 from src.infrastructure.observability.call_metrics import set_user_id
 from src.infrastructure.observability.langfuse_tracer import LangfuseTracer
@@ -125,15 +127,42 @@ def get_storage_port(settings: Annotated[Settings, Depends(get_settings)]) -> St
     return build_storage_port(settings)
 
 
+@lru_cache
+def _fallback_breaker(failure_threshold: int, cooldown_seconds: float) -> CircuitBreaker:
+    """Một bộ ngắt mạch dùng chung cho cả tiến trình (cổng LLM được dựng lại mỗi yêu cầu nên không thể giữ trạng thái ở đó)."""
+    return CircuitBreaker(failure_threshold=failure_threshold, cooldown_seconds=cooldown_seconds)
+
+
 def get_chat_completion_port(settings: Annotated[Settings, Depends(get_settings)]) -> ChatCompletionPort:
     if settings.llm_api_key is None:
         raise RuntimeError("LLM_API_KEY chưa cấu hình")
-    return DeepSeekChatCompletion(
+    primary = DeepSeekChatCompletion(
         base_url=settings.llm_base_url,
         api_key=settings.llm_api_key.get_secret_value(),
         model=settings.llm_model,
         max_retries=settings.llm_max_retries,
         gate=shared_gate(settings.llm_max_concurrent, settings.llm_background_max_concurrent),
+    )
+    if not (settings.llm_fallback_enabled and settings.llm_fallback_api_key is not None):
+        return primary
+    secondary = DeepSeekChatCompletion(
+        base_url=settings.llm_fallback_base_url,
+        api_key=settings.llm_fallback_api_key.get_secret_value(),
+        model=settings.llm_fallback_model,
+        timeout_seconds=settings.llm_fallback_timeout_seconds,
+        max_retries=1,
+        gate=shared_gate(settings.llm_max_concurrent, settings.llm_background_max_concurrent),
+        provider_name="fallback",
+        reasoning_style="openrouter",
+        json_mode=False,
+        supports_stream=False,
+        max_output_tokens=settings.llm_fallback_max_output_tokens,
+    )
+    return FallbackChatCompletion(
+        primary,
+        secondary,
+        _fallback_breaker(settings.llm_fallback_failure_threshold, settings.llm_fallback_cooldown_seconds),
+        allow_background=settings.llm_fallback_for_background,
     )
 
 
