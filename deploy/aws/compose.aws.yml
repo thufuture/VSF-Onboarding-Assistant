@@ -30,6 +30,15 @@ services:
     init: true
     expose: ["8000"]
     env_file: ${ENV_DIR:-/opt/vsf-aws/env}/backend.env
+    # Cấu hình tối ưu Viga (benchmark 10-12/10/2026, xem docs/value/optimize-chatviga/BAO-CAO-TONG-HOP-BENCHMARK-VIGA.md).
+    # Đặt ở đây (không phải backend.env) để đi qua PR và deploy; `environment` thắng `env_file`. Muốn đổi riêng máy này thì đặt
+    # biến cùng tên trong compose.env (mặc định bên dưới chỉ dùng khi compose.env không đặt). Hoàn tác nhanh: đặt
+    # RETRIEVAL_PROFILE=legacy, VIGA_ROUTER_V2=false, ANSWER_THINKING_MODE=always trong compose.env rồi deploy lại.
+    # Đo trên production 12/10/2026 với cấu hình cũ: bước trả lời mất ~40 s (đưa ~60 mục, suy luận ~3.000 token).
+    environment:
+      RETRIEVAL_PROFILE: ${RETRIEVAL_PROFILE:-optimized}
+      VIGA_ROUTER_V2: ${VIGA_ROUTER_V2:-true}
+      ANSWER_THINKING_MODE: ${ANSWER_THINKING_MODE:-adaptive}
     networks: [private]
     depends_on:
       db:
