@@ -1,0 +1,216 @@
+{
+ "hạng": [
+  {
+   "id": "em_01",
+   "câu": "Form IT-SW-01 dùng để làm gì?",
+   "BM25 riêng": 1,
+   "vector riêng": 1,
+   "RRF mặc định (k=60, 1:1)": 1,
+   "RRF tối ưu (k=10, 0,1:1)": 1,
+   "RRF k=10, 0,5:1": 1,
+   "tối ưu + giữ chỗ BM25": 1
+  },
+  {
+   "id": "em_02",
+   "câu": "FAC-02 là form gì vậy?",
+   "BM25 riêng": 1,
+   "vector riêng": 1,
+   "RRF mặc định (k=60, 1:1)": 1,
+   "RRF tối ưu (k=10, 0,1:1)": 1,
+   "RRF k=10, 0,5:1": 1,
+   "tối ưu + giữ chỗ BM25": 1
+  },
+  {
+   "id": "em_03",
+   "câu": "IT-DEV-01 để yêu cầu việc gì?",
+   "BM25 riêng": 1,
+   "vector riêng": 1,
+   "RRF mặc định (k=60, 1:1)": 1,
+   "RRF tối ưu (k=10, 0,1:1)": 1,
+   "RRF k=10, 0,5:1": 1,
+   "tối ưu + giữ chỗ BM25": 1
+  },
+  {
+   "id": "em_04",
+   "câu": "Khi nào thì gửi mail cho soc-oncall@vsf-demo.example",
+   "BM25 riêng": 1,
+   "vector riêng": 1,
+   "RRF mặc định (k=60, 1:1)": 1,
+   "RRF tối ưu (k=10, 0,1:1)": 1,
+   "RRF k=10, 0,5:1": 1,
+   "tối ưu + giữ chỗ BM25": 1
+  },
+  {
+   "id": "em_05",
+   "câu": "facilities@vsf-demo.example là liên hệ về việc gì?",
+   "BM25 riêng": 1,
+   "vector riêng": 1,
+   "RRF mặc định (k=60, 1:1)": 1,
+   "RRF tối ưu (k=10, 0,1:1)": 1,
+   "RRF k=10, 0,5:1": 1,
+   "tối ưu + giữ chỗ BM25": 1
+  },
+  {
+   "id": "em_06",
+   "câu": "Chương trình đào tạo hội nhập liên hệ v.thudq@vinsma",
+   "BM25 riêng": 1,
+   "vector riêng": 1,
+   "RRF mặc định (k=60, 1:1)": 1,
+   "RRF tối ưu (k=10, 0,1:1)": 1,
+   "RRF k=10, 0,5:1": 1,
+   "tối ưu + giữ chỗ BM25": 1
+  },
+  {
+   "id": "em_07",
+   "câu": "WAF, ZTNA, PAM là gì và ai quyết định có dùng không?",
+   "BM25 riêng": 1,
+   "vector riêng": 1,
+   "RRF mặc định (k=60, 1:1)": 1,
+   "RRF tối ưu (k=10, 0,1:1)": 1,
+   "RRF k=10, 0,5:1": 1,
+   "tối ưu + giữ chỗ BM25": 1
+  },
+  {
+   "id": "em_08",
+   "câu": "it.vsf-demo.example/software-catalog là trang gì?",
+   "BM25 riêng": 1,
+   "vector riêng": 1,
+   "RRF mặc định (k=60, 1:1)": 1,
+   "RRF tối ưu (k=10, 0,1:1)": 1,
+   "RRF k=10, 0,5:1": 1,
+   "tối ưu + giữ chỗ BM25": 1
+  },
+  {
+   "id": "em_09",
+   "câu": "Security request form to VINSOC nằm ở đâu?",
+   "BM25 riêng": 1,
+   "vector riêng": 1,
+   "RRF mặc định (k=60, 1:1)": 1,
+   "RRF tối ưu (k=10, 0,1:1)": 1,
+   "RRF k=10, 0,5:1": 1,
+   "tối ưu + giữ chỗ BM25": 1
+  },
+  {
+   "id": "em_10",
+   "câu": "support.vinsmartfuture.tech/app/vinithelpdesk dùng đ",
+   "BM25 riêng": 1,
+   "vector riêng": 1,
+   "RRF mặc định (k=60, 1:1)": 1,
+   "RRF tối ưu (k=10, 0,1:1)": 1,
+   "RRF k=10, 0,5:1": 1,
+   "tối ưu + giữ chỗ BM25": 1
+  },
+  {
+   "id": "em_11",
+   "câu": "IT-ACC-01",
+   "BM25 riêng": 1,
+   "vector riêng": 2,
+   "RRF mặc định (k=60, 1:1)": 1,
+   "RRF tối ưu (k=10, 0,1:1)": 1,
+   "RRF k=10, 0,5:1": 1,
+   "tối ưu + giữ chỗ BM25": 1
+  },
+  {
+   "id": "em_12",
+   "câu": "FAC-01",
+   "BM25 riêng": 1,
+   "vector riêng": 2,
+   "RRF mặc định (k=60, 1:1)": 1,
+   "RRF tối ưu (k=10, 0,1:1)": 1,
+   "RRF k=10, 0,5:1": 1,
+   "tối ưu + giữ chỗ BM25": 1
+  },
+  {
+   "id": "em_13",
+   "câu": "ZTNA",
+   "BM25 riêng": 1,
+   "vector riêng": 1,
+   "RRF mặc định (k=60, 1:1)": 1,
+   "RRF tối ưu (k=10, 0,1:1)": 1,
+   "RRF k=10, 0,5:1": 1,
+   "tối ưu + giữ chỗ BM25": 1
+  },
+  {
+   "id": "em_14",
+   "câu": "VINSOC",
+   "BM25 riêng": 2,
+   "vector riêng": 2,
+   "RRF mặc định (k=60, 1:1)": 2,
+   "RRF tối ưu (k=10, 0,1:1)": 2,
+   "RRF k=10, 0,5:1": 2,
+   "tối ưu + giữ chỗ BM25": 2
+  },
+  {
+   "id": "em_15",
+   "câu": "soc-oncall",
+   "BM25 riêng": 1,
+   "vector riêng": 1,
+   "RRF mặc định (k=60, 1:1)": 1,
+   "RRF tối ưu (k=10, 0,1:1)": 1,
+   "RRF k=10, 0,5:1": 1,
+   "tối ưu + giữ chỗ BM25": 1
+  },
+  {
+   "id": "em_16",
+   "câu": "OSlq7VPRkk",
+   "BM25 riêng": 1,
+   "vector riêng": 5,
+   "RRF mặc định (k=60, 1:1)": 1,
+   "RRF tối ưu (k=10, 0,1:1)": 4,
+   "RRF k=10, 0,5:1": 1,
+   "tối ưu + giữ chỗ BM25": 4
+  },
+  {
+   "id": "em_17",
+   "câu": "hr.vsf-demo.example",
+   "BM25 riêng": 1,
+   "vector riêng": 2,
+   "RRF mặc định (k=60, 1:1)": 1,
+   "RRF tối ưu (k=10, 0,1:1)": 1,
+   "RRF k=10, 0,5:1": 1,
+   "tối ưu + giữ chỗ BM25": 1
+  },
+  {
+   "id": "em_18",
+   "câu": "PTVH",
+   "BM25 riêng": 1,
+   "vector riêng": 1,
+   "RRF mặc định (k=60, 1:1)": 1,
+   "RRF tối ưu (k=10, 0,1:1)": 1,
+   "RRF k=10, 0,5:1": 1,
+   "tối ưu + giữ chỗ BM25": 1
+  }
+ ],
+ "tổng": {
+  "BM25 riêng": {
+   "hit1": 0.9444444444444444,
+   "hit3": 1.0,
+   "hit5": 1.0
+  },
+  "vector riêng": {
+   "hit1": 0.7222222222222222,
+   "hit3": 0.9444444444444444,
+   "hit5": 1.0
+  },
+  "RRF mặc định (k=60, 1:1)": {
+   "hit1": 0.9444444444444444,
+   "hit3": 1.0,
+   "hit5": 1.0
+  },
+  "RRF tối ưu (k=10, 0,1:1)": {
+   "hit1": 0.8888888888888888,
+   "hit3": 0.9444444444444444,
+   "hit5": 1.0
+  },
+  "RRF k=10, 0,5:1": {
+   "hit1": 0.9444444444444444,
+   "hit3": 1.0,
+   "hit5": 1.0
+  },
+  "tối ưu + giữ chỗ BM25": {
+   "hit1": 0.8888888888888888,
+   "hit3": 0.9444444444444444,
+   "hit5": 1.0
+  }
+ }
+}

@@ -32,6 +32,12 @@ DEFAULT_IDLE_SECONDS = 30.0
 RETRY_BACKOFF_SECONDS = (1.0, 3.0)
 
 
+def extract_json_text(content: str) -> str:
+    """Lấy phần JSON trong câu trả lời của mô hình không có JSON mode (thường bọc trong khối mã markdown)."""
+    start, end = content.find("{"), content.rfind("}")
+    return content[start : end + 1] if 0 <= start < end else content
+
+
 class ChatCompletionError(Exception):
     """Lỗi khi gọi LLM — người gọi phải coi như "chưa có căn cứ", không hiển thị câu trả lời chưa kiểm chứng.
 
@@ -71,6 +77,11 @@ class DeepSeekChatCompletion:
         idle_seconds: float = DEFAULT_IDLE_SECONDS,
         gate: LlmGate | None = None,
         backoff_seconds: tuple[float, ...] = RETRY_BACKOFF_SECONDS,
+        provider_name: str = "deepseek",
+        reasoning_style: str = "deepseek",
+        json_mode: bool = True,
+        supports_stream: bool = True,
+        max_output_tokens: int | None = None,
     ) -> None:
         if not base_url or not api_key or not model:
             raise ValueError("cần LLM_BASE_URL, LLM_API_KEY, LLM_MODEL")
@@ -82,6 +93,13 @@ class DeepSeekChatCompletion:
         self._idle = idle_seconds
         self._gate = gate
         self._backoff = backoff_seconds
+        # Dùng lại adapter cho nhà cung cấp dự phòng tương thích OpenAI (OpenRouter, Claude...): đổi cách tắt suy luận, có thể không
+        # có JSON mode (khi đó tự lấy phần JSON trong câu trả lời), có thể không stream.
+        self._provider = provider_name
+        self._reasoning_style = reasoning_style
+        self._json_mode = json_mode
+        self._supports_stream = supports_stream
+        self._max_output_tokens = max_output_tokens
 
     async def complete_json(
         self,
@@ -94,6 +112,7 @@ class DeepSeekChatCompletion:
         temperature: float | None = None,
     ) -> str:
         timeout = timeout_seconds or self._timeout
+        stream = stream and self._supports_stream
         background = current_job_id() is not None
         gate = self._gate or shared_gate(9, 5)
         attempt = 0
@@ -139,7 +158,7 @@ class DeepSeekChatCompletion:
                         observation=observation,
                         output=content,
                     )
-                    return content
+                    return content if self._json_mode else extract_json_text(content)
             # Chờ ngoài bộ giới hạn để không giữ chỗ của lời gọi khác trong lúc nghỉ.
             await asyncio.sleep(delay or 0.0)
 
@@ -164,7 +183,7 @@ class DeepSeekChatCompletion:
         emit(
             CallRecord(
                 kind="llm",
-                provider="deepseek",
+                provider=self._provider,
                 model=self._model,
                 latency_ms=(time.perf_counter() - started) * 1000,
                 ok=ok,
@@ -194,12 +213,18 @@ class DeepSeekChatCompletion:
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt},
             ],
-            "response_format": {"type": "json_object"},
         }
+        if self._max_output_tokens is not None:
+            body["max_tokens"] = self._max_output_tokens
+        if self._json_mode:
+            body["response_format"] = {"type": "json_object"}
         if temperature is not None:
             body["temperature"] = temperature
         if not reasoning:
-            body["thinking"] = {"type": "disabled"}
+            if self._reasoning_style == "openrouter":
+                body["reasoning"] = {"enabled": False}
+            else:
+                body["thinking"] = {"type": "disabled"}
         if stream:
             body["stream"] = True
             body["stream_options"] = {"include_usage": True}

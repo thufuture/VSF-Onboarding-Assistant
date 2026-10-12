@@ -6,11 +6,16 @@ Cú pháp BM25/dense đã spike thật trên DB dev (mục 2, kế hoạch) — 
 
 from __future__ import annotations
 
+import logging
+import re
 from dataclasses import dataclass
 from datetime import date
 
 from sqlalchemy import text
+from sqlalchemy.exc import DBAPIError
 from sqlalchemy.ext.asyncio import AsyncSession
+
+logger = logging.getLogger(__name__)
 
 BM25_TOP_K = 30
 DENSE_TOP_K = 30
@@ -39,12 +44,46 @@ def _format_vector_literal(vector: list[float]) -> str:
     return "[" + ",".join(repr(v) for v in vector) + "]"
 
 
+# Ký tự có nghĩa trong cú pháp truy vấn của ParadeDB (`[a TO b]`, nhóm, cụm từ, trường, toán tử...). Người dùng gõ
+# bình thường (ví dụ trích nhãn `[TRONG TÀI LIỆU NGÀY 1]`) có thể làm cả truy vấn bị từ chối.
+_QUERY_SYNTAX_CHARS = re.compile("[" + re.escape("[]{}()\"~^*?:\\+!/&|<>=,;'`-") + "]")
+_PARSE_ERROR_MARKER = "could not parse query string"
+
+
+def sanitize_lexical_query(query: str) -> str:
+    """Thay ký tự cú pháp truy vấn bằng khoảng trắng; giữ nguyên chữ và số."""
+    return " ".join(_QUERY_SYNTAX_CHARS.sub(" ", query).split())
+
+
 async def _bm25_search(
     session: AsyncSession, *, lexical_query: str, as_of: date, model_version: str, top_k: int
 ) -> list[tuple[int, int]]:
-    """Trả về [(chunk_id, section_id)] sắp theo điểm BM25 giảm dần."""
+    """Trả về [(chunk_id, section_id)] sắp theo điểm BM25 giảm dần.
+
+    Truy vấn gốc được thử trước (không đổi hành vi với câu đang chạy tốt). Nếu ParadeDB từ chối cú pháp thì thử lại
+    với bản đã bỏ ký tự cú pháp, trong SAVEPOINT để không làm hỏng giao dịch của người gọi.
+    """
     if not lexical_query.strip():
         return []
+    try:
+        async with session.begin_nested():
+            return await _bm25_query(session, lexical_query, as_of, model_version, top_k)
+    except DBAPIError as exc:
+        if _PARSE_ERROR_MARKER not in str(exc):
+            raise
+        safe_query = sanitize_lexical_query(lexical_query)
+        logger.warning(
+            "bm25_query_parse_error: thử lại với truy vấn đã bỏ ký tự cú pháp (độ dài %d)", len(lexical_query)
+        )
+        if not safe_query:
+            return []
+        async with session.begin_nested():
+            return await _bm25_query(session, safe_query, as_of, model_version, top_k)
+
+
+async def _bm25_query(
+    session: AsyncSession, lexical_query: str, as_of: date, model_version: str, top_k: int
+) -> list[tuple[int, int]]:
     rows = await session.execute(
         text(
             """
@@ -97,13 +136,44 @@ async def _dense_search(
     return [(row.chunk_id, row.section_id) for row in rows]
 
 
-def reciprocal_rank_fusion(*ranked_lists: list[int], k: int = RRF_K) -> dict[int, float]:
-    """Hợp nhất nhiều danh sách đã xếp hạng (id, giảm dần theo độ liên quan) thành một điểm số duy nhất."""
+def reciprocal_rank_fusion(
+    *ranked_lists: list[int], k: int = RRF_K, weights: tuple[float, ...] | None = None
+) -> dict[int, float]:
+    """Hợp nhất nhiều danh sách đã xếp hạng (id, giảm dần theo độ liên quan) thành một điểm số duy nhất.
+
+    `weights` là hệ số của từng danh sách theo đúng thứ tự (mặc định mọi danh sách bằng nhau = 1).
+    """
+    if weights is not None and len(weights) != len(ranked_lists):
+        raise ValueError("số hệ số phải bằng số danh sách")
     scores: dict[int, float] = {}
-    for ranked in ranked_lists:
+    for index, ranked in enumerate(ranked_lists):
+        weight = 1.0 if weights is None else weights[index]
         for rank, item_id in enumerate(ranked, start=1):
-            scores[item_id] = scores.get(item_id, 0.0) + 1 / (k + rank)
+            scores[item_id] = scores.get(item_id, 0.0) + weight / (k + rank)
     return scores
+
+
+def select_with_bm25_reserve(
+    ordered_section_ids: list[int], bm25_section_ids: list[int], max_sections: int, bm25_reserve: int
+) -> list[int]:
+    """Giữ `max_sections` mục: phần lớn theo thứ tự RRF, riêng `bm25_reserve` chỗ dành cho các mục đứng đầu của BM25.
+
+    Bảo hiểm cho trọng số BM25 thấp: câu cần khớp đúng chuỗi (mã form, email, tên riêng) vẫn có mục BM25 xếp đầu trong ngữ
+    cảnh dù vector không xếp cao. Mục BM25 được thêm vào cuối; nếu BM25 không còn mục mới thì chỗ đó trả lại cho RRF.
+    """
+    if max_sections <= 0 or bm25_reserve <= 0 or len(ordered_section_ids) <= max_sections:
+        return ordered_section_ids[:max_sections] if max_sections > 0 else ordered_section_ids
+    reserve = min(bm25_reserve, max_sections - 1)  # luôn để lại ít nhất 1 chỗ cho thứ hạng RRF
+    kept = ordered_section_ids[: max_sections - reserve]
+    candidates = [sid for sid in bm25_section_ids if sid not in kept and sid in set(ordered_section_ids)]
+    extras = candidates[:reserve]
+    kept = kept + extras
+    for sid in ordered_section_ids[max_sections - reserve :]:  # chỗ BM25 không dùng hết thì nhường lại cho RRF
+        if len(kept) >= max_sections:
+            break
+        if sid not in kept:
+            kept.append(sid)
+    return kept
 
 
 async def search_to_sections(
@@ -113,6 +183,12 @@ async def search_to_sections(
     query_vector: list[float],
     as_of: date,
     model_version: str,
+    max_sections: int = 0,
+    min_score_ratio: float = 0.0,
+    rrf_k: int = RRF_K,
+    bm25_weight: float = 1.0,
+    vector_weight: float = 1.0,
+    bm25_reserve: int = 0,
 ) -> list[SectionEvidence]:
     """Tìm kiếm hybrid cho MỘT câu hỏi, trả về section cha đã gộp, sắp theo độ liên quan, cắt theo ngân sách
     token (mục 3-4, kế hoạch 2-C/2-D). Không gọi LLM ở đây.
@@ -124,7 +200,9 @@ async def search_to_sections(
         session, query_vector=query_vector, as_of=as_of, model_version=model_version, top_k=DENSE_TOP_K
     )
     section_by_chunk = dict(bm25_rows) | dict(dense_rows)
-    fused = reciprocal_rank_fusion([c for c, _ in bm25_rows], [c for c, _ in dense_rows])
+    fused = reciprocal_rank_fusion(
+        [c for c, _ in bm25_rows], [c for c, _ in dense_rows], k=rrf_k, weights=(bm25_weight, vector_weight)
+    )
     if not fused:
         return []
 
@@ -139,6 +217,15 @@ async def search_to_sections(
     ordered_section_ids = sorted(section_scores, key=lambda sid: section_scores[sid], reverse=True)
     if not ordered_section_ids:
         return []
+    # Cắt ngữ cảnh (tối ưu có cờ): theo điểm tương đối so với section đầu, rồi theo số section. Mặc định tắt (0).
+    if min_score_ratio > 0:
+        floor = section_scores[ordered_section_ids[0]] * min_score_ratio
+        ordered_section_ids = [sid for sid in ordered_section_ids if section_scores[sid] >= floor]
+    if max_sections > 0:
+        bm25_section_ids = list(dict.fromkeys(section_id for _, section_id in bm25_rows))
+        ordered_section_ids = select_with_bm25_reserve(
+            ordered_section_ids, bm25_section_ids, max_sections, bm25_reserve
+        )
 
     rows = (
         await session.execute(

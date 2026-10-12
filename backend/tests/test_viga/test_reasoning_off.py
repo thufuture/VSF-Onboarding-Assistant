@@ -9,6 +9,7 @@ from typing import Any
 
 import pytest
 
+from src.config import Settings
 from src.services.retrieval.hybrid_search import SectionEvidence
 from src.services.viga.answer_service import QuestionEvidence, answer_with_claims
 from src.services.viga.query_rewrite import rewrite_query
@@ -49,7 +50,12 @@ async def test_rewrite_tat_suy_luan() -> None:
 
 
 @pytest.mark.asyncio
-async def test_tra_loi_giu_suy_luan() -> None:
+async def test_tra_loi_giu_suy_luan(monkeypatch: pytest.MonkeyPatch) -> None:
+    # Mặc định của sản phẩm (mode "always"), không phụ thuộc .env cục bộ (dev có thể đặt adaptive hoặc off).
+    monkeypatch.setattr(
+        "src.services.viga.answer_service.get_settings",
+        lambda: Settings(_env_file=None, session_secret="x" * 40, answer_thinking_mode="always"),
+    )
     section = SectionEvidence(
         section_id=1,
         heading="Hồ sơ",

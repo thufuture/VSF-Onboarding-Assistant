@@ -1,11 +1,12 @@
 """Cấu hình ứng dụng, đọc từ biến môi trường (và tệp .env nếu có)."""
 
 import secrets
+from dataclasses import dataclass
 from functools import lru_cache
 from typing import Literal, Self
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
-from pydantic import SecretStr, field_validator, model_validator
+from pydantic import Field, SecretStr, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -17,6 +18,29 @@ class Settings(BaseSettings):
     # Múi giờ dùng để tính "hôm nay" (as_of) cho ngày hiệu lực của tài liệu và quy trình.
     app_timezone: str = "Asia/Ho_Chi_Minh"
     log_level: str = "INFO"
+
+    # --- Tối ưu Viga (benchmark 10/2026). Mọi cờ mặc định TẮT = hành vi cũ, bật từng cái bằng biến môi trường. ---
+    # Router v2: phân biệt xã giao với ngoài phạm vi/chèn lệnh (trả OUT_OF_SCOPE thay vì INFO) và làm rõ get_day_plan.
+    viga_router_v2: bool = False
+    # Suy luận ẩn ở bước trả lời: "always" (như cũ), "off" (luôn tắt), "adaptive" (bật khi câu hỏi được tách thành nhiều câu con).
+    answer_thinking_mode: Literal["always", "off", "adaptive"] = "always"
+    # Hồ sơ truy hồi: "legacy" (như cũ: RRF k=60, hai nhánh bằng nhau, chỉ cắt theo ngân sách token) hoặc "optimized"
+    # (benchmark 11/10/2026: RRF k=10, BM25 : vector = 0,1 : 1, giữ 5 section mỗi câu hỏi con). Từng tham số bên dưới, nếu đặt, ghi đè hồ sơ.
+    # Cắt section (max_sections) chỉ an toàn đi cùng RRF tối ưu: với RRF mặc định, Recall tụt 98,7% xuống 77%.
+    retrieval_profile: Literal["legacy", "optimized"] = "legacy"
+    rrf_k: int | None = Field(default=None, ge=1)
+    rrf_weight_bm25: float | None = Field(default=None, ge=0)
+    rrf_weight_vector: float | None = Field(default=None, ge=0)
+    # Giới hạn số section cha mỗi câu hỏi con sau RRF (0 = chỉ cắt theo ngân sách token như cũ).
+    retrieval_max_sections: int | None = Field(default=None, ge=0)
+    # Số chỗ (trong max_sections) dành cho các mục đứng đầu của BM25, bảo hiểm cho câu cần khớp đúng chuỗi khi trọng số BM25 thấp.
+    retrieval_bm25_reserve: int | None = Field(default=None, ge=0)
+    # Bỏ section có điểm RRF < tỉ lệ này * điểm section đầu (0 = tắt).
+    retrieval_min_score_ratio: float = 0.0
+    # Trần tổng token ngữ cảnh của MỌI câu hỏi con trong một lượt trả lời (0 = tắt).
+    retrieval_total_token_cap: int = 0
+    # Không đưa lại section đã có ở câu hỏi con trước vào prompt.
+    retrieval_dedupe_sections: bool = False
 
     # Mặc định trỏ tới cổng host của docker-compose (POSTGRES_HOST_PORT); mật khẩu vsf/vsf chỉ là của môi trường dev.
     database_url: str = "postgresql+asyncpg://vsf:vsf@localhost:5434/vsf"
@@ -68,6 +92,18 @@ class Settings(BaseSettings):
     llm_max_concurrent: int = 9
     llm_background_max_concurrent: int = 5
     llm_max_retries: int = 2
+    # LLM dự phòng (mặc định Claude Haiku qua OpenRouter): chỉ dùng khi nhà cung cấp chính lỗi hạ tầng. Tắt nếu thiếu khóa.
+    llm_fallback_enabled: bool = False
+    llm_fallback_base_url: str = "https://openrouter.ai/api/v1"
+    llm_fallback_model: str = "anthropic/claude-haiku-5.5"
+    llm_fallback_api_key: SecretStr | None = None
+    llm_fallback_timeout_seconds: float = 30
+    # Trần token đầu ra của nhà cung cấp dự phòng (OpenRouter giữ chỗ chi phí theo trần này; mặc định của họ rất lớn).
+    llm_fallback_max_output_tokens: int = 4000
+    # Việc nền (sinh task bằng AI) có dùng dự phòng không: mặc định không, vì đổi mô hình có thể đổi chất lượng task; thử lại sau là đủ.
+    llm_fallback_for_background: bool = False
+    llm_fallback_failure_threshold: int = 3
+    llm_fallback_cooldown_seconds: float = 60
 
     # Tạo task bằng AI (kế hoạch tối ưu độ trễ, Ai-task/ke-hoach-toi-uu-tao-task-bang-ai.md): "fast" = tắt suy luận, trích
     # nguồn bằng số dòng, một lượt bù phủ và một lời gọi xếp thứ tự; "legacy" = cách cũ (suy luận bật, trích nguyên văn).
@@ -143,6 +179,33 @@ class Settings(BaseSettings):
         elif self.app_env == "production" and _is_weak_secret(self.session_secret.get_secret_value()):
             raise ValueError("SESSION_SECRET quá yếu: cần ít nhất 32 ký tự và không phải giá trị mẫu")
         return self
+
+
+@dataclass(frozen=True)
+class RetrievalTuning:
+    rrf_k: int
+    weight_bm25: float
+    weight_vector: float
+    max_sections: int
+    bm25_reserve: int = 0
+
+
+_PROFILES: dict[str, RetrievalTuning] = {
+    "legacy": RetrievalTuning(rrf_k=60, weight_bm25=1.0, weight_vector=1.0, max_sections=0),
+    "optimized": RetrievalTuning(rrf_k=10, weight_bm25=0.1, weight_vector=1.0, max_sections=5),
+}
+
+
+def resolve_retrieval_tuning(settings: Settings) -> RetrievalTuning:
+    """Tham số truy hồi hiệu lực: hồ sơ làm nền, từng biến môi trường đã đặt thì ghi đè."""
+    base = _PROFILES[settings.retrieval_profile]
+    return RetrievalTuning(
+        rrf_k=base.rrf_k if settings.rrf_k is None else settings.rrf_k,
+        weight_bm25=base.weight_bm25 if settings.rrf_weight_bm25 is None else settings.rrf_weight_bm25,
+        weight_vector=base.weight_vector if settings.rrf_weight_vector is None else settings.rrf_weight_vector,
+        max_sections=base.max_sections if settings.retrieval_max_sections is None else settings.retrieval_max_sections,
+        bm25_reserve=base.bm25_reserve if settings.retrieval_bm25_reserve is None else settings.retrieval_bm25_reserve,
+    )
 
 
 _WEAK_MARKERS = ("change", "secret", "password", "example", "default", "dev")
